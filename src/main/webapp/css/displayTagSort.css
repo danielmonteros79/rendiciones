@@ -1,0 +1,19 @@
+@CHARSET "ISO-8859-1";
+th.sortable {
+    background-image: url(../images/iconos/sort_off.png);
+    background-repeat: no-repeat;
+    background-position:right;
+}
+
+th.order1 {
+    background-image: url(../images/iconos/sort_down.png);
+    background-position:right;
+    background-repeat: no-repeat;
+}
+
+th.order2 {
+    background-image: url(../images/iconos/sort_up.png);
+    background-repeat: no-repeat;
+    background-position:right;
+    
+}

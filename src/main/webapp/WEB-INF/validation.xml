@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+   
+         http://www.apache.org/licenses/LICENSE-2.0
+   
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!DOCTYPE form-validation PUBLIC
+     "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.3.0//EN"
+     "http://jakarta.apache.org/commons/dtds/validator_1_3_0.dtd">
+
+<form-validation>
+
+<!--
+     This is a minimal Validator form file with a couple of examples.
+-->
+
+    <global>
+
+        <!-- An example global constant
+        <constant>
+            <constant-name>postalCode</constant-name>
+            <constant-value>^\d{5}\d*$</constant-value>
+        </constant>
+        end example-->
+
+    </global>
+
+    <formset>
+		<form name="conceptoForm">
+            <field property="descripcion" depends="required">
+                <msg name="required" key="global.requerido"/>
+                <arg key="com.bbva.web.form.ConceptoForm"/>
+            </field>
+        </form>
+        
+        <form name="regimenForm">
+            <field property="descripcion" depends="required">
+                <msg name="required" key="global.requerido"/>
+                <arg key="com.bbva.web.form.RegimenForm"/>
+            </field>
+            <field property="fechaInicio" depends="required, date">
+				<msg name="required" key="global.requerido"/>
+                <msg name="date" key="global.fecha"/>
+                <arg key="com.bbva.web.form.RegimenForm"/>
+                <var>
+                	<var-name>datePatternStrict</var-name>
+                	<var-value>dd/MM/yyyy</var-value>
+                </var>
+            </field>           
+            <field property="fechaFin" depends="date">
+                <msg name="date" key="global.fecha"/>
+                <arg key="com.bbva.web.form.RegimenForm"/>
+                <var>
+                	<var-name>datePatternStrict</var-name>
+                	<var-value>dd/MM/yyyy</var-value>
+                </var>
+            </field> 
+            <field property="diaVencimiento" depends="required, integer">
+                <msg name="required" key="global.requerido"/>
+                <msg name="integer" key="global.numerico"/>
+                <arg key="com.bbva.web.form.RegimenForm"/>
+            </field>
+            <field property="codigoFrecuencia" depends="required">
+                <msg name="required" key="global.requerido"/>
+                <arg key="com.bbva.web.form.RegimenForm"/>
+            </field>                       
+        </form>
+               
+        <form name="listaForm">
+            <field property="nombre" depends="required">
+                <msg name="required" key="global.requerido"/>
+                <arg key="com.bbva.web.form.ListaForm"/>
+            </field>
+        </form>
+             
+        <form name="panelForm" />
+              
+		<form name="archivoForm">
+            <field property="descripcion" depends="required">
+                <msg name="required" key="global.requerido"/>
+                <arg key="com.bbva.web.form.ArchivoForm"/>
+            </field>
+        </form>
+
+		<form name="frecuenciaForm">
+            <!-- <field property="descripcion" depends="required">
+                <msg name="required" key="global.requerido"/>
+                <arg key="com.bbva.web.form.FrecuenciaForm"/>
+            </field>
+            <field property="unidad" depends="required">
+                <msg name="required" key="global.requerido"/>
+                <arg key="com.bbva.web.form.FrecuenciaForm"/>
+            </field>
+            <field property="cantidad" depends="required, integer">
+                <msg name="required" key="global.requerido"/>
+                <msg name="required" key="global.numerico"/>
+                <arg key="com.bbva.web.form.FrecuenciaForm"/>
+            </field>-->
+            <field property="defaultNotif" depends="required, integer, intRange">
+                <msg name="required" key="global.requerido"/>
+                <msg name="integer" key="global.numerico"/>
+                <msg name="intRange" key="frecuencia.valor.dias"/>
+                <arg key="com.bbva.web.form.FrecuenciaForm"/>
+                <arg key="${var:min}" name="min" resource="false"/>
+                <arg key="${var:max}" name="max" resource="false"/>
+                <var>
+                	<var-name>min</var-name>
+                	<var-value>0</var-value> 
+                </var>
+                <var>
+                	<var-name>max</var-name>
+                	<var-value>999</var-value> 
+                </var>
+            </field>
+        </form>
+        
+        <form name="sectorForm">
+            <field property="nombre" depends="required">
+                <msg name="required" key="global.requerido"/>
+                <arg key="com.bbva.web.form.SectorForm"/>
+            </field>
+        </form>
+        
+        <form name="tipoResponsableForm">
+            <field property="nombre" depends="required">
+                <msg name="required" key="global.requerido"/>
+                <arg key="com.bbva.web.form.TipoResponsableForm"/>
+            </field>
+        </form>
+               
+    </formset>
+</form-validation>
