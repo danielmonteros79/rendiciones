@@ -3,22 +3,23 @@ package com.sa.form.parametros;
 import org.apache.struts.action.ActionForm;
 
 public class ParametrosGastosFiltroForm extends ActionForm {
-	private static final long serialVersionUID = 1L;
 
-	private String gasto;
+    private static final long serialVersionUID = 1L;
 
-	public ParametrosGastosFiltroForm() {
-	}
-	
-	public void reset() {
-		this.gasto = null;
-	}
+    private String gasto;
 
-	public String getGasto() {
-		return gasto;
-	}
+    public ParametrosGastosFiltroForm() {
+    }
 
-	public void setGasto(String gasto) {
-		this.gasto = gasto;
-	}
+    public void reset() {
+        this.gasto = null;
+    }
+
+    public String getGasto() {
+        return gasto;
+    }
+
+    public void setGasto(String gasto) {
+        this.gasto = gasto;
+    }
 }

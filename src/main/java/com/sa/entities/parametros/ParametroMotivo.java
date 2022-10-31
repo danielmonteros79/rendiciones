@@ -1,183 +1,183 @@
 package com.sa.entities.parametros;
 
+import com.sa.entities.OSCAR;
 import java.util.Date;
 import java.util.List;
 
-import com.sa.entities.OSCAR;
-
 public class ParametroMotivo {
-	private String codigo;
-	private String estado;
-	private String descripcion;
-	private String idGlg;
-	private String codAprobacionGlg;
-	private String idCentroCostos;
-	private String maInclExcl;
-	private String codSup;
-	private String codFirma;
-	private String meAviso;
-	private Date fechaDesde;
-	private Date fechaHasta;
-	private OSCAR oscar;
-	private String idNivCarga;
-	private String idNivAutoriz;
-	private String txAviso;
-	private String idOperEspe;
-	private String meDiasInterv;
-	private List<String> centrosCosto;
 
-	public ParametroMotivo() {
-	}
+    private String codigo;
+    private String estado;
+    private String descripcion;
+    private String idGlg;
+    private String codAprobacionGlg;
+    private String idCentroCostos;
+    private String maInclExcl;
+    private String codSup;
+    private String codFirma;
+    private String meAviso;
+    private Date fechaDesde;
+    private Date fechaHasta;
+    private OSCAR oscar;
+    private String idNivCarga;
+    private String idNivAutoriz;
+    private String txAviso;
+    private String idOperEspe;
+    private String meDiasInterv;
+    private List<String> centrosCosto;
 
-	public String getCodigo() {
-		return codigo;
-	}
+    public ParametroMotivo() {
+    }
 
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
+    public String getCodigo() {
+        return codigo;
+    }
 
-	public String getEstado() {
-		return estado;
-	}
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
 
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
+    public String getEstado() {
+        return estado;
+    }
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	public String getIdGlg() {
-		return idGlg;
-	}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	public void setIdGlg(String idGlg) {
-		this.idGlg = idGlg;
-	}
+    public String getIdGlg() {
+        return idGlg;
+    }
 
-	public String getCodAprobacionGlg() {
-		return codAprobacionGlg;
-	}
+    public void setIdGlg(String idGlg) {
+        this.idGlg = idGlg;
+    }
 
-	public void setCodAprobacionGlg(String codAprobacionGlg) {
-		this.codAprobacionGlg = codAprobacionGlg;
-	}
+    public String getCodAprobacionGlg() {
+        return codAprobacionGlg;
+    }
 
-	public String getIdCentroCostos() {
-		return idCentroCostos;
-	}
+    public void setCodAprobacionGlg(String codAprobacionGlg) {
+        this.codAprobacionGlg = codAprobacionGlg;
+    }
 
-	public void setIdCentroCostos(String idCentroCostos) {
-		this.idCentroCostos = idCentroCostos;
-	}
+    public String getIdCentroCostos() {
+        return idCentroCostos;
+    }
 
-	public String getMaInclExcl() {
-		return maInclExcl;
-	}
+    public void setIdCentroCostos(String idCentroCostos) {
+        this.idCentroCostos = idCentroCostos;
+    }
 
-	public void setMaInclExcl(String maInclExcl) {
-		this.maInclExcl = maInclExcl;
-	}
+    public String getMaInclExcl() {
+        return maInclExcl;
+    }
 
-	public String getCodSup() {
-		return codSup;
-	}
+    public void setMaInclExcl(String maInclExcl) {
+        this.maInclExcl = maInclExcl;
+    }
 
-	public void setCodSup(String codSup) {
-		this.codSup = codSup;
-	}
+    public String getCodSup() {
+        return codSup;
+    }
 
-	public String getCodFirma() {
-		return codFirma;
-	}
+    public void setCodSup(String codSup) {
+        this.codSup = codSup;
+    }
 
-	public void setCodFirma(String codFirma) {
-		this.codFirma = codFirma;
-	}
+    public String getCodFirma() {
+        return codFirma;
+    }
 
-	public String getMeAviso() {
-		return meAviso;
-	}
+    public void setCodFirma(String codFirma) {
+        this.codFirma = codFirma;
+    }
 
-	public void setMeAviso(String meAviso) {
-		this.meAviso = meAviso;
-	}
+    public String getMeAviso() {
+        return meAviso;
+    }
 
-	public Date getFechaDesde() {
-		return fechaDesde;
-	}
+    public void setMeAviso(String meAviso) {
+        this.meAviso = meAviso;
+    }
 
-	public void setFechaDesde(Date fechaDesde) {
-		this.fechaDesde = fechaDesde;
-	}
+    public Date getFechaDesde() {
+        return fechaDesde;
+    }
 
-	public Date getFechaHasta() {
-		return fechaHasta;
-	}
+    public void setFechaDesde(Date fechaDesde) {
+        this.fechaDesde = fechaDesde;
+    }
 
-	public void setFechaHasta(Date fechaHasta) {
-		this.fechaHasta = fechaHasta;
-	}
+    public Date getFechaHasta() {
+        return fechaHasta;
+    }
 
-	public OSCAR getOscar() {
-		return oscar;
-	}
+    public void setFechaHasta(Date fechaHasta) {
+        this.fechaHasta = fechaHasta;
+    }
 
-	public void setOscar(OSCAR oscar) {
-		this.oscar = oscar;
-	}
+    public OSCAR getOscar() {
+        return oscar;
+    }
 
-	public String getIdNivCarga() {
-		return idNivCarga;
-	}
+    public void setOscar(OSCAR oscar) {
+        this.oscar = oscar;
+    }
 
-	public void setIdNivCarga(String idNivCarga) {
-		this.idNivCarga = idNivCarga;
-	}
+    public String getIdNivCarga() {
+        return idNivCarga;
+    }
 
-	public String getIdNivAutoriz() {
-		return idNivAutoriz;
-	}
+    public void setIdNivCarga(String idNivCarga) {
+        this.idNivCarga = idNivCarga;
+    }
 
-	public void setIdNivAutoriz(String idNivAutoriz) {
-		this.idNivAutoriz = idNivAutoriz;
-	}
+    public String getIdNivAutoriz() {
+        return idNivAutoriz;
+    }
 
-	public String getTxAviso() {
-		return txAviso;
-	}
+    public void setIdNivAutoriz(String idNivAutoriz) {
+        this.idNivAutoriz = idNivAutoriz;
+    }
 
-	public void setTxAviso(String txAviso) {
-		this.txAviso = txAviso;
-	}
+    public String getTxAviso() {
+        return txAviso;
+    }
 
-	public String getIdOperEspe() {
-		return idOperEspe;
-	}
+    public void setTxAviso(String txAviso) {
+        this.txAviso = txAviso;
+    }
 
-	public void setIdOperEspe(String idOperEspe) {
-		this.idOperEspe = idOperEspe;
-	}
+    public String getIdOperEspe() {
+        return idOperEspe;
+    }
 
-	public String getMeDiasInterv() {
-		return meDiasInterv;
-	}
+    public void setIdOperEspe(String idOperEspe) {
+        this.idOperEspe = idOperEspe;
+    }
 
-	public void setMeDiasInterv(String meDiasInterv) {
-		this.meDiasInterv = meDiasInterv;
-	}
+    public String getMeDiasInterv() {
+        return meDiasInterv;
+    }
 
-	public List<String> getCentrosCosto() {
-		return centrosCosto;
-	}
+    public void setMeDiasInterv(String meDiasInterv) {
+        this.meDiasInterv = meDiasInterv;
+    }
 
-	public void setCentrosCosto(List<String> centrosCosto) {
-		this.centrosCosto = centrosCosto;
-	}
+    public List<String> getCentrosCosto() {
+        return centrosCosto;
+    }
+
+    public void setCentrosCosto(List<String> centrosCosto) {
+        this.centrosCosto = centrosCosto;
+    }
 }

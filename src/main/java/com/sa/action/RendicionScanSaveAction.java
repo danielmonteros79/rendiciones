@@ -1,21 +1,7 @@
 package com.sa.action;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-
+import ar.com.bbva.web.impl.SAMWebApplication;
+import ar.com.bbva.web.impl.SAMWebClient;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.DocListener;
 import com.itextpdf.text.Document;
@@ -33,9 +19,19 @@ import com.sa.entities.Usuario;
 import com.sa.form.RendicionForm;
 import com.sa.services.AprobacionesService;
 import com.sa.services.RendicionesService;
-
-import ar.com.bbva.web.impl.SAMWebApplication;
-import ar.com.bbva.web.impl.SAMWebClient;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
 public class RendicionScanSaveAction extends RestriccionTransaccionAction {
 

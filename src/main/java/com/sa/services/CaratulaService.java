@@ -1,25 +1,21 @@
 package com.sa.services;
 
+import ar.com.bbva.web.impl.SAMWebClient;
+import com.sa.entities.Gastos;
+import com.sa.form.RendicionAvisoForm;
+import com.sa.util.CaratulaTemplate;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import javax.xml.rpc.ServiceException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.krysalis.barcode4j.impl.code39.Code39Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.tools.UnitConv;
-
-import ar.com.bbva.web.impl.SAMWebClient;
-
-import com.sa.entities.Gastos;
-import com.sa.form.RendicionAvisoForm;
-import com.sa.util.CaratulaTemplate;
 
 public class CaratulaService {
 

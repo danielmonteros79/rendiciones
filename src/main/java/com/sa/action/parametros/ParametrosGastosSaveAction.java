@@ -1,103 +1,104 @@
 package com.sa.action.parametros;
 
+import ar.com.bbva.web.impl.SAMWebApplication;
+import ar.com.bbva.web.impl.SAMWebClient;
+import ar.com.itrsa.sam.TransactionException;
+import com.sa.action.RestriccionTransaccionAction;
+import com.sa.entities.Usuario;
+import com.sa.form.parametros.ParametrosGastosForm;
+import com.sa.services.ParametrosService;
 import java.text.ParseException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import ar.com.bbva.web.impl.SAMWebApplication;
-import ar.com.bbva.web.impl.SAMWebClient;
-import ar.com.itrsa.sam.TransactionException;
-
-import com.sa.action.RestriccionTransaccionAction;
-import com.sa.entities.Usuario;
-import com.sa.form.parametros.ParametrosGastosForm;
-import com.sa.services.ParametrosService;
-
 public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
-	private static final Log log = LogFactory.getLog(ParametrosMotivoSaveAction.class);
 
-	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ParametrosGastosForm frm = (ParametrosGastosForm) form;
-		ParametrosService service = new ParametrosService(samClient);
-		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
-		log.info("Entra al action ParametrosGastosSaveAction. Usuario (" + user.getIdUser() + ")");
-		String forward = "failure";
+    private static final Log log = LogFactory.getLog(ParametrosMotivoSaveAction.class);
 
-		if (frm.getAccion().equals("alta"))
-			forward = this.alta(request, frm, service);
-		else if (frm.getAccion().equals("baja"))
-			forward = this.baja(request, frm, service);
-		else if (frm.getAccion().equals("modificacion"))
-			forward = this.modificacion(request, frm, service);
+    public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+        ParametrosGastosForm frm = (ParametrosGastosForm) form;
+        ParametrosService service = new ParametrosService(samClient);
+        Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+        log.info("Entra al action ParametrosGastosSaveAction. Usuario (" + user.getIdUser() + ")");
+        String forward = "failure";
 
-		return mapping.findForward(forward);
-	}
+        if (frm.getAccion().equals("alta")) {
+            forward = this.alta(request, frm, service);
+        } else if (frm.getAccion().equals("baja")) {
+            forward = this.baja(request, frm, service);
+        } else if (frm.getAccion().equals("modificacion")) {
+            forward = this.modificacion(request, frm, service);
+        }
 
-	private String alta(HttpServletRequest request, ParametrosGastosForm frm, ParametrosService service) throws ParseException {
-		String ret = "fail";
+        return mapping.findForward(forward);
+    }
 
-		try {
-			service.altaGasto(frm);
+    private String alta(HttpServletRequest request, ParametrosGastosForm frm, ParametrosService service) throws ParseException {
+        String ret = "fail";
 
-			if (service.getMsgAviso() == null || service.getMsgAviso().equals("")) {
-				ret = "success";
-				request.setAttribute("message", "OK: ALTA EFECTUADA");
-			} else
-				request.setAttribute("message", service.getMsgAviso());
-		} catch (TransactionException e) {
-			e.printStackTrace();
-			log.error(e);
-			request.setAttribute("message", e.getCause().getMessage());
-		}
+        try {
+            service.altaGasto(frm);
 
-		return ret;
-	}
+            if (service.getMsgAviso() == null || service.getMsgAviso().equals("")) {
+                ret = "success";
+                request.setAttribute("message", "OK: ALTA EFECTUADA");
+            } else {
+                request.setAttribute("message", service.getMsgAviso());
+            }
+        } catch (TransactionException e) {
+            e.printStackTrace();
+            log.error(e);
+            request.setAttribute("message", e.getCause().getMessage());
+        }
 
-	private String baja(HttpServletRequest request, ParametrosGastosForm frm, ParametrosService service) throws ParseException {
-		String ret = "fail";
+        return ret;
+    }
 
-		try {
-			service.bajaGasto(frm.getCodigo(), frm.getMotivo());
+    private String baja(HttpServletRequest request, ParametrosGastosForm frm, ParametrosService service) throws ParseException {
+        String ret = "fail";
 
-			if (service.getMsgAviso() == null || service.getMsgAviso().equals("")) {
-				ret = "success";
-				request.setAttribute("message", "OK: BAJA EFECTUADA");
-			} else
-				request.setAttribute("message", service.getMsgAviso());
-		} catch (TransactionException e) {
-			e.printStackTrace();
-			log.error(e);
-			request.setAttribute("message", e.getCause().getMessage());
-		}
+        try {
+            service.bajaGasto(frm.getCodigo(), frm.getMotivo());
 
-		return ret;
-	}
+            if (service.getMsgAviso() == null || service.getMsgAviso().equals("")) {
+                ret = "success";
+                request.setAttribute("message", "OK: BAJA EFECTUADA");
+            } else {
+                request.setAttribute("message", service.getMsgAviso());
+            }
+        } catch (TransactionException e) {
+            e.printStackTrace();
+            log.error(e);
+            request.setAttribute("message", e.getCause().getMessage());
+        }
 
-	private String modificacion(HttpServletRequest request, ParametrosGastosForm frm, ParametrosService service) throws ParseException {
-		String ret = "fail";
+        return ret;
+    }
 
-		try {
-			service.modificacionGasto(frm);
+    private String modificacion(HttpServletRequest request, ParametrosGastosForm frm, ParametrosService service) throws ParseException {
+        String ret = "fail";
 
-			if (service.getMsgAviso() == null || service.getMsgAviso().equals("")) {
-				ret = "success";
-				request.setAttribute("message", "OK: MODIFICACION EFECTUADA");
-			} else
-				request.setAttribute("message", service.getMsgAviso());
-		} catch (TransactionException e) {
-			e.printStackTrace();
-			log.error(e);
-			request.setAttribute("message", e.getCause().getMessage());
-		}
+        try {
+            service.modificacionGasto(frm);
 
-		return ret;
-	}
+            if (service.getMsgAviso() == null || service.getMsgAviso().equals("")) {
+                ret = "success";
+                request.setAttribute("message", "OK: MODIFICACION EFECTUADA");
+            } else {
+                request.setAttribute("message", service.getMsgAviso());
+            }
+        } catch (TransactionException e) {
+            e.printStackTrace();
+            log.error(e);
+            request.setAttribute("message", e.getCause().getMessage());
+        }
+
+        return ret;
+    }
 }

@@ -2,51 +2,51 @@ package com.sa.form;
 
 import org.apache.struts.action.ActionForm;
 
-public class FiltrarAprobacionForm extends ActionForm{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6695247101936377048L;
-	private String user;
-	private String motivo;
-	private String estado;
-	private String idRendicion;
+public class FiltrarAprobacionForm extends ActionForm {
 
-	public FiltrarAprobacionForm(){
-		
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6695247101936377048L;
+    private String user;
+    private String motivo;
+    private String estado;
+    private String idRendicion;
 
-	public String getUser() {
-		return user;
-	}
+    public FiltrarAprobacionForm() {
 
-	public void setUser(String user) {
-		this.user = user;
-	}
+    }
 
-	public String getMotivo() {
-		return motivo;
-	}
+    public String getUser() {
+        return user;
+    }
 
-	public void setMotivo(String motivo) {
-		this.motivo = motivo;
-	}
+    public void setUser(String user) {
+        this.user = user;
+    }
 
-	public String getIdRendicion() {
-		return idRendicion;
-	}
+    public String getMotivo() {
+        return motivo;
+    }
 
-	public void setIdRendicion(String idRendicion) {
-		this.idRendicion = idRendicion;
-	}
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
 
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
+    public String getIdRendicion() {
+        return idRendicion;
+    }
 
-	public String getEstado() {
-		return estado;
-	}
-	
-	
+    public void setIdRendicion(String idRendicion) {
+        this.idRendicion = idRendicion;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
 }

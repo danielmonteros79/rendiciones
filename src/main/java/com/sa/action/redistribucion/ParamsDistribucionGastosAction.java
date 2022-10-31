@@ -1,19 +1,7 @@
 package com.sa.action.redistribucion;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONObject;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-
+import ar.com.bbva.web.impl.SAMWebApplication;
+import ar.com.bbva.web.impl.SAMWebClient;
 import com.google.gson.Gson;
 import com.sa.action.RestriccionTransaccionAction;
 import com.sa.entities.ComboGasto;
@@ -21,9 +9,16 @@ import com.sa.entities.Usuario;
 import com.sa.form.RendicionForm;
 import com.sa.services.PagosService;
 import com.sa.util.ParamsConstants;
-
-import ar.com.bbva.web.impl.SAMWebApplication;
-import ar.com.bbva.web.impl.SAMWebClient;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.json.JSONObject;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
 public class ParamsDistribucionGastosAction extends RestriccionTransaccionAction {
 

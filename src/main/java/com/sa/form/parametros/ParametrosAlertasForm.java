@@ -1,185 +1,184 @@
 package com.sa.form.parametros;
 
+import com.sa.entities.ComboOpcion;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.struts.action.ActionForm;
 
-import com.sa.entities.ComboOpcion;
-
 public class ParametrosAlertasForm extends ActionForm {
-	private static final long serialVersionUID = 1L;
-	private String montCant;
-	private String impCant;
-	private String rend;
-	private String periodo;
-	private String nivMin;
-	private String nivMax;
-	private String estado;
-	private String accion;
-	private String criticidad;
-	private String txAviso;
-	private String codMotivo;
-	private String codGasto;
-	private String timeStamp;
-	private Map<String, String> mapGastoMotivo = new HashMap<String, String>();
-	private Map<String, List<ComboOpcion>> mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
-	private List<ComboOpcion> cmbGasto = new ArrayList<ComboOpcion>();
-	private List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
 
-	public void clear() {
-		this.codMotivo = null;
-		this.codGasto = null;
-		this.montCant = null;
-		this.impCant = null;
-		this.rend = null;
-		this.periodo = null;
-		this.nivMin = null;
-		this.nivMax = null;
-		this.estado = null;
-		this.criticidad = null;
-		this.mapGastoMotivo = null;
-		this.mapMotivoGastos = null;
-		this.cmbGasto = null;
-		this.cmbMotivo = null;
-		this.txAviso = null;
-	}
-	
-	public String getMontCant() {
-		return montCant;
-	}
+    private static final long serialVersionUID = 1L;
+    private String montCant;
+    private String impCant;
+    private String rend;
+    private String periodo;
+    private String nivMin;
+    private String nivMax;
+    private String estado;
+    private String accion;
+    private String criticidad;
+    private String txAviso;
+    private String codMotivo;
+    private String codGasto;
+    private String timeStamp;
+    private Map<String, String> mapGastoMotivo = new HashMap<String, String>();
+    private Map<String, List<ComboOpcion>> mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
+    private List<ComboOpcion> cmbGasto = new ArrayList<ComboOpcion>();
+    private List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
 
-	public void setMontCant(String estado) {
-		this.montCant = estado;
-	}
+    public void clear() {
+        this.codMotivo = null;
+        this.codGasto = null;
+        this.montCant = null;
+        this.impCant = null;
+        this.rend = null;
+        this.periodo = null;
+        this.nivMin = null;
+        this.nivMax = null;
+        this.estado = null;
+        this.criticidad = null;
+        this.mapGastoMotivo = null;
+        this.mapMotivoGastos = null;
+        this.cmbGasto = null;
+        this.cmbMotivo = null;
+        this.txAviso = null;
+    }
 
-	public String getRend() {
-		return rend;
-	}
+    public String getMontCant() {
+        return montCant;
+    }
 
-	public void setRend(String codSup) {
-		this.rend = codSup;
-	}
+    public void setMontCant(String estado) {
+        this.montCant = estado;
+    }
 
-	public String getPeriodo() {
-		return periodo;
-	}
+    public String getRend() {
+        return rend;
+    }
 
-	public void setPeriodo(String codFirma) {
-		this.periodo = codFirma;
-	}
+    public void setRend(String codSup) {
+        this.rend = codSup;
+    }
 
-	public String getNivMin() {
-		return nivMin;
-	}
+    public String getPeriodo() {
+        return periodo;
+    }
 
-	public void setNivMin(String codAprobacionGlg) {
-		this.nivMin = codAprobacionGlg;
-	}
+    public void setPeriodo(String codFirma) {
+        this.periodo = codFirma;
+    }
 
-	public String getNivMax() {
-		return nivMax;
-	}
+    public String getNivMin() {
+        return nivMin;
+    }
 
-	public void setNivMax(String idOscar) {
-		this.nivMax = idOscar;
-	}
+    public void setNivMin(String codAprobacionGlg) {
+        this.nivMin = codAprobacionGlg;
+    }
 
-	public String getEstado() {
-		return estado;
-	}
+    public String getNivMax() {
+        return nivMax;
+    }
 
-	public void setEstado(String fechaDesde) {
-		this.estado = fechaDesde;
-	}
+    public void setNivMax(String idOscar) {
+        this.nivMax = idOscar;
+    }
 
-	public String getAccion() {
-		return accion;
-	}
+    public String getEstado() {
+        return estado;
+    }
 
-	public void setAccion(String accion) {
-		this.accion = accion;
-	}
+    public void setEstado(String fechaDesde) {
+        this.estado = fechaDesde;
+    }
 
-	public String getCriticidad() {
-		return criticidad;
-	}
+    public String getAccion() {
+        return accion;
+    }
 
-	public void setCriticidad(String criticidad) {
-		this.criticidad = criticidad;
-	}
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
 
-	public String getTxAviso() {
-		return txAviso;
-	}
+    public String getCriticidad() {
+        return criticidad;
+    }
 
-	public void setTxAviso(String txAviso) {
-		this.txAviso = txAviso;
-	}
+    public void setCriticidad(String criticidad) {
+        this.criticidad = criticidad;
+    }
 
-	public String getCodMotivo() {
-		return codMotivo;
-	}
+    public String getTxAviso() {
+        return txAviso;
+    }
 
-	public void setCodMotivo(String codMotivo) {
-		this.codMotivo = codMotivo;
-	}
+    public void setTxAviso(String txAviso) {
+        this.txAviso = txAviso;
+    }
 
-	public String getCodGasto() {
-		return codGasto;
-	}
+    public String getCodMotivo() {
+        return codMotivo;
+    }
 
-	public void setCodGasto(String codGasto) {
-		this.codGasto = codGasto;
-	}
+    public void setCodMotivo(String codMotivo) {
+        this.codMotivo = codMotivo;
+    }
 
-	public String getImpCant() {
-		return impCant;
-	}
+    public String getCodGasto() {
+        return codGasto;
+    }
 
-	public void setImpCant(String impCant) {
-		this.impCant = impCant;
-	}
+    public void setCodGasto(String codGasto) {
+        this.codGasto = codGasto;
+    }
 
-	public Map<String, String> getMapGastoMotivo() {
-		return mapGastoMotivo;
-	}
+    public String getImpCant() {
+        return impCant;
+    }
 
-	public void setMapGastoMotivo(Map<String, String> mapGastoMotivo) {
-		this.mapGastoMotivo = mapGastoMotivo;
-	}
+    public void setImpCant(String impCant) {
+        this.impCant = impCant;
+    }
 
-	public Map<String, List<ComboOpcion>> getMapMotivoGastos() {
-		return mapMotivoGastos;
-	}
+    public Map<String, String> getMapGastoMotivo() {
+        return mapGastoMotivo;
+    }
 
-	public void setMapMotivoGastos(Map<String, List<ComboOpcion>> mapMotivoGastos) {
-		this.mapMotivoGastos = mapMotivoGastos;
-	}
+    public void setMapGastoMotivo(Map<String, String> mapGastoMotivo) {
+        this.mapGastoMotivo = mapGastoMotivo;
+    }
 
-	public List<ComboOpcion> getCmbGasto() {
-		return cmbGasto;
-	}
+    public Map<String, List<ComboOpcion>> getMapMotivoGastos() {
+        return mapMotivoGastos;
+    }
 
-	public void setCmbGasto(List<ComboOpcion> cmbGasto) {
-		this.cmbGasto = cmbGasto;
-	}
+    public void setMapMotivoGastos(Map<String, List<ComboOpcion>> mapMotivoGastos) {
+        this.mapMotivoGastos = mapMotivoGastos;
+    }
 
-	public List<ComboOpcion> getCmbMotivo() {
-		return cmbMotivo;
-	}
+    public List<ComboOpcion> getCmbGasto() {
+        return cmbGasto;
+    }
 
-	public void setCmbMotivo(List<ComboOpcion> cmbMotivo) {
-		this.cmbMotivo = cmbMotivo;
-	}
+    public void setCmbGasto(List<ComboOpcion> cmbGasto) {
+        this.cmbGasto = cmbGasto;
+    }
 
-	public String getTimeStamp() {
-		return timeStamp;
-	}
+    public List<ComboOpcion> getCmbMotivo() {
+        return cmbMotivo;
+    }
 
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
-	}
+    public void setCmbMotivo(List<ComboOpcion> cmbMotivo) {
+        this.cmbMotivo = cmbMotivo;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 }

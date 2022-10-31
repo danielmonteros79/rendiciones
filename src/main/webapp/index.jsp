@@ -4,8 +4,8 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 
 <%
-	String ivUser = request.getHeader("iv-user");
-	request.getSession().setAttribute("ivUser", ivUser);
+        String ivUser = request.getHeader("iv-user");
+        request.getSession().setAttribute("ivUser", ivUser);
 %>
 
 <logic:redirect forward="login" />

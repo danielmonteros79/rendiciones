@@ -1,25 +1,20 @@
 package com.sa.action.parametros;
 
+import ar.com.bbva.web.impl.SAMWebApplication;
+import ar.com.bbva.web.impl.SAMWebClient;
+import com.sa.action.RestriccionTransaccionAction;
+import com.sa.entities.Usuario;
+import com.sa.services.ParametrosService;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.sf.json.JSONObject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
-import ar.com.bbva.web.impl.SAMWebApplication;
-import ar.com.bbva.web.impl.SAMWebClient;
-
-import com.sa.action.RestriccionTransaccionAction;
-import com.sa.entities.Usuario;
-import com.sa.services.ParametrosService;
 
 public class CheckCodigoExceptuadosAction extends RestriccionTransaccionAction {
 

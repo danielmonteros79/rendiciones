@@ -1,12 +1,5 @@
 package com.sa.services;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import ar.com.bbva.soa.conectores.BbvaSoaMensaje;
 import ar.com.bbva.soa.conectores.BbvaSoaStatus;
 import ar.com.bbva.web.IWebClient;
@@ -17,8 +10,12 @@ import ar.com.itrsa.sam.IServiceAccessManager;
 import ar.com.itrsa.sam.TransactionException;
 import ar.com.itrsa.sam.factory.SAMReference;
 import ar.org.bbva.util.DumpUtils;
-
 import com.bbva.sam.bbvaPaq.BbvaPaqConstants;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.log4j.Logger;
 
 public abstract class Transaction {
 

@@ -1,29 +1,29 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
-	$.validator.addMethod("valueNotEquals", function(value, element, arg) {
-		return arg != value;
-	}, "");
+    $.validator.addMethod("valueNotEquals", function (value, element, arg) {
+        return arg != value;
+    }, "");
 
-	$("#formCupon").validate({
-		rules : {
-			
-			cupon : {
-				valueNotEquals : ""
-			}
+    $("#formCupon").validate({
+        rules: {
 
-		},
-		messages : {
-			
-			cupon : " *"
-	
-		}
-	});
+            cupon: {
+                valueNotEquals: ""
+            }
+
+        },
+        messages: {
+
+            cupon: " *"
+
+        }
+    });
 });
 $.validator.setDefaults({
 
-	submitHandler : function() {
-		alert("Cupon guardado.");
-		window.href.location = "mostrarDetalleGastos.do"
+    submitHandler: function () {
+        alert("Cupon guardado.");
+        window.href.location = "mostrarDetalleGastos.do"
 
-	}
+    }
 });

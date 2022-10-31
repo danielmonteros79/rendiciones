@@ -3,22 +3,23 @@ package com.sa.form.parametros;
 import org.apache.struts.action.ActionForm;
 
 public class ParametrosMotivoFiltroForm extends ActionForm {
-	private static final long serialVersionUID = 1L;
 
-	private String codigo;
+    private static final long serialVersionUID = 1L;
 
-	public ParametrosMotivoFiltroForm() {
-	}
-	
-	public void clear() {
-		this.codigo = null;
-	}
+    private String codigo;
 
-	public String getCodigo() {
-		return codigo;
-	}
+    public ParametrosMotivoFiltroForm() {
+    }
 
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
+    public void clear() {
+        this.codigo = null;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
 }

@@ -1,35 +1,35 @@
 table {
-	text-align: left;
-	border: none;
+    text-align: left;
+    border: none;
 }
 
 #archivosASubirTable tbody tr td:first-child {
-	border: 1px solid gray;
+    border: 1px solid gray;
 }
 
 #submitDiv {
-	height: 30px;
-	padding: 0 15px;
-	display: none;
+    height: 30px;
+    padding: 0 15px;
+    display: none;
 }
 
 #errores {
-	float: left;
-	color: red;
-	font-weight: bold;
+    float: left;
+    color: red;
+    font-weight: bold;
 }
 
 .imagenesTr {
-	display: none;
+    display: none;
 }
 
 td ul {
-	list-style-type: initial;
-	color: #333;
-	padding: 0;
-	font-size: 17px;
-	font-weight: initial;
+    list-style-type: initial;
+    color: #333;
+    padding: 0;
+    font-size: 17px;
+    font-weight: initial;
 }
 td ul li {
-	margin: 0;
+    margin: 0;
 }

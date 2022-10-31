@@ -22,9 +22,9 @@
 
 <form-validation>
 
-<!--
-     This is a minimal Validator form file with a couple of examples.
--->
+    <!--
+         This is a minimal Validator form file with a couple of examples.
+    -->
 
     <global>
 
@@ -38,7 +38,7 @@
     </global>
 
     <formset>
-		<form name="conceptoForm">
+        <form name="conceptoForm">
             <field property="descripcion" depends="required">
                 <msg name="required" key="global.requerido"/>
                 <arg key="com.bbva.web.form.ConceptoForm"/>
@@ -51,20 +51,20 @@
                 <arg key="com.bbva.web.form.RegimenForm"/>
             </field>
             <field property="fechaInicio" depends="required, date">
-				<msg name="required" key="global.requerido"/>
+                <msg name="required" key="global.requerido"/>
                 <msg name="date" key="global.fecha"/>
                 <arg key="com.bbva.web.form.RegimenForm"/>
                 <var>
-                	<var-name>datePatternStrict</var-name>
-                	<var-value>dd/MM/yyyy</var-value>
+                    <var-name>datePatternStrict</var-name>
+                    <var-value>dd/MM/yyyy</var-value>
                 </var>
             </field>           
             <field property="fechaFin" depends="date">
                 <msg name="date" key="global.fecha"/>
                 <arg key="com.bbva.web.form.RegimenForm"/>
                 <var>
-                	<var-name>datePatternStrict</var-name>
-                	<var-value>dd/MM/yyyy</var-value>
+                    <var-name>datePatternStrict</var-name>
+                    <var-value>dd/MM/yyyy</var-value>
                 </var>
             </field> 
             <field property="diaVencimiento" depends="required, integer">
@@ -87,14 +87,14 @@
              
         <form name="panelForm" />
               
-		<form name="archivoForm">
+        <form name="archivoForm">
             <field property="descripcion" depends="required">
                 <msg name="required" key="global.requerido"/>
                 <arg key="com.bbva.web.form.ArchivoForm"/>
             </field>
         </form>
 
-		<form name="frecuenciaForm">
+        <form name="frecuenciaForm">
             <!-- <field property="descripcion" depends="required">
                 <msg name="required" key="global.requerido"/>
                 <arg key="com.bbva.web.form.FrecuenciaForm"/>
@@ -116,12 +116,12 @@
                 <arg key="${var:min}" name="min" resource="false"/>
                 <arg key="${var:max}" name="max" resource="false"/>
                 <var>
-                	<var-name>min</var-name>
-                	<var-value>0</var-value> 
+                    <var-name>min</var-name>
+                    <var-value>0</var-value> 
                 </var>
                 <var>
-                	<var-name>max</var-name>
-                	<var-value>999</var-value> 
+                    <var-name>max</var-name>
+                    <var-value>999</var-value> 
                 </var>
             </field>
         </form>

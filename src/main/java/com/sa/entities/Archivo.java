@@ -3,31 +3,32 @@ package com.sa.entities;
 import java.io.InputStream;
 
 public class Archivo {
-	private String nomArchivo;
-	private String idu;
-	private InputStream inputStream;
 
-	public String getNomArchivo() {
-		return nomArchivo;
-	}
+    private String nomArchivo;
+    private String idu;
+    private InputStream inputStream;
 
-	public void setNomArchivo(String nomArchivo) {
-		this.nomArchivo = nomArchivo;
-	}
+    public String getNomArchivo() {
+        return nomArchivo;
+    }
 
-	public String getIdu() {
-		return idu;
-	}
+    public void setNomArchivo(String nomArchivo) {
+        this.nomArchivo = nomArchivo;
+    }
 
-	public void setIdu(String idu) {
-		this.idu = idu;
-	}
+    public String getIdu() {
+        return idu;
+    }
 
-	public InputStream getInputStream() {
-		return inputStream;
-	}
+    public void setIdu(String idu) {
+        this.idu = idu;
+    }
 
-	public void setInputStream(InputStream inputStream) {
-		this.inputStream = inputStream;
-	}
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
 }

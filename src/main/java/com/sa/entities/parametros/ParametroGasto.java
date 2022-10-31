@@ -1,273 +1,273 @@
 package com.sa.entities.parametros;
 
+import com.sa.entities.OSCAR;
 import java.util.Date;
 import java.util.List;
 
-import com.sa.entities.OSCAR;
-
 public class ParametroGasto {
-	private String gasto;
-	private String descripcionGasto;
-	private String motivo;
-	private String descripcionMotivo;
-	private String ristra;
-	private String bimon;
-	private String comprob;
-	private String autoriz;
-	private String observ;
-	private String estado;
-	private String ccostos;
-	private String comboCCostos;
-	private String maInclExcl;
-	private String maMonto;
-	private String impAviso;
-	private OSCAR oscar;
-	private String maCtrlImp;
-	private String idAntg;
-	private String plazoAprob;
-	private Date feAlta;
-	private String usrAlta;
-	private Date feUltMod;
-	private String usrUltMod;
-	private Date feBaja;
-	private String usrBaja;
-	private String nroTerm;
-	private String antiguedad;
-	private String nivelIngreso;
-	private List<String> centrosCosto;
 
-	public ParametroGasto() {
-	}
+    private String gasto;
+    private String descripcionGasto;
+    private String motivo;
+    private String descripcionMotivo;
+    private String ristra;
+    private String bimon;
+    private String comprob;
+    private String autoriz;
+    private String observ;
+    private String estado;
+    private String ccostos;
+    private String comboCCostos;
+    private String maInclExcl;
+    private String maMonto;
+    private String impAviso;
+    private OSCAR oscar;
+    private String maCtrlImp;
+    private String idAntg;
+    private String plazoAprob;
+    private Date feAlta;
+    private String usrAlta;
+    private Date feUltMod;
+    private String usrUltMod;
+    private Date feBaja;
+    private String usrBaja;
+    private String nroTerm;
+    private String antiguedad;
+    private String nivelIngreso;
+    private List<String> centrosCosto;
 
-	public String getGasto() {
-		return gasto;
-	}
+    public ParametroGasto() {
+    }
 
-	public void setGasto(String gasto) {
-		this.gasto = gasto;
-	}
+    public String getGasto() {
+        return gasto;
+    }
 
-	public String getMotivo() {
-		return motivo;
-	}
+    public void setGasto(String gasto) {
+        this.gasto = gasto;
+    }
 
-	public void setMotivo(String motivo) {
-		this.motivo = motivo;
-	}
+    public String getMotivo() {
+        return motivo;
+    }
 
-	public String getDescripcionMotivo() {
-		return descripcionMotivo;
-	}
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
 
-	public void setDescripcionMotivo(String descripcionMotivo) {
-		this.descripcionMotivo = descripcionMotivo;
-	}
+    public String getDescripcionMotivo() {
+        return descripcionMotivo;
+    }
 
-	public String getRistra() {
-		return ristra;
-	}
+    public void setDescripcionMotivo(String descripcionMotivo) {
+        this.descripcionMotivo = descripcionMotivo;
+    }
 
-	public void setRistra(String ristra) {
-		this.ristra = ristra;
-	}
+    public String getRistra() {
+        return ristra;
+    }
 
-	public String getBimon() {
-		return bimon;
-	}
+    public void setRistra(String ristra) {
+        this.ristra = ristra;
+    }
 
-	public void setBimon(String bimon) {
-		this.bimon = bimon;
-	}
+    public String getBimon() {
+        return bimon;
+    }
 
-	public String getComprob() {
-		return comprob;
-	}
+    public void setBimon(String bimon) {
+        this.bimon = bimon;
+    }
 
-	public void setComprob(String comprob) {
-		this.comprob = comprob;
-	}
+    public String getComprob() {
+        return comprob;
+    }
 
-	public String getAutoriz() {
-		return autoriz;
-	}
+    public void setComprob(String comprob) {
+        this.comprob = comprob;
+    }
 
-	public void setAutoriz(String autoriz) {
-		this.autoriz = autoriz;
-	}
+    public String getAutoriz() {
+        return autoriz;
+    }
 
-	public String getObserv() {
-		return observ;
-	}
+    public void setAutoriz(String autoriz) {
+        this.autoriz = autoriz;
+    }
 
-	public void setObserv(String observ) {
-		this.observ = observ;
-	}
+    public String getObserv() {
+        return observ;
+    }
 
-	public String getEstado() {
-		return estado;
-	}
+    public void setObserv(String observ) {
+        this.observ = observ;
+    }
 
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
+    public String getEstado() {
+        return estado;
+    }
 
-	public String getCcostos() {
-		return ccostos;
-	}
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 
-	public void setCcostos(String ccostos) {
-		this.ccostos = ccostos;
-	}
+    public String getCcostos() {
+        return ccostos;
+    }
 
-	public String getMaInclExcl() {
-		return maInclExcl;
-	}
+    public void setCcostos(String ccostos) {
+        this.ccostos = ccostos;
+    }
 
-	public void setMaInclExcl(String maInclExcl) {
-		this.maInclExcl = maInclExcl;
-	}
+    public String getMaInclExcl() {
+        return maInclExcl;
+    }
 
-	public String getMaMonto() {
-		return maMonto;
-	}
+    public void setMaInclExcl(String maInclExcl) {
+        this.maInclExcl = maInclExcl;
+    }
 
-	public void setMaMonto(String maMonto) {
-		this.maMonto = maMonto;
-	}
+    public String getMaMonto() {
+        return maMonto;
+    }
 
-	public String getImpAviso() {
-		return impAviso;
-	}
+    public void setMaMonto(String maMonto) {
+        this.maMonto = maMonto;
+    }
 
-	public void setImpAviso(String impAviso) {
-		this.impAviso = impAviso;
-	}
+    public String getImpAviso() {
+        return impAviso;
+    }
 
-	public OSCAR getOscar() {
-		return oscar;
-	}
+    public void setImpAviso(String impAviso) {
+        this.impAviso = impAviso;
+    }
 
-	public void setOscar(OSCAR oscar) {
-		this.oscar = oscar;
-	}
+    public OSCAR getOscar() {
+        return oscar;
+    }
 
-	public String getMaCtrlImp() {
-		return maCtrlImp;
-	}
+    public void setOscar(OSCAR oscar) {
+        this.oscar = oscar;
+    }
 
-	public void setMaCtrlImp(String maCtrlImp) {
-		this.maCtrlImp = maCtrlImp;
-	}
+    public String getMaCtrlImp() {
+        return maCtrlImp;
+    }
 
-	public String getIdAntg() {
-		return idAntg;
-	}
+    public void setMaCtrlImp(String maCtrlImp) {
+        this.maCtrlImp = maCtrlImp;
+    }
 
-	public void setIdAntg(String idAntg) {
-		this.idAntg = idAntg;
-	}
+    public String getIdAntg() {
+        return idAntg;
+    }
 
-	public String getPlazoAprob() {
-		return plazoAprob;
-	}
+    public void setIdAntg(String idAntg) {
+        this.idAntg = idAntg;
+    }
 
-	public void setPlazoAprob(String plazoAprob) {
-		this.plazoAprob = plazoAprob;
-	}
+    public String getPlazoAprob() {
+        return plazoAprob;
+    }
 
-	public Date getFeAlta() {
-		return feAlta;
-	}
+    public void setPlazoAprob(String plazoAprob) {
+        this.plazoAprob = plazoAprob;
+    }
 
-	public void setFeAlta(Date date) {
-		this.feAlta = date;
-	}
+    public Date getFeAlta() {
+        return feAlta;
+    }
 
-	public String getUsrAlta() {
-		return usrAlta;
-	}
+    public void setFeAlta(Date date) {
+        this.feAlta = date;
+    }
 
-	public void setUsrAlta(String usrAlta) {
-		this.usrAlta = usrAlta;
-	}
+    public String getUsrAlta() {
+        return usrAlta;
+    }
 
-	public Date getFeUltMod() {
-		return feUltMod;
-	}
+    public void setUsrAlta(String usrAlta) {
+        this.usrAlta = usrAlta;
+    }
 
-	public void setFeUltMod(Date feUltMod) {
-		this.feUltMod = feUltMod;
-	}
+    public Date getFeUltMod() {
+        return feUltMod;
+    }
 
-	public String getUsrUltMod() {
-		return usrUltMod;
-	}
+    public void setFeUltMod(Date feUltMod) {
+        this.feUltMod = feUltMod;
+    }
 
-	public void setUsrUltMod(String usrUltMod) {
-		this.usrUltMod = usrUltMod;
-	}
+    public String getUsrUltMod() {
+        return usrUltMod;
+    }
 
-	public Date getFeBaja() {
-		return feBaja;
-	}
+    public void setUsrUltMod(String usrUltMod) {
+        this.usrUltMod = usrUltMod;
+    }
 
-	public void setFeBaja(Date feBaja) {
-		this.feBaja = feBaja;
-	}
+    public Date getFeBaja() {
+        return feBaja;
+    }
 
-	public String getUsrBaja() {
-		return usrBaja;
-	}
+    public void setFeBaja(Date feBaja) {
+        this.feBaja = feBaja;
+    }
 
-	public void setUsrBaja(String usrBaja) {
-		this.usrBaja = usrBaja;
-	}
+    public String getUsrBaja() {
+        return usrBaja;
+    }
 
-	public String getNroTerm() {
-		return nroTerm;
-	}
+    public void setUsrBaja(String usrBaja) {
+        this.usrBaja = usrBaja;
+    }
 
-	public void setNroTerm(String nroTerm) {
-		this.nroTerm = nroTerm;
-	}
+    public String getNroTerm() {
+        return nroTerm;
+    }
 
-	public String getDescripcionGasto() {
-		return descripcionGasto;
-	}
+    public void setNroTerm(String nroTerm) {
+        this.nroTerm = nroTerm;
+    }
 
-	public void setDescripcionGasto(String descripcionGasto) {
-		this.descripcionGasto = descripcionGasto;
-	}
+    public String getDescripcionGasto() {
+        return descripcionGasto;
+    }
 
-	public String getComboCCostos() {
-		return comboCCostos;
-	}
+    public void setDescripcionGasto(String descripcionGasto) {
+        this.descripcionGasto = descripcionGasto;
+    }
 
-	public void setComboCCostos(String comboCCostos) {
-		this.comboCCostos = comboCCostos;
-	}
+    public String getComboCCostos() {
+        return comboCCostos;
+    }
 
-	public String getAntiguedad() {
-		return antiguedad;
-	}
+    public void setComboCCostos(String comboCCostos) {
+        this.comboCCostos = comboCCostos;
+    }
 
-	public void setAntiguedad(String antiguedad) {
-		this.antiguedad = antiguedad;
-	}
+    public String getAntiguedad() {
+        return antiguedad;
+    }
 
-	public String getNivelIngreso() {
-		return nivelIngreso;
-	}
+    public void setAntiguedad(String antiguedad) {
+        this.antiguedad = antiguedad;
+    }
 
-	public void setNivelIngreso(String nivelIngreso) {
-		this.nivelIngreso = nivelIngreso;
-	}
+    public String getNivelIngreso() {
+        return nivelIngreso;
+    }
 
-	public List<String> getCentrosCosto() {
-		return centrosCosto;
-	}
+    public void setNivelIngreso(String nivelIngreso) {
+        this.nivelIngreso = nivelIngreso;
+    }
 
-	public void setCentrosCosto(List<String> centrosCosto) {
-		this.centrosCosto = centrosCosto;
-	}
+    public List<String> getCentrosCosto() {
+        return centrosCosto;
+    }
+
+    public void setCentrosCosto(List<String> centrosCosto) {
+        this.centrosCosto = centrosCosto;
+    }
 }

@@ -1,40 +1,41 @@
 package com.sa.entities;
 
 public class ComboOpcion {
-	private String id;
-	private String descripcion;
 
-	public ComboOpcion() {
-	}
+    private String id;
+    private String descripcion;
 
-	public ComboOpcion(String id, String descripcion) {
-		this.id = id;
-		this.descripcion = descripcion;
-	}
+    public ComboOpcion() {
+    }
 
-	public ComboOpcion(String descripcion) {
-		this.id = descripcion;
-		this.descripcion = descripcion;
-	}
+    public ComboOpcion(String id, String descripcion) {
+        this.id = id;
+        this.descripcion = descripcion;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public ComboOpcion(String descripcion) {
+        this.id = descripcion;
+        this.descripcion = descripcion;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	@Override
-	public String toString() {
-		return id + " = " + descripcion;
-	}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    @Override
+    public String toString() {
+        return id + " = " + descripcion;
+    }
 }

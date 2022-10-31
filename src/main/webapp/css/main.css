@@ -3,499 +3,499 @@
 @IMPORT url("buttons.css");
 
 body {
-	background-color: #d8daea;
-	margin: 0px;
-	padding: 0px;
-	font-family: Arial, Verdana, Helvetica, sans-serif;
+    background-color: #d8daea;
+    margin: 0px;
+    padding: 0px;
+    font-family: Arial, Verdana, Helvetica, sans-serif;
 }
 
 div#errores {
-	color: red;
-	font-weight: bold;
+    color: red;
+    font-weight: bold;
 }
 
 div#errores ul {
-	color: red;
-	font-weight: bold;
-	margin-top: -5px;
-	margin-left: 20px;
-	list-style: disc;
+    color: red;
+    font-weight: bold;
+    margin-top: -5px;
+    margin-left: 20px;
+    list-style: disc;
 }
 
 div#capa_madre {
-	display: block;
-	overflow: hidden;
-	padding: 0;
-	background: #FFF;
-	margin: 0px auto;
-	border: 0;
-	color: #333;
-	width: 1000px;
+    display: block;
+    overflow: hidden;
+    padding: 0;
+    background: #FFF;
+    margin: 0px auto;
+    border: 0;
+    color: #333;
+    width: 1000px;
 }
 
 div#sidebar {
-	width: 165px;
-	height: 500px;
-	padding-top: 100px;
+    width: 165px;
+    height: 500px;
+    padding-top: 100px;
 }
 
 div#sidebarMenu {
-	background: #84A6D6;
-	height: 273px;
+    background: #84A6D6;
+    height: 273px;
 }
 
 div#sidebarMenuBottom {
-	background: url(../images/Left_Bar.png);
-	background-size: 100% auto;
-	width: 165px;
-	height: 500px;
+    background: url(../images/Left_Bar.png);
+    background-size: 100% auto;
+    width: 165px;
+    height: 500px;
 }
 
 div#footer {
-	background: url(../images/Footer_SIA.png);
-	height: 350px;
-	clear: both;
+    background: url(../images/Footer_SIA.png);
+    height: 350px;
+    clear: both;
 }
 
 div#cuerpo_central {
-	position: absolute;
-	margin-left: 167px;
-	padding-top: 20px;
-	width: 830px;
-	border-bottom: 25px solid #C9DBF5;
-	border-left: 1px solid #C9DBF5;
-	border-right: 1px solid #C9DBF5;
-	margin-bottom: 25px;
+    position: absolute;
+    margin-left: 167px;
+    padding-top: 20px;
+    width: 830px;
+    border-bottom: 25px solid #C9DBF5;
+    border-left: 1px solid #C9DBF5;
+    border-right: 1px solid #C9DBF5;
+    margin-bottom: 25px;
 }
 
 div#fondo {
-	background: url(../images/1287158382_Alert.png) no-repeat;
-	background-position: 670px 200px;
-	width: 200px;
-	height: 200px;
-	border: 1px solid silver;
-	position: absolute;
-	z-index: 10;
-	margin-top: -14px;
+    background: url(../images/1287158382_Alert.png) no-repeat;
+    background-position: 670px 200px;
+    width: 200px;
+    height: 200px;
+    border: 1px solid silver;
+    position: absolute;
+    z-index: 10;
+    margin-top: -14px;
 }
 
 div#cuerpo_central_top {
-	position: absolute;
-	height: 50px;
-	width: 830px;
-	background: #c2d5f1;
-	background-position: 730px 12px;
+    position: absolute;
+    height: 50px;
+    width: 830px;
+    background: #c2d5f1;
+    background-position: 730px 12px;
 }
 
 img#icono {
-	position: absolute;
-	z-index: 10;
-	margin-left: 720px;
+    position: absolute;
+    z-index: 10;
+    margin-left: 720px;
 }
 
 img#iconoInclinado {
-	position: absolute;
-	z-index: 10;
-	margin-left: 720px;
-	margin-top: 6px;
+    position: absolute;
+    z-index: 10;
+    margin-left: 720px;
+    margin-top: 6px;
 }
 
 div#cuerpo_central_top h2 {
-	margin-left: 20px;
-	margin-top: 11px;
+    margin-left: 20px;
+    margin-top: 11px;
 }
 
 div#cuerpo_central_content {
-	z-index: 15;
-	background-color: transparent;
-	padding-top: 55px;
-	position: relative;
-	overflow: auto;
+    z-index: 15;
+    background-color: transparent;
+    padding-top: 55px;
+    position: relative;
+    overflow: auto;
 }
 
 img#fondo {
-	position: absolute;
-	z-index: 10;
-	margin-top: 9px;
-	margin-left: 675px;
+    position: absolute;
+    z-index: 10;
+    margin-top: 9px;
+    margin-left: 675px;
 }
 
 div#cuerpo_central_container {
-	margin-left: 0px;
-	margin-top: -100px;
-	min-height: 555px;
-	width: 1000px;
+    margin-left: 0px;
+    margin-top: -100px;
+    min-height: 555px;
+    width: 1000px;
 }
 
 table {
-	border: 1px solid silver;
-	font-size: 11px;
-	margin-bottom: 3px;
-	margin-left: 8px;
-	width: 810px;
+    border: 1px solid silver;
+    font-size: 11px;
+    margin-bottom: 3px;
+    margin-left: 8px;
+    width: 810px;
 }
 
 thead {
-	background-color: #0A89DE;
-	color: white;
+    background-color: #0A89DE;
+    color: white;
 }
 
 td {
-	word-wrap: break-word;
-	padding: 2px;
+    word-wrap: break-word;
+    padding: 2px;
 }
 
 td.fieldTable {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 a {
-	text-decoration: none;
-	color: white;
+    text-decoration: none;
+    color: white;
 }
 
 ul a:hover {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 img {
-	border: none;
+    border: none;
 }
 
 ul {
-	list-style-type: none;
-	margin: 0px 0px 0px 0px;
-	padding: 14px 0px 0px 0px;
-	color: white;
-	font-weight: bold;
-	font-size: 14px;
+    list-style-type: none;
+    margin: 0px 0px 0px 0px;
+    padding: 14px 0px 0px 0px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 li {
-	margin: 15px;
+    margin: 15px;
 }
 
 li a {
-	background-image: url(../images/li_marker_16x16.png);
-	background-repeat: no-repeat;
-	padding-top: 2px;
+    background-image: url(../images/li_marker_16x16.png);
+    background-repeat: no-repeat;
+    padding-top: 2px;
 }
 
 li a span {
-	margin-left: 15px;
+    margin-left: 15px;
 }
 
 form {
-	padding: 0px;
-	margin: 0px;
+    padding: 0px;
+    margin: 0px;
 }
 
 input.submit {
-	margin-left: 558px;
-	margin-bottom: 12px;
-	margin-top: 12px;
+    margin-left: 558px;
+    margin-bottom: 12px;
+    margin-top: 12px;
 }
 
 label {
-	font-size: 13px;
+    font-size: 13px;
 }
 
 #ui-datepicker-div {
-	font-size: 62.5%;
+    font-size: 62.5%;
 }
 
 img.buscar {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 p.errorValidacion {
-	color: red;
-	margin-left: 15px;
+    color: red;
+    margin-left: 15px;
 }
 
 p#msgEspera {
-	margin-left: 15px;
+    margin-left: 15px;
 }
 
 textarea {
-	font-family: Arial, Verdana, Helvetica, sans-serif;
+    font-family: Arial, Verdana, Helvetica, sans-serif;
 }
 
 div.fileinputs {
-	position: relative;
+    position: relative;
 }
 
 div.fakefile {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	z-index: 1;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
 }
 
 input.file {
-	position: relative;
-	text-align: right;
-	-moz-opacity: 0;
-	filter: alpha(opacity :                       0);
-	opacity: 0;
-	z-index: 2;
+    position: relative;
+    text-align: right;
+    -moz-opacity: 0;
+    filter: alpha(opacity :                       0);
+    opacity: 0;
+    z-index: 2;
 }
 
 p.msgCarga {
-	margin-left: 15px;
-	margin-top: 0px;
-	margin-bottom: 15px;
-	color: green;
+    margin-left: 15px;
+    margin-top: 0px;
+    margin-bottom: 15px;
+    color: green;
 }
 
 p.msgError {
-	font-size: 13px;
-	margin-left: 20px;
-	margin-bottom: 15px;
-	color: red;
-	margin-left: 20px;
+    font-size: 13px;
+    margin-left: 20px;
+    margin-bottom: 15px;
+    color: red;
+    margin-left: 20px;
 }
 
 div#paginacion {
-	margin-left: 15px;
-	margin-bottom: 15px;
-	font-size: 13px;
+    margin-left: 15px;
+    margin-bottom: 15px;
+    font-size: 13px;
 }
 
 
 ul.desplegable li a {
-	background: url(../images/Tag.png);
-	padding-top: 0px;
-	width: 132px;
-	height: 20px;
-	display: block;
-	text-align: center;
-	left: 42px;
-	color: white;
-	font-size: 11px;
-	text-decoration: none;
-	bottom: 3px;
-	cursor: pointer;
+    background: url(../images/Tag.png);
+    padding-top: 0px;
+    width: 132px;
+    height: 20px;
+    display: block;
+    text-align: center;
+    left: 42px;
+    color: white;
+    font-size: 11px;
+    text-decoration: none;
+    bottom: 3px;
+    cursor: pointer;
 }
 
 ul.desplegable ul li a {
-	width: 160px;
-	height: 22px;
-	padding-top: 6px;
+    width: 160px;
+    height: 22px;
+    padding-top: 6px;
 }
 
 ul.desplegable li ul li a {
-	background: none;
-	background-color: #266582;
+    background: none;
+    background-color: #266582;
 }
 
 ul.desplegable li a.dropdown:hover {
-	background-image: url(../images/Tag_over.png);
-	background-repeat: no-repeat;
+    background-image: url(../images/Tag_over.png);
+    background-repeat: no-repeat;
 }
 
 ul.desplegable ul li a:hover {
-	background-color: #6c94a8;
+    background-color: #6c94a8;
 }
 
 ul.desplegable>li {
-	float: left;
+    float: left;
 }
 
 ul.desplegable li ul {
-	display: none;
-	list-style-type: none;
+    display: none;
+    list-style-type: none;
 }
 
 ul.desplegable li:hover>ul {
-	display: block;
+    display: block;
 }
 
 ul.desplegable ul {
-	padding-top: 0px;
-	margin: 0px;
+    padding-top: 0px;
+    margin: 0px;
 }
 
 ul.desplegable li {
-	padding-top: 0px;
-	margin: 0px;
+    padding-top: 0px;
+    margin: 0px;
 }
 
 div.menuDesp {
-	width: 132px;
-	height: 28px;
-	bottom: 3px;
-	left: 1px;
-	position: absolute;
+    width: 132px;
+    height: 28px;
+    bottom: 3px;
+    left: 1px;
+    position: absolute;
 }
 
 .borderDisptag th {
-	padding-left: 3px;
-	padding-right: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
 .selecetedPage {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 fieldset {
-	border: 0;
-	padding: 0;
-	margin: 0;
+    border: 0;
+    padding: 0;
+    margin: 0;
 }
 
 .listadoRendiciones {
-	font-size: small;
-	font-weight: bold;
+    font-size: small;
+    font-weight: bold;
 }
 
 .filtros {
-	font-size: small;
-	font-weight: bold;
+    font-size: small;
+    font-weight: bold;
 }
 
 .center {
-	margin: auto;
-	width: 45%;
-	padding: 10px;
+    margin: auto;
+    width: 45%;
+    padding: 10px;
 }
 
 div#circulo {
-	width: 30px;
-	height: 30px;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background-repeat: no-repeat;
-	background-position: center;
+    width: 30px;
+    height: 30px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 div#circuloVacio {
-	width: 40px;
-	height: 40px;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background-image: url(../images/iconos/circular-button.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: red;
-	display: inline-block;
+    width: 40px;
+    height: 40px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-image: url(../images/iconos/circular-button.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: red;
+    display: inline-block;
 }
 
 div#circulo0 {
-	width: 40px;
-	height: 40px;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background-image: url(../images/iconos/number-zero-in-a-circle.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: #5cb85c;
-	display: inline-block;
+    width: 40px;
+    height: 40px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-image: url(../images/iconos/number-zero-in-a-circle.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #5cb85c;
+    display: inline-block;
 }
 
 div#circulo1 {
-	width: 40px;
-	height: 40px;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background-image: url(../images/iconos/number-one-in-a-circle.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: #DFDFDE;
-	display: inline-block;
+    width: 40px;
+    height: 40px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-image: url(../images/iconos/number-one-in-a-circle.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #DFDFDE;
+    display: inline-block;
 }
 
 div#circulo2 {
-	width: 40px;
-	height: 40px;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background-image: url(../images/iconos/number-two-in-a-circle.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: #DFDFDE;
-	display: inline-block;
+    width: 40px;
+    height: 40px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-image: url(../images/iconos/number-two-in-a-circle.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #DFDFDE;
+    display: inline-block;
 }
 
 div#circulo3 {
-	width: 40px;
-	height: 40px;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background-image: url(../images/iconos/number-three-in-a-circle.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: #DFDFDE;
-	display: inline-block;
+    width: 40px;
+    height: 40px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-image: url(../images/iconos/number-three-in-a-circle.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #DFDFDE;
+    display: inline-block;
 }
 
 div#circulo4 {
-	width: 40px;
-	height: 40px;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background-image:
-		url(../images/iconos/number-four-in-circular-button.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: #DFDFDE;
-	display: inline-block;
+    width: 40px;
+    height: 40px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-image:
+        url(../images/iconos/number-four-in-circular-button.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #DFDFDE;
+    display: inline-block;
 }
 
 div#circulo5 {
-	width: 40px;
-	height: 40px;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background-image:
-		url(../images/iconos/number-five-in-circular-button.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: #DFDFDE;
-	display: inline-block;
+    width: 40px;
+    height: 40px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-image:
+        url(../images/iconos/number-five-in-circular-button.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #DFDFDE;
+    display: inline-block;
 }
 
 div#circulo6 {
-	width: 30px;
-	height: 30px;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	background-image:
-		url(../images/iconos/number-five-in-circular-button.png);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-color: red;
+    width: 30px;
+    height: 30px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-image:
+        url(../images/iconos/number-five-in-circular-button.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: red;
 }
 
 div#estadoView {
-	font-family: cursive;
-	font-size: small;
-	font-weight: bold;
-	color: blue;
-	position: absolute;
-	top: 39px;
+    font-family: cursive;
+    font-size: small;
+    font-weight: bold;
+    color: blue;
+    position: absolute;
+    top: 39px;
 }
 div#estadoCronolog {
-	font-family: cursive;
-	font-size: small;
-	font-weight: bold;
-	color: black;
-	position: absolute;
-	top: 90px;
+    font-family: cursive;
+    font-size: small;
+    font-weight: bold;
+    color: black;
+    position: absolute;
+    top: 90px;
 }
 
 .panel {
-	background-color: rgba(194,213,241, 0.5);
-	-webkit-border-radius: 5px;
+    background-color: rgba(194,213,241, 0.5);
+    -webkit-border-radius: 5px;
     border-radius: 5px;
     margin: 5px;
     padding: 5px;
@@ -506,35 +506,35 @@ div#estadoCronolog {
     color: red !important;
 }
 .export{
-color:black !important;
+    color:black !important;
 }
 .separador{
-width:100%;
-height:20px;
+    width:100%;
+    height:20px;
 }
 
 #messageErr {
-	color: red;
-	font-weight: bold;
-	text-align: center;
-	width: 100%;
-	font-size: 14;
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    font-size: 14;
 }
 
 #messageOk {
-	color: green;
-	font-weight: bold;
-	text-align: center;
-	width: 100%;
-	font-size: 14;
+    color: green;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    font-size: 14;
 }
 
 #messageAviso {
-	color: orange;
-	font-weight: bold;
-	text-align: center;
-	width: 100%;
-	font-size: 14;
+    color: orange;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    font-size: 14;
 }
 
 input:not([type='button']):not(.green)[readonly],textarea:not(.green)[readonly] {
@@ -542,34 +542,34 @@ input:not([type='button']):not(.green)[readonly],textarea:not(.green)[readonly] 
 }
 
 #paginado{
-	color: black !important;
+    color: black !important;
 }
 
 div#sideTitle ul li ul {
-	margin-top: 2px;
-	list-style-type: circle;
-	padding-top: 0;
-	display: none;
+    margin-top: 2px;
+    list-style-type: circle;
+    padding-top: 0;
+    display: none;
 }
 
 div#sideTitle ul li ul li {
-	width: 120px;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	margin-left: 25px;
-	font-size: 13px;
-	color:blue;
-	cursor:pointer;
+    width: 120px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 25px;
+    font-size: 13px;
+    color:blue;
+    cursor:pointer;
 }
 div#sideTitle ul li ul li a {
-	background-image:none;
-	cursor:pointer;
+    background-image:none;
+    cursor:pointer;
 }
 div#sideTitle ul li ul li a span {
-	margin-left: 0;
-	margin-top:2.5%;
-	color: #1f497d;
-	cursor:pointer;
+    margin-left: 0;
+    margin-top:2.5%;
+    color: #1f497d;
+    cursor:pointer;
 }
 
 #overlay {
@@ -583,22 +583,24 @@ div#sideTitle ul li ul li a span {
 }
 
 #divBackground {
-	position: fixed;
-	z-index: 999;
-	height: 100%;
-	width: 100%;
-	top: 0;
-	left: 0;
-	background-color: Black;
-	filter: alpha(opacity =   60);
-	opacity: 0.6;
-	-moz-opacity: 0.8;
-	display: none;
+    position: fixed;
+    z-index: 999;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: Black;
+    filter: alpha(opacity =   60);
+    opacity: 0.6;
+    -moz-opacity: 0.8;
+    display: none;
 }
 
 .blink {
-  animation: blinker 1s linear infinite;
+    animation: blinker 1s linear infinite;
 }
-@keyframes blinker {  
-  50% { opacity: 0; }
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
 }

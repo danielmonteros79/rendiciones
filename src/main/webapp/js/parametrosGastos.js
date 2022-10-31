@@ -1,20 +1,20 @@
-jQuery(document).ready(function() {
-	$('#checkParametros').show();
+jQuery(document).ready(function () {
+    $('#checkParametros').show();
 });
 
 function resetForm() {
-	$(".message").html("");
-	$("#gasto").val("");
+    $(".message").html("");
+    $("#gasto").val("");
 }
 
 function agregarGasto() {
-	$("#addGasto").submit();
+    $("#addGasto").submit();
 }
 
 function modificarGasto(codigo) {
-	$("#edit_" + codigo).submit();
+    $("#edit_" + codigo).submit();
 }
 
 function eliminarGasto(codigo) {
-	$("#delete_" + codigo).submit();
+    $("#delete_" + codigo).submit();
 }

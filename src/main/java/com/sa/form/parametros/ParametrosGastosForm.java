@@ -1,225 +1,224 @@
 package com.sa.form.parametros;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.struts.action.ActionForm;
-
 import com.sa.entities.OSCAR;
 import com.sa.entities.Ristra;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.struts.action.ActionForm;
 
 public class ParametrosGastosForm extends ActionForm {
-	private static final long serialVersionUID = 1L;
-	private String codigo;
-	private String descripcionGasto;
-	private String motivo;
-	private Ristra ristra;
-	private String bimon;
-	private String comprob;
-	private String autoriz;
-	private OSCAR oscar;
-	private String observ;
-	private String maInclExcl;
-	private String antiguedad;
-	private String estado;
-	private String accion;
-	private String avisoMonto;
-	private String idCentroCostos;
-	private String idNivAutoriz;
-	private String plazoAprob;
-	private boolean readonly;
-	private boolean back;
-	private List<String> centrosCosto;
 
-	public void clear() {
-		this.codigo = null;
-		this.descripcionGasto = null;
-		this.motivo = null;
-		this.ristra = new Ristra();
-		this.bimon = null;
-		this.comprob = null;
-		this.autoriz = null;
-		this.oscar = new OSCAR();
-		this.observ = null;
-		this.maInclExcl = null;
-		this.antiguedad = null;
-		this.estado = null;
-		this.avisoMonto = null;
-		this.idCentroCostos = null;
-		this.idNivAutoriz = null;
-		this.plazoAprob = null;
-		this.readonly = false;
-		this.centrosCosto = new ArrayList<String>();
-	}
+    private static final long serialVersionUID = 1L;
+    private String codigo;
+    private String descripcionGasto;
+    private String motivo;
+    private Ristra ristra;
+    private String bimon;
+    private String comprob;
+    private String autoriz;
+    private OSCAR oscar;
+    private String observ;
+    private String maInclExcl;
+    private String antiguedad;
+    private String estado;
+    private String accion;
+    private String avisoMonto;
+    private String idCentroCostos;
+    private String idNivAutoriz;
+    private String plazoAprob;
+    private boolean readonly;
+    private boolean back;
+    private List<String> centrosCosto;
 
-	public String getCodigo() {
-		return codigo;
-	}
+    public void clear() {
+        this.codigo = null;
+        this.descripcionGasto = null;
+        this.motivo = null;
+        this.ristra = new Ristra();
+        this.bimon = null;
+        this.comprob = null;
+        this.autoriz = null;
+        this.oscar = new OSCAR();
+        this.observ = null;
+        this.maInclExcl = null;
+        this.antiguedad = null;
+        this.estado = null;
+        this.avisoMonto = null;
+        this.idCentroCostos = null;
+        this.idNivAutoriz = null;
+        this.plazoAprob = null;
+        this.readonly = false;
+        this.centrosCosto = new ArrayList<String>();
+    }
 
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
+    public String getCodigo() {
+        return codigo;
+    }
 
-	public String getDescripcionGasto() {
-		return descripcionGasto;
-	}
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
 
-	public void setDescripcionGasto(String descripcionGasto) {
-		this.descripcionGasto = descripcionGasto;
-	}
+    public String getDescripcionGasto() {
+        return descripcionGasto;
+    }
 
-	public String getMotivo() {
-		return motivo;
-	}
+    public void setDescripcionGasto(String descripcionGasto) {
+        this.descripcionGasto = descripcionGasto;
+    }
 
-	public void setMotivo(String motivo) {
-		this.motivo = motivo;
-	}
+    public String getMotivo() {
+        return motivo;
+    }
 
-	public Ristra getRistra() {
-		return ristra;
-	}
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
 
-	public void setRistra(String ristra) {
-		this.ristra = new Ristra(ristra);
-	}
+    public Ristra getRistra() {
+        return ristra;
+    }
 
-	public String getBimon() {
-		return bimon;
-	}
+    public void setRistra(String ristra) {
+        this.ristra = new Ristra(ristra);
+    }
 
-	public void setBimon(String bimon) {
-		this.bimon = bimon;
-	}
+    public String getBimon() {
+        return bimon;
+    }
 
-	public String getComprob() {
-		return comprob;
-	}
+    public void setBimon(String bimon) {
+        this.bimon = bimon;
+    }
 
-	public void setComprob(String comprob) {
-		this.comprob = comprob;
-	}
+    public String getComprob() {
+        return comprob;
+    }
 
-	public String getAutoriz() {
-		return autoriz;
-	}
+    public void setComprob(String comprob) {
+        this.comprob = comprob;
+    }
 
-	public void setAutoriz(String autoriz) {
-		this.autoriz = autoriz;
-	}
+    public String getAutoriz() {
+        return autoriz;
+    }
 
-	public String getObserv() {
-		return observ;
-	}
+    public void setAutoriz(String autoriz) {
+        this.autoriz = autoriz;
+    }
 
-	public void setObserv(String observ) {
-		this.observ = observ;
-	}
+    public String getObserv() {
+        return observ;
+    }
 
-	public String getEstado() {
-		return estado;
-	}
+    public void setObserv(String observ) {
+        this.observ = observ;
+    }
 
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
+    public String getEstado() {
+        return estado;
+    }
 
-	public String getAccion() {
-		return accion;
-	}
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 
-	public void setAccion(String accion) {
-		this.accion = accion;
-	}
+    public String getAccion() {
+        return accion;
+    }
 
-	public OSCAR getOscar() {
-		return oscar;
-	}
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
 
-	public void setOscar(OSCAR oscar) {
-		this.oscar = oscar;
-	}
+    public OSCAR getOscar() {
+        return oscar;
+    }
 
-	public String getMaInclExcl() {
-		return maInclExcl;
-	}
+    public void setOscar(OSCAR oscar) {
+        this.oscar = oscar;
+    }
 
-	public void setMaInclExcl(String maInclExcl) {
-		this.maInclExcl = maInclExcl;
-	}
+    public String getMaInclExcl() {
+        return maInclExcl;
+    }
 
-	public String getAntiguedad() {
-		return antiguedad;
-	}
+    public void setMaInclExcl(String maInclExcl) {
+        this.maInclExcl = maInclExcl;
+    }
 
-	public void setAntiguedad(String antiguedad) {
-		this.antiguedad = antiguedad;
-	}
+    public String getAntiguedad() {
+        return antiguedad;
+    }
 
-	public String getAvisoMonto() {
-		return avisoMonto;
-	}
+    public void setAntiguedad(String antiguedad) {
+        this.antiguedad = antiguedad;
+    }
 
-	public void setAvisoMonto(String avisoMonto) {
-		this.avisoMonto = avisoMonto;
-	}
+    public String getAvisoMonto() {
+        return avisoMonto;
+    }
 
-	public String getIdCentroCostos() {
-		return idCentroCostos;
-	}
+    public void setAvisoMonto(String avisoMonto) {
+        this.avisoMonto = avisoMonto;
+    }
 
-	public void setIdCentroCostos(String idCentroCostos) {
-		this.idCentroCostos = idCentroCostos;
-	}
+    public String getIdCentroCostos() {
+        return idCentroCostos;
+    }
 
-	public String getIdNivAutoriz() {
-		return idNivAutoriz;
-	}
+    public void setIdCentroCostos(String idCentroCostos) {
+        this.idCentroCostos = idCentroCostos;
+    }
 
-	public void setIdNivAutoriz(String idNivAutoriz) {
-		this.idNivAutoriz = idNivAutoriz;
-	}
+    public String getIdNivAutoriz() {
+        return idNivAutoriz;
+    }
 
-	public String getPlazoAprob() {
-		return plazoAprob;
-	}
+    public void setIdNivAutoriz(String idNivAutoriz) {
+        this.idNivAutoriz = idNivAutoriz;
+    }
 
-	public void setPlazoAprob(String plazoAprob) {
-		this.plazoAprob = plazoAprob;
-	}
+    public String getPlazoAprob() {
+        return plazoAprob;
+    }
 
-	public boolean getReadonly() {
-		return readonly;
-	}
+    public void setPlazoAprob(String plazoAprob) {
+        this.plazoAprob = plazoAprob;
+    }
 
-	public void setReadonly(boolean readonly) {
-		this.readonly = readonly;
-	}
+    public boolean getReadonly() {
+        return readonly;
+    }
 
-	public boolean isBack() {
-		return back;
-	}
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
 
-	public void setBack(boolean back) {
-		this.back = back;
-	}
-	
-	public List<String> getCentrosCosto() {
-		return centrosCosto;
-	}
+    public boolean isBack() {
+        return back;
+    }
 
-	public void setCentrosCosto(String centrosCosto) {
-	}
-	
-	public void setCentrosCostoList(List<String> centrosCosto) {
-		this.centrosCosto = centrosCosto;
-	}
+    public void setBack(boolean back) {
+        this.back = back;
+    }
 
-	public void setCentrosCostoI(int index, String value) {
-	    this.centrosCosto.set(index, value);
-	}
-	
-	public String getCentrosCostoI(int index) {
-	    return this.centrosCosto.get(index);
-	}
+    public List<String> getCentrosCosto() {
+        return centrosCosto;
+    }
+
+    public void setCentrosCosto(String centrosCosto) {
+    }
+
+    public void setCentrosCostoList(List<String> centrosCosto) {
+        this.centrosCosto = centrosCosto;
+    }
+
+    public void setCentrosCostoI(int index, String value) {
+        this.centrosCosto.set(index, value);
+    }
+
+    public String getCentrosCostoI(int index) {
+        return this.centrosCosto.get(index);
+    }
 }

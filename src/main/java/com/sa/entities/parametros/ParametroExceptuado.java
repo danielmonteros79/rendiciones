@@ -3,61 +3,62 @@ package com.sa.entities.parametros;
 import java.util.Date;
 
 public class ParametroExceptuado {
-	private String motivoUsuario;
-	private String descripcionNombre;
-	private Date hasta;
-	private Date desde;
-	private String estado;
-	private String tipo;
-	
-	public ParametroExceptuado() {
-	}
 
-	public String getMotivoUsuario() {
-		return motivoUsuario;
-	}
+    private String motivoUsuario;
+    private String descripcionNombre;
+    private Date hasta;
+    private Date desde;
+    private String estado;
+    private String tipo;
 
-	public void setMotivoUsuario(String motivoUsuario) {
-		this.motivoUsuario = motivoUsuario;
-	}
+    public ParametroExceptuado() {
+    }
 
-	public String getDescripcionNombre() {
-		return descripcionNombre;
-	}
+    public String getMotivoUsuario() {
+        return motivoUsuario;
+    }
 
-	public void setDescripcionNombre(String descripcionNombre) {
-		this.descripcionNombre = descripcionNombre;
-	}
+    public void setMotivoUsuario(String motivoUsuario) {
+        this.motivoUsuario = motivoUsuario;
+    }
 
-	public Date getHasta() {
-		return hasta;
-	}
+    public String getDescripcionNombre() {
+        return descripcionNombre;
+    }
 
-	public void setHasta(Date hasta) {
-		this.hasta = hasta;
-	}
+    public void setDescripcionNombre(String descripcionNombre) {
+        this.descripcionNombre = descripcionNombre;
+    }
 
-	public Date getDesde() {
-		return desde;
-	}
+    public Date getHasta() {
+        return hasta;
+    }
 
-	public void setDesde(Date desde) {
-		this.desde = desde;
-	}
+    public void setHasta(Date hasta) {
+        this.hasta = hasta;
+    }
 
-	public String getEstado() {
-		return estado;
-	}
+    public Date getDesde() {
+        return desde;
+    }
 
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
+    public void setDesde(Date desde) {
+        this.desde = desde;
+    }
 
-	public String getTipo() {
-		return tipo;
-	}
+    public String getEstado() {
+        return estado;
+    }
 
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }

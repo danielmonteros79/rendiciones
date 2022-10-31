@@ -1,142 +1,143 @@
 package com.sa.entities.parametros;
 
 public class ParametroAlerta {
-	private String codMotivo;
-	private String codGasto;
-	private String motivo;
-	private String impCant;
-	private String desMotivo;
-	private String desGasto;
-	private String montCant;
-	private String rend;
-	private String periodo;
-	private String nivelMin;
-	private String nivelMax;
-	private String estado;
-	private String criticidad;
-	private String txAviso;
-	private String timeStamp;
-	
-	public ParametroAlerta() {
-	}
-	
-	public String getImpCant() {
-		return impCant;
-	}
 
-	public void setImpCant(String impCant) {
-		this.impCant = impCant;
-	}
+    private String codMotivo;
+    private String codGasto;
+    private String motivo;
+    private String impCant;
+    private String desMotivo;
+    private String desGasto;
+    private String montCant;
+    private String rend;
+    private String periodo;
+    private String nivelMin;
+    private String nivelMax;
+    private String estado;
+    private String criticidad;
+    private String txAviso;
+    private String timeStamp;
 
-	public String getMotivo() {
-		return motivo;
-	}
+    public ParametroAlerta() {
+    }
 
-	public void setMotivo(String motivo) {
-		this.motivo = motivo;
-	}
-	
-	public String getCodMotivo() {
-		return codMotivo;
-	}
+    public String getImpCant() {
+        return impCant;
+    }
 
-	public void setCodMotivo(String codMotivo) {
-		this.codMotivo = codMotivo;
-	}
+    public void setImpCant(String impCant) {
+        this.impCant = impCant;
+    }
 
-	public String getCodGasto() {
-		return codGasto;
-	}
+    public String getMotivo() {
+        return motivo;
+    }
 
-	public void setCodGasto(String codGasto) {
-		this.codGasto = codGasto;
-	}
-	
-	public String getDesMotivo() {
-		return desMotivo;
-	}
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
 
-	public void setDesMotivo(String desMotivo) {
-		this.desMotivo = desMotivo;
-	}
+    public String getCodMotivo() {
+        return codMotivo;
+    }
 
-	public String getDesGasto() {
-		return desGasto;
-	}
+    public void setCodMotivo(String codMotivo) {
+        this.codMotivo = codMotivo;
+    }
 
-	public void setDesGasto(String desGasto) {
-		this.desGasto = desGasto;
-	}
-	
-	public String getMontCant() {
-		return montCant;
-	}
+    public String getCodGasto() {
+        return codGasto;
+    }
 
-	public void setMontCant(String montCant) {
-		this.montCant = montCant;
-	}
+    public void setCodGasto(String codGasto) {
+        this.codGasto = codGasto;
+    }
 
-	public String getRend() {
-		return rend;
-	}
+    public String getDesMotivo() {
+        return desMotivo;
+    }
 
-	public void setRend(String rend) {
-		this.rend = rend;
-	}
+    public void setDesMotivo(String desMotivo) {
+        this.desMotivo = desMotivo;
+    }
 
-	public String getPeriodo() {
-		return periodo;
-	}
+    public String getDesGasto() {
+        return desGasto;
+    }
 
-	public void setPeriodo(String periodo) {
-		this.periodo = periodo;
-	}
+    public void setDesGasto(String desGasto) {
+        this.desGasto = desGasto;
+    }
 
-	public String getNivelMin() {
-		return nivelMin;
-	}
+    public String getMontCant() {
+        return montCant;
+    }
 
-	public void setNivelMin(String nivelMin) {
-		this.nivelMin = nivelMin;
-	}
+    public void setMontCant(String montCant) {
+        this.montCant = montCant;
+    }
 
-	public String getNivelMax() {
-		return nivelMax;
-	}
+    public String getRend() {
+        return rend;
+    }
 
-	public void setNivelMax(String nivelMax) {
-		this.nivelMax = nivelMax;
-	}
+    public void setRend(String rend) {
+        this.rend = rend;
+    }
 
-	public String getEstado() {
-		return estado;
-	}
+    public String getPeriodo() {
+        return periodo;
+    }
 
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
+    public void setPeriodo(String periodo) {
+        this.periodo = periodo;
+    }
 
-	public String getCriticidad() {
-		return criticidad;
-	}
+    public String getNivelMin() {
+        return nivelMin;
+    }
 
-	public void setCriticidad(String criticidad) {
-		this.criticidad = criticidad;
-	}
+    public void setNivelMin(String nivelMin) {
+        this.nivelMin = nivelMin;
+    }
 
-	public String getTxAviso() {
-		return txAviso;
-	}
+    public String getNivelMax() {
+        return nivelMax;
+    }
 
-	public void setTxAviso(String txAviso) {
-		this.txAviso = txAviso;
-	}
+    public void setNivelMax(String nivelMax) {
+        this.nivelMax = nivelMax;
+    }
 
-	public String getTimeStamp() {
-		return timeStamp;
-	}
+    public String getEstado() {
+        return estado;
+    }
 
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
-	}
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getCriticidad() {
+        return criticidad;
+    }
+
+    public void setCriticidad(String criticidad) {
+        this.criticidad = criticidad;
+    }
+
+    public String getTxAviso() {
+        return txAviso;
+    }
+
+    public void setTxAviso(String txAviso) {
+        this.txAviso = txAviso;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 }

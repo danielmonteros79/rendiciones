@@ -1,57 +1,57 @@
 #TDUsuario {
-	width: 62%;
-	font-weight: bold;
-	font-size: small;
-	text-align: left;
-	padding-top: 9px;
+    width: 62%;
+    font-weight: bold;
+    font-size: small;
+    text-align: left;
+    padding-top: 9px;
 }
 
 #TDDelegado {
-	font-weight: bold;
-	font-size: small;
-	text-align: left;
-	padding-top: 9px;
-	
+    font-weight: bold;
+    font-size: small;
+    text-align: left;
+    padding-top: 9px;
+
 }
 
 #TDFeDesde {
-	font-weight: bold;
-	font-size: small;
-	text-align: left;
-	padding-top: 9px;
+    font-weight: bold;
+    font-size: small;
+    text-align: left;
+    padding-top: 9px;
 }
 
 #TDFeHasta {
-	font-weight: bold;
-	font-size: small;
-	text-align: left;
-	padding-top: 7px;
+    font-weight: bold;
+    font-size: small;
+    text-align: left;
+    padding-top: 7px;
 }
 
 .TDFont {
-	font-weight: bold;
-	font-size: small;
-	text-align: left;
-	margin-top: 5px;
-	padding-top: 9px;
+    font-weight: bold;
+    font-size: small;
+    text-align: left;
+    margin-top: 5px;
+    padding-top: 9px;
 }
 
 .textInput {
-	margin-left: 6px;
+    margin-left: 6px;
 }
 
 .textInputReadOnly {
-	margin-left: 6px;
-	border: none;
-	font-weight: bold;
-	color: #027362;
+    margin-left: 6px;
+    border: none;
+    font-weight: bold;
+    color: #027362;
 }
 
 .buttonSave {
-	float: left;
-	margin-top: 9px;
-	margin-bottom: 9px;
-	margin-left: 12%
+    float: left;
+    margin-top: 9px;
+    margin-bottom: 9px;
+    margin-left: 12%
 }
 #delegado{
     text-transform: uppercase;

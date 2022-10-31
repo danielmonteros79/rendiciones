@@ -1,10 +1,9 @@
 package com.sa.decorator.parametros;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
-
 import com.sa.decorator.SumTableDecorator;
 import com.sa.entities.parametros.ParametroAlerta;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
 
 public class ParametrosAlertasTableDecorator extends SumTableDecorator {
 

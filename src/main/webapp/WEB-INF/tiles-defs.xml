@@ -14,295 +14,295 @@
     </definition>
     
     <definition name="successPage" path="/pages/successPage.jsp">
-    	<put name="backAction"  value="" direct="false" />
+        <put name="backAction"  value="" direct="false" />
     </definition>
 
-	<definition name="errorPage" extends="mainLayout">
-    	<put name="pageTitle"  value="ERROR" direct="false" />
+    <definition name="errorPage" extends="mainLayout">
+        <put name="pageTitle"  value="ERROR" direct="false" />
         <put name="tituloCuerpo" value="Error" direct="false"/>
         <put name="content" value="/pages/error.jsp"/>
     </definition>
    
     
-<!-- ###################################################################################### PANEL CONTROL -->
-	<definition name="inicioApp" extends="mainLayout">
-    	<put name="pageTitle"  value="Inicio" direct="false" />
+    <!-- ###################################################################################### PANEL CONTROL -->
+    <definition name="inicioApp" extends="mainLayout">
+        <put name="pageTitle"  value="Inicio" direct="false" />
         <put name="tituloCuerpo" value="Inicio" direct="false"/>
         <put name="content" value="/pages/rendiciones/listadoRendiciones.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     
     <definition name="rendicionDetalle" extends="mainLayout">
-    	<put name="pageTitle"  value=" - Alta Rendiciones - Motivo" direct="false" />
+        <put name="pageTitle"  value=" - Alta Rendiciones - Motivo" direct="false" />
         <put name="tituloCuerpo" value="Alta Rendiciones - Motivo" direct="false"/>
         <put name="content" value="/pages/rendiciones/rendicionDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="replaceDelegadoPage" extends="mainLayout">
-    	<put name="pageTitle"  value="Delegaciones - Acceso como Delegado" direct="false" />
+        <put name="pageTitle"  value="Delegaciones - Acceso como Delegado" direct="false" />
         <put name="tituloCuerpo" value="Delegaciones - Acceso como Delegado" direct="false"/>
         <put name="content" value="/pages/reemplazo/replaceDelegado.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
-        	<definition name="listadoRendiciones" extends="mainLayout">
-		<put name="pageTitle" value="Listado Rendiciones" direct="false"/>
-		<put name="tituloCuerpo" value="Listado Rendiciones" direct="false" />
-		<put name="content" value="/pages/rendiciones/listadoRendiciones.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="aprobacion" extends="mainLayout">
-		<put name="pageTitle" value="Aprobación" direct="false" />
-		<put name="tituloCuerpo" value="Aprobación" direct="false" />
-		<put name="content" value="/pages/aprobacion.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="resumen" extends="mainLayout">
-		<put name="pageTitle" value="Resumen" direct="false" />
-		<put name="tituloCuerpo" value="Consumos no rendidos" direct="false" />
-		<put name="content" value="/pages/resumen.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="resumenesAnteriores" extends="mainLayout">
-		<put name="pageTitle" value="Resumen" direct="false" />
-		<put name="tituloCuerpo" value="Resumenes anteriores" direct="false" />
-		<put name="content" value="/pages/resumenesAnteriores.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="cuadroGeneral" extends="mainLayout">
-		<put name="pageTitle" value="Cuadro General" direct="false" />
-		<put name="tituloCuerpo" value="Cuadro General" direct="false" />
-		<put name="content" value="/pages/reporteria/cuadroGeneral.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
+    <definition name="listadoRendiciones" extends="mainLayout">
+        <put name="pageTitle" value="Listado Rendiciones" direct="false"/>
+        <put name="tituloCuerpo" value="Listado Rendiciones" direct="false" />
+        <put name="content" value="/pages/rendiciones/listadoRendiciones.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="aprobacion" extends="mainLayout">
+        <put name="pageTitle" value="Aprobación" direct="false" />
+        <put name="tituloCuerpo" value="Aprobación" direct="false" />
+        <put name="content" value="/pages/aprobacion.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="resumen" extends="mainLayout">
+        <put name="pageTitle" value="Resumen" direct="false" />
+        <put name="tituloCuerpo" value="Consumos no rendidos" direct="false" />
+        <put name="content" value="/pages/resumen.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="resumenesAnteriores" extends="mainLayout">
+        <put name="pageTitle" value="Resumen" direct="false" />
+        <put name="tituloCuerpo" value="Resumenes anteriores" direct="false" />
+        <put name="content" value="/pages/resumenesAnteriores.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="cuadroGeneral" extends="mainLayout">
+        <put name="pageTitle" value="Cuadro General" direct="false" />
+        <put name="tituloCuerpo" value="Cuadro General" direct="false" />
+        <put name="content" value="/pages/reporteria/cuadroGeneral.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
     <definition name="CuadroDetallado" extends="mainLayout">
-    	<put name="pageTitle"  value="Cuadro Detallado" direct="false" />
+        <put name="pageTitle"  value="Cuadro Detallado" direct="false" />
         <put name="tituloCuerpo" value="Cuadro Detallado" direct="false"/>
         <put name="content" value="/pages/reporteria/cuadroDetallado.jsp"/>
     </definition>
-	<definition name="parametros" extends="mainLayout">
-		<put name="pageTitle" value="Parámetros" direct="false" />
-		<put name="tituloCuerpo" value="Parámetros" direct="false" />
-		<put name="content" value="/pages/parametros.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="showDetalleGastos" extends="mainLayout">
-		<put name="pageTitle" value="Rendicion de gastos - Administracion"
-			direct="false" />
-		<put name="tituloCuerpo" value="Detalle Gastos/Consumos" direct="false" />
-		<put name="content" value="/pages/rendiciones/rendicionDetalleGastos.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="showDetalleScan" extends="mainLayout">
-		<put name="pageTitle" value="Rendiciones - Scan"
-			direct="false" />
-		<put name="tituloCuerpo" value="Rendiciones - Detalle" direct="false" />
-		<put name="content" value="/pages/rendiciones/rendicionScan.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-		<definition name="aprobacionDetalle" extends="mainLayout">
-		<put name="pageTitle" value="Aprobacion - Detalle Gastos"
-			direct="false" />
-		<put name="tituloCuerpo" value="Aprobación - Detalles de Rendicion" direct="false" />
-		<put name="content" value="/pages/aprobacionDetalle.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="ShowJournal" extends="mainLayout">
-		<put name="pageTitle" value="Journal" direct="false" />
-		<put name="tituloCuerpo" value="Consulta de Journal" direct="false" />
-		<put name="content" value="/pages/popups/journalPopUp.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="cierre" extends="mainLayout">
-		<put name="pageTitle" value="Cierre de Gastos"
-			direct="false" />
-		<put name="tituloCuerpo" value="Cierre" direct="false" />
-		<put name="content" value="/pages/cierre.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="CierreDiario" extends="mainLayout">
-		<put name="pageTitle" value="CierreDiario"
-			direct="false" />
-		<put name="tituloCuerpo" value="Cierre Diario" direct="false" />
-		<put name="content" value="/pages/CierreDiario.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="ReactivacionSuspensos" extends="mainLayout">
-		<put name="pageTitle" value="Reactivacion Suspensos"
-			direct="false" />
-		<put name="tituloCuerpo" value="Reactivacion Suspensos" direct="false" />
-		<put name="content" value="/pages/ReactivacionSuspensos.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="CierreMensualFormal" extends="mainLayout">
-		<put name="pageTitle" value="Cierre Mensual Formal"
-			direct="false" />
-		<put name="tituloCuerpo" value="Cierre Mensual Formal" direct="false" />
-		<put name="content" value="/pages/CierreMensualFormal.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="CierreMensualSimulado" extends="mainLayout">
-		<put name="pageTitle" value="Cierre Mensual Simulado"
-			direct="false" />
-		<put name="tituloCuerpo" value="Cierre Mensual Simulado" direct="false" />
-		<put name="content" value="/pages/CierreMensualSimulado.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="CierreMensualContable" extends="mainLayout">
-		<put name="pageTitle" value="Cierre Mensual Contable"
-			direct="false" />
-		<put name="tituloCuerpo" value="Cierre Mensual Contable" direct="false" />
-		<put name="content" value="/pages/CierreMensualContable.jsp" />
-		<put name="accion" value="mostrarPanel" direct="false" />
-	</definition>
-	<definition name="rendicionAviso" extends="mainLayout">
-    	<put name="pageTitle"  value="Imágenes" direct="false" />
+    <definition name="parametros" extends="mainLayout">
+        <put name="pageTitle" value="Parámetros" direct="false" />
+        <put name="tituloCuerpo" value="Parámetros" direct="false" />
+        <put name="content" value="/pages/parametros.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="showDetalleGastos" extends="mainLayout">
+        <put name="pageTitle" value="Rendicion de gastos - Administracion"
+             direct="false" />
+        <put name="tituloCuerpo" value="Detalle Gastos/Consumos" direct="false" />
+        <put name="content" value="/pages/rendiciones/rendicionDetalleGastos.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="showDetalleScan" extends="mainLayout">
+        <put name="pageTitle" value="Rendiciones - Scan"
+             direct="false" />
+        <put name="tituloCuerpo" value="Rendiciones - Detalle" direct="false" />
+        <put name="content" value="/pages/rendiciones/rendicionScan.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="aprobacionDetalle" extends="mainLayout">
+        <put name="pageTitle" value="Aprobacion - Detalle Gastos"
+             direct="false" />
+        <put name="tituloCuerpo" value="Aprobación - Detalles de Rendicion" direct="false" />
+        <put name="content" value="/pages/aprobacionDetalle.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="ShowJournal" extends="mainLayout">
+        <put name="pageTitle" value="Journal" direct="false" />
+        <put name="tituloCuerpo" value="Consulta de Journal" direct="false" />
+        <put name="content" value="/pages/popups/journalPopUp.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="cierre" extends="mainLayout">
+        <put name="pageTitle" value="Cierre de Gastos"
+             direct="false" />
+        <put name="tituloCuerpo" value="Cierre" direct="false" />
+        <put name="content" value="/pages/cierre.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="CierreDiario" extends="mainLayout">
+        <put name="pageTitle" value="CierreDiario"
+             direct="false" />
+        <put name="tituloCuerpo" value="Cierre Diario" direct="false" />
+        <put name="content" value="/pages/CierreDiario.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="ReactivacionSuspensos" extends="mainLayout">
+        <put name="pageTitle" value="Reactivacion Suspensos"
+             direct="false" />
+        <put name="tituloCuerpo" value="Reactivacion Suspensos" direct="false" />
+        <put name="content" value="/pages/ReactivacionSuspensos.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="CierreMensualFormal" extends="mainLayout">
+        <put name="pageTitle" value="Cierre Mensual Formal"
+             direct="false" />
+        <put name="tituloCuerpo" value="Cierre Mensual Formal" direct="false" />
+        <put name="content" value="/pages/CierreMensualFormal.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="CierreMensualSimulado" extends="mainLayout">
+        <put name="pageTitle" value="Cierre Mensual Simulado"
+             direct="false" />
+        <put name="tituloCuerpo" value="Cierre Mensual Simulado" direct="false" />
+        <put name="content" value="/pages/CierreMensualSimulado.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="CierreMensualContable" extends="mainLayout">
+        <put name="pageTitle" value="Cierre Mensual Contable"
+             direct="false" />
+        <put name="tituloCuerpo" value="Cierre Mensual Contable" direct="false" />
+        <put name="content" value="/pages/CierreMensualContable.jsp" />
+        <put name="accion" value="mostrarPanel" direct="false" />
+    </definition>
+    <definition name="rendicionAviso" extends="mainLayout">
+        <put name="pageTitle"  value="Imágenes" direct="false" />
         <put name="tituloCuerpo" value="Imágenes" direct="false"/>
         <put name="content" value="/pages/rendiciones/rendicionAviso.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     
-<!-- ###################################################################################### Parametros -->
+    <!-- ###################################################################################### Parametros -->
     
-     <definition name="parametrosMotivo" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Motivos - Consulta" direct="false" />
+    <definition name="parametrosMotivo" extends="mainLayout">
+        <put name="pageTitle"  value="ABM Motivos - Consulta" direct="false" />
         <put name="tituloCuerpo" value="ABM Motivos - Consulta" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosMotivo.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosMotivoAlta" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Motivos - Alta" direct="false" />
+        <put name="pageTitle"  value="ABM Motivos - Alta" direct="false" />
         <put name="tituloCuerpo" value="ABM Motivos - Alta" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosMotivoDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosMotivoModificacion" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Motivos - Modificación" direct="false" />
+        <put name="pageTitle"  value="ABM Motivos - Modificación" direct="false" />
         <put name="tituloCuerpo" value="ABM Motivos - Modificación" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosMotivoDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosMotivoBaja" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Motivos - Baja" direct="false" />
+        <put name="pageTitle"  value="ABM Motivos - Baja" direct="false" />
         <put name="tituloCuerpo" value="ABM Motivos - Baja" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosMotivoDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     
-     <definition name="parametrosGastos" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Gastos - Consulta" direct="false" />
+    <definition name="parametrosGastos" extends="mainLayout">
+        <put name="pageTitle"  value="ABM Gastos - Consulta" direct="false" />
         <put name="tituloCuerpo" value="ABM Gastos - Consulta" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosGastos.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosGastosAlta" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Gastos - Alta" direct="false" />
+        <put name="pageTitle"  value="ABM Gastos - Alta" direct="false" />
         <put name="tituloCuerpo" value="ABM Gastos - Alta" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosGastosDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
-	<definition name="parametrosGastosModificacion" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Gastos - Modificación" direct="false" />
+    <definition name="parametrosGastosModificacion" extends="mainLayout">
+        <put name="pageTitle"  value="ABM Gastos - Modificación" direct="false" />
         <put name="tituloCuerpo" value="ABM Gastos - Modificación" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosGastosDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
-	<definition name="parametrosGastosBaja" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Gastos - Baja" direct="false" />
+    <definition name="parametrosGastosBaja" extends="mainLayout">
+        <put name="pageTitle"  value="ABM Gastos - Baja" direct="false" />
         <put name="tituloCuerpo" value="ABM Gastos - Baja" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosGastosDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
-     <definition name="relacionUsuarioDelegado" extends="mainLayout">
-    	<put name="pageTitle"  value="Delegaciones - Funciones a terceros" direct="false" />
+    <definition name="relacionUsuarioDelegado" extends="mainLayout">
+        <put name="pageTitle"  value="Delegaciones - Funciones a terceros" direct="false" />
         <put name="tituloCuerpo" value="Delegaciones - Funciones a terceros" direct="false"/>
         <put name="content" value="/pages/parametros/RelacionUsuarioDelegado.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="relacionUsuarioDelegadoABM" extends="mainLayout">
-    	<put name="pageTitle"  value="Delegaciones - ABM Delegaciones" direct="false" />
+        <put name="pageTitle"  value="Delegaciones - ABM Delegaciones" direct="false" />
         <put name="tituloCuerpo" value="Delegaciones - ABM Delegaciones" direct="false"/>
         <put name="content" value="/pages/parametros/RelacionUsuarioDelegadoAlta.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
-     <definition name="parametrosExceptuados" extends="mainLayout">
-    	<put name="pageTitle"  value="Exceptuados" direct="false" />
+    <definition name="parametrosExceptuados" extends="mainLayout">
+        <put name="pageTitle"  value="Exceptuados" direct="false" />
         <put name="tituloCuerpo" value="Exceptuados" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosExceptuados.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosExceptuadosAlta" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Exceptuados - Alta" direct="false" />
+        <put name="pageTitle"  value="ABM Exceptuados - Alta" direct="false" />
         <put name="tituloCuerpo" value="ABM Exceptuados - Alta" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosExceptuadosDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosExceptuadosModificacion" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Exceptuados - Modificacion" direct="false" />
+        <put name="pageTitle"  value="ABM Exceptuados - Modificacion" direct="false" />
         <put name="tituloCuerpo" value="ABM Exceptuados - Modificacion" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosExceptuadosDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosExceptuadosBaja" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Exceptuados - Baja" direct="false" />
+        <put name="pageTitle"  value="ABM Exceptuados - Baja" direct="false" />
         <put name="tituloCuerpo" value="ABM Exceptuados - Baja" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosExceptuadosDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosAlertas" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Alerta - Consulta" direct="false" />
+        <put name="pageTitle"  value="ABM Alerta - Consulta" direct="false" />
         <put name="tituloCuerpo" value="ABM Alerta - Consulta" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosAlertas.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosAlertasAlta" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Alerta - Alta" direct="false" />
+        <put name="pageTitle"  value="ABM Alerta - Alta" direct="false" />
         <put name="tituloCuerpo" value="ABM Alerta - Alta" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosAlertasDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosAlertasModificacion" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Alerta - Modificación" direct="false" />
+        <put name="pageTitle"  value="ABM Alerta - Modificación" direct="false" />
         <put name="tituloCuerpo" value="ABM Alerta - Modificación" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosAlertasDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     <definition name="parametrosAlertasBaja" extends="mainLayout">
-    	<put name="pageTitle"  value="ABM Alerta - Baja" direct="false" />
+        <put name="pageTitle"  value="ABM Alerta - Baja" direct="false" />
         <put name="tituloCuerpo" value="ABM Alerta - Baja" direct="false"/>
         <put name="content" value="/pages/parametros/ParametrosAlertasDetalle.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
     
-<!--     REDISTRIBUCION DE GASTOS -->
- <definition name="distribucionGastosPage" extends="mainLayout">
-    	<put name="pageTitle"  value="Redistribución Gastos" direct="false" />
+    <!--     REDISTRIBUCION DE GASTOS -->
+    <definition name="distribucionGastosPage" extends="mainLayout">
+        <put name="pageTitle"  value="Redistribución Gastos" direct="false" />
         <put name="tituloCuerpo" value="Redistribución Gastos" direct="false"/>
         <put name="content" value="/pages/rendiciones/distribucionGastos.jsp"/>
         <put name="accion" value="mostrarPanel" direct="false"/>
     </definition>
 
     
-<!-- ###################################################################################### EXCEPCIONES -->	
-	<definition name="errorService" extends="mainLayout">
-		<put name="pageTitle" value="Operacion Invalida"
-			direct="false" />
-		<put name="tituloCuerpo" value="Detalle del Error" direct="false" />
-		<put name="content" value="/errorServiceContent.jsp" />
-		<put name="accion" value="mostrarPanel" direct="true" />
-	</definition>
-	<definition name="permisoDenegado" extends="mainLayout">
-		<put name="pageTitle" value="Permiso Denegado"
-			direct="false" />
-		<put name="tituloCuerpo" value="Detalle del Error" direct="false" />
-		<put name="content" value="/permisoDenegado.jsp" />
-		<put name="accion" value="mostrarPanel" direct="true" />
-	</definition>
-	<definition name="timeOutSession" extends="mainLayout">
-		<put name="pageTitle" value="Time out"
-			direct="false" />
-		<put name="tituloCuerpo" value="" direct="false" />
-		<put name="content" value="/timeOut.jsp" />
-		<put name="accion" value="mostrarPanel" direct="true" />
-	</definition>
+    <!-- ###################################################################################### EXCEPCIONES -->	
+    <definition name="errorService" extends="mainLayout">
+        <put name="pageTitle" value="Operacion Invalida"
+             direct="false" />
+        <put name="tituloCuerpo" value="Detalle del Error" direct="false" />
+        <put name="content" value="/errorServiceContent.jsp" />
+        <put name="accion" value="mostrarPanel" direct="true" />
+    </definition>
+    <definition name="permisoDenegado" extends="mainLayout">
+        <put name="pageTitle" value="Permiso Denegado"
+             direct="false" />
+        <put name="tituloCuerpo" value="Detalle del Error" direct="false" />
+        <put name="content" value="/permisoDenegado.jsp" />
+        <put name="accion" value="mostrarPanel" direct="true" />
+    </definition>
+    <definition name="timeOutSession" extends="mainLayout">
+        <put name="pageTitle" value="Time out"
+             direct="false" />
+        <put name="tituloCuerpo" value="" direct="false" />
+        <put name="content" value="/timeOut.jsp" />
+        <put name="accion" value="mostrarPanel" direct="true" />
+    </definition>
 	
 </tiles-definitions>

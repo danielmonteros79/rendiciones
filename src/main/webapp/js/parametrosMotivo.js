@@ -1,20 +1,20 @@
-jQuery(document).ready(function() {
-	$('#checkParametros').show();
+jQuery(document).ready(function () {
+    $('#checkParametros').show();
 });
 
 function resetForm() {
-	$(".message").html("");
-	$("#codigo").val("");
+    $(".message").html("");
+    $("#codigo").val("");
 }
 
 function agregarMotivo() {
-	$("#addMotivo").submit();
+    $("#addMotivo").submit();
 }
 
 function modificarMotivo(codMotivo) {
-	$("#edit_" + codMotivo).submit();
+    $("#edit_" + codMotivo).submit();
 }
 
 function eliminarMotivo(codMotivo) {
-	$("#delete_" + codMotivo).submit();
+    $("#delete_" + codMotivo).submit();
 }

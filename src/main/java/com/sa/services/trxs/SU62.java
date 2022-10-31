@@ -1,12 +1,10 @@
 package com.sa.services.trxs;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.sa.services.Transaction;
-
 import ar.com.bbva.web.IWebClient;
 import ar.com.itrsa.sam.TransactionException;
+import com.sa.services.Transaction;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SU62 extends Transaction {
 

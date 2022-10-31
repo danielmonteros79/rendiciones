@@ -3,97 +3,98 @@ package com.sa.entities;
 import java.util.Date;
 
 public class CuadroDetallado {
-	private Integer id;
-	private String motivo;
-	private String descripcion;
-	private String importe;
-	private String usuario;
-	private String proxUsuario;
-	private Date fechaUltModif;
-	private String codEstado;
-	private String codMotivo;
 
-	public CuadroDetallado() {
+    private Integer id;
+    private String motivo;
+    private String descripcion;
+    private String importe;
+    private String usuario;
+    private String proxUsuario;
+    private Date fechaUltModif;
+    private String codEstado;
+    private String codMotivo;
 
-	}
+    public CuadroDetallado() {
 
-	public String getUsuario() {
-		return usuario;
-	}
+    }
 
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
+    public String getUsuario() {
+        return usuario;
+    }
 
-	public String getProxUsuario() {
-		return proxUsuario;
-	}
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
 
-	public void setProxUsuario(String proxUsuario) {
-		this.proxUsuario = proxUsuario;
-	}
+    public String getProxUsuario() {
+        return proxUsuario;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public void setProxUsuario(String proxUsuario) {
+        this.proxUsuario = proxUsuario;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getMotivo() {
-		return motivo;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setMotivo(String motivo) {
-		this.motivo = motivo;
-	}
+    public String getMotivo() {
+        return motivo;
+    }
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	public String getImporte() {
-		return importe;
-	}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	public void setImporte(String importe) {
-		this.importe = importe;
-	}
+    public String getImporte() {
+        return importe;
+    }
 
-	public String getEstado() {
-		return codEstado;
-	}
+    public void setImporte(String importe) {
+        this.importe = importe;
+    }
 
-	public void setEstado(String codEstado) {
-		this.codEstado = codEstado;
-	}
+    public String getEstado() {
+        return codEstado;
+    }
 
-	public Date getFechaUltModif() {
-		return fechaUltModif;
-	}
+    public void setEstado(String codEstado) {
+        this.codEstado = codEstado;
+    }
 
-	public void setFechaUltModif(Date fechaUltModif) {
-		this.fechaUltModif = fechaUltModif;
-	}
+    public Date getFechaUltModif() {
+        return fechaUltModif;
+    }
 
-	public String getCodMotivo() {
-		return codMotivo;
-	}
+    public void setFechaUltModif(Date fechaUltModif) {
+        this.fechaUltModif = fechaUltModif;
+    }
 
-	public void setCodMotivo(String codMotivo) {
-		this.codMotivo = codMotivo;
-	}
+    public String getCodMotivo() {
+        return codMotivo;
+    }
 
-	public String getCodEstado() {
-		return codEstado;
-	}
+    public void setCodMotivo(String codMotivo) {
+        this.codMotivo = codMotivo;
+    }
 
-	public void setCodEstado(String codEstado) {
-		this.codEstado = codEstado;
-	}
+    public String getCodEstado() {
+        return codEstado;
+    }
+
+    public void setCodEstado(String codEstado) {
+        this.codEstado = codEstado;
+    }
 }

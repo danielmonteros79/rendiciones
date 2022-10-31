@@ -1,29 +1,29 @@
 tr.good td {
-	color: red;
-	font-weight: bold;
+    color: red;
+    font-weight: bold;
 }
 
 tr.bad td {
-	color: blue;
+    color: blue;
 }
 
 td.money {
-	text-align: right;
-	padding-right: 2px;
+    text-align: right;
+    padding-right: 2px;
 }
 
 tr.bad td.money {
-	font-weight: bold;
-	background-color: blue;
-	color: #fff;
+    font-weight: bold;
+    background-color: blue;
+    color: #fff;
 }
 
 td.r,th.r {
-	text-align: right;
-	padding-right: 10px;
+    text-align: right;
+    padding-right: 10px;
 }
 
 tr.total td,tr.subtotal td {
-	background-color: #eee;
-	font-weight: bold;
+    background-color: #eee;
+    font-weight: bold;
 }
