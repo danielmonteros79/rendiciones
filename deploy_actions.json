@@ -1,0 +1,65 @@
+{
+  "pre_actions": [
+    {
+      "script": {
+        "path": "/prod/apps/scripts/opercentral.sh",
+        "params": "stop",
+        "sudo": "true"
+      }
+    },
+    {
+      "script": {
+        "path": "/prod/apps/scripts/opercentral.sh",
+        "params": "borr_class",
+        "sudo": "true"
+      }
+    },
+    {
+      "script": {
+        "path": "/prod/apps/scripts/opercentral.sh",
+        "params": "presync",
+        "sudo": "true"
+      }
+    },
+    {
+      "clean_directory": {
+        "app_name": "opecentral"
+      }
+    }
+  ],
+  "post_actions": [
+    {
+      "extract_war": {
+        "app_name": "opecentral"
+      }
+    },
+    {
+      "script": {
+        "path": "/prod/apps/scripts/opercentral.sh",
+        "params": "cp_files_was",
+        "sudo": "true"
+      }
+    },
+    {
+      "script": {
+        "path": "/prod/apps/scripts/opercentral.sh",
+        "params": "gen_plugin_was",
+        "sudo": "true"
+      }
+    },
+    {
+      "script": {
+        "path": "/prod/apps/scripts/opercentral.sh",
+        "params": "postsync",
+        "sudo": "true"
+      }
+    },
+    {
+      "script": {
+        "path": "/prod/apps/scripts/opercentral.sh",
+        "params": "start",
+        "sudo": "true"
+      }
+    }
+  ]
+}
