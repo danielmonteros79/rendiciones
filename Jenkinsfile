@@ -3,7 +3,7 @@
 run(){
     architecture = 'spring'
     pipeline = {
-        group = 'public_vdc'
+        group = 'publish_vdc'
         revision = '1.9.0'
         vars = [
             execute: 'true',
