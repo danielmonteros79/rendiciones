@@ -6,7 +6,7 @@ run(){
         group = 'publis_vdc'
         revision = '1.9.0'
         vars = [
-            execute: 'false',
+            execute: 'true',
             artifactory_repo_deploy: 'ar-arnd-rendiciones-maven',
             artifactory_repo_releases: 'ar-arnd-rendiciones-maven',
             artifactory_repo_snapshots: 'ar-arnd-rendiciones-maven-dev',
