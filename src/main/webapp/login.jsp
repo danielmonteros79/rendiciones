@@ -17,9 +17,9 @@
 
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/jquery-ui.js"></script>
-        <% if (!(request.getServerName().contains("was80desa1") || request.getServerName().contains("ven-ctx-xapp098"))) { 
+        <% if (!(request.getServerName().contains("was90desa1") || request.getServerName().contains("ven-ctx-xapp098"))) {
                 String ivUser = request.getHeader("iv-user");
-                request.getSession().setAttribute("ivUser", ivUser); 
+                request.getSession().setAttribute("ivUser", ivUser);
         %>
         <script type="text/javascript">
             window.onload = function () {
@@ -29,17 +29,17 @@
         <% } %>
     </head>
     <body>	
-        <% if (request.getServerName().contains("was80desa1") || request.getServerName().contains("ven-ctx-xapp098")) { %>
+        <% if (request.getServerName().contains("was90desa1") || request.getServerName().contains("ven-ctx-xapp098")) { %>
         <div id="capa_madre">
             <div id="headerTop">
                 <div id="fecha">
                     <%
-                            //se formatea la fecha
-                            java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("EEEE dd MMMM yyyy", new Locale("ES"));
-                            String fecha = df.format(new java.util.Date());
-                            String[] v = fecha.split("\\s");
-                            String fechaForm = v[0] + " " + v[1] + " de " + v[2] + " de " + v[3];
-                            out.print(fechaForm);
+                        //se formatea la fecha
+                        java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("EEEE dd MMMM yyyy", new Locale("ES"));
+                        String fecha = df.format(new java.util.Date());
+                        String[] v = fecha.split("\\s");
+                        String fechaForm = v[0] + " " + v[1] + " de " + v[2] + " de " + v[3];
+                        out.print(fechaForm);
                     %>
                 </div>
             </div>
@@ -69,36 +69,36 @@
                                             <td align="right">Usuario :</td>
                                             <% if (request.getAttribute("ivUser") == null) { %>
                                             <td align="left">
-                                        <html:text property="username" style="text-transform:uppercase"/>
-                                        </td>
-                                        <% } else { %>
-                                        <td>
-                                        <html:text property="username"
-                                                   value='<%=request.getAttribute("ivUser").toString().toUpperCase()%>'
-                                                   readonly="true"/>
-                                        </td>
-                                        <% } %>
+                                                <html:text property="username" style="text-transform:uppercase"/>
+                                            </td>
+                                            <% } else { %>
+                                            <td>
+                                                <html:text property="username"
+                                                value='<%=request.getAttribute("ivUser").toString().toUpperCase()%>'
+                                                           readonly="true"/>
+                                            </td>
+                                            <% } %>
                                         </tr>
                                         <tr>
                                             <td align="right">Password :</td>
                                             <td align="left">
-                                        <html:password property="password"/>
-                                        </td>
+                                                <html:password property="password"/>
+                                            </td>
                                         </tr>
                                         <tr>
-                                        <logic:present name="errorLogin">
-                                            <td class="error" colspan="2">
-                                            <bean:write name="errorLogin" />
+                                            <logic:present name="errorLogin">
+                                                <td class="error" colspan="2">
+                                                    <bean:write name="errorLogin" />
+                                                </td>
+                                            </logic:present>
+                                            <td colspan="2" class="error">
+                                                <html:errors />
                                             </td>
-                                        </logic:present>
-                                        <td colspan="2" class="error">
-                                        <html:errors />
-                                        </td>
                                         </tr>
                                         <tr>
                                             <td colspan="2" align="center" >
-                                        <html:submit value="Ingresar" styleClass="buttonContinue" style="margin-right:17%"/>
-                                        </td>
+                                                <html:submit value="Ingresar" styleClass="buttonContinue" style="margin-right:17%"/>
+                                            </td>
                                         </tr>
                                     </html:form>
                                 </table>
@@ -108,6 +108,6 @@
                 </div>
             </div>
         </div>
-        <% } %>
+        <% }%>
     </body>
 </html>
