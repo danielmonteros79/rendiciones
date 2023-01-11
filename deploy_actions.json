@@ -1,65 +1,65 @@
 {
-  "pre_actions": [
-    {
-      "script": {
-        "path": "/prod/apps/scripts/rendiciones.sh",
-        "params": "stop",
-        "sudo": "true"
-      }
-    },
-    {
-      "script": {
-        "path": "/prod/apps/scripts/rendiciones.sh",
-        "params": "borr_class",
-        "sudo": "true"
-      }
-    },
-    {
-      "script": {
-        "path": "/prod/apps/scripts/rendiciones.sh",
-        "params": "presync",
-        "sudo": "true"
-      }
-    },
-    {
-      "clean_directory": {
-        "app_name": "rendiciones"
-      }
-    }
-  ],
-  "post_actions": [
-    {
-      "extract_war": {
-        "app_name": "rendiciones"
-      }
-    },
-    {
-      "script": {
-        "path": "/prod/apps/scripts/rendiciones.sh",
-        "params": "cp_files_was",
-        "sudo": "true"
-      }
-    },
-    {
-      "script": {
-        "path": "/prod/apps/scripts/rendiciones.sh",
-        "params": "gen_plugin_was",
-        "sudo": "true"
-      }
-    },
-    {
-      "script": {
-        "path": "/prod/apps/scripts/rendiciones.sh",
-        "params": "postsync",
-        "sudo": "true"
-      }
-    },
-    {
-      "script": {
-        "path": "/prod/apps/scripts/rendiciones.sh",
-        "params": "start",
-        "sudo": "true"
-      }
-    }
-  ]
+    "pre_actions": [
+        {
+            "script": {
+                "path": "/prod/apps/scripts/rendiciones.sh",
+                "params": "stop",
+                "sudo": "true"
+            }
+        },
+        {
+            "script": {
+                "path": "/prod/apps/scripts/rendiciones.sh",
+                "params": "borr_class",
+                "sudo": "true"
+            }
+        },
+        {
+            "script": {
+                "path": "/prod/apps/scripts/rendiciones.sh",
+                "params": "presync",
+                "sudo": "true"
+            }
+        },
+        {
+            "clean_directory": {
+                "app_name": "rendiciones"
+            }
+        }
+    ],
+    "post_actions": [
+        {
+            "extract_war": {
+                "app_name": "rendiciones"
+            }
+        },
+        {
+            "script": {
+                "path": "/prod/apps/scripts/rendiciones.sh",
+                "params": "cp_files_was",
+                "sudo": "true"
+            }
+        },
+        {
+            "script": {
+                "path": "/prod/apps/scripts/rendiciones.sh",
+                "params": "gen_plugin_was",
+                "sudo": "true"
+            }
+        },
+        {
+            "script": {
+                "path": "/prod/apps/scripts/rendiciones.sh",
+                "params": "postsync",
+                "sudo": "true"
+            }
+        },
+        {
+            "script": {
+                "path": "/prod/apps/scripts/rendiciones.sh",
+                "params": "start",
+                "sudo": "true"
+            }
+        }
+    ]
 }
