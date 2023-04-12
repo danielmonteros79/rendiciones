@@ -11,7 +11,7 @@ run(){
             artifactory_repo_releases: 'ar-arnd-rendiciones-maven',
             artifactory_repo_snapshots: 'ar-arnd-rendiciones-maven-dev',
             path_target: 'target/',
-            vtrack_namespace: 'ar.arnd.app-id-1681329.dsg',
+            vtrack_namespace: 'ar.arnd.app-id-1681329.dsg'
         ]
     }
     email = { object ->
