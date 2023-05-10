@@ -7,7 +7,7 @@
 <%@page import="java.util.*"%>
 <%@page import="com.sa.entities.*"%>
 <head>
-    <script type="text/javascript" src="./js/listadoRendiciones.js"></script>
+    <script type="text/javascript" src="./static/js/listadoRendiciones.js"></script>
 
     <style type="text/css">
         #paginado{

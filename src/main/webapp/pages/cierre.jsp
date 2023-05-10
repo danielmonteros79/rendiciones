@@ -10,7 +10,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script type="text/javascript" src="./js/popUpsOpen.js"></script>
+        <script type="text/javascript" src="./static/js/popUpsOpen.js"></script>
         <script type="text/javascript" src="js/cierre.js"></script>
         <style type="text/css">
             #paginado {

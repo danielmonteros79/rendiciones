@@ -75,6 +75,6 @@
             </display:table>
         </div>
 
-        <script type="text/javascript" src="./js/parametrosGastos.js"></script>
+        <script type="text/javascript" src="./static/js/parametrosGastos.js"></script>
     </body>
 </html>

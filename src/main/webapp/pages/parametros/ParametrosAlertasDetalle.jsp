@@ -199,6 +199,6 @@
         </script>
     </logic:equal>
 
-    <script type="text/javascript" src="./js/parametrosAlertasDetalle.js"></script>
+    <script type="text/javascript" src="./static/js/parametrosAlertasDetalle.js"></script>
 </body>
 </html>

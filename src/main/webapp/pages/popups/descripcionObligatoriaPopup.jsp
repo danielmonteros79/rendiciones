@@ -17,18 +17,18 @@
     <link rel="stylesheet" type='text/css' href="./css/jquery-ui.theme.css" />
     <link rel="stylesheet" type="text/css" href="./css/validation.css">
 
-    <script type="text/javascript" src="./js/jquery.js"></script>
-    <script type="text/javascript" src="./js/jquery-ui.js"></script>
-    <script type="text/javascript" src="./js/jquery.ui.datepicker-es.js"></script>
-    <script type="text/javascript" src="./js/datepicker-settings.js"></script>
-    <script type="text/javascript" src="./js/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="./js/localization/messages_es_AR.js"></script>
-    <script type="text/javascript" src="./js/date-calculator.js"></script>
-    <script type="text/javascript" src="./js/listadoRendiciones.js"></script>
-    <script type="text/javascript" src="./js/descripcionObligatoria.js"></script>
-    <script type="text/javascript" src="./js/popUpDetalleGastos.js"></script>
-    <script type="text/javascript" src="./js/jspdf.min.js"></script>
-    <script type="text/javascript" src="./js/jspdf.plugin.autotable.js"></script>
+    <script type="text/javascript" src="./static/js/jquery.js"></script>
+    <script type="text/javascript" src="./static/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="./static/js/jquery.ui.datepicker-es.js"></script>
+    <script type="text/javascript" src="./static/js/datepicker-settings.js"></script>
+    <script type="text/javascript" src="./static/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="./static/js/localization/messages_es_AR.js"></script>
+    <script type="text/javascript" src="./static/js/date-calculator.js"></script>
+    <script type="text/javascript" src="./static/js/listadoRendiciones.js"></script>
+    <script type="text/javascript" src="./static/js/descripcionObligatoria.js"></script>
+    <script type="text/javascript" src="./static/js/popUpDetalleGastos.js"></script>
+    <script type="text/javascript" src="./static/js/jspdf.min.js"></script>
+    <script type="text/javascript" src="./static/js/jspdf.plugin.autotable.js"></script>
 
     <style>
         body {
