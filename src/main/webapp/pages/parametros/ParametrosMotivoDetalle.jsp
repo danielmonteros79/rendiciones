@@ -232,7 +232,7 @@
             </table>
         </html:form>
 
-        <script type="text/javascript" src="./js/parametrosMotivoDetalle.js"></script>
+        <script type="text/javascript" src="./static/js/parametrosMotivoDetalle.js"></script>
 
         <logic:equal value="alta" name="ParametrosMotivoForm" property="accion">
             <script>

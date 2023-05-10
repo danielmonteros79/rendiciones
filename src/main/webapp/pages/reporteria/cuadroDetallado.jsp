@@ -185,5 +185,5 @@
             </div>
         </logic:equal>
 
-        <script type="text/javascript" src="./js/cuadroDetallado.js"></script>
+        <script type="text/javascript" src="./static/js/cuadroDetallado.js"></script>
     </body>

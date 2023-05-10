@@ -130,6 +130,6 @@
                 });
             </script>
         </logic:equal>
-        <script type="text/javascript" src="./js/parametrosExceptuadosDetalle.js"></script>
+        <script type="text/javascript" src="./static/js/parametrosExceptuadosDetalle.js"></script>
     </body>
 </html>

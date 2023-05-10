@@ -8,9 +8,9 @@
     <%@ taglib uri="/WEB-INF/displaytag.tld" prefix="display"%>
     <%@page import="java.util.*"%>
 
-    <script type="text/javascript" src="./js/rendicionDetalleGastos.js"></script>
-    <script type="text/javascript" src="./js/rendicionDetalle.js"></script>
-    <script type="text/javascript" src="./js/popUpsOpen.js"></script>
+    <script type="text/javascript" src="./static/js/rendicionDetalleGastos.js"></script>
+    <script type="text/javascript" src="./static/js/rendicionDetalle.js"></script>
+    <script type="text/javascript" src="./static/js/popUpsOpen.js"></script>
 
 
     <head>
