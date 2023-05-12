@@ -119,4 +119,4 @@
     </div>
 </html:form>
 
-<script type="text/javascript" src="./js/rendicionAviso.js"></script>
+<script type="text/javascript" src="./static/js/rendicionAviso.js"></script>

@@ -72,6 +72,6 @@
             </display:table>
         </div>
 
-        <script type="text/javascript" src="./js/parametrosMotivo.js"></script> 
+        <script type="text/javascript" src="./static/js/parametrosMotivo.js"></script> 
     </body>
 </html>

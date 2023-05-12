@@ -235,6 +235,6 @@
             </script>
         </logic:equal>
 
-        <script type="text/javascript" src="./js/parametrosGastosDetalle.js"></script>
+        <script type="text/javascript" src="./static/js/parametrosGastosDetalle.js"></script>
     </body>
 </html>

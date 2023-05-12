@@ -85,6 +85,6 @@
                 <display:setProperty name="export.excel.filename" value="ListadoParametrosAlerta.xls"/>
             </display:table>
         </div>
-        <script type="text/javascript" src="./js/parametrosAlertas.js"></script>
+        <script type="text/javascript" src="./static/js/parametrosAlertas.js"></script>
     </body>
 </html>
