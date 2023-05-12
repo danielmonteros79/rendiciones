@@ -22,7 +22,7 @@ class AprobacionFormTest {
     }
 
     @Test
-    @DisplayName("Testeando get motivo rechazo")
+    @DisplayName("Testeando set y get motivo rechazo")
     void getMotivoRechazo() {
         aprobacionFormReal.setMotivoRechazo("Motivo de rechazo");
         String motivoRechazo = aprobacionFormReal.getMotivoRechazo();
@@ -34,46 +34,65 @@ class AprobacionFormTest {
     }
 
     @Test
-    void setMotivoRechazo() {
-    }
-
-    @Test
+    @DisplayName("Testeando set y get id")
     void getId() {
+        aprobacionFormReal.setId(1);
+        Integer id = aprobacionFormReal.getId();
+
+        assertAll(
+                () -> assertNotNull(id),
+                () -> assertEquals(1, id)
+        );
     }
 
-    @Test
-    void setId() {
-    }
 
     @Test
+    @DisplayName("Testeando set y get estado")
     void getEstado() {
+        aprobacionFormReal.setEstado("Estado");
+        String estado = aprobacionFormReal.getEstado();
+
+        assertAll(
+                () -> assertNotNull(estado),
+                () -> assertEquals("Estado", estado)
+        );
     }
 
     @Test
-    void setEstado() {
-    }
-
-    @Test
+    @DisplayName("Testeando set y get check")
     void getCheck() {
+        aprobacionFormReal.setCheck("Check");
+        String check = aprobacionFormReal.getCheck();
+
+        assertAll(
+                () -> assertNotNull(check),
+                () -> assertEquals("Check", check)
+        );
     }
 
     @Test
-    void setCheck() {
-    }
-
-    @Test
-    void setGlg() {
-    }
-
-    @Test
+    @DisplayName("Testeando set y get glg")
     void getGlg() {
+        aprobacionFormReal.setGlg("glg");
+        String glg = aprobacionFormReal.getGlg();
+
+        assertAll(
+                () -> assertNotNull(glg),
+                () -> assertEquals("glg", glg)
+        );
     }
 
+
     @Test
+    @DisplayName("Testeando set y get cmbo motivo")
     void getCmboMotivo() {
+        aprobacionFormReal.setCmboMotivo("cmboMotivo");
+        String cmboMotivo = aprobacionFormReal.getCmboMotivo();
+
+        assertAll(
+                () -> assertNotNull(cmboMotivo),
+                () -> assertEquals("cmboMotivo", cmboMotivo)
+        );
     }
 
-    @Test
-    void setCmboMotivo() {
-    }
 }
