@@ -8,20 +8,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class ParametrosGastosFormTest {
 
     private ParametrosGastosForm form;
-
-    @Mock
-    private ParametrosGastosForm mockedForm;
 
     @BeforeEach
     void setup(){
@@ -120,23 +120,31 @@ class ParametrosGastosFormTest {
 
     @Test
     @DisplayName("Testeando set y get CentrosCostoList")
-    @Disabled
-    void setCentrosCostoList() {
 
-        form.setCentrosCostoList(new ArrayList<String>());
-        verify(mockedForm,times(1)).setCentrosCostoList(new ArrayList<String>());
-        //verify(samWebClient, times(1)).getGastosCombos(anyString(), anyString(), anyString());
+    void setCentrosCostoList() {
+        List<String> cdCostoList = new ArrayList<>();
+        cdCostoList.add("cdCosto1");
+        cdCostoList.add("cdCosto2");
+        form.setCentrosCostoList(cdCostoList);
+        List<String> resultTest = form.getCentrosCosto();
+        assertAll(
+                ()->assertNotNull(resultTest),
+                ()->assertEquals(resultTest,cdCostoList)
+        );
     }
 
     @Test
     @DisplayName("Testeando set y get CentrosCostoI")
-    @Disabled("roto")
+    @Disabled("No puede probarse debido a que no se puede settear la lista ya que es una variable privada de la clase original")
     void setCentrosCostoI() {
+
         //form.setCentrosCostoI(1,"");
+
         String resultTest = form.getCentrosCostoI(1);
+
         assertAll(
                 ()->assertNotNull(resultTest),
-                ()->assertEquals(resultTest,form.getCentrosCostoI(1))
+                ()->assertEquals(resultTest,"")
         );
     }
 }
