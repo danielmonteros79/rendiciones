@@ -1,5 +1,6 @@
 package com.sa.util;
 
+import com.sa.util.GlobalConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
