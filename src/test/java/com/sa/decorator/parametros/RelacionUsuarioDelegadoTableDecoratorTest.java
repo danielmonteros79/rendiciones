@@ -58,7 +58,7 @@ class RelacionUsuarioDelegadoTableDecoratorTest {
         Date fdesde = new Date();
         Date fhasta = new Date();
 
-        String resultTest1 = "<form method='post' id='delete_1' action='contextPath/execAbmDelegaciones.do' style='display:none;'><input type='hidden' name='delegadoUser' value='user'/><input type='hidden' name='opcion' value='BAJA'/><input type='hidden' name='feDesde' value='19-05-2023'/><input type='hidden' name='feHasta' value='19-05-2023'/></form><a href='#' onclick='eliminar(1)'><img src='contextPath/images/iconos/borrar.png' alt='Eliminar' title='Eliminar' border='0'/></a>";
+        String resultTest1 = "<form method='post' id='delete_1' action='contextPath/execAbmDelegaciones.do' style='display:none;'><input type='hidden' name='delegadoUser' value='user'/><input type='hidden' name='opcion' value='BAJA'/><input type='hidden' name='feDesde' value='22-05-2023'/><input type='hidden' name='feHasta' value='22-05-2023'/></form><a href='#' onclick='eliminar(1)'><img src='contextPath/images/iconos/borrar.png' alt='Eliminar' title='Eliminar' border='0'/></a>";
         String resultTest2 = "";
 
         return Stream.of(
