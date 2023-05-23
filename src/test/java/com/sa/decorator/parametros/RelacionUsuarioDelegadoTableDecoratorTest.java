@@ -13,6 +13,7 @@ import org.mockito.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 import javax.swing.table.TableModel;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -54,11 +55,11 @@ class RelacionUsuarioDelegadoTableDecoratorTest {
 
     public static Stream<Arguments> getBorrarLinkSource() {
         ParametriaUsuarioDelegado param = new ParametriaUsuarioDelegado();
-
+        SimpleDateFormat sdfYMD = new SimpleDateFormat("dd-MM-yyyy");
         Date fdesde = new Date();
         Date fhasta = new Date();
 
-        String resultTest1 = "<form method='post' id='delete_1' action='contextPath/execAbmDelegaciones.do' style='display:none;'><input type='hidden' name='delegadoUser' value='user'/><input type='hidden' name='opcion' value='BAJA'/><input type='hidden' name='feDesde' value='22-05-2023'/><input type='hidden' name='feHasta' value='22-05-2023'/></form><a href='#' onclick='eliminar(1)'><img src='contextPath/images/iconos/borrar.png' alt='Eliminar' title='Eliminar' border='0'/></a>";
+        String resultTest1 = "<form method='post' id='delete_1' action='contextPath/execAbmDelegaciones.do' style='display:none;'><input type='hidden' name='delegadoUser' value='user'/><input type='hidden' name='opcion' value='BAJA'/><input type='hidden' name='feDesde' value='"+sdfYMD.format(fdesde) +"'/><input type='hidden' name='feHasta' value='"+sdfYMD.format(fhasta) +"'/></form><a href='#' onclick='eliminar(1)'><img src='contextPath/images/iconos/borrar.png' alt='Eliminar' title='Eliminar' border='0'/></a>";
         String resultTest2 = "";
 
         return Stream.of(
