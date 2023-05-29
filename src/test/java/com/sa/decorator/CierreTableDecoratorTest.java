@@ -75,7 +75,7 @@ class CierreTableDecoratorTest {
     }
 
     @Test
-    @Disabled
+    @DisplayName("Testeando getThubanLink")
     void getThubanLink() {
         String linkThuban = "";
         when(pageContext.getRequest()).thenReturn(httpServletRequest);
@@ -141,5 +141,14 @@ class CierreTableDecoratorTest {
 
     @Test
     void getOpciones() {
+        String linkThuban = "";
+        when(pageContext.getRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getContextPath()).thenReturn("contextPath");
+        when(pageContext.getRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getContextPath()).thenReturn("contextPath");
+        when(httpServletRequest.getSession()).thenReturn(session);
+        when(session.getServletContext()).thenReturn(context);
+        when(context.getAttribute("rendicion.link.thuban")).thenReturn(linkThuban);
+        String result = decorator.getOpciones();
     }
 }
