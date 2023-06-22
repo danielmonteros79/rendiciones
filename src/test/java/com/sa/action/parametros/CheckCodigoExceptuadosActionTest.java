@@ -125,7 +125,7 @@ class CheckCodigoExceptuadosActionTest {
           jsonObjectMockedStatic.when(() -> JSONObject.fromObject(respHashMap)).thenReturn(jsonObjectMocked);
 
           //then
-          ActionForward actionForward = checkCodigoExceptuadosAction.executeAction(actionMapping, form, samApplication, samClient, request, response);
+          ActionForward actionForward = checkCodigoExceptuadosAction.executeAction(actionMapping, form, samApplication, samClient, request, response); // TODO Mock HttpServletResponse
           assertNotNull(actionForward);
         }
       }
