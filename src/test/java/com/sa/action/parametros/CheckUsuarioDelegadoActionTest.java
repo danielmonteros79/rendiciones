@@ -117,6 +117,7 @@ class CheckUsuarioDelegadoActionTest {
 
   @BeforeEach
   void setUp() {
+    MockitoAnnotations.openMocks(this);
   }
 
   @Disabled("Line 61 throws UnsupportedOperationException: JsonObject is null")
@@ -138,7 +139,7 @@ class CheckUsuarioDelegadoActionTest {
         try (MockedStatic<JSONObject> jsonObjectMockedStatic = mockStatic(JSONObject.class)) {
           jsonObjectMockedStatic.when(() -> JSONObject.fromObject(respHashMap)).thenReturn(jsonObjectMocked);
           //then
-          ActionForward actionForward = checkUsuarioDelegadoAction.executeAction(actionMapping, form, samApplication, samClient, request, response);
+          ActionForward actionForward = checkUsuarioDelegadoAction.executeAction(actionMapping, form, samApplication, samClient, request, response); // TODO Mock HttpServletResponse
           assertNotNull(actionForward);
         }
       }
