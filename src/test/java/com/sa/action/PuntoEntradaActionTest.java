@@ -50,7 +50,7 @@ class PuntoEntradaActionTest {
         })) {
             ActionForward result = puntoEntradaAction.executeAction(mapping, loginForm, null, null, request, null);
 
-            if(request.getAttribute("errores") != null) {
+            if(request.getSession().getAttribute("userWorking") == null) {
                 Assertions.assertEquals("failure", result.getName());
             } else {
                 Assertions.assertEquals("success", result.getName());
@@ -66,6 +66,7 @@ class PuntoEntradaActionTest {
         LoginForm loginForm3 = new LoginForm();
         MockHttpServletRequest request = new MockHttpServletRequest();
         ActionMapping mapping = new ActionMapping();
+        ActionMapping mapping2 = new ActionMapping();
         Usuario usuario = new Usuario("id","name", "lastname", 1, "password", new ArrayList<>());
         Usuario usuarioNull = null;
         MockHttpSession session = new MockHttpSession();
@@ -81,13 +82,13 @@ class PuntoEntradaActionTest {
         loginForm3.setPassword(null);
 
         mapping.addForwardConfig(new ActionForward("failure", "path1", false));
-        mapping.addForwardConfig(new ActionForward("success", "path1", false));
+        mapping2.addForwardConfig(new ActionForward("success", "path2", false));
 
         return Stream.of(
             Arguments.of(loginForm2, request, usuario,mapping),
             Arguments.of(loginForm, request, usuarioNull,mapping),
             Arguments.of(loginForm3, request, usuario,mapping),
-            Arguments.of(loginForm, request, usuario,mapping)
+            Arguments.of(loginForm, request, usuario,mapping2)
         );
     }
 

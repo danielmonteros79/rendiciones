@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.FileNotFoundException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ class ParametrosAlertasDetalleLoadActionTest {
     List<Usuario> delegados = new ArrayList<>();
     RelacionUsuarioDelegadoForm form = new RelacionUsuarioDelegadoForm();
     ServletContext servletContext = new MockServletContext();
-    PrintWriter printWriter = new PrintWriter("file");
+    PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(System.out));
 
     ParametrosAlertasForm parametrosAlertasFormAlta = new ParametrosAlertasForm();
     parametrosAlertasFormAlta.setAccion("alta");
@@ -217,7 +218,7 @@ class ParametrosAlertasDetalleLoadActionTest {
 
   public static Stream<Arguments> selectMotivoSource() throws FileNotFoundException {
     //given
-    PrintWriter printWriter = new PrintWriter("file");
+    PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(System.out));
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addParameter("codMotivo", null);
     MockHttpServletRequest request2 = new MockHttpServletRequest();
