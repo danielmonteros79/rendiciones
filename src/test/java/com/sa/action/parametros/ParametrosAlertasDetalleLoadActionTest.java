@@ -9,17 +9,13 @@ import com.sa.form.parametros.ParametrosAlertasForm;
 import com.sa.form.parametros.RelacionUsuarioDelegadoForm;
 import com.sa.services.ParametrosService;
 import com.sa.util.ParamsConstants;
-import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.config.ActionConfig;
-import org.apache.struts.config.ForwardConfig;
 import org.apache.struts.mock.MockHttpServletRequest;
 import org.apache.struts.mock.MockHttpServletResponse;
 import org.apache.struts.mock.MockHttpSession;
 import org.apache.struts.mock.MockServletContext;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -36,20 +34,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
-@RunWith(MockitoJUnitRunner.class)
+
 @ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class ParametrosAlertasDetalleLoadActionTest {
 
   @Mock
@@ -217,12 +215,33 @@ class ParametrosAlertasDetalleLoadActionTest {
     return Stream.of(Arguments.of(parametrosAlertasForm, parametroAlerta));
   }
 
+  public static Stream<Arguments> selectMotivoSource() throws FileNotFoundException {
+    //given
+    PrintWriter printWriter = new PrintWriter("file");
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.addParameter("codMotivo", null);
+    MockHttpServletRequest request2 = new MockHttpServletRequest();
+    request2.addParameter("codMotivo", "MOTIVO");
+
+    ComboOpcion comboOpcion = new ComboOpcion();
+    comboOpcion.setId("55");
+    comboOpcion.setDescripcion("Descripcion");
+    List<ComboOpcion> comboListGasto = new ArrayList<>();
+    comboListGasto.add(comboOpcion);
+
+    Map<String, List<ComboOpcion>> motivoGastoHashMap = new HashMap<>();
+    motivoGastoHashMap.put("MOTIVO", comboListGasto);
+
+    return Stream.of(Arguments.of(printWriter, request, comboListGasto, motivoGastoHashMap),
+        Arguments.of(printWriter, request2, comboListGasto, motivoGastoHashMap));
+  }
+
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
   }
 
-  @Disabled("Unnecessary stubbing")
+
   @ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should determine what action perform")
@@ -258,6 +277,43 @@ class ParametrosAlertasDetalleLoadActionTest {
 
     assertAll(() -> assertNotNull(parametroAlerta),
         () -> assertNotNull(parametrosAlertasForm));
+  }
+
+  @ParameterizedTest
+  @MethodSource("selectMotivoSource")
+  @DisplayName("Should check codMotivo in request")
+  void shouldCheckCodMotivoInRequest(PrintWriter printWriter, MockHttpServletRequest request,
+                                     List<ComboOpcion> comboOpcionListGasto, Map<String, List<ComboOpcion>> motivoGastoHashMap) throws Exception {
+    //given
+    parametrosAlertasDetalleLoadAction.cmbGasto = comboOpcionListGasto;
+    parametrosAlertasDetalleLoadAction.mapMotivoGastos = motivoGastoHashMap;
+    //then
+    Method selectMotivoMocked = ParametrosAlertasDetalleLoadAction.class.getDeclaredMethod("selectMotivo", PrintWriter.class, HttpServletRequest.class);
+    selectMotivoMocked.setAccessible(true);
+    selectMotivoMocked.invoke(parametrosAlertasDetalleLoadAction, printWriter, request);
+
+    assertAll(() -> assertNotNull(printWriter),
+        () -> assertNotNull(request),
+        () -> assertNotNull(comboOpcionListGasto),
+        () -> assertNotNull(motivoGastoHashMap));
+  }
+
+  @ParameterizedTest
+  @MethodSource("selectMotivoSource")
+  @DisplayName("Should save GastoMotivo")
+  void shouldSaveGastoMotivo(PrintWriter printWriter, MockHttpServletRequest request,
+                             List<ComboOpcion> comboOpcionListGasto, Map<String, List<ComboOpcion>> motivoGastoHashMap) throws Exception {
+    //given
+    parametrosAlertasDetalleLoadAction.mapMotivoGastos = motivoGastoHashMap;
+    //then
+    Method selectMotivoMocked = ParametrosAlertasDetalleLoadAction.class.getDeclaredMethod("selectGasto", PrintWriter.class, HttpServletRequest.class);
+    selectMotivoMocked.setAccessible(true);
+    selectMotivoMocked.invoke(parametrosAlertasDetalleLoadAction, printWriter, request);
+
+    assertAll(() -> assertNotNull(printWriter),
+        () -> assertNotNull(request),
+        () -> assertNotNull(comboOpcionListGasto),
+        () -> assertNotNull(motivoGastoHashMap));
   }
 
 }
