@@ -62,7 +62,6 @@ class CheckCodigoExceptuadosActionTest {
     HttpSession httpSession = new MockHttpSession();
     SAMWebClient samWebClient = new SAMWebClient();
     MockHttpServletRequest request = new MockHttpServletRequest();
-    MockHttpServletResponse response = new MockHttpServletResponse();
     List<Usuario> delegados = new ArrayList<>();
     RelacionUsuarioDelegadoForm form = new RelacionUsuarioDelegadoForm();
     ServletContext servletContext = new MockServletContext();
@@ -112,8 +111,66 @@ class CheckCodigoExceptuadosActionTest {
     respHashMap.put("descripcion", "Description message");
     respHashMap.put("error", "Error message");
 
-    return Stream.of(Arguments.of(actionMapping, samWebApplication, samWebClient, request, form, respHashMap, printWriter)
-    );
+    return Stream.of(Arguments.of(actionMapping, samWebApplication, samWebClient, request, form, respHashMap, printWriter));
+  }
+
+  public static Stream<Arguments> executeActionExceptionSource() {
+    //given
+    ActionMapping actionMapping = new ActionMapping();
+    SAMWebApplication samWebApplication = new SAMWebApplication();
+    HttpSession httpSession = new MockHttpSession();
+    SAMWebClient samWebClient = new SAMWebClient();
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    List<Usuario> delegados = new ArrayList<>();
+    RelacionUsuarioDelegadoForm form = new RelacionUsuarioDelegadoForm();
+    ServletContext servletContext = new MockServletContext();
+
+    Usuario usuario2 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
+    Usuario usuario3 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
+
+    delegados.add(usuario2);
+    delegados.add(usuario3);
+
+    Usuario usuario = new Usuario("55", "2", "Luis Machado", 77, "2c", delegados);
+
+    request.getSession().setAttribute("usuario", usuario);
+    request.addParameter("desMotivo", "except1");
+    request.addParameter("motivoUsuario", "usuario");
+
+    form.setOpcion(ParamsConstants.SU81_MODIFICACION);
+    form.setUsuario("");
+    form.setDelegadoUser("");
+    form.setFeDesde("2000/01/01");
+    form.setFeHasta("2000/01/01");
+    form.setInforme("");
+    form.setAccion("");
+    form.setEstado("");
+    form.setFechaAlta("2000/01/01");
+    form.setUserAlta("userAlta");
+    form.setFeDesdeOld("2023/01/01");
+    form.setFeHastaOld("2023/01/01");
+
+    request.setAttribute("usuario", usuario);
+    request.setAttribute("usuario", usuario);
+
+    samWebClient.setSession(httpSession);
+    samWebClient.setLoginOk(true);
+    samWebClient.setId("55");
+    samWebClient.setAttribute("usuario", usuario);
+
+    samWebApplication.setContext(servletContext);
+    samWebApplication.setClientClass("");
+    samWebApplication.setAttribute("usuario", usuario);
+
+    Map<String, Object> respHashMap = new HashMap<>();
+    respHashMap.put("opcion", "CONS");
+    respHashMap.put("mot_usu", "except1");
+    respHashMap.put("cod_usuario", "55");
+    respHashMap.put("cod_mot_usu", "U");
+    respHashMap.put("descripcion", "Description message");
+    respHashMap.put("error", "Error message");
+
+    return Stream.of(Arguments.of(actionMapping, samWebApplication, samWebClient, request, form, respHashMap));
   }
 
   @BeforeEach
@@ -133,7 +190,7 @@ class CheckCodigoExceptuadosActionTest {
       doNothing().when(mockManagerTransaction).executeTrx(samWebClient, respHashMap);
     })) {
       try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class, (mockParametrosService, context) -> {
-        when(mockParametrosService.getCodigoExceptuado("55", "except1", "M")).thenReturn("");
+        when(mockParametrosService.getCodigoExceptuado("55", "except1", "M")).thenReturn("test");
       })) {
         try (MockedStatic<JSONObject> jsonObjectMockedStatic = mockStatic(JSONObject.class)) {
           jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any())).thenReturn(jsonObjectMocked);
@@ -144,6 +201,35 @@ class CheckCodigoExceptuadosActionTest {
           ActionForward actionForward = checkCodigoExceptuadosAction.executeAction(actionMapping, relacionUsuarioDelegadoForm,
               samApplication, samClient, request, httpServletResponse);
           assertNull(actionForward);
+        }
+      }
+    }
+  }
+
+  @ParameterizedTest
+  @MethodSource("executeActionExceptionSource")
+  @DisplayName("Should throw an Exception")
+  void shouldThrowAnException(ActionMapping actionMapping, SAMWebApplication samApplication,
+                                        SAMWebClient samClient, MockHttpServletRequest request,
+                                        RelacionUsuarioDelegadoForm relacionUsuarioDelegadoForm,
+                                        Map<String, Object> respHashMap) {
+    //when
+    try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class, (mockManagerTransaction, context) -> {
+      doNothing().when(mockManagerTransaction).executeTrx(samWebClient, respHashMap);
+    })) {
+      try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class, (mockParametrosService, context) -> {
+        when(mockParametrosService.getCodigoExceptuado("55", "except1", "M")).thenReturn("test");
+      })) {
+        try (MockedStatic<JSONObject> jsonObjectMockedStatic = mockStatic(JSONObject.class)) {
+          jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any())).thenReturn(jsonObjectMocked);
+          jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any(), any())).thenReturn(jsonObjectMocked);
+
+          //then
+          assertThrows(Exception.class, () -> {
+            checkCodigoExceptuadosAction.executeAction(actionMapping, relacionUsuarioDelegadoForm,
+                samApplication, samClient, request, httpServletResponse);
+          }, "Did not throw an Exception");
+
         }
       }
     }
