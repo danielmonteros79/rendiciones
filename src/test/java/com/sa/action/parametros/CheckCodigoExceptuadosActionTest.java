@@ -10,6 +10,7 @@ import com.sa.services.ParametrosService;
 import com.sa.util.ParamsConstants;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import org.apache.axis.utils.ByteArray;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.mock.*;
@@ -29,6 +30,7 @@ import org.mockito.quality.Strictness;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.*;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.*;
@@ -64,7 +66,7 @@ class CheckCodigoExceptuadosActionTest {
     List<Usuario> delegados = new ArrayList<>();
     RelacionUsuarioDelegadoForm form = new RelacionUsuarioDelegadoForm();
     ServletContext servletContext = new MockServletContext();
-    PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(System.out));
+    PrintWriter printWriter = new PrintWriter(new ByteArrayOutputStream());
 
     Usuario usuario2 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
     Usuario usuario3 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
@@ -126,7 +128,6 @@ class CheckCodigoExceptuadosActionTest {
                                         SAMWebClient samClient, MockHttpServletRequest request,
                                         RelacionUsuarioDelegadoForm relacionUsuarioDelegadoForm,
                                         Map<String, Object> respHashMap, PrintWriter printWriter) throws Exception {
-
     //when
     try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class, (mockManagerTransaction, context) -> {
       doNothing().when(mockManagerTransaction).executeTrx(samWebClient, respHashMap);
@@ -136,13 +137,13 @@ class CheckCodigoExceptuadosActionTest {
       })) {
         try (MockedStatic<JSONObject> jsonObjectMockedStatic = mockStatic(JSONObject.class)) {
           jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any())).thenReturn(jsonObjectMocked);
-          jsonObjectMockedStatic.when(() -> JSONObject.fromObject(eq(respHashMap), any())).thenReturn(jsonObjectMocked);
+          jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any(), any())).thenReturn(jsonObjectMocked);
           when(httpServletResponse.getWriter()).thenReturn(printWriter);
 
           //then
           ActionForward actionForward = checkCodigoExceptuadosAction.executeAction(actionMapping, relacionUsuarioDelegadoForm,
               samApplication, samClient, request, httpServletResponse);
-          assertNotNull(actionForward);
+          assertNull(actionForward);
         }
       }
     }

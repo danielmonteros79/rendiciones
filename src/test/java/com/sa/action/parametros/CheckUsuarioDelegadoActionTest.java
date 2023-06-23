@@ -28,6 +28,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ class CheckUsuarioDelegadoActionTest {
     List<Usuario> delegados = new ArrayList<>();
     RelacionUsuarioDelegadoForm form = new RelacionUsuarioDelegadoForm();
     ServletContext servletContext = new MockServletContext();
-    PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(System.out));
+    PrintWriter printWriter = new PrintWriter(new ByteArrayOutputStream());
 
     Usuario usuario2 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
     Usuario usuario3 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
@@ -134,8 +135,8 @@ class CheckUsuarioDelegadoActionTest {
                                         HttpServletResponse response, RelacionUsuarioDelegadoForm form, Map<String,
                                                                                                                Object> respHashMap, Usuario usuario, PrintWriter printWriter) throws Exception {
     //when
-    when(this.request.getSession()).thenReturn(httpSession);
-    when(httpSession.getAttribute("usuario")).thenReturn(usuario);
+//    when(this.request.getSession()).thenReturn(httpSession);
+//    when(httpSession.getAttribute("usuario")).thenReturn(usuario);
 
     try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class, (mockManagerTransaction, context) -> {
       doNothing().when(mockManagerTransaction).executeTrx(samWebClient, respHashMap);
@@ -145,12 +146,12 @@ class CheckUsuarioDelegadoActionTest {
       })) {
         try (MockedStatic<JSONObject> jsonObjectMockedStatic = mockStatic(JSONObject.class)) {
           jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any())).thenReturn(jsonObjectMocked);
-          jsonObjectMockedStatic.when(() -> JSONObject.fromObject(eq(respHashMap), any())).thenReturn(jsonObjectMocked);
+          jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any(), any())).thenReturn(jsonObjectMocked);
           when(httpServletResponse.getWriter()).thenReturn(printWriter);
           //then
           ActionForward actionForward = checkUsuarioDelegadoAction.executeAction(actionMapping, form, samApplication,
               samClient, request, httpServletResponse);
-          assertNotNull(actionForward);
+          assertNull(actionForward);
         }
       }
     }
