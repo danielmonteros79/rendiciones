@@ -28,6 +28,7 @@ import org.mockito.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -142,7 +143,7 @@ class RendicionLoadActionTest {
         combo.setCostosDestino("costosDestino");
         list.add(combo);
 
-        PrintWriter printWriter = new PrintWriter("string");
+        PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(System.out));
 
         return Stream.of(
                 Arguments.of(mapping,request,list,printWriter ),
