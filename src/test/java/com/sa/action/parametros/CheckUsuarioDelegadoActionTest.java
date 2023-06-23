@@ -28,6 +28,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +55,9 @@ class CheckUsuarioDelegadoActionTest {
   @Mock
   HttpSession httpSession;
 
+  @Mock
+  HttpServletResponse httpServletResponse;
+
   @InjectMocks
   CheckUsuarioDelegadoAction checkUsuarioDelegadoAction;
 
@@ -66,6 +72,7 @@ class CheckUsuarioDelegadoActionTest {
     List<Usuario> delegados = new ArrayList<>();
     RelacionUsuarioDelegadoForm form = new RelacionUsuarioDelegadoForm();
     ServletContext servletContext = new MockServletContext();
+    PrintWriter printWriter = new PrintWriter(new ByteArrayOutputStream());
 
     Usuario usuario2 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
     Usuario usuario3 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
@@ -112,7 +119,8 @@ class CheckUsuarioDelegadoActionTest {
     respHashMap.put("delegadoCentroCosto", usuario.getCcostos());
     respHashMap.put("delegadoSector", usuario.getSector());
 
-    return Stream.of(Arguments.of(actionMapping, samWebApplication, samWebClient, request, response, form, respHashMap, usuario));
+    return Stream.of(Arguments.of(actionMapping, samWebApplication, samWebClient, request, response, form,
+        respHashMap, usuario, printWriter));
   }
 
   @BeforeEach
@@ -120,15 +128,15 @@ class CheckUsuarioDelegadoActionTest {
     MockitoAnnotations.openMocks(this);
   }
 
-  @Disabled("Line 61 throws UnsupportedOperationException: JsonObject is null")
   @ParameterizedTest
   @MethodSource("executeActionSource")
-  @DisplayName("Should determine what action perform")  //TODO linea 61 lanza UnsupportedOperationException -> JsonObject is null
+  @DisplayName("Should determine what action perform")
   void shouldDetermineWhatActionPerform(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, HttpServletRequest request,
-                                        HttpServletResponse response, RelacionUsuarioDelegadoForm form, Map<String, Object> respHashMap, Usuario usuario) throws Exception {
+                                        HttpServletResponse response, RelacionUsuarioDelegadoForm form, Map<String,
+                                                                                                               Object> respHashMap, Usuario usuario, PrintWriter printWriter) throws Exception {
     //when
-    when(this.request.getSession()).thenReturn(httpSession);
-    when(httpSession.getAttribute("usuario")).thenReturn(usuario);
+//    when(this.request.getSession()).thenReturn(httpSession);
+//    when(httpSession.getAttribute("usuario")).thenReturn(usuario);
 
     try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class, (mockManagerTransaction, context) -> {
       doNothing().when(mockManagerTransaction).executeTrx(samWebClient, respHashMap);
@@ -137,10 +145,13 @@ class CheckUsuarioDelegadoActionTest {
         when(mockParametrosService.getUsuarioDelegacion("55", ParamsConstants.SU81_CONSULTA)).thenReturn(usuario);
       })) {
         try (MockedStatic<JSONObject> jsonObjectMockedStatic = mockStatic(JSONObject.class)) {
-          jsonObjectMockedStatic.when(() -> JSONObject.fromObject(respHashMap)).thenReturn(jsonObjectMocked);
+          jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any())).thenReturn(jsonObjectMocked);
+          jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any(), any())).thenReturn(jsonObjectMocked);
+          when(httpServletResponse.getWriter()).thenReturn(printWriter);
           //then
-          ActionForward actionForward = checkUsuarioDelegadoAction.executeAction(actionMapping, form, samApplication, samClient, request, response); // TODO Mock HttpServletResponse
-          assertNotNull(actionForward);
+          ActionForward actionForward = checkUsuarioDelegadoAction.executeAction(actionMapping, form, samApplication,
+              samClient, request, httpServletResponse);
+          assertNull(actionForward);
         }
       }
     }
