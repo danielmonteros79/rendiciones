@@ -44,16 +44,10 @@ import static org.mockito.Mockito.*;
 class CheckUsuarioDelegadoActionTest {
 
   @Mock
-  HttpServletRequest request;
-
-  @Mock
   SAMWebClient samWebClient;
 
   @Mock
   JSONObject jsonObjectMocked;
-
-  @Mock
-  HttpSession httpSession;
 
   @Mock
   HttpServletResponse httpServletResponse;
@@ -119,7 +113,7 @@ class CheckUsuarioDelegadoActionTest {
     respHashMap.put("delegadoCentroCosto", usuario.getCcostos());
     respHashMap.put("delegadoSector", usuario.getSector());
 
-    return Stream.of(Arguments.of(actionMapping, samWebApplication, samWebClient, request, response, form,
+    return Stream.of(Arguments.of(actionMapping, samWebApplication, samWebClient, request, form,
         respHashMap, usuario, printWriter));
   }
 
@@ -132,12 +126,8 @@ class CheckUsuarioDelegadoActionTest {
   @MethodSource("executeActionSource")
   @DisplayName("Should determine what action perform")
   void shouldDetermineWhatActionPerform(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, HttpServletRequest request,
-                                        HttpServletResponse response, RelacionUsuarioDelegadoForm form, Map<String,
-                                                                                                               Object> respHashMap, Usuario usuario, PrintWriter printWriter) throws Exception {
+                                        RelacionUsuarioDelegadoForm relacionUsuarioDelegadoForm, Map<String, Object> respHashMap, Usuario usuario, PrintWriter printWriter) throws Exception {
     //when
-//    when(this.request.getSession()).thenReturn(httpSession);
-//    when(httpSession.getAttribute("usuario")).thenReturn(usuario);
-
     try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class, (mockManagerTransaction, context) -> {
       doNothing().when(mockManagerTransaction).executeTrx(samWebClient, respHashMap);
     })) {
@@ -149,7 +139,7 @@ class CheckUsuarioDelegadoActionTest {
           jsonObjectMockedStatic.when(() -> JSONObject.fromObject(any(), any())).thenReturn(jsonObjectMocked);
           when(httpServletResponse.getWriter()).thenReturn(printWriter);
           //then
-          ActionForward actionForward = checkUsuarioDelegadoAction.executeAction(actionMapping, form, samApplication,
+          ActionForward actionForward = checkUsuarioDelegadoAction.executeAction(actionMapping, relacionUsuarioDelegadoForm, samApplication,
               samClient, request, httpServletResponse);
           assertNull(actionForward);
         }

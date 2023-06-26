@@ -247,21 +247,23 @@ class ParametrosAlertasDetalleLoadActionTest {
   @MethodSource("executeActionSource")
   @DisplayName("Should determine what action perform")
   void shouldDetermineWhatActionPerform(ActionMapping actionMapping, SAMWebApplication samApplication,
-                                        SAMWebClient samClient, MockHttpServletRequest request, List<String> comboList, PrintWriter printWriter, ParametrosAlertasForm parametrosAlertasForm, ActionForward actionForward2, ParametroAlerta parametroAlerta) throws Exception {
+                                        SAMWebClient samClient, MockHttpServletRequest request, List<String> comboList,
+                                        PrintWriter printWriter, ParametrosAlertasForm parametrosAlertasForm, ActionForward actionForward,
+                                        ParametroAlerta parametroAlerta) throws Exception {
     //when
     try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class, (mockParametrosService, context) -> {
       when(mockParametrosService.getAlertaCombos()).thenReturn(comboList);
       when(mockParametrosService.getMsgAviso()).thenReturn("This is a message");
       when(mockParametrosService.getAlerta("CONS", "MOTIVO", "GASTO", "22/06/2023")).thenReturn(parametroAlerta);
       when(httpServletResponse.getWriter()).thenReturn(printWriter);
-      when(actionMappingMocked.findForward(parametrosAlertasForm.getAccion())).thenReturn(actionForward2);
+      when(actionMappingMocked.findForward(parametrosAlertasForm.getAccion())).thenReturn(actionForward);
     })) {
       //then
-      ActionForward actionForward = parametrosAlertasDetalleLoadAction.executeAction(actionMapping, parametrosAlertasForm, samApplication, samClient, request, httpServletResponse);
+      ActionForward actionForwardToAssert = parametrosAlertasDetalleLoadAction.executeAction(actionMapping, parametrosAlertasForm, samApplication, samClient, request, httpServletResponse);
       if (request.getParameter("accion").equals("selectMotivo") || request.getParameter("accion").equals("selectGasto")) {
-        assertNull(actionForward);
+        assertNull(actionForwardToAssert);
       } else {
-        assertNotNull(actionForward);
+        assertNotNull(actionForwardToAssert);
       }
     }
   }
