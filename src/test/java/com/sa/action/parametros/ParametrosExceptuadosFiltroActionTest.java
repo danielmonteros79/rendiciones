@@ -4,10 +4,8 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametroExceptuado;
-import com.sa.form.parametros.ParametrosAlertasForm;
 import com.sa.form.parametros.ParametrosExceptuadosFiltroForm;
 import com.sa.services.ParametrosService;
-import org.apache.log4j.spi.AppenderAttachable;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.mock.MockHttpServletRequest;
@@ -101,7 +99,7 @@ class ParametrosExceptuadosFiltroActionTest {
                     );
   }
 
-  public static Stream<Arguments> executeMethodSource() {
+  public static Stream<Arguments> executeActionExceptionSource() {
     //given
     ActionMapping actionMapping = new ActionMapping();
     SAMWebApplication samWebApplication = new SAMWebApplication();
@@ -183,7 +181,7 @@ class ParametrosExceptuadosFiltroActionTest {
   }
 
   @ParameterizedTest
-  @MethodSource("executeMethodSource")
+  @MethodSource("executeActionExceptionSource")
   @DisplayName("Should throw an Exception")
   void shouldThrowAnException(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
                               ParametrosExceptuadosFiltroForm parametrosExceptuadosFiltroForm, Usuario usuario,
@@ -197,7 +195,6 @@ class ParametrosExceptuadosFiltroActionTest {
       //then
       ActionForward actionForwardToAssert = parametrosExceptuadosFiltroAction.executeAction(actionMapping, parametrosExceptuadosFiltroForm, samApplication, samClient,
           request, httpServletResponse);
-      assertNotNull(actionForwardToAssert);
       assertAll(() -> assertNotNull(actionForwardToAssert),
           () -> assertEquals("ERROR: Para motivos solo se permiten caracteres numericos", request.getAttribute("message")));
 
