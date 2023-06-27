@@ -99,7 +99,7 @@ class ParametrosExceptuadosFiltroActionTest {
                     );
   }
 
-  public static Stream<Arguments> executeMethodSource() {
+  public static Stream<Arguments> executeActionExceptionSource() {
     //given
     ActionMapping actionMapping = new ActionMapping();
     SAMWebApplication samWebApplication = new SAMWebApplication();
@@ -181,7 +181,7 @@ class ParametrosExceptuadosFiltroActionTest {
   }
 
   @ParameterizedTest
-  @MethodSource("executeMethodSource")
+  @MethodSource("executeActionExceptionSource")
   @DisplayName("Should throw an Exception")
   void shouldThrowAnException(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
                               ParametrosExceptuadosFiltroForm parametrosExceptuadosFiltroForm, Usuario usuario,
