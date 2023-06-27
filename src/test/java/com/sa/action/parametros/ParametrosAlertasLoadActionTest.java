@@ -122,21 +122,6 @@ class ParametrosAlertasLoadActionTest {
     relacionUsuarioDelegadoForm.setFeDesdeOld("2023/01/01");
     relacionUsuarioDelegadoForm.setFeHastaOld("2023/01/01");
 
-//    Map<String, String> respHashMap = new HashMap<>();
-//    respHashMap.put("usuario", "");
-//    respHashMap.put("delegadoUser", "");
-//    respHashMap.put("fDesde", "2000/01/01");
-//    respHashMap.put("fDesde_old", "2000/01/01");
-//    respHashMap.put("fHasta", "2000/01/01");
-//    respHashMap.put("fHasta_old", "2000/01/01");
-//    respHashMap.put("fAlta", "2000/01/01");
-//    respHashMap.put("opcion", "MODI");
-//    respHashMap.put("accion", "");
-//    respHashMap.put("estado", "");
-//    respHashMap.put("informe", "");
-//    respHashMap.put("id_reemplazo", "");
-//    respHashMap.put("user_alta", "userAlta");
-
     samWebClient.setSession(httpSession);
     samWebClient.setLoginOk(true);
     samWebClient.setId("55");
