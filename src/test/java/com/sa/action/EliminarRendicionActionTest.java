@@ -2,7 +2,11 @@ package com.sa.action;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import ar.com.itrsa.sam.TransactionException;
+import com.sa.entities.ComboMotivo;
+import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
+import com.sa.form.FiltrarAprobacionForm;
 import com.sa.services.PagosService;
 import com.sa.services.RendicionesService;
 import org.apache.log4j.Logger;
@@ -10,6 +14,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionServlet;
+import org.apache.struts.mock.MockHttpServletRequest;
+import org.apache.struts.mock.MockHttpSession;
 import org.apache.struts.util.TokenProcessor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,20 +69,33 @@ class EliminarRendicionActionTest {
     @ParameterizedTest
     @MethodSource("executeActionSource")
     @DisplayName("Testeando execute action")
-    void executeAction(Usuario user, String res, String msg,ActionForward ret) throws Exception {
-
-        when(httpServletRequest.getSession()).thenReturn(httpSession);
-        when(httpSession.getAttribute("usuario")).thenReturn(user);
-        when(actionMapping.findForward("success")).thenReturn(ret);
-
+    void executeAction(HttpServletRequest request, ActionMapping mapping) throws Exception {
         try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
-            when(mockRendicionesService.bajaRendicion(anyString(),anyString(),anyString())).thenReturn(res);
-            when(mockRendicionesService.getMsg()).thenReturn(msg);
+            when(mockRendicionesService.bajaRendicion(anyString(),anyString(),anyString())).thenReturn("bajaRendicion");
+            when(mockRendicionesService.getMsg()).thenReturn("msg");
         })) {
-            ActionForward result = eliminarRendicionAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse);
+            ActionForward result = eliminarRendicionAction.executeAction(mapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
             assertAll(
                     () -> assertNotNull(result),
-                    () -> assertEquals(ret,result)
+                    () -> assertEquals("success",result.getName()),
+                    () -> assertEquals("msg",request.getAttribute("message"))
+            );
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("executeActionSource")
+    @DisplayName("Testeando execute action exception")
+    void executeActionException(HttpServletRequest request, ActionMapping mapping) throws Exception {
+
+        try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
+            when(mockRendicionesService.bajaRendicion(anyString(),anyString(),anyString())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
+        })) {
+            ActionForward result = eliminarRendicionAction.executeAction(mapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
+            assertAll(
+                    () -> assertNotNull(result),
+                    () -> assertEquals("success",result.getName()),
+                    () -> assertEquals("ERROR: TransactionException",request.getAttribute("message"))
             );
         }
     }
@@ -83,12 +103,22 @@ class EliminarRendicionActionTest {
     // ------ Sources ------
 
     private static Stream<Arguments> executeActionSource() {
-        Usuario user = new Usuario("idUser", "perfil", "nombre", 1, "sector",new ArrayList<>());
-        String ret = "ret";
-        String msg = "msg";
-        ActionForward forward = new ActionForward("success","path",true);
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        Usuario usuario = new Usuario("id","perfil", "nombre", 1, "sector", new ArrayList<>());
+
+        ActionMapping mapping = new ActionMapping();
+
+        session.setAttribute("usuario", usuario);
+
+        request.setHttpSession(session);
+        request.addParameter("codigo","codigo");
+
+        mapping.addForwardConfig(new ActionForward("success", "path1", false));
+
+
         return Stream.of(
-                Arguments.of(user, ret,msg,forward)
+                Arguments.of(request,mapping)
         );
     }
 }
