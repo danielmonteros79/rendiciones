@@ -9,6 +9,7 @@ import com.sa.entities.parametros.ParametroMotivo;
 import com.sa.form.parametros.ParametrosExceptuadosForm;
 import com.sa.form.parametros.ParametrosMotivoForm;
 import com.sa.services.ParametrosService;
+import org.apache.axis.utils.ByteArrayOutputStream;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.mock.MockHttpServletRequest;
@@ -61,7 +62,7 @@ class ParametrosMotivoDetalleLoadActionTest {
     ServletContext servletContext = new MockServletContext();
     ParametrosMotivoForm parametrosMotivoForm = new ParametrosMotivoForm();
     ParametrosMotivoForm parametrosMotivoFormAlta = new ParametrosMotivoForm();
-    PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(System.out));
+    PrintWriter printWriter = new PrintWriter(new ByteArrayOutputStream());
     List<String> centroCostoList = new ArrayList<>();
     centroCostoList.add("one");
     centroCostoList.add("two");
@@ -118,6 +119,7 @@ class ParametrosMotivoDetalleLoadActionTest {
     requestAgregar.addParameter("index", "0");
 
     actionMappingAlta.addForwardConfig(new ActionForward("alta", "path1", false));
+    actionMappingAlta.addForwardConfig(new ActionForward("", "path2", false));
 
     ActionForward actionForward = new ActionForward();
     actionForward.setName("");

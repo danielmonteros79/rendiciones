@@ -383,9 +383,9 @@ class ParametrosGastosSaveActionTest {
         //then
         Method modificacionMocked = ParametrosGastosSaveAction.class.getDeclaredMethod("modificacion", HttpServletRequest.class, ParametrosGastosForm.class, ParametrosService.class);
         modificacionMocked.setAccessible(true);
-        String statusAlta = (String) modificacionMocked.invoke(parametrosGastosSaveAction, request, parametrosGastosForm, parametrosService);
+        String statusModificacion = (String) modificacionMocked.invoke(parametrosGastosSaveAction, request, parametrosGastosForm, parametrosService);
         if (message == null) {
-          assertEquals("success", statusAlta);
+          assertEquals("success", statusModificacion);
         } else {
           assertEquals("fail", message);
         }
@@ -411,9 +411,9 @@ class ParametrosGastosSaveActionTest {
         //then
         Method bajaMocked = ParametrosGastosSaveAction.class.getDeclaredMethod("baja", HttpServletRequest.class, ParametrosGastosForm.class, ParametrosService.class);
         bajaMocked.setAccessible(true);
-        String statusAlta = (String) bajaMocked.invoke(parametrosGastosSaveAction, request, parametrosGastosForm, parametrosService);
+        String statusBaja = (String) bajaMocked.invoke(parametrosGastosSaveAction, request, parametrosGastosForm, parametrosService);
         if (message == null) {
-          assertEquals("success", statusAlta);
+          assertEquals("success", statusBaja);
         } else {
           assertEquals("fail", message);
         }
