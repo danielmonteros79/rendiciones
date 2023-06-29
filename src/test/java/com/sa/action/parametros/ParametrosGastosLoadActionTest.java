@@ -85,7 +85,7 @@ class ParametrosGastosLoadActionTest {
     samWebApplication.setAttribute("usuario", usuario);
 
     return Stream.of(
-        Arguments.of(actionMapping, samWebApplication, samWebClient, request, parametrosGastosFiltroForm, usuario, parametroGastoList)
+        Arguments.of(actionMapping, samWebApplication, samWebClient, request, parametrosGastosFiltroForm)
                     );
   }
 
@@ -98,7 +98,7 @@ class ParametrosGastosLoadActionTest {
   @MethodSource("executeActionSource")
   @DisplayName("Should determine what action execute")
   void shouldDetermineWhatActionExecute(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
-                                        ParametrosGastosFiltroForm parametrosGastosFiltroForm, Usuario usuario, List<ParametroGasto> parametroGastoList) throws Exception {
+                                        ParametrosGastosFiltroForm parametrosGastosFiltroForm) throws Exception {
     //when
     try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class,
         (mockParametrosService, context) -> {
@@ -110,10 +110,4 @@ class ParametrosGastosLoadActionTest {
       assertNotNull(actionForwardToAssert);
     }
   }
-
-
-
-
-
-
 }

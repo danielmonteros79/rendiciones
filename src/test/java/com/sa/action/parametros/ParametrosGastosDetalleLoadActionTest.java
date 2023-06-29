@@ -404,8 +404,8 @@ class ParametrosGastosDetalleLoadActionTest {
     //given
     Method borrarCentroCostoMocked = ParametrosGastosDetalleLoadAction.class.getDeclaredMethod("borrarCentroCosto", ParametrosGastosForm.class, int.class);
     borrarCentroCostoMocked.setAccessible(true);
-    ActionForward actionForwardToAssert = (ActionForward) borrarCentroCostoMocked.invoke(parametrosGastosDetalleLoadAction, parametrosGastosForm , index);
     //then
+    ActionForward actionForwardToAssert = (ActionForward) borrarCentroCostoMocked.invoke(parametrosGastosDetalleLoadAction, parametrosGastosForm , index);
     assertNull(actionForwardToAssert);
   }
 
@@ -415,10 +415,10 @@ class ParametrosGastosDetalleLoadActionTest {
   void shouldAddCentroCostosToForm(ParametrosGastosForm parametrosGastosForm, PrintWriter printWriter) throws Exception {
     //when
     when(httpServletResponse.getWriter()).thenReturn(printWriter);
+    //then
     Method agregarCentroCostoMocked = ParametrosGastosDetalleLoadAction.class.getDeclaredMethod("agregarCentroCosto", ParametrosGastosForm.class, HttpServletResponse.class);
     agregarCentroCostoMocked.setAccessible(true);
     ActionForward actionForwardToAssert = (ActionForward) agregarCentroCostoMocked.invoke(parametrosGastosDetalleLoadAction, parametrosGastosForm, httpServletResponse);
-    //then
     assertNull(actionForwardToAssert);
   }
 }
