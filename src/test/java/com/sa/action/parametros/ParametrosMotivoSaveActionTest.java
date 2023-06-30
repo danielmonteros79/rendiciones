@@ -66,9 +66,9 @@ class ParametrosMotivoSaveActionTest {
     parametrosMotivoFormAlta.setCodigo("445");
     parametrosMotivoFormAlta.setDescripcion("");
     parametrosMotivoFormAlta.setEstado("");
-    parametrosMotivoFormAlta.setIdGlg("");
+    parametrosMotivoFormAlta.setIdGlg("22");
     parametrosMotivoFormAlta.setCodAprobacionGlg("");
-    parametrosMotivoFormAlta.setIdCentroCostos("");
+    parametrosMotivoFormAlta.setIdCentroCostos("22");
     parametrosMotivoFormAlta.setMaInclExcl("");
     parametrosMotivoFormAlta.setCodSup("");
     parametrosMotivoFormAlta.setCodFirma("");
@@ -86,9 +86,9 @@ class ParametrosMotivoSaveActionTest {
     parametrosMotivoFormBaja.setCodigo("445");
     parametrosMotivoFormBaja.setDescripcion("");
     parametrosMotivoFormBaja.setEstado("");
-    parametrosMotivoFormBaja.setIdGlg("");
+    parametrosMotivoFormBaja.setIdGlg("33");
     parametrosMotivoFormBaja.setCodAprobacionGlg("");
-    parametrosMotivoFormBaja.setIdCentroCostos("");
+    parametrosMotivoFormBaja.setIdCentroCostos("33");
     parametrosMotivoFormBaja.setMaInclExcl("");
     parametrosMotivoFormBaja.setCodSup("");
     parametrosMotivoFormBaja.setCodFirma("");
@@ -106,9 +106,9 @@ class ParametrosMotivoSaveActionTest {
     parametrosMotivoFormMod.setCodigo("445");
     parametrosMotivoFormMod.setDescripcion("");
     parametrosMotivoFormMod.setEstado("");
-    parametrosMotivoFormMod.setIdGlg("");
+    parametrosMotivoFormMod.setIdGlg("33");
     parametrosMotivoFormMod.setCodAprobacionGlg("");
-    parametrosMotivoFormMod.setIdCentroCostos("");
+    parametrosMotivoFormMod.setIdCentroCostos("333");
     parametrosMotivoFormMod.setMaInclExcl("");
     parametrosMotivoFormMod.setCodSup("");
     parametrosMotivoFormMod.setCodFirma("");
@@ -159,7 +159,97 @@ class ParametrosMotivoSaveActionTest {
   }
 
   public static Stream<Arguments> altaSource() {
-    return null;
+    //given
+    SAMWebApplication samWebApplication = new SAMWebApplication();
+    HttpSession httpSession = new MockHttpSession();
+    SAMWebClient samWebClient = new SAMWebClient();
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    List<Usuario> delegados = new ArrayList<>();
+    ServletContext servletContext = new MockServletContext();
+    List<String> centroCostoList = new ArrayList<>();
+    centroCostoList.add("21");
+    centroCostoList.add("11");
+    centroCostoList.add("78");
+
+    ParametroMotivo parametroMotivo = new ParametroMotivo();
+    parametroMotivo.setCentrosCosto(centroCostoList);
+
+    ParametrosMotivoForm parametrosMotivoForm = new ParametrosMotivoForm();
+    parametrosMotivoForm.setAccion("alta");
+    parametrosMotivoForm.setCodigo("445");
+    parametrosMotivoForm.setDescripcion("");
+    parametrosMotivoForm.setEstado("");
+    parametrosMotivoForm.setIdGlg("3");
+    parametrosMotivoForm.setCodAprobacionGlg("");
+    parametrosMotivoForm.setIdCentroCostos("55");
+    parametrosMotivoForm.setMaInclExcl("");
+    parametrosMotivoForm.setCodSup("");
+    parametrosMotivoForm.setCodFirma("");
+    parametrosMotivoForm.setOscar(new OSCAR("OSCAR"));
+    parametrosMotivoForm.setIdNivCarga("");
+    parametrosMotivoForm.setTxAviso("");
+    parametrosMotivoForm.setIdOperEspe("");
+    parametrosMotivoForm.setMeDiasInterv("");
+    parametrosMotivoForm.setCentrosCosto("445");
+    parametrosMotivoForm.setFechaDesde("29/06/2023");
+    parametrosMotivoForm.setFechaHasta("29/06/2023");
+    parametrosMotivoForm.setCentrosCostoList(centroCostoList);
+
+    Usuario usuario2 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
+    Usuario usuario3 = new Usuario("55", "2", "", 77, "2c", new ArrayList<>());
+    delegados.add(usuario2);
+    delegados.add(usuario3);
+    Usuario usuario = new Usuario("55", "2", "Luis Machado", 77, "2c", delegados);
+
+    httpSession.setAttribute("usuario", usuario);
+
+    request.setHttpSession(httpSession);
+    request.addParameter("accion", "");
+    request.addParameter("codMotivo", "MOTIVOMOTIVO");
+
+    samWebApplication.setContext(servletContext);
+    samWebApplication.setClientClass("");
+    samWebApplication.setAttribute("usuario", usuario);
+
+    ParametrosService parametrosService = new ParametrosService(samWebClient);
+
+    return Stream.of(
+        Arguments.of(request, parametrosMotivoForm, parametrosService, parametroMotivo)
+                    );
+  }
+
+  public static Stream<Arguments> formToMotivoSource() {
+    //given
+    List<String> centroCostoList = new ArrayList<>();
+    centroCostoList.add("21");
+    centroCostoList.add("11");
+    centroCostoList.add("78");
+
+    ParametroMotivo parametroMotivo = new ParametroMotivo();
+    parametroMotivo.setCentrosCosto(centroCostoList);
+
+    ParametrosMotivoForm parametrosMotivoForm = new ParametrosMotivoForm();
+    parametrosMotivoForm.setAccion("alta");
+    parametrosMotivoForm.setCodigo("445");
+    parametrosMotivoForm.setDescripcion("");
+    parametrosMotivoForm.setEstado("");
+    parametrosMotivoForm.setIdGlg("3");
+    parametrosMotivoForm.setCodAprobacionGlg("");
+    parametrosMotivoForm.setIdCentroCostos("55");
+    parametrosMotivoForm.setMaInclExcl("");
+    parametrosMotivoForm.setCodSup("");
+    parametrosMotivoForm.setCodFirma("");
+    parametrosMotivoForm.setOscar(new OSCAR("OSCAR"));
+    parametrosMotivoForm.setIdNivCarga("");
+    parametrosMotivoForm.setTxAviso("");
+    parametrosMotivoForm.setIdOperEspe("");
+    parametrosMotivoForm.setMeDiasInterv("");
+    parametrosMotivoForm.setCentrosCosto("445");
+    parametrosMotivoForm.setFechaDesde("29/06/2023");
+    parametrosMotivoForm.setFechaHasta("29/06/2023");
+    parametrosMotivoForm.setCentrosCostoList(centroCostoList);
+
+    return Stream.of(Arguments.of(parametrosMotivoForm));
   }
 
   @BeforeEach
@@ -189,5 +279,88 @@ class ParametrosMotivoSaveActionTest {
         assertNotNull(actionForwardToAssert);
       }
     }
+  }
+
+  @ParameterizedTest
+  @MethodSource("altaSource")
+  @DisplayName("Should save Alta Motivo to Form")
+  void shouldSaveAltaMotivoToForm(HttpServletRequest request, ParametrosMotivoForm parametrosMotivoForm, ParametrosService parametrosService,
+                              ParametroMotivo parametroMotivo) throws Exception {
+    //when
+    try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class,
+        (mockParametrosService, context) -> {
+          when(mockParametrosService.altaMotivo(parametroMotivo)).thenReturn("message");
+        })) {
+      try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
+          (mockManagerTransaction, context) -> {
+            doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+          })) {
+        //then
+        Method altaMocked = ParametrosMotivoSaveAction.class.getDeclaredMethod("alta", HttpServletRequest.class, ParametrosMotivoForm.class,
+            ParametrosService.class);
+        altaMocked.setAccessible(true);
+        String status = (String) altaMocked.invoke(parametrosMotivoSaveAction, request, parametrosMotivoForm, parametrosService);
+        assertEquals("success", status);
+      }
+    }
+  }
+
+
+  @ParameterizedTest
+  @MethodSource("altaSource")
+  @DisplayName("Should save Baja Motivo to Form")
+  void shouldSaveBajaMotivoToForm(HttpServletRequest request, ParametrosMotivoForm parametrosMotivoForm, ParametrosService parametrosService,
+                                  ParametroMotivo parametroMotivo) throws Exception {
+    //when
+    try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class,
+        (mockParametrosService, context) -> {
+          when(mockParametrosService.bajaMotivo(parametroMotivo.getCodigo())).thenReturn("message");
+        })) {
+      try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
+          (mockManagerTransaction, context) -> {
+            doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+          })) {
+        //then
+        Method bajaMocked = ParametrosMotivoSaveAction.class.getDeclaredMethod("baja", HttpServletRequest.class, ParametrosMotivoForm.class, ParametrosService.class);
+        bajaMocked.setAccessible(true);
+        String status = (String) bajaMocked.invoke(parametrosMotivoSaveAction, request, parametrosMotivoForm, parametrosService);
+        assertEquals("success", status);
+      }
+    }
+  }
+
+  @ParameterizedTest
+  @MethodSource("altaSource")
+  @DisplayName("Should save Modificacion Motivo to Form")
+  void shouldSaveModificacionMotivoToForm(HttpServletRequest request, ParametrosMotivoForm parametrosMotivoForm, ParametrosService parametrosService,
+                                          ParametroMotivo parametroMotivo) throws Exception {
+    //when
+    try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class,
+        (mockParametrosService, context) -> {
+          when(mockParametrosService.modificacionMotivo(parametroMotivo)).thenReturn("message");
+        })) {
+      try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
+          (mockManagerTransaction, context) -> {
+            doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+          })) {
+        //then
+        Method modificacionMocked = ParametrosMotivoSaveAction.class.getDeclaredMethod("modificacion", HttpServletRequest.class, ParametrosMotivoForm.class, ParametrosService.class);
+        modificacionMocked.setAccessible(true);
+        String status = (String) modificacionMocked.invoke(parametrosMotivoSaveAction, request, parametrosMotivoForm, parametrosService);
+        assertEquals("success", status);
+      }
+    }
+  }
+
+  @ParameterizedTest
+  @MethodSource("formToMotivoSource")
+  @DisplayName("Should map Form values into Motivo")
+  void shouldMapFormValuesIntoMotivo(ParametrosMotivoForm parametrosMotivoForm) throws Exception {
+    //then
+    Method formToMotivoMocked = ParametrosMotivoSaveAction.class.getDeclaredMethod("formToMotivo", ParametrosMotivoForm.class);
+    formToMotivoMocked.setAccessible(true);
+    ParametroMotivo parametroMotivoToAssert = (ParametroMotivo) formToMotivoMocked.invoke(parametrosMotivoSaveAction, parametrosMotivoForm);
+    assertAll(() -> assertNotNull(parametrosMotivoForm),
+        () -> assertNotNull(parametroMotivoToAssert));
   }
 }
