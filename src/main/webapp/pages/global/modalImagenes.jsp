@@ -134,4 +134,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/global/modalImagenes.js"></script>
+<script type="text/javascript" src="static/js/global/modalImagenes.js"></script>

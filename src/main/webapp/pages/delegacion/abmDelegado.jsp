@@ -60,4 +60,4 @@
 
 <jsp:include page="modalDelegado.jsp" />
 
-<script type="text/javascript" src="js/delegacion/abmDelegado.js"></script>
+<script type="text/javascript" src="static/js/delegacion/abmDelegado.js"></script>

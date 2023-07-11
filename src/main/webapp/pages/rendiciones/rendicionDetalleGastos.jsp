@@ -249,4 +249,4 @@
 <jsp:include page="../global/modalCupones.jsp" />
 <jsp:include page="../global/modalImagenes.jsp" />
 
-<script type="text/javascript" src="js/rendiciones/rendicionDetalleGastos.js"></script>
+<script type="text/javascript" src="static/js/rendiciones/rendicionDetalleGastos.js"></script>

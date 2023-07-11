@@ -107,8 +107,8 @@
 <jsp:include page="../global/modalJournal.jsp" />
 <jsp:include page="../cierre/modalSuspenderCierre.jsp" />
 
-<script type="text/javascript" src="js/select2.min.js"></script>
-<script type="text/javascript" src="js/cierre/cierreOrdenDePago.js"></script>
+<script type="text/javascript" src="static/js/select2.min.js"></script>
+<script type="text/javascript" src="static/js/cierre/cierreOrdenDePago.js"></script>
 <% } else { %>
 	No tiene permisos para ver esta p&aacute;gina
 <% } %>

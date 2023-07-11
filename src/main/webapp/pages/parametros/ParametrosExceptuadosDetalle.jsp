@@ -179,7 +179,7 @@ td {
 		</script>
 	</logic:equal>
 	<script type="text/javascript"
-		src="./js/parametrosExceptuadosDetalle.js"></script>
+		src="./static/js/parametrosExceptuadosDetalle.js"></script>
 </body>
 </html> 
 

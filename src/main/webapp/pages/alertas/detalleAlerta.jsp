@@ -34,4 +34,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/alertas/detalleAlerta.js"></script>
+<script type="text/javascript" src="static/js/alertas/detalleAlerta.js"></script>

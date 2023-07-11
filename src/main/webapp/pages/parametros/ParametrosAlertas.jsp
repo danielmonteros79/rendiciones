@@ -202,7 +202,7 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 
 
 
-	<script type="text/javascript" src="./js/parametrosAlertas.js"></script>
+	<script type="text/javascript" src="./static/js/parametrosAlertas.js"></script>
 </body>
 </html>
 

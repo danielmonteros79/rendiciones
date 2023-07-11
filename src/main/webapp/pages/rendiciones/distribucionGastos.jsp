@@ -202,4 +202,4 @@ td {
 
 </body>
 </html>
-<script type="text/javascript" src="./js/distribucionGastos.js"></script>
+<script type="text/javascript" src="./static/js/distribucionGastos.js"></script>

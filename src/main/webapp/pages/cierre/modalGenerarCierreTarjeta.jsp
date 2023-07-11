@@ -55,4 +55,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/cierre/modalGenerarCierreTarjeta.js"></script>
+<script type="text/javascript" src="static/js/cierre/modalGenerarCierreTarjeta.js"></script>

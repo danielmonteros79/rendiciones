@@ -100,7 +100,7 @@
 	</script>
 
 
-<script type="text/javascript" src="js/tarjetaCorporativa/consumosNoRendidos.js"></script>
+<script type="text/javascript" src="static/js/tarjetaCorporativa/consumosNoRendidos.js"></script>
 
 </body>
 </html>

@@ -53,4 +53,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/global/modalJournal.js"></script>
+<script type="text/javascript" src="static/js/global/modalJournal.js"></script>

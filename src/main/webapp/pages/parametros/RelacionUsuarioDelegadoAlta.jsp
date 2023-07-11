@@ -18,7 +18,7 @@
 </script>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	
-	<script type="text/javascript" src="./js/validarRelacionUsuarioDelegadoAlta.js"></script>
+	<script type="text/javascript" src="./static/js/validarRelacionUsuarioDelegadoAlta.js"></script>
 	
 	
 	<link rel="stylesheet" type="text/css" href="./css/validation.css">

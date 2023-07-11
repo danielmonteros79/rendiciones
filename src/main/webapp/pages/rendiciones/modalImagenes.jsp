@@ -91,4 +91,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/rendiciones/modalImagenes.js"></script>
+<script type="text/javascript" src="static/js/rendiciones/modalImagenes.js"></script>

@@ -42,5 +42,5 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/select2.min.js"></script>
-<script type="text/javascript" src="js/delegacion/accesoDelegado.js"></script>
+<script type="text/javascript" src="static/js/select2.min.js"></script>
+<script type="text/javascript" src="static/js/delegacion/accesoDelegado.js"></script>

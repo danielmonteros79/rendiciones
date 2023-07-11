@@ -44,4 +44,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/global/modalAlerta.js"></script>
+<script type="text/javascript" src="static/js/global/modalAlerta.js"></script>

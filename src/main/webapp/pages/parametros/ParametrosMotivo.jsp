@@ -170,7 +170,7 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 
 
 
-<script type="text/javascript" src="./js/parametrosMotivo.js"></script>
+<script type="text/javascript" src="./static/js/parametrosMotivo.js"></script>
 
 
 <% } else { %>

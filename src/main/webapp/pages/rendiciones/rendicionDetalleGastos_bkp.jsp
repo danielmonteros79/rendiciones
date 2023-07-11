@@ -12,8 +12,8 @@
 <bean:define id="RendicionForm" name="RendicionForm" scope="session" toScope="request" />
 
 <head>
-	<script type="text/javascript" src="./js/rendicionDetalleGastos.js"></script>
-	<script type="text/javascript" src="./js/cronologiaEstados.js"></script>
+	<script type="text/javascript" src="./static/js/rendicionDetalleGastos.js"></script>
+	<script type="text/javascript" src="./static/js/cronologiaEstados.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="./css/rendicionDetalle.css">
 	<link rel="stylesheet" type="text/css" href="./css/validation.css">

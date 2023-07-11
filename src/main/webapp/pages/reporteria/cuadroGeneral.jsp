@@ -243,7 +243,7 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 		</div>
 	</logic:equal>
 
-	<script type="text/javascript" src="./js/cuadroGeneral.js"></script>
+	<script type="text/javascript" src="./static/js/cuadroGeneral.js"></script>
 </body>
 </html>
 

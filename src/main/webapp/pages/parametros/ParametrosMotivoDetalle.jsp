@@ -331,7 +331,7 @@ label.error {
 
 
 
-	<script type="text/javascript" src="./js/parametrosMotivoDetalle.js"></script>
+	<script type="text/javascript" src="./static/js/parametrosMotivoDetalle.js"></script>
 
 </body>
 

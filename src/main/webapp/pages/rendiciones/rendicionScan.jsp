@@ -10,9 +10,9 @@
 <head>
 <!-- <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script> -->
 <script type="text/javascript" src="//cdn.rawgit.com/MrRio/jsPDF/master/dist/jspdf.min.js"></script>
-<script type="text/javascript" src="./js/listadoRendiciones.js"></script>
-<script type="text/javascript" src="./js/rendicionDetalleGastos.js"></script>
-<script type="text/javascript" src="./js/rendicionDetalle.js"></script>
+<script type="text/javascript" src="./static/js/listadoRendiciones.js"></script>
+<script type="text/javascript" src="./static/js/rendicionDetalleGastos.js"></script>
+<script type="text/javascript" src="./static/js/rendicionDetalle.js"></script>
 <link rel="stylesheet" type="text/css" href="./css/rendicionDetalle.css">
 <link rel="stylesheet" type="text/css" href="./css/validation.css">
 <link rel="stylesheet" type="text/css" href="./css/detalleGastos.css">
@@ -127,7 +127,7 @@
 	   
 	</script>
 
-	<script src="js/exportar.js"></script>
+	<script src="static/js/exportar.js"></script>
 	<script type="text/javascript">
 	function scan(){ 
 	exportDataGridPDF();

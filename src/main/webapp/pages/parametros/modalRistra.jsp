@@ -189,4 +189,4 @@
 		</script>
 </logic:equal>
 
-<script type="text/javascript" src="js/modalRistra.js"></script>
+<script type="text/javascript" src="static/js/modalRistra.js"></script>

@@ -55,4 +55,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/cierre/modalSuspenderCierre.js"></script>
+<script type="text/javascript" src="static/js/cierre/modalSuspenderCierre.js"></script>

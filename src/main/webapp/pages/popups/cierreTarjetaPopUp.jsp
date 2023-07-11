@@ -23,12 +23,12 @@
 <link rel="stylesheet" type='text/css' href="./css/buttons.css" />
 <link rel="stylesheet" type="text/css" href="./css/displayTagSort.css">
 
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/jquery-ui.js"></script>
-<script type="text/javascript" src="js/jquery.ui.datepicker-es.js"></script>
-<script type="text/javascript" src="js/datepicker-settings.js"></script>
-<script type="text/javascript" src="js/jquery.validate.min.js"></script>
-<script type="text/javascript" src="js/cierreTarjeta.js"></script>
+<script type="text/javascript" src="static/js/jquery.js"></script>
+<script type="text/javascript" src="static/js/jquery-ui.js"></script>
+<script type="text/javascript" src="static/js/jquery.ui.datepicker-es.js"></script>
+<script type="text/javascript" src="static/js/datepicker-settings.js"></script>
+<script type="text/javascript" src="static/js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="static/js/cierreTarjeta.js"></script>
 
 <style type="text/css">
 #paginado {

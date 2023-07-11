@@ -67,4 +67,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/global/modalDatosAdicionales.js"></script>
+<script type="text/javascript" src="static/js/global/modalDatosAdicionales.js"></script>

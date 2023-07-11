@@ -104,8 +104,8 @@
 <jsp:include page="../global/modalJournal.jsp" />
 <jsp:include page="../global/modalAlerta.jsp" />
 
-<script type="text/javascript" src="js/select2.min.js"></script>
-<script type="text/javascript" src="js/aprobacion/listadoAprobaciones.js"></script>
+<script type="text/javascript" src="static/js/select2.min.js"></script>
+<script type="text/javascript" src="static/js/aprobacion/listadoAprobaciones.js"></script>
 <% } else { %>
 	No tiene permisos para ver esta p&aacute;gina
 <% } %>

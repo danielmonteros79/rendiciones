@@ -111,4 +111,4 @@
 
 
 
-<script type="text/javascript" src="js/rendiciones/listadoRendiciones.js"></script>
+<script type="text/javascript" src="static/js/rendiciones/listadoRendiciones.js"></script>

@@ -20,15 +20,15 @@
 <link rel="stylesheet" type="text/css" href="./css/rendicionDetalle.css">
 <link rel="stylesheet" type="text/css" href="./css/detalleGastos.css">
 <link rel="stylesheet" type="text/css" href="./css/nuevoGastoPopUp.css">
-<script type="text/javascript" src="./js/jquery.js"></script>
-<script type="text/javascript" src="./js/jquery-ui.js"></script>
-<script type="text/javascript" src="./js/jquery.ui.datepicker-es.js"></script>
-<script type="text/javascript" src="./js/datepicker-settings.js"></script>
-<script type="text/javascript" src="./js/date-calculator.js"></script>
-<script type="text/javascript" src="./js/jquery.validate.min.js"></script>
-<script type="text/javascript" src="./js/listadoRendiciones.js"></script>
-<script type="text/javascript" src="./js/validacionDetalleGastos.js"></script>
-<script type="text/javascript" src="./js/nuevoGastoPopup.js"></script>
+<script type="text/javascript" src="./static/js/jquery.js"></script>
+<script type="text/javascript" src="./static/js/jquery-ui.js"></script>
+<script type="text/javascript" src="./static/js/jquery.ui.datepicker-es.js"></script>
+<script type="text/javascript" src="./static/js/datepicker-settings.js"></script>
+<script type="text/javascript" src="./static/js/date-calculator.js"></script>
+<script type="text/javascript" src="./static/js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="./static/js/listadoRendiciones.js"></script>
+<script type="text/javascript" src="./static/js/validacionDetalleGastos.js"></script>
+<script type="text/javascript" src="./static/js/nuevoGastoPopup.js"></script>
 <script type="text/javascript">
 
 $(document).ready(function(){

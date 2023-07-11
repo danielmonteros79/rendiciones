@@ -49,4 +49,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/aprobacion/modalObservarRendicion.js"></script>
+<script type="text/javascript" src="static/js/aprobacion/modalObservarRendicion.js"></script>

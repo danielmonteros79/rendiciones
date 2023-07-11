@@ -12,8 +12,8 @@
 <head>
 <%-- <bean:define id="usuarioNombre" name="usuarioNombre" scope="request" type="java.lang.String"></bean:define> --%>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script type="text/javascript" src="./js/popUpsOpen.js"></script>
-<script type="text/javascript" src="js/cierreTarjeta.js"></script>
+<script type="text/javascript" src="./static/js/popUpsOpen.js"></script>
+<script type="text/javascript" src="static/js/cierreTarjeta.js"></script>
 <style type="text/css">
 #paginado {
 	color: black !important;

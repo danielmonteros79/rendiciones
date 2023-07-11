@@ -9,8 +9,8 @@
 <%@page import="com.sa.entities.*"%>
 <head>
 <link rel="stylesheet" type="text/css" href="./css/validation.css">
-<script type="text/javascript" src="./js/jquery.validate.min.js"></script>
-<script type="text/javascript" src="./js/validarAprobacion.js"></script>
+<script type="text/javascript" src="./static/js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="./static/js/validarAprobacion.js"></script>
 
 <!--<logic:equal value="ok" name="trxOk">-->
 <!--<script>-->

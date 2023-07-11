@@ -42,4 +42,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/rendiciones/modalDatosAdicionales.js"></script>
+<script type="text/javascript" src="static/js/rendiciones/modalDatosAdicionales.js"></script>

@@ -353,7 +353,7 @@ label.error {
 
 
 	<jsp:include page="modalRistra.jsp" />
-	<script type="text/javascript" src="./js/parametrosGastosDetalle.js"></script>
+	<script type="text/javascript" src="./static/js/parametrosGastosDetalle.js"></script>
 	<!-- <script type="text/javascript" src="js/rendiciones/modalGasto.js"></script> -->
 </body>
 </html>

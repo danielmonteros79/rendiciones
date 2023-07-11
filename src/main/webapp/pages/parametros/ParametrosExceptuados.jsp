@@ -172,7 +172,7 @@
 
 
 
-	<script type="text/javascript" src="./js/parametrosExceptuados.js"></script>
+	<script type="text/javascript" src="./static/js/parametrosExceptuados.js"></script>
 </body>
 </html>
 

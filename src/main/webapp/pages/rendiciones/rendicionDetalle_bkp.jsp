@@ -4,8 +4,8 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/displaytag.tld" prefix="display"%>
 <%@page import="java.util.*"%>
-<script type="text/javascript" src="./js/rendicionDetalle.js"></script>
-<script type="text/javascript" src="./js/listadoRendiciones.js"></script>
+<script type="text/javascript" src="./static/js/rendicionDetalle.js"></script>
+<script type="text/javascript" src="./static/js/listadoRendiciones.js"></script>
 
 <head>
 <link rel="stylesheet" type="text/css" href="./css/rendicionDetalle.css">

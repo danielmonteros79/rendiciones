@@ -138,4 +138,4 @@
 	</div>
 </div>
 
-<script charset="UTF-8" type="text/javascript" src="js/rendiciones/modalGasto.js"></script>
+<script charset="UTF-8" type="text/javascript" src="static/js/rendiciones/modalGasto.js"></script>

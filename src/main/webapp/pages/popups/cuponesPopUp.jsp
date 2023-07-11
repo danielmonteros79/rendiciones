@@ -21,15 +21,15 @@
 <link rel="stylesheet" type="text/css" href="./css/validation.css">
 
 
-<script type="text/javascript" src="./js/jquery.js"></script>
-<script type="text/javascript" src="./js/jquery-ui.js"></script>
-<script type="text/javascript" src="./js/jquery.ui.datepicker-es.js"></script>
-<script type="text/javascript" src="./js/datepicker-settings.js"></script>
-<script type="text/javascript" src="./js/jquery.validate.min.js"></script>
-<script type="text/javascript" src="./js/date-calculator.js"></script>
-<script type="text/javascript" src="./js/listadoRendiciones.js"></script>
+<script type="text/javascript" src="./static/js/jquery.js"></script>
+<script type="text/javascript" src="./static/js/jquery-ui.js"></script>
+<script type="text/javascript" src="./static/js/jquery.ui.datepicker-es.js"></script>
+<script type="text/javascript" src="./static/js/datepicker-settings.js"></script>
+<script type="text/javascript" src="./static/js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="./static/js//date-calculator.js"></script>
+<script type="text/javascript" src="./static/js/listadoRendiciones.js"></script>
 
-<script type="text/javascript" src="./js/validacionCupones.js"></script>
+<script type="text/javascript" src="./static/js/validacionCupones.js"></script>
 
 <style>
 label {

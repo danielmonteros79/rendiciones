@@ -122,4 +122,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/delegacion/modalDelegado.js"></script>
+<script type="text/javascript" src="static/js/delegacion/modalDelegado.js"></script>

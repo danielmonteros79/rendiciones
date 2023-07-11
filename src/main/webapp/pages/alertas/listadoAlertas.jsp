@@ -69,5 +69,5 @@
 </div>
 
 
-<script type="text/javascript" src="js/alertas/listadoAlertas.js"></script>
+<script type="text/javascript" src="static/js/alertas/listadoAlertas.js"></script>
 

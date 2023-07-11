@@ -56,4 +56,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/global/modalCupones.js"></script>
+<script type="text/javascript" src="static/js/global/modalCupones.js"></script>

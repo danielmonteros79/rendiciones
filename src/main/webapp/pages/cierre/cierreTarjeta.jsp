@@ -74,7 +74,7 @@
 
 <jsp:include page="../cierre/modalGenerarCierreTarjeta.jsp" />
 
-<script type="text/javascript" src="js/cierre/cierreTarjeta.js"></script>
+<script type="text/javascript" src="static/js/cierre/cierreTarjeta.js"></script>
 <% } else { %>
 	No tiene permisos para ver esta p&aacute;gina
 <% } %>
