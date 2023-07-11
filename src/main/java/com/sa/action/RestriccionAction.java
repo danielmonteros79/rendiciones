@@ -1,34 +1,47 @@
 package com.sa.action;
 
-import com.sa.core.AccesoNoPermitidoException;
-import com.sa.core.SecurityActionMapping;
-import com.sa.entities.Usuario;
-import com.sa.services.LoggerSUM;
+import java.io.File;
+import java.sql.Connection;
+import java.util.List;
+import java.util.Properties;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public abstract class RestriccionAction extends Action {
+import com.sa.core.AccesoNoPermitidoException;
+import com.sa.core.ParametrosSUM;
+import com.sa.core.SecurityActionMapping;
+import com.sa.core.XMLConfigReader;
+import com.sa.entities.Usuario;
+import com.sa.services.LoggerSUM;
 
+public abstract class RestriccionAction extends Action {
+	
 //	private String ruta="/syscfg";
+	
 //	File agendaPropFile = new File(getSysConfPathResource(ruta + "/agenda.properties"));
 //	File agendaSysProFile = new File(getSysConfPathResource(ruta + "/agenda.sys.properties"));
+
 //	Properties agendaProp = new Properties();
 //	Properties agendaSysProp = new Properties();
 //	Properties propPass = new Properties();
-    public static final Logger log = Logger.getLogger(RestriccionAction.class);
-
-    @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-        Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
-        log.info("Entra al action RestriccionAction. Usuario (" + user.getIdUser() + ")");
+	
+	
+	
+	public static final Logger log = Logger.getLogger(RestriccionAction.class);
+	@Override
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
+		log.info("Entra al action RestriccionAction. Usuario ("+user.getIdUser()+")");
 //		response.setCharacterEncoding("ISO-8859-1");
 //		HttpSession session = request.getSession();
 //
@@ -81,61 +94,61 @@ public abstract class RestriccionAction extends Action {
 //			logger.logException(e);
 //			throw e;
 //		}
-        return executeAction(mapping, form, request, response
-        //paramsSUM
-        );
-    }
+		return executeAction(mapping, form, request, response
+				//paramsSUM
+				);
+	}
 
-    /**
-     * Los Action clientes deben utilizar este metodo en lugar del execute()
-     * regular.
-     *
-     * @param mapping
-     * @param form
-     * @param request
-     * @param response
-     * @param paramsSIA
-     * @return
-     * @throws Exception
-     */
-    public abstract ActionForward executeAction(ActionMapping mapping,
-            ActionForm form, HttpServletRequest request,
-            HttpServletResponse response
-    //ParametrosSUM paramsSIA
-    )
-            throws Exception;
+	/**
+	 * Los Action clientes deben utilizar este metodo en lugar del execute()
+	 * regular.
+	 * 
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @param paramsSIA
+	 * @return
+	 * @throws Exception
+	 */
+	public abstract ActionForward executeAction(ActionMapping mapping,
+			ActionForm form, HttpServletRequest request,
+			HttpServletResponse response
+			//ParametrosSUM paramsSIA
+			)
+			throws Exception;
 
-    protected void doRestriccion(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response,
-            LoggerSUM logger) throws AccesoNoPermitidoException {
+	protected void doRestriccion(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response,
+			LoggerSUM logger) throws AccesoNoPermitidoException {
 
-        HttpSession session = request.getSession();
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        SecurityActionMapping sam = (SecurityActionMapping) mapping;
-        int permisos = usuario.getPerfil();
-        boolean puedePasar = false;
-
+		HttpSession session = request.getSession();
+		Usuario usuario = (Usuario) session.getAttribute("usuario");
+		SecurityActionMapping sam = (SecurityActionMapping) mapping;
+		int permisos = usuario.getPerfil();
+		boolean puedePasar = false;
+		
 //			if (permisos == Integer.parseInt(sam
 //					.getApplicationZone())) {
-        puedePasar = true;
+				puedePasar = true;
 //
 //			}
 
-        if (!puedePasar) {
-
-            log.info("El usuario "
-                    + usuario.getIdUser() + " intento ingresar a "
-                    + request.getRequestURI()
-                    + " y fue rechazado por falta de permisos.");
-
-            throw new AccesoNoPermitidoException("El usuario "
-                    + usuario.getIdUser() + " intento ingresar a "
-                    + request.getRequestURI()
-                    + " y fue rechazado por falta de permisos.");
-        }
-    }
-
-    protected void cerrarSesion(HttpServletRequest request) {
+		if (!puedePasar) {
+			
+			log.info("El usuario "
+					+ usuario.getIdUser() + " intento ingresar a "
+					+ request.getRequestURI()
+					+ " y fue rechazado por falta de permisos.");
+			
+			throw new AccesoNoPermitidoException("El usuario "
+					+ usuario.getIdUser() + " intento ingresar a "
+					+ request.getRequestURI()
+					+ " y fue rechazado por falta de permisos.");
+		}
+	}
+	
+	protected void cerrarSesion(HttpServletRequest request) {
 //		log.info("Cerrando session por timeout altamira");
 //		Altamira altamira = (Altamira) request.getSession().getAttribute(
 //				"altamira");
@@ -143,10 +156,11 @@ public abstract class RestriccionAction extends Action {
 //			altamira.desconectar();
 //		}
 //		request.getSession().invalidate();
-    }
+	}
 
-    protected void chequearTimeOutAltamira(HttpServletRequest request) //			throws AltamiraTimeOutException 
-    {
+	protected void chequearTimeOutAltamira(HttpServletRequest request)
+//			throws AltamiraTimeOutException 
+	{
 
 //		DateTime fechaAltamira = (DateTime) request.getSession().getAttribute(
 //				Constantes.FECHA_ACTIVIDAD_ALTAMIRA);
@@ -169,5 +183,7 @@ public abstract class RestriccionAction extends Action {
 //		if (alt.timeOut()){
 //			throw new AltamiraTimeOutException();
 //		}
-    }
+		
+
+	}
 }

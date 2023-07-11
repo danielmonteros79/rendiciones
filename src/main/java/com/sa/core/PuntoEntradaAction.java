@@ -6,6 +6,7 @@ import ar.com.bbva.web.struts.sam.ISAMWebAction;
 import ar.com.itrsa.sam.TransactionException;
 import com.sa.entities.Usuario;
 import com.sa.form.LoginForm;
+import com.sa.services.AprobacionesService;
 import com.sa.services.UsuarioService;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,83 +19,82 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 public class PuntoEntradaAction extends ISAMWebAction {
+	private static final Log log = LogFactory.getLog(PuntoEntradaAction.class);
 
-    private static final Log log = LogFactory.getLog(PuntoEntradaAction.class);
+	public ActionForward execute(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
+			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		List<String> errorList = new ArrayList();
+		log.info("Ingreso a la aplicacion");
+		System.setProperty("http.proxyHost", "");
+		System.setProperty("http.proxyPort", "");
+		String ivUser = request.getHeader("iv-user") != null
+				? request.getHeader("iv-user")
+				: (String) request.getAttribute("ivUser");
+		log.info("iv-user obtenido: " + ivUser);
+		Usuario usuario = null;
 
-    public ActionForward execute(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
-            HttpServletRequest request, HttpServletResponse response) throws Exception {
-        List<String> errorList = new ArrayList<String>();
-        log.info("Ingreso a la aplicacion");
-        System.setProperty("http.proxyHost", "");
-        System.setProperty("http.proxyPort", "");
-        String ivUser = request.getHeader("iv-user") != null ? (String) request.getHeader("iv-user") : (String) request.getAttribute("ivUser");
+		try {
+			LoginForm loginForm = (LoginForm) form;
+			UsuarioService serviceUsuario;
+			if (ivUser != null && (loginForm.getUsername() == null || loginForm.getUsername().trim().equals(""))) {
+				samClient.setAttribute("userLoggin", ivUser.trim().toUpperCase());
+				serviceUsuario = new UsuarioService(samClient);
+				usuario = serviceUsuario.obtenerDelegadosUsuario(ivUser.trim().toUpperCase());
+			} else {
+				label78 : {
+					samClient.setAttribute("userLoggin", loginForm.getUsername().trim().toUpperCase());
+					if (loginForm.getUsername() != null && !"".equals(loginForm.getUsername().trim())) {
+						if (loginForm.getPassword() != null && !"".equals(loginForm.getPassword().trim())) {
+							serviceUsuario = new UsuarioService(samClient);
+							usuario = serviceUsuario.obtenerDelegadosUsuario(loginForm.getUsername().toUpperCase());
+							if (usuario == null) {
+								errorList.add(new String("Usuario inexistente"));
+								request.setAttribute("errores", errorList);
+								return mapping.findForward("failure");
+							}
+							break label78;
+						}
 
-        log.info("iv-user obtenido: " + ivUser);
+						errorList.add(new String("Por favor, ingresar Contrase�a"));
+						request.setAttribute("errores", errorList);
+						return mapping.findForward("failure");
+					}
 
-        Usuario usuario = null;
+					errorList.add(new String("Por favor, ingresar Usuario"));
+					request.setAttribute("errores", errorList);
+					return mapping.findForward("failure");
+				}
+			}
+		} catch (TransactionException var14) {
+			log.error(var14);
+			errorList.add(new String(var14.getCause().getMessage()));
+			request.setAttribute("errores", errorList);
+			request.getSession().invalidate();
+			return mapping.findForward("failure");
+		} catch (Exception var15) {
+			log.error(var15);
+			errorList.add(new String("Error al ingresar"));
+			request.setAttribute("errores", errorList);
+			request.getSession().invalidate();
+			return mapping.findForward("failure");
+		}
 
-        try {
-            LoginForm loginForm = (LoginForm) form;
-            if (ivUser == null || (loginForm.getUsername() != null && !loginForm.getUsername().trim().equals(""))) {
-                samClient.setAttribute("userLoggin", loginForm.getUsername().trim().toUpperCase());
-                if (loginForm.getUsername() == null || "".equals(loginForm.getUsername().trim())) {
-                    errorList.add(new String("Por favor, ingresar Usuario"));
-                    request.setAttribute("errores", errorList);
-                    return mapping.findForward("failure");
-                } else if (loginForm.getPassword() == null || "".equals(loginForm.getPassword().trim())) {
-                    errorList.add(new String("Por favor, ingresar Contrase\u00F1a"));
-                    request.setAttribute("errores", errorList);
-                    return mapping.findForward("failure");
-                }
+		if (usuario.getTipoPerfil().getPantalla().contains("Aprobacion")) {
+			AprobacionesService aprobacionesService = new AprobacionesService(samClient);
 
-                UsuarioService serviceUsuario = new UsuarioService(samClient);
-                usuario = serviceUsuario.obtenerDelegadosUsuario(loginForm.getUsername().toUpperCase());
+			for (int i = 1; i < 5; ++i) {
+				try {
+					aprobacionesService.getAprobacionesPendientes("", "", "", Integer.toString(i), usuario.getIdUser());
+					usuario.getGlgAprobacion().add(i);
+				} catch (Exception var13) {
+					;
+				}
+			}
+		}
 
-                if (usuario == null) {
-                    errorList.add(new String("Usuario inexistente"));
-                    request.setAttribute("errores", errorList);
-                    return mapping.findForward("failure");
-                }
-            } else {
-                samClient.setAttribute("userLoggin", ivUser.trim().toUpperCase());
-                UsuarioService serviceUsuario = new UsuarioService(samClient);
-                usuario = serviceUsuario.obtenerDelegadosUsuario(ivUser.trim().toUpperCase());
-            }
-        } catch (TransactionException e) {
-            log.error(e);
-            errorList.add(new String(e.getCause().getMessage()));
-            request.setAttribute("errores", errorList);
-            request.getSession().invalidate();
-            return mapping.findForward("failure");
-        } catch (Exception e) {
-            log.error(e);
-            errorList.add(new String("Error al ingresar"));
-            request.setAttribute("errores", errorList);
-            request.getSession().invalidate();
-            return mapping.findForward("failure");
-        }
-
-        log.info("Se obtuvo el usuario: " + usuario.getIdUser());
-        request.getSession().setAttribute("userWorking", usuario);
-        request.getSession().setAttribute("usuario", usuario);
-
-        String redirect = request.getParameter("redirect");
-        if (redirect != null && !redirect.trim().equals("")) {
-            if (redirect.contains("aprobacion.do?glg=1")) {
-                return mapping.findForward("aprob1");
-            } else if (redirect.contains("aprobacion.do?glg=2")) {
-                return mapping.findForward("aprob2");
-            } else if (redirect.contains("aprobacion.do?glg=3")) {
-                return mapping.findForward("aprob3");
-            } else if (redirect.contains("cierre.do")) {
-                return mapping.findForward("cierre");
-            }
-        }
-
-        if (usuario.getTipoPerfil().toString().equals("VIEW_APROBACION")) {
-            return mapping.findForward("aprob1");
-        } else {
-            return mapping.findForward("success");
-        }
-    }
+		log.info("Se obtuvo el usuario: " + usuario.getIdUser());
+		request.getSession().setAttribute("userWorking", usuario);
+		request.getSession().setAttribute("usuario", usuario);
+		return mapping.findForward("success");
+	}
 }

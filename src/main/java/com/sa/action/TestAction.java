@@ -1,20 +1,47 @@
 package com.sa.action;
 
-import ar.com.bbva.web.impl.SAMWebApplication;
-import ar.com.bbva.web.impl.SAMWebClient;
-import com.sa.exceptions.SessionTimeOutException;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.nio.charset.Charset;
+import java.util.List;
+
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-public class TestAction extends RestriccionTransaccionAction {
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.html.simpleparser.HTMLWorker;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.sa.entities.ComboGasto;
+import com.sa.entities.Gastos;
+import com.sa.exceptions.SessionTimeOutException;
+import com.sa.form.RendicionForm;
+import com.sa.services.AprobacionesService;
+import com.sa.services.CodigoDeBarrasService;
+import com.sa.services.PagosService;
+import com.sa.services.RendicionesService;
+import com.sa.util.ParamsConstants;
 
-    public ActionForward executeAction(ActionMapping mapping, ActionForm form,
-            SAMWebApplication samApplication, SAMWebClient samClient,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+import ar.com.bbva.web.impl.SAMWebApplication;
+import ar.com.bbva.web.impl.SAMWebClient;
+
+public class TestAction extends RestriccionTransaccionAction {
+	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+			SAMWebApplication samApplication, SAMWebClient samClient,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 //
 //		String trx = request.getParameter("trx");
 //		PagosService service = new PagosService(samClient);
@@ -157,10 +184,9 @@ public class TestAction extends RestriccionTransaccionAction {
 //				+ "</html>";
 //		return ret;
 //	}
-        request.getSession().invalidate();
-        request.setAttribute("errores", "a");
-        throw new SessionTimeOutException("Finaliz� tiempo en sesi�n.");
-
+		request.getSession().invalidate();
+		request.setAttribute("errores", "a");
+		throw new SessionTimeOutException("Finaliz� tiempo en sesi�n.");
+	
 //		return null;
-    }
-}
+}}
