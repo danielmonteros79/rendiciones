@@ -1,0 +1,28 @@
+.text-blue {
+	color: #5bbeff;
+}
+
+.hover-blue:hover {
+	color: #5bbeff !important;
+	transition: .1s;
+}
+
+.hover-darkblue:hover {
+	color: #104975 !important;
+}
+
+.hover-primary:hover {
+	color: #2a86ca !important;
+}
+
+.text-gray {
+	color: #bdbdbd;
+}
+a.text-gray:hover {
+	color: #969696;
+	transition: .2s;
+}
+
+.bg-warning-light {
+	background-color: #f3ebd5;
+}
