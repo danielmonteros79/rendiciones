@@ -60,4 +60,18 @@ class FiltrarAprobacionFormTest {
                 () -> assertEquals(resultTest, service.getEstado())
         );
     }
+    
+    @Test
+    @DisplayName("Testeando set y get  TipoAlerta")
+    void setygetTipoAlerta() {
+        service.setTipoAlerta("");
+        String resultTest = service.getTipoAlerta();
+        assertAll(
+                () -> assertNotNull(resultTest),
+                () -> assertEquals(resultTest, service.getTipoAlerta())
+        );
+    }
+    
+    
+   
 }

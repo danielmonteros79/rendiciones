@@ -152,38 +152,28 @@ class RendicionDetalleFormTest {
         );
     }
 
-//    @Test
-//    @DisplayName("Testeando set y get CmbComprobante")
-//    void setygetCmbComprobante() {
-//        service.setc("CmbComprobante");
-//        String resultTest = service.getCmbComprobante();
-//        assertAll(
-//                ()->assertNotNull(resultTest),
-//                ()->assertEquals(resultTest,"CmbComprobante")
-//        );
-//    }
 
-//    @Test
-//    @DisplayName("Testeando set y get Comprobante1")
-//    void setygetComprobante1() {
-//        service.setComprobante1("Comprobante1");
-//        String resultTest = service.getComprobante1();
-//        assertAll(
-//                ()->assertNotNull(resultTest),
-//                ()->assertEquals(resultTest,"Comprobante1")
-//        );
-//    }
+    @Test
+    @DisplayName("Testeando set y get tipoFactura")
+    void setygetTipoFactura() {
+        service.setTipoFactura("tipoFactura");
+        String resultTest = service.getTipoFactura();
+        assertAll(
+                ()->assertNotNull(resultTest),
+                ()->assertEquals(resultTest,"tipoFactura")
+        );
+    }
 
-//    @Test
-//    @DisplayName("Testeando set y get Comprobante2")
-//    void setygetComprobante2() {
-//        service.setComprobante2("Comprobante2");
-//        String resultTest = service.getComprobante2();
-//        assertAll(
-//                ()->assertNotNull(resultTest),
-//                ()->assertEquals(resultTest,"Comprobante2")
-//        );
-//    }
+    @Test
+    @DisplayName("Testeando set y get Factura")
+    void setygetFactura() {
+        service.setFactura("factura");
+        String resultTest = service.getFactura();
+        assertAll(
+                ()->assertNotNull(resultTest),
+                ()->assertEquals(resultTest,"factura")
+        );
+    }
 
     @Test
     @DisplayName("Testeando set y get IdRendicion")
@@ -253,9 +243,9 @@ class RendicionDetalleFormTest {
 
     @Test
     @DisplayName("Testeando set y get IdG")
-    void setygetIdG() {
-        service.setGlg("IdG");
-        String resultTest = service.getGlg();
+    void setygetIdGasto() {
+        service.setIdGasto("IdG");
+        String resultTest = service.getIdGasto();
         assertAll(
                 ()->assertNotNull(resultTest),
                 ()->assertEquals(resultTest,"IdG")
