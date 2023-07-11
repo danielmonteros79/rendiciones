@@ -7,6 +7,11 @@ jQuery(document).ready(function() {
 	selectGlg();
 	setFormValidate();
 	
+	$('#codMotivo').chosen();
+	$('#codGlg').chosen();
+	$('#opcion').chosen();
+
+	
 });
 
 function filtrar() {

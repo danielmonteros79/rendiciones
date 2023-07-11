@@ -9,6 +9,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
+<link rel="stylesheet" type="text/css" href="./css/select2Personalized.css">
 <link rel="stylesheet" type="text/css" href="./css/Parametros.css">
 <link rel="stylesheet" type="text/css" href="./css/validation.css">
 
@@ -88,7 +89,7 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 								<html:option value="03">Fecha de carga</html:option>
 							</html:select>
 
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							<label
 								for="opcion">Opci&oacute;n:</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -100,7 +101,7 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 								<html:options collection="ComboGlg" property="id"
 									labelProperty="descripcion" />
 							</html:select>
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							 <label
 								for="modalDelegadoInforme">GLG</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -115,7 +116,7 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 								<html:options collection="ComboMotivo" property="id"
 									labelProperty="descripcion" />
 							</html:select>
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							<label
 								for="modalDelegadoInforme">Motivo</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -170,8 +171,8 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 					<div
 						class="col-sm-6 col-lg-3 pt-2  pl-1 has-float-label scroll-err">
 						<div class="has-float-label">
-							<input type="text" class="form-control" id="usuario"
-								placeholder="Descripción" /> <label for="modalDelegadoCCostos">Usuario</label>
+							<label for="usuario">Usuario</label>
+							<html:text property="usuario" styleClass="form-control" styleId="usuario" style="text-transform:uppercase;" maxlength="8"/>
 						</div>
 					</div>
 				</div>
@@ -243,6 +244,7 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 		</div>
 	</logic:equal>
 
+	<script type="text/javascript" src="static/js/select2.min.js"></script>
 	<script type="text/javascript" src="./static/js/cuadroGeneral.js"></script>
 </body>
 </html>

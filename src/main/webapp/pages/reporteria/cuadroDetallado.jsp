@@ -15,7 +15,7 @@
 
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-
+<link rel="stylesheet" type="text/css" href="./css/select2Personalized.css">
 <link rel="stylesheet" type="text/css" href="./css/Parametros.css">
 <link rel="stylesheet" type="text/css" href="./css/validation.css">
 <style>
@@ -85,7 +85,7 @@ label.error {
 								<html:option value="02">Estado final</html:option>
 								<html:option value="03">Fecha de carga</html:option>
 							</html:select>
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							<label
 								for="opcion">Opci&oacute;n:</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -97,7 +97,7 @@ label.error {
 								<html:options collection="ComboGlg" property="id"
 									labelProperty="descripcion" />
 							</html:select>
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							<label
 								for="codGlg">GLG</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -112,7 +112,7 @@ label.error {
 								<html:options collection="ComboMotivo" property="id"
 									labelProperty="descripcion" />
 							</html:select>
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							<label
 								for="modalDelegadoInforme">Motivo</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -257,6 +257,7 @@ label.error {
 		</div>
 	</logic:equal>
 
+	<script type="text/javascript" src="static/js/select2.min.js"></script>
 	<script type="text/javascript" src="./static/js/cuadroDetallado.js"></script>
 </body>
 </html>

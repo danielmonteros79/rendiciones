@@ -11,6 +11,11 @@ jQuery(document).ready(function() {
 	});
 	selectOpcion();
 	setFormValidate();
+	
+	$('#codMotivo').chosen();
+	$('#codGlg').chosen();
+	$('#opcion').chosen();
+
 });
 
 
