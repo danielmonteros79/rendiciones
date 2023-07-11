@@ -100,8 +100,8 @@ class RendicionDetalleFormTest {
     @Test
     @DisplayName("Testeando set y get Gastos")
     void setygetGastos() {
-        service.setGastos("Gastos");
-        String resultTest = service.getGastos();
+        service.setGasto("Gastos");
+        String resultTest = service.getGasto();
         assertAll(
                 ()->assertNotNull(resultTest),
                 ()->assertEquals(resultTest,"Gastos")
@@ -133,8 +133,8 @@ class RendicionDetalleFormTest {
     @Test
     @DisplayName("Testeando set y get Fechagastos")
     void setygetFechagastos() {
-        service.setFechagastos("Fecha Gastos");
-        String resultTest = service.getFechagastos();
+        service.setFechaGasto("Fecha Gastos");
+        String resultTest = service.getFechaGasto();
         assertAll(
                 ()->assertNotNull(resultTest),
                 ()->assertEquals(resultTest,"Fecha Gastos")
@@ -142,48 +142,48 @@ class RendicionDetalleFormTest {
     }
 
     @Test
-    @DisplayName("Testeando set y get Comprobante")
+    @DisplayName("Testeando set y get Tipo Comprobante")
     void setygetComprobante() {
-        service.setComprobante("Comprobante");
-        String resultTest = service.getComprobante();
+        service.setTipoComprobante("Comprobante");
+        String resultTest = service.getTipoComprobante();
         assertAll(
                 ()->assertNotNull(resultTest),
                 ()->assertEquals(resultTest,"Comprobante")
         );
     }
 
-    @Test
-    @DisplayName("Testeando set y get CmbComprobante")
-    void setygetCmbComprobante() {
-        service.setCmbComprobante("CmbComprobante");
-        String resultTest = service.getCmbComprobante();
-        assertAll(
-                ()->assertNotNull(resultTest),
-                ()->assertEquals(resultTest,"CmbComprobante")
-        );
-    }
+//    @Test
+//    @DisplayName("Testeando set y get CmbComprobante")
+//    void setygetCmbComprobante() {
+//        service.setc("CmbComprobante");
+//        String resultTest = service.getCmbComprobante();
+//        assertAll(
+//                ()->assertNotNull(resultTest),
+//                ()->assertEquals(resultTest,"CmbComprobante")
+//        );
+//    }
 
-    @Test
-    @DisplayName("Testeando set y get Comprobante1")
-    void setygetComprobante1() {
-        service.setComprobante1("Comprobante1");
-        String resultTest = service.getComprobante1();
-        assertAll(
-                ()->assertNotNull(resultTest),
-                ()->assertEquals(resultTest,"Comprobante1")
-        );
-    }
+//    @Test
+//    @DisplayName("Testeando set y get Comprobante1")
+//    void setygetComprobante1() {
+//        service.setComprobante1("Comprobante1");
+//        String resultTest = service.getComprobante1();
+//        assertAll(
+//                ()->assertNotNull(resultTest),
+//                ()->assertEquals(resultTest,"Comprobante1")
+//        );
+//    }
 
-    @Test
-    @DisplayName("Testeando set y get Comprobante2")
-    void setygetComprobante2() {
-        service.setComprobante2("Comprobante2");
-        String resultTest = service.getComprobante2();
-        assertAll(
-                ()->assertNotNull(resultTest),
-                ()->assertEquals(resultTest,"Comprobante2")
-        );
-    }
+//    @Test
+//    @DisplayName("Testeando set y get Comprobante2")
+//    void setygetComprobante2() {
+//        service.setComprobante2("Comprobante2");
+//        String resultTest = service.getComprobante2();
+//        assertAll(
+//                ()->assertNotNull(resultTest),
+//                ()->assertEquals(resultTest,"Comprobante2")
+//        );
+//    }
 
     @Test
     @DisplayName("Testeando set y get IdRendicion")
@@ -254,8 +254,8 @@ class RendicionDetalleFormTest {
     @Test
     @DisplayName("Testeando set y get IdG")
     void setygetIdG() {
-        service.setIdG("IdG");
-        String resultTest = service.getIdG();
+        service.setGlg("IdG");
+        String resultTest = service.getGlg();
         assertAll(
                 ()->assertNotNull(resultTest),
                 ()->assertEquals(resultTest,"IdG")
@@ -340,38 +340,17 @@ class RendicionDetalleFormTest {
     }
 
     @Test
-    @DisplayName("Testeando set y get Cuit1")
+    @DisplayName("Testeando set y get Cuit")
     void setygetCuit1() {
-        service.setCuit1("Cuit1");
-        String resultTest = service.getCuit1();
+        service.setCuit("Cuit1");
+        String resultTest = service.getCuit();
         assertAll(
                 ()->assertNotNull(resultTest),
                 ()->assertEquals(resultTest,"Cuit1")
         );
     }
 
-    @Test
-    @DisplayName("Testeando set y get Cuit2")
-    void setygetCuit2() {
-        service.setCuit2("Cuit2");
-        String resultTest = service.getCuit2();
-        assertAll(
-                ()->assertNotNull(resultTest),
-                ()->assertEquals(resultTest,"Cuit2")
-        );
-    }
-
-    @Test
-    @DisplayName("Testeando set y get Cuit3")
-    void setygetCuit3() {
-        service.setCuit3("Cuit3");
-        String resultTest = service.getCuit3();
-        assertAll(
-                ()->assertNotNull(resultTest),
-                ()->assertEquals(resultTest,"Cuit3")
-        );
-    }
-
+ 
     @Test
     @DisplayName("Testeando set y get Aviso")
     void setygetAviso() {
