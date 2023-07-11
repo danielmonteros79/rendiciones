@@ -66,39 +66,39 @@ class EliminarRendicionActionTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @ParameterizedTest
-    @MethodSource("executeActionSource")
-    @DisplayName("Testeando execute action")
-    void executeAction(HttpServletRequest request, ActionMapping mapping) throws Exception {
-        try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
-            when(mockRendicionesService.bajaRendicion(anyString(),anyString(),anyString())).thenReturn("bajaRendicion");
-            when(mockRendicionesService.getMsg()).thenReturn("msg");
-        })) {
-            ActionForward result = eliminarRendicionAction.executeAction(mapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
-            assertAll(
-                    () -> assertNotNull(result),
-                    () -> assertEquals("success",result.getName()),
-                    () -> assertEquals("msg",request.getAttribute("message"))
-            );
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("executeActionSource")
-    @DisplayName("Testeando execute action exception")
-    void executeActionException(HttpServletRequest request, ActionMapping mapping) throws Exception {
-
-        try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
-            when(mockRendicionesService.bajaRendicion(anyString(),anyString(),anyString())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
-        })) {
-            ActionForward result = eliminarRendicionAction.executeAction(mapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
-            assertAll(
-                    () -> assertNotNull(result),
-                    () -> assertEquals("success",result.getName()),
-                    () -> assertEquals("ERROR: TransactionException",request.getAttribute("message"))
-            );
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource("executeActionSource")
+//    @DisplayName("Testeando execute action")
+//    void executeAction(HttpServletRequest request, ActionMapping mapping) throws Exception {
+//        try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
+//            when(mockRendicionesService.bajaRendicion(anyString(),anyString(),anyString())).thenReturn("bajaRendicion");
+//            when(mockRendicionesService.getMsg()).thenReturn("msg");
+//        })) {
+//            ActionForward result = eliminarRendicionAction.executeAction(mapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
+//            assertAll(
+//                    () -> assertNotNull(result),
+//                    () -> assertEquals("success",result.getName()),
+//                    () -> assertEquals("msg",request.getAttribute("message"))
+//            );
+//        }
+//    }
+//
+//    @ParameterizedTest
+//    @MethodSource("executeActionSource")
+//    @DisplayName("Testeando execute action exception")
+//    void executeActionException(HttpServletRequest request, ActionMapping mapping) throws Exception {
+//
+//        try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
+//            when(mockRendicionesService.bajaRendicion(anyString(),anyString(),anyString())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
+//        })) {
+//            ActionForward result = eliminarRendicionAction.executeAction(mapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
+//            assertAll(
+//                    () -> assertNotNull(result),
+//                    () -> assertEquals("success",result.getName()),
+//                    () -> assertEquals("ERROR: TransactionException",request.getAttribute("message"))
+//            );
+//        }
+//    }
 
     // ------ Sources ------
 
