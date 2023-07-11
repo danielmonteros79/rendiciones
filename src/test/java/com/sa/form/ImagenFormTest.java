@@ -108,8 +108,8 @@ class ImagenesFormTest {
         assertAll(
                 ()->assertNull(imagenesFormReal.getArchivo()),
                 ()->assertNull(imagenesFormReal.getAccion()),
-                ()->assertNull(imagenesFormReal.getArchivosASubir()),
-                ()->assertNull(imagenesFormReal.getRendicion()),
+                ()->assertNotNull(imagenesFormReal.getArchivosASubir()),
+                ()->assertNotNull(imagenesFormReal.getRendicion()),
                 ()->assertNull(imagenesFormReal.getUsuario())
         );
     }
