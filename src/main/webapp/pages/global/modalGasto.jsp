@@ -1,5 +1,5 @@
 <link rel="stylesheet" type="text/css" href="./css/select2.css">
-<script type="text/javascript" src="js/global/modalGasto.js"></script>
+<script type="text/javascript" src="static/js/global/modalGasto.js"></script>
 <div class="modal fade" id="modalGasto" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
 	<div class="modal-dialog modal-xl" role="document">
 		<div class="modal-content">
