@@ -1,52 +1,46 @@
 package com.sa.services.trxs;
 
-import ar.com.bbva.web.IWebClient;
-import ar.com.itrsa.sam.TransactionException;
-import com.sa.entities.parametros.ParametroAlerta;
-import com.sa.services.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import ar.com.bbva.web.IWebClient;
+import ar.com.itrsa.sam.TransactionException;
+
+import com.sa.entities.parametros.ParametroAlerta;
+import com.sa.services.Transaction;
+
 public class SU89 extends Transaction {
+	private static final Log log = LogFactory.getLog(SU89.class);
+	private List<ParametroAlerta> parametroAviso = new ArrayList<ParametroAlerta>();
 
-    private static final Log log = LogFactory.getLog(SU89.class);
-    private List<ParametroAlerta> parametroAviso = new ArrayList<ParametroAlerta>();
+	public SU89() {
+		this.PARAMETER_TRX = "SUM_ABM_ALERTAS";
+		this.CURRENT_TRX = "SU_ALERTA";
+	}
 
-    public SU89() {
-        this.PARAMETER_TRX = "SUM_ABM_ALERTAS";
-        this.CURRENT_TRX = "SU_ALERTA";
-    }
-
-    @Override
-    public void executeTrx(IWebClient client, Map parametersExecute) throws TransactionException {
-        try {
-            execute(client, this.PARAMETER_TRX, parametersExecute);
-            mapData(parametersExecute);
-        } catch (Exception e) {
-            throw new TransactionException(e);
-        }
-    }
-
-    @Override
-    public void executeTrx(IWebClient client, String... parameters) throws TransactionException {
-    }
-
-    @Override
-    protected Map mapInputParams(String... parameters) {
-        return null;
-    }
-
-    @Override
-    protected void mapData(Map parametersExecute) {
+	@Override
+	public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
+		try {
+			execute(client, this.PARAMETER_TRX, parametersExecute);
+			mapData(parametersExecute);
+		} catch (Exception e) {
+			log.error("", e);
+			throw new TransactionException(e);
+		}
+	}
+	
+	@Override
+	protected void mapData(Map<String, Object> parametersExecute) {
 //		List<String> lista = new ArrayList<String>();
 //		lista.add("4SPSUPodFidf2345678654654654654564654a65sr33");
 //		parametersExecute.put("lista", lista);
 //		for (Object object : (List) parametersExecute.get("lista")) {
 //			try {
-        //			String str = (String) ((BasicDynaBean) object).get("lista");
+	//			String str = (String) ((BasicDynaBean) object).get("lista");
 //				String str = (String) object;
 //				ParametroAlerta aviso = new ParametroAlerta();
 //				int i = 0;
@@ -66,10 +60,14 @@ public class SU89 extends Transaction {
 //				e.printStackTrace();
 //			}
 //		}
-    }
+	}
 
-    @Override
-    public List getDataReturnList() {
-        return parametroAviso;
-    }
+	@Override
+	public List getDataReturnList() {
+		return parametroAviso;
+	}
+
+	@Override
+	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+	}
 }

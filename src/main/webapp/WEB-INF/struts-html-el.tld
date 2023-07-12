@@ -5526,7 +5526,7 @@
     <tag>
         <name>param</name>
         <tag-class>org.apache.strutsel.taglib.html.ELParamTag</tag-class>
-        <description>
+                <description>
             <![CDATA[
                 <p>Adds a parameter to the following tags:
                     <ol>
@@ -5539,7 +5539,7 @@
                     <dl><dt><b>Since:</b></dt>
                     <dd>Struts 1.3.6</dd></dl>
                 ]]>
-        </description>
+                </description>
         <attribute>
             <name>name</name>
             <required>true</required>

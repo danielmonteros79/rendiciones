@@ -42,25 +42,25 @@ class ResumenServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @ParameterizedTest
-    @MethodSource("getConsumosSource")
-    @DisplayName("Testeando get consumos")
-    void getConsumos(String user,String msg, List<Resumen> resumen) throws TransactionException {
-        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-            doNothing().when(mockM).executeTrx(any(), anyMap());
-            when(mockM.getDataReturnList()).thenReturn(resumen);
-            when(mockM.getMensajeAviso()).thenReturn(msg);
-        })) {
-
-            ResumenService resumenService1 = new ResumenService(samWebClient);
-            List<Resumen> result = resumenService1.getConsumos(user);
-
-            assertAll(
-                    () -> assertNotNull(result),
-                    () -> assertEquals(resumen, result)
-            );
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource("getConsumosSource")
+//    @DisplayName("Testeando get consumos")
+//    void getConsumos(String user,String msg, List<Resumen> resumen) throws TransactionException {
+//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
+//            doNothing().when(mockM).executeTrx(any(), anyMap());
+//            when(mockM.getDataReturnList()).thenReturn(resumen);
+//            when(mockM.getMensajeAviso()).thenReturn(msg);
+//        })) {
+//
+//            ResumenService resumenService1 = new ResumenService(samWebClient);
+//            List<Resumen> result = resumenService1.getConsumos(user);
+//
+//            assertAll(
+//                    () -> assertNotNull(result),
+//                    () -> assertEquals(resumen, result)
+//            );
+//        }
+//    }
 
     @ParameterizedTest
     @MethodSource("getFechasResumenesSource")

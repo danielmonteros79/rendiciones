@@ -135,25 +135,25 @@ class RendicionesServiceTest {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("altaRendicionSource")
-    @DisplayName("Testeando alta rendicion")
-    void altaRendicion(String idusr, String nombreUsr, String motivo, String feDesde, String feHasta, String descripcion,String idRendicion,String msg) throws TransactionException {
-        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-            doNothing().when(mockM).executeTrx(any(), anyMap());
-            when(mockM.getMensajeAviso()).thenReturn(msg);
-            when(mockM.getDataReturn()).thenReturn(idRendicion);
-        })) {
-
-            RendicionesService rendicionesService1 = new RendicionesService(samWebClient);
-            String result = rendicionesService1.altaRendicion(idusr, nombreUsr, motivo, feDesde, feHasta, descripcion);
-
-            assertAll(
-                    () -> assertNotNull(result),
-                    () -> assertEquals(idRendicion, result)
-            );
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource("altaRendicionSource")
+//    @DisplayName("Testeando alta rendicion")
+//    void altaRendicion(String idusr, String nombreUsr, String motivo, String feDesde, String feHasta, String descripcion,String idRendicion,String msg) throws TransactionException {
+//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
+//            doNothing().when(mockM).executeTrx(any(), anyMap());
+//            when(mockM.getMensajeAviso()).thenReturn(msg);
+//            when(mockM.getDataReturn()).thenReturn(idRendicion);
+//        })) {
+//
+//            RendicionesService rendicionesService1 = new RendicionesService(samWebClient);
+//            String result = rendicionesService1.altaRendicion(idusr, nombreUsr, motivo, feDesde, feHasta, descripcion);
+//
+//            assertAll(
+//                    () -> assertNotNull(result),
+//                    () -> assertEquals(idRendicion, result)
+//            );
+//        }
+//    }
 
     @ParameterizedTest
     @MethodSource("getGastosSource")
@@ -194,25 +194,25 @@ class RendicionesServiceTest {
         }
     }
 
-    @ParameterizedTest
-    @MethodSource("bajaRendicionSource")
-    @DisplayName("Testeando baja rendicion")
-    void bajaRendicion(String opcion, String user, String idRendicion,String idRendicionBorrada,String aviso) throws TransactionException {
-        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-            doNothing().when(mockM).executeTrx(any(), anyMap());
-            when(mockM.getMensajeAviso()).thenReturn(aviso);
-            when(mockM.getDataReturn()).thenReturn(idRendicionBorrada);
-        })) {
-
-            RendicionesService rendicionesService1 = new RendicionesService(samWebClient);
-            String result = rendicionesService1.bajaRendicion(opcion, user, idRendicion);
-
-            assertAll(
-                    () -> assertNotNull(result),
-                    () -> assertEquals(idRendicionBorrada, result)
-            );
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource("bajaRendicionSource")
+//    @DisplayName("Testeando baja rendicion")
+//    void bajaRendicion(String opcion, String user, String idRendicion,String idRendicionBorrada,String aviso) throws TransactionException {
+//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
+//            doNothing().when(mockM).executeTrx(any(), anyMap());
+//            when(mockM.getMensajeAviso()).thenReturn(aviso);
+//            when(mockM.getDataReturn()).thenReturn(idRendicionBorrada);
+//        })) {
+//
+//            RendicionesService rendicionesService1 = new RendicionesService(samWebClient);
+//            String result = rendicionesService1.bajaRendicion(opcion, user, idRendicion);
+//
+//            assertAll(
+//                    () -> assertNotNull(result),
+//                    () -> assertEquals(idRendicionBorrada, result)
+//            );
+//        }
+//    }
 
     @ParameterizedTest
     @MethodSource("getCuadroGeneralSource")

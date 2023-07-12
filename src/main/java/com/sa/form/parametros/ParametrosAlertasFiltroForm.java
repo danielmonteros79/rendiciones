@@ -1,70 +1,71 @@
 package com.sa.form.parametros;
 
-import com.sa.entities.ComboOpcion;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.struts.action.ActionForm;
 
+import com.sa.entities.ComboOpcion;
+
 public class ParametrosAlertasFiltroForm extends ActionForm {
+	private static final long serialVersionUID = 1L;
+	private String codMotivo;
+	private String codGasto;
+	private Map<String, String> mapGastoMotivo = new HashMap<String, String>();
+	private Map<String, List<ComboOpcion>> mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
+	private List<ComboOpcion> cmbGasto = new ArrayList<ComboOpcion>();
+	private List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
+	
+	public ParametrosAlertasFiltroForm() {
+	}
 
-    private static final long serialVersionUID = 1L;
-    private String codMotivo;
-    private String codGasto;
-    private Map<String, String> mapGastoMotivo = new HashMap<String, String>();
-    private Map<String, List<ComboOpcion>> mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
-    private List<ComboOpcion> cmbGasto = new ArrayList<ComboOpcion>();
-    private List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
+	public String getCodMotivo() {
+		return codMotivo;
+	}
 
-    public ParametrosAlertasFiltroForm() {
-    }
+	public void setCodMotivo(String codMotivo) {
+		this.codMotivo = codMotivo;
+	}
 
-    public String getCodMotivo() {
-        return codMotivo;
-    }
+	public String getCodGasto() {
+		return codGasto;
+	}
 
-    public void setCodMotivo(String codMotivo) {
-        this.codMotivo = codMotivo;
-    }
+	public void setCodGasto(String codGasto) {
+		this.codGasto = codGasto;
+	}
 
-    public String getCodGasto() {
-        return codGasto;
-    }
+	public Map<String, String> getMapGastoMotivo() {
+		return mapGastoMotivo;
+	}
 
-    public void setCodGasto(String codGasto) {
-        this.codGasto = codGasto;
-    }
+	public void setMapGastoMotivo(Map<String, String> mapGastoMotivo) {
+		this.mapGastoMotivo = mapGastoMotivo;
+	}
 
-    public Map<String, String> getMapGastoMotivo() {
-        return mapGastoMotivo;
-    }
+	public Map<String, List<ComboOpcion>> getMapMotivoGastos() {
+		return mapMotivoGastos;
+	}
 
-    public void setMapGastoMotivo(Map<String, String> mapGastoMotivo) {
-        this.mapGastoMotivo = mapGastoMotivo;
-    }
+	public void setMapMotivoGastos(Map<String, List<ComboOpcion>> mapMotivoGastos) {
+		this.mapMotivoGastos = mapMotivoGastos;
+	}
 
-    public Map<String, List<ComboOpcion>> getMapMotivoGastos() {
-        return mapMotivoGastos;
-    }
+	public List<ComboOpcion> getCmbGasto() {
+		return cmbGasto;
+	}
 
-    public void setMapMotivoGastos(Map<String, List<ComboOpcion>> mapMotivoGastos) {
-        this.mapMotivoGastos = mapMotivoGastos;
-    }
+	public void setCmbGasto(List<ComboOpcion> cmbGasto) {
+		this.cmbGasto = cmbGasto;
+	}
 
-    public List<ComboOpcion> getCmbGasto() {
-        return cmbGasto;
-    }
+	public List<ComboOpcion> getCmbMotivo() {
+		return cmbMotivo;
+	}
 
-    public void setCmbGasto(List<ComboOpcion> cmbGasto) {
-        this.cmbGasto = cmbGasto;
-    }
-
-    public List<ComboOpcion> getCmbMotivo() {
-        return cmbMotivo;
-    }
-
-    public void setCmbMotivo(List<ComboOpcion> cmbMotivo) {
-        this.cmbMotivo = cmbMotivo;
-    }
+	public void setCmbMotivo(List<ComboOpcion> cmbMotivo) {
+		this.cmbMotivo = cmbMotivo;
+	}
 }

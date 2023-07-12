@@ -12,69 +12,61 @@ import java.util.List;
 import java.util.Map;
 
 public class ResumenService {
+	private SAMWebClient client;
+	private String msg;
 
-    private SAMWebClient client;
-    private String msg;
+	public ResumenService(SAMWebClient samClient) {
+		this.client = samClient;
+	}
 
-    public ResumenService(SAMWebClient samClient) {
-        this.client = samClient;
-    }
+	@SuppressWarnings("unchecked")
+	public List<Resumen> getConsumos(String user, String fechaDesde, String fechaHasta, String codMotivo) throws TransactionException {
+		ManagerTransaction manager = new ManagerTransaction(new SU68());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+		
+		parametersExecute.put("pantalla", "resumen");
+		parametersExecute.put("opcion", "USU");
+		parametersExecute.put("subtran", "MOP");
+		parametersExecute.put("codapli", "SU");
+		parametersExecute.put("usuario", user);
+		parametersExecute.put("fepresd", fechaDesde);
+		parametersExecute.put("fecpreh", fechaHasta);
+		parametersExecute.put("motivo", codMotivo);
+		
+		manager.executeTrx(this.client, parametersExecute);
 
-    @SuppressWarnings("unchecked")
-    public List<Resumen> getConsumos(String user) throws TransactionException {
-        ManagerTransaction manager = new ManagerTransaction(new SU68());
-        Map<String, String> parametersExecute = new HashMap<String, String>();
+		List<Resumen> resumen = (List<Resumen>) manager.getDataReturnList();
+		this.msg = (String) manager.getMensajeAviso();
 
-        parametersExecute.put("pantalla", "resumen");
-        parametersExecute.put("opcion", "USU");
-        parametersExecute.put("subtran", "MOP");
-        parametersExecute.put("codapli", "SU");
-        parametersExecute.put("usuario", user);
+		return resumen;
+	}
 
-        manager.executeTrx(this.client, parametersExecute);
+	public List<ComboOpcion> getFechasResumenes(String user) throws TransactionException {
+		ManagerTransaction manager = new ManagerTransaction(new SU69());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+		parametersExecute.put("opcion", "CON");
+		parametersExecute.put("subtran", "FEC");
+		parametersExecute.put("usuario", user);
+		manager.executeTrx(this.client, parametersExecute);
+		List<ComboOpcion> fechas = manager.getDataReturnList();
+		this.msg = (String) manager.getMensajeAviso();
+		return fechas;
+	}
 
-        List<Resumen> resumen = (List<Resumen>) manager.getDataReturnList();
-        this.msg = (String) manager.getMensajeAviso();
+	public List<Resumen> getResumenes(String user, String fecha) throws TransactionException {
+		ManagerTransaction manager = new ManagerTransaction(new SU69());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+		parametersExecute.put("opcion", "CON");
+		parametersExecute.put("subtran", "RES");
+		parametersExecute.put("usuario", user);
+		parametersExecute.put("fecierr", fecha);
+		manager.executeTrx(this.client, parametersExecute);
+		List<Resumen> resumen = manager.getDataReturnList();
+		this.msg = (String) manager.getMensajeAviso();
+		return resumen;
+	}
 
-        return resumen;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<ComboOpcion> getFechasResumenes(String user) throws TransactionException {
-        ManagerTransaction manager = new ManagerTransaction(new SU69());
-        Map<String, String> parametersExecute = new HashMap<String, String>();
-
-        parametersExecute.put("opcion", "CON");
-        parametersExecute.put("subtran", "FEC");
-        parametersExecute.put("usuario", user);
-
-        manager.executeTrx(this.client, parametersExecute);
-
-        List<ComboOpcion> fechas = (List<ComboOpcion>) manager.getDataReturnList();
-        this.msg = (String) manager.getMensajeAviso();
-
-        return fechas;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<Resumen> getResumenes(String user, String fecha) throws TransactionException {
-        ManagerTransaction manager = new ManagerTransaction(new SU69());
-        Map<String, String> parametersExecute = new HashMap<String, String>();
-
-        parametersExecute.put("opcion", "CON");
-        parametersExecute.put("subtran", "RES");
-        parametersExecute.put("usuario", user);
-        parametersExecute.put("fecierr", fecha);
-
-        manager.executeTrx(this.client, parametersExecute);
-
-        List<Resumen> resumen = (List<Resumen>) manager.getDataReturnList();
-        this.msg = (String) manager.getMensajeAviso();
-
-        return resumen;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
+	public String getMsg() {
+		return this.msg;
+	}
 }

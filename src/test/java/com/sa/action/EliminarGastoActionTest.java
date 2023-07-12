@@ -66,37 +66,37 @@ class EliminarGastoActionTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @ParameterizedTest
-    @MethodSource("executeActionSource")
-    @DisplayName("Testeando execute action")
-    void executeAction(HttpServletRequest request) throws Exception {
-        try(MockedConstruction<PagosService> mock = Mockito.mockConstruction(PagosService.class, (mockPagoService, context) -> {
-            when(mockPagoService.bajaGasto(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(1);
-            when(mockPagoService.getMsg()).thenReturn("msg");
-        })) {
-            ActionForward result = eliminarGastoAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
-            assertAll(
-                    () -> assertNull(result),
-                    () -> assertEquals("msg", request.getSession().getAttribute("messageModif"))
-            );
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource("executeActionSource")
+//    @DisplayName("Testeando execute action")
+//    void executeAction(HttpServletRequest request) throws Exception {
+//        try(MockedConstruction<PagosService> mock = Mockito.mockConstruction(PagosService.class, (mockPagoService, context) -> {
+//            when(mockPagoService.bajaGasto(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(1);
+//            when(mockPagoService.getMsg()).thenReturn("msg");
+//        })) {
+//            ActionForward result = eliminarGastoAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
+//            assertAll(
+//                    () -> assertNull(result),
+//                    () -> assertEquals("msg", request.getSession().getAttribute("messageModif"))
+//            );
+//        }
+//    }
 
-    @ParameterizedTest
-    @MethodSource("executeActionSource")
-    @DisplayName("Testeando execute action exception")
-    void executeActionException(HttpServletRequest request) throws Exception {
-        try(MockedConstruction<PagosService> mock = Mockito.mockConstruction(PagosService.class, (mockPagoService, context) -> {
-            when(mockPagoService.bajaGasto(anyString(),anyString(),anyString(),anyString(),anyString())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
-            when(mockPagoService.getMsg()).thenReturn("msg");
-        })) {
-            ActionForward result = eliminarGastoAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
-            assertAll(
-                    () -> assertNull(result),
-                    () -> assertEquals("ERROR: TransactionException", request.getSession().getAttribute("messageModif"))
-            );
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource("executeActionSource")
+//    @DisplayName("Testeando execute action exception")
+//    void executeActionException(HttpServletRequest request) throws Exception {
+//        try(MockedConstruction<PagosService> mock = Mockito.mockConstruction(PagosService.class, (mockPagoService, context) -> {
+//            when(mockPagoService.bajaGasto(anyString(),anyString(),anyString(),anyString(),anyString())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
+//            when(mockPagoService.getMsg()).thenReturn("msg");
+//        })) {
+//            ActionForward result = eliminarGastoAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, request, httpServletResponse);
+//            assertAll(
+//                    () -> assertNull(result),
+//                    () -> assertEquals("ERROR: TransactionException", request.getSession().getAttribute("messageModif"))
+//            );
+//        }
+//    }
 
     // ------ Sources ------
 

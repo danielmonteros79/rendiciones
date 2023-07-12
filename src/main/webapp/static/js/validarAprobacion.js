@@ -1,29 +1,29 @@
-$(document).ready(function () {
+$(document).ready(function() {
 
-    $.validator.addMethod("valueNotEquals", function (value, element, arg) {
-        return arg != value;
-    }, "");
+	$.validator.addMethod("valueNotEquals", function(value, element, arg) {
+		return arg != value;
+	}, "");
 
-    $("#formAprobacion").validate({
-        rules: {
+	$("#formAprobacion").validate({
+		rules : {
+			
+			id: {
+				valueNotEquals : ""
+			}
 
-            id: {
-                valueNotEquals: ""
-            }
-
-        },
-        messages: {
-
-            id: " *"
-
-        }
-    });
+		},
+		messages : {
+			
+			id: " *"
+	
+		}
+	});
 });
 $.validator.setDefaults({
 
-    submitHandler: function () {
-        alert("Rendicion aprobada.");
-        window.href.location = "aprobacion.do"
+	submitHandler : function() {
+		alert("Rendicion aprobada.");
+		window.href.location = "aprobacion.do"
 
-    }
+	}
 });

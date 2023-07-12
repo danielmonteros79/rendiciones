@@ -1,58 +1,62 @@
 package com.sa.action;
 
-import ar.com.bbva.web.impl.SAMWebApplication;
-import ar.com.bbva.web.impl.SAMWebClient;
-import ar.com.itrsa.sam.TransactionException;
-import com.sa.entities.Usuario;
-import com.sa.services.CierreService;
-import com.sa.util.ParamsConstants;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import ar.com.bbva.web.impl.SAMWebApplication;
+import ar.com.bbva.web.impl.SAMWebClient;
+import ar.com.itrsa.sam.TransactionException;
+
+import com.sa.entities.Usuario;
+import com.sa.services.CierreService;
+import com.sa.util.ParamsConstants;
+
 public class CierreMensualContableAction extends RestriccionTransaccionAction {
+	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+			SAMWebApplication samApplication, SAMWebClient samClient,
+			HttpServletRequest request, HttpServletResponse response)
+	// ParametrosSUM paramsSUM
+			throws Exception {
+		CierreService service = new CierreService (samClient);
+		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
 
-    public ActionForward executeAction(ActionMapping mapping, ActionForm form,
-            SAMWebApplication samApplication, SAMWebClient samClient,
-            HttpServletRequest request, HttpServletResponse response)
-            // ParametrosSUM paramsSUM
-            throws Exception {
-        CierreService service = new CierreService(samClient);
-        Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
+		try {
+			request.setAttribute("tipoConsulta", "f");
+			log.info("se llama al service para el cierre mensual simulado con el usuario:"+user.getIdUser());
+			Date fechaHoy = new Date();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
+			String feHoy = "";
+			if (fechaHoy != null) {
+				feHoy = df.format(fechaHoy).trim();
+			}
+			service.GenerarPagoMarca(ParamsConstants.PAGOS_OPCION,
+					ParamsConstants.PAGOS_IDPROCESO,
+					ParamsConstants.PAGOS_TIPOPROCESOCIERREMENSUALCONTABLE, feHoy,
+					ParamsConstants.PAGOS_ESTADOPROCESO,
+					ParamsConstants.PAGOS_NUMEROREGISTRO,
+					ParamsConstants.PAGOS_DESCRIPCION, user.getIdUser());
 
-        try {
-            request.setAttribute("tipoConsulta", "f");
-            log.info("se llama al service para el cierre mensual simulado con el usuario:" + user.getIdUser());
-            Date fechaHoy = new Date();
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
-            String feHoy = "";
-            if (fechaHoy != null) {
-                feHoy = df.format(fechaHoy).trim();
-            }
-            service.GenerarPagoMarca(ParamsConstants.PAGOS_OPCION,
-                    ParamsConstants.PAGOS_IDPROCESO,
-                    ParamsConstants.PAGOS_TIPOPROCESOCIERREMENSUALCONTABLE, feHoy,
-                    ParamsConstants.PAGOS_ESTADOPROCESO,
-                    ParamsConstants.PAGOS_NUMEROREGISTRO,
-                    ParamsConstants.PAGOS_DESCRIPCION, user.getIdUser());
+			request.setAttribute("messageModifTCJP",
+					"OK: SE COLOCO LA MARCA DE CIERRE MENSUAL CONTABLE CORRECTAMENTE  "
 
-            request.setAttribute("messageModifTCJP",
-                    "OK: SE COLOCO LA MARCA DE CIERRE MENSUAL CONTABLE CORRECTAMENTE  "
-            );
-        } catch (TransactionException e) {
-            // TODO: handle exception
-            log.error(e);
-
-            request.setAttribute("messageModifTCJP",
-                    "ERROR AL COLOCAR MARCA: " + e.getMessage().toString().replace("java.lang.Exception:", ""));
-        }
-
-        return mapping.findForward("success");
-
-    }
+			);
+		} catch (TransactionException e) {
+			// TODO: handle exception
+			log.error(e);
+			
+			request.setAttribute("messageModifTCJP",
+					"ERROR AL COLOCAR MARCA: " + e.getMessage().toString().replace("java.lang.Exception:", ""));
+		}
+		
+		return mapping.findForward("success");
+			
+	}
 }

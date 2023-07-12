@@ -1,91 +1,183 @@
 package com.sa.action;
 
-import ar.com.bbva.web.impl.SAMWebApplication;
-import ar.com.bbva.web.impl.SAMWebClient;
-import ar.com.bbva.web.struts.sam.ISAMWebAction;
-import com.sa.core.AccesoNoPermitidoException;
-import com.sa.core.SecurityActionMapping;
-import com.sa.entities.Usuario;
-import com.sa.exceptions.SessionTimeOutException;
-import com.sa.services.LoggerSUM;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.sa.core.AccesoNoPermitidoException;
+import com.sa.entities.Usuario;
+import com.sa.exceptions.SessionTimeOutException;
+
+import ar.com.bbva.web.impl.SAMWebApplication;
+import ar.com.bbva.web.impl.SAMWebClient;
+import ar.com.bbva.web.struts.sam.ISAMWebAction;
+import ar.com.itrsa.sam.TransactionException;
+import net.sf.json.JSONObject;
+
 public abstract class RestriccionTransaccionAction extends ISAMWebAction {
+	protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
+	protected String message = "";
+	protected Usuario sessionUser;
+	protected Usuario sessionUserWorking;
 
-    protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
+	public ActionForward execute(ActionMapping arg0, ActionForm arg1, SAMWebApplication arg2, SAMWebClient arg3,
+			HttpServletRequest arg4, HttpServletResponse arg5) throws Exception {
+		if (chequearTimeOut(arg4)) {
+			if ("XMLHttpRequest".equals(arg4.getHeader("X-Requested-With")))
+				return writeError(arg5, "Finaliz\u00f3 el tiempo de la sesi\u00f3n.");
+			else
+				throw new SessionTimeOutException("Finalizo tiempo en sesion.");
+		}
+		
+		this.sessionUser = (Usuario) arg4.getSession().getAttribute("usuario");
+		this.sessionUserWorking = (Usuario) arg4.getSession().getAttribute("userWorking");
+		
+		String user = ((Usuario) arg4.getSession().getAttribute("usuario")).getIdUser();
+		// SE SETEA EL USUARIO LOGUEADO A SAM WEB CLIENT.
+		arg3.setAttribute("userLoggin", user);
+		
+		String action = arg4.getParameter("action") == null ? "" : arg4.getParameter("action");
+		
+		log.info("Class: " + this.getClass().getName() + " - User: " + this.sessionUser.getIdUser() + " - UserWorking: " + this.sessionUserWorking.getIdUser() +
+				" - Action: " + action);
+		
+		if (action.equals("getMessage"))
+			return this.getMessage(arg5);
+		
+		return executeAction(arg0, arg1, arg2, arg3, arg4, arg5);
 
-    public ActionForward execute(ActionMapping arg0, ActionForm arg1, SAMWebApplication arg2, SAMWebClient arg3,
-            HttpServletRequest arg4, HttpServletResponse arg5) throws Exception {
+	}
 
-        chequearTimeOut(arg4);
-//		System.out.println("Restriction: " + ((Usuario) arg4.getSession().getAttribute("usuario")).getIdUser());
-        String user = ((Usuario) arg4.getSession().getAttribute("usuario")).getIdUser();
-        // SE SETEA EL USUARIO LOGUEADO A SAM WEB CLIENT.
-        arg3.setAttribute("userLoggin", user);
+	/**
+	 * Los Action clientes deben utilizar este metodo en lugar del execute()
+	 * regular.
+	 * 
+	 * @param actionMapping
+	 * @param form
+	 * @param samApplication
+	 * @param samClient
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public abstract ActionForward executeAction(ActionMapping mapping, ActionForm form,
+			SAMWebApplication samApplication, SAMWebClient samClient, HttpServletRequest request,
+			HttpServletResponse response) throws Exception;
 
-        return executeAction(arg0, arg1, arg2, arg3, arg4, arg5);
+	protected void doRestriccion(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws AccesoNoPermitidoException {
 
-    }
+		HttpSession session = request.getSession();
+		Usuario usuario = (Usuario) session.getAttribute("usuario");
+//		SecurityActionMapping sam = (SecurityActionMapping) mapping;
+//		int permisos = usuario.getPerfil();
+		boolean puedePasar = false;
 
-    /**
-     * Los Action clientes deben utilizar este metodo en lugar del execute()
-     * regular.
-     *
-     * @param actionMapping
-     * @param form
-     * @param samApplication
-     * @param samClient
-     * @param request
-     * @param response
-     * @return
-     * @throws Exception
-     */
-    public abstract ActionForward executeAction(ActionMapping mapping, ActionForm form,
-            SAMWebApplication samApplication, SAMWebClient samClient, HttpServletRequest request,
-            HttpServletResponse response) throws Exception;
+		// if (permisos == Integer.parseInt(sam
+		// .getApplicationZone())) {
+		puedePasar = true;
+		//
+		// }
 
-    protected void doRestriccion(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-            HttpServletResponse response, LoggerSUM logger) throws AccesoNoPermitidoException {
+		if (!puedePasar) {
 
-        HttpSession session = request.getSession();
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        SecurityActionMapping sam = (SecurityActionMapping) mapping;
-        int permisos = usuario.getPerfil();
-        boolean puedePasar = false;
+			log.info("El usuario " + usuario.getIdUser() + " intento ingresar a " + request.getRequestURI()
+					+ " y fue rechazado por falta de permisos.");
 
-        // if (permisos == Integer.parseInt(sam
-        // .getApplicationZone())) {
-        puedePasar = true;
-        //
-        // }
+			throw new AccesoNoPermitidoException("El usuario " + usuario.getIdUser() + " intento ingresar a "
+					+ request.getRequestURI() + " y fue rechazado por falta de permisos.");
+		}
+	}
 
-        if (!puedePasar) {
+	protected void cerrarSesion(HttpServletRequest request) {
+		request.getSession().invalidate();
+	}
 
-            log.info("El usuario " + usuario.getIdUser() + " intento ingresar a " + request.getRequestURI()
-                    + " y fue rechazado por falta de permisos.");
-
-            throw new AccesoNoPermitidoException("El usuario " + usuario.getIdUser() + " intento ingresar a "
-                    + request.getRequestURI() + " y fue rechazado por falta de permisos.");
-        }
-    }
-
-    protected void cerrarSesion(HttpServletRequest request) {
-
-        request.getSession().invalidate();
-    }
-
-    protected void chequearTimeOut(HttpServletRequest request) throws SessionTimeOutException {
-        Usuario u = (Usuario) request.getSession().getAttribute("usuario");
-        if (u == null) {
-            request.getSession().invalidate();
-            throw new SessionTimeOutException("Finaliz� tiempo en sesi�n.");
-
-        }
-    }
+	protected boolean chequearTimeOut(HttpServletRequest request) throws SessionTimeOutException {
+		Usuario u = (Usuario) request.getSession().getAttribute("usuario");
+		if (u == null) {
+			request.getSession().invalidate();
+			return true;
+		}
+		
+		return false;
+	}
+	
+	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws Exception {
+		PrintWriter writer = response.getWriter();
+		
+		resp.put("status", "OK");
+		
+		writer.print(JSONObject.fromObject(resp));
+		writer.flush();
+		writer.close();
+		
+		return null;
+	}
+	
+	protected ActionForward writeError(HttpServletResponse response, Exception e) throws Exception {
+		PrintWriter writer = response.getWriter();
+		
+		Map<String, Object> resp = new HashMap<String, Object>();
+		resp.put("status", "ERROR");
+		
+		if (e instanceof TransactionException)
+			resp.put("error", e.getCause().getMessage());
+		else {
+			resp.put("error", "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+			resp.put("stacktrace", ExceptionUtils.getStackTrace(e));
+		}
+		
+		this.message = "ERROR: " + (String) resp.get("error");
+		
+		writer.print(JSONObject.fromObject(resp));
+		writer.flush();
+		writer.close();
+		
+		return null;
+	}
+	
+	protected ActionForward writeError(HttpServletResponse response, String message) throws Exception {
+		PrintWriter writer = response.getWriter();
+		
+		Map<String, Object> resp = new HashMap<String, Object>();
+		resp.put("status", "ERROR");
+		resp.put("error", message);
+		
+		writer.print(JSONObject.fromObject(resp));
+		writer.flush();
+		writer.close();
+		
+		return null;
+	}
+	
+	protected void setErrorMessage(Exception e) throws Exception {
+		this.message = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() : 
+			"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+	}
+	
+	protected ActionForward getMessage(HttpServletResponse response) throws Exception {
+		PrintWriter writer = response.getWriter();
+		
+		Map<String, Object> resp = new HashMap<String, Object>();
+		resp.put("message", this.message);
+		
+		writer.print(JSONObject.fromObject(resp));
+		writer.flush();
+		writer.close();
+		
+		return null;
+	}
 }
+

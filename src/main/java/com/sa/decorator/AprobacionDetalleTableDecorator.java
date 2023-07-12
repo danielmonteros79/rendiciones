@@ -1,108 +1,109 @@
 package com.sa.decorator;
 
-import com.sa.entities.Gastos;
-import com.sa.entities.Rendicion;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
+import com.sa.entities.Gastos;
+import com.sa.entities.Rendicion;
+
 public class AprobacionDetalleTableDecorator extends SumTableDecorator {
 
-    @Override
-    protected String getVerLink() {
+	@Override
+	protected String getVerLink() {
+		return "";
+	}
 
-        return "";
-    }
+	@Override
+	protected String getEditarLink() {
+		Gastos gasto = (Gastos) this.getCurrentRowObject();
+		
+		String imgTag = "<i class=\"bbva-icon icon-coronita_contract fa-lg\" data-toggle=\"tooltip\" title=\"Editar\"></i>";
+		String editarLink = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalGastoShow('" + gasto.getIdRendicion() + "', $('#estadoRend').val() ,'" +
+				gasto.getIdGasto() + "', '" + gasto.getCodMotivo() + "', " + (!gasto.getCuponGasto().equalsIgnoreCase("") ? "1" : "0") + ")\">" + 
+			imgTag + "</a>";
 
-    @Override
-    protected String getEditarLink() {
-        PageContext pc = this.getPageContext();
-        HttpServletRequest request = (HttpServletRequest) pc.getRequest();
-        String contextPath = request.getContextPath();
-        Gastos gasto = (Gastos) this.getCurrentRowObject();
-        String idRendicion = request.getParameter("codigo");
-        String codMotivo = request.getParameter("codMotivo");
-        String idGasto = gasto.getIdGasto();
-        String estadoRend = request.getParameter("estadoRend").toString();
-        String tieneCupon = "";
-        String listadoAprob = "1";
-        String user = request.getParameter("usuarioRendicion");
-        String glg = request.getParameter("glg");
-        if (!gasto.getCuponGasto().equalsIgnoreCase("")) {
-            tieneCupon = "1";
-        }
-        request.setAttribute("idGasto", idGasto);
-        String imgTag = "<a href=\"#\" onclick=\"showEditarGastoPopup(" + idGasto + ",'" + estadoRend + "','" + tieneCupon + "','" + listadoAprob + "','" + user + "','" + glg + "')\"><img src=\"" + contextPath
-                + "/images/iconos/editar.png\" alt=\"Editar\" title=\"Editar\" border=\"0\" /> </a>";
-        String editarLink = "<a href=\"" + contextPath
-                + "/editarGasto.do?action=editarGasto.do&idGasto=" + idGasto + "&"
-                + "codigo=" + idRendicion + "&" + "codMotivo=" + codMotivo + "&estadoRend=" + estadoRend
-                + "\">" + imgTag + "</a>";
+		return editarLink;
 
-        return editarLink;
+	}
 
-    }
+	@Override
+	protected String getBorrarLink() {
+		return "";
+	}
+	
+	public String getCupones() {
+		PageContext pc = this.getPageContext();
+		HttpServletRequest request = (HttpServletRequest) pc.getRequest();
+		Gastos gasto = (Gastos) this.getCurrentRowObject();
+		
+		if (gasto.getTarjeta().equals("S")) {
+			String idRendicion = gasto.getIdRendicion();
+			String idGasto = gasto.getIdGasto();
+			String codMotivo = request.getParameter("codMotivo");
+			
+			String imgTag = "<i class=\"bbva-icon icon-coronita_credit-card fa-lg\" data-toggle=\"tooltip\" title=\"Cupones\"></i>";
+			String link = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalCuponesShow('" + idRendicion + "', $('#estadoRend').val(), '" + codMotivo +
+					"', null, null, '" + idGasto + "', null, null, true)\">" + imgTag + "</a>";
+			return link;
+		} else
+			return "";
+	}
+	
+	public String getComentarios() {
+		PageContext pc = this.getPageContext();
+		HttpServletRequest request = (HttpServletRequest) pc.getRequest();
+		Gastos gasto = (Gastos) this.getCurrentRowObject();
+		Rendicion rend = (Rendicion) request.getAttribute("Rendicion");
+		
+		if (gasto.getObsObligatoria().equals("") || !gasto.getObsObligatoria().equals("S"))
+			return "";
+		else {
+			String imgTag = "<i class=\"bbva-icon icon-uniE0D2 fa-lg\" data-toggle=\"tooltip\" title=\"Datos adicionales\"></i>";
+			String link = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalDatosAdicionalesShow('" + rend.getId() + "', '" + rend.getCodMotivo() + "', '" + 
+					gasto.getIdGasto() + "', '" + gasto.getNroGasto() + "', '" + gasto.getObs() + "', true)\">" + imgTag + "</a>";
+			
+			return link;
+		}
+	}
 
-    @Override
-    protected String getBorrarLink() {
-        return "";
+	public String getComprobante() {
+		String comprobante = ((Gastos) this.getCurrentRowObject()).getComprobante();
+		
+		if (comprobante.equals("FACTU"))
+			return "FACTURA";
+		else if (comprobante.equals("MAIL-"))
+			return "MAIL";
+		else if (comprobante.equals("SCOMP"))
+			return "SIN COMPROBANTE";
+		else if (comprobante.equals("TICK-"))
+			return "TICKET";
+		else if (comprobante.equals("FOBL"))
+			return "FACTURA OBLIGATORIA";
+			
+		return comprobante;
+	}
 
-    }
+	@Override
+	protected String getDestinatariosLink() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    protected String getDestinatariosLink() {
-        PageContext pc = this.getPageContext();
-        HttpServletRequest request = (HttpServletRequest) pc.getRequest();
-        String contextPath = request.getContextPath();
-        Gastos gasto = (Gastos) this.getCurrentRowObject();
-        Rendicion rend = (Rendicion) request.getAttribute("Rendicion");
-        String codMotivo = rend.getCodMotivo();
-        String estadoRend = request.getParameter("estadoRend");
-        if (gasto.getObsObligatoria().equals("") || !gasto.getObsObligatoria().equals("S")) {
-            return "";
-        } else {
-            String idGasto = gasto.getIdGasto();
-            String codGasto = gasto.getNroGasto();
-            String codObs = gasto.getObs();
-            // if (gasto.getObs()==(""))
-            String imgTag = "<img src=\"" + contextPath
-                    + "/images/iconos/message.png\" alt=\"Descripcion\" title=\"Descripcion\" border=\"0\" />";
-            String mensaje = "<a href=\"#\" onclick=\"showDescripcionObligatoriaPopup("
-                    + idGasto + "," + codGasto + ",'" + codObs + "',1,'" + codMotivo + "','" + estadoRend + "')\">"
-                    + imgTag + "</a>";
-            return mensaje;
+	@Override
+	protected String getCuponesLink() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-        }
-    }
+	@Override
+	protected String getScanLink() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    protected String getCuponesLink() {
-        PageContext pc = this.getPageContext();
-        HttpServletRequest request = (HttpServletRequest) pc.getRequest();
-        String contextPath = request.getContextPath();
-        Gastos gasto = (Gastos) this.getCurrentRowObject();
-        if (gasto.getTarjeta().equals("S")) {
-            String idGasto = gasto.getIdGasto();
-            String fgasto = gasto.getFechagastos();
-            String cuponSel = gasto.getCuponGasto().equalsIgnoreCase("") ? "0" : gasto.getCuponGasto();
-            String imgTag = "<a href=\"#\" onclick=\"showCuponesTarjetasPopup(" + idGasto + ",'" + cuponSel + "','" + fgasto + "','t')\"><img src=\"" + contextPath
-                    + "/images/iconos/creditcards.png\" alt=\"Cupones\" title=\"Cupones\" border=\"0\" /> </a>";
-            String mensaje2 = "<a href=\"" + contextPath + "/cuponesPopup.do?action=cuponesPopup&view=f&gasto="
-                    + gasto.getNroGasto() + "\">" + imgTag + "</a></td>";
-            return mensaje2;
-        } else {
-            return "";
-        }
-    }
-
-    @Override
-    protected String getScanLink() {
-        // TODO Auto-generated method stub
-        return "";
-    }
-
-    @Override
-    protected String getCaratulaLink() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	@Override
+	protected String getCaratulaLink() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

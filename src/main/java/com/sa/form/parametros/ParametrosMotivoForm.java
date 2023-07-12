@@ -1,214 +1,215 @@
 package com.sa.form.parametros;
 
-import com.sa.entities.OSCAR;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.struts.action.ActionForm;
 
+import com.sa.entities.OSCAR;
+
 public class ParametrosMotivoForm extends ActionForm {
+	private static final long serialVersionUID = 1L;
+	private String codigo;
+	private String descripcion;
+	private String idGlg;
+	private String idCentroCostos;
+	private String estado;
+	private String codSup;
+	private String codFirma;
+	private String codAprobacionGlg;
+	private OSCAR oscar;
+	private String fechaDesde;
+	private String fechaHasta;
+	private String idNivCarga;
+	private String idNivAutoriz;
+	private String maInclExcl;
+	private String txAviso;
+	private String idOperEspe;
+	private String meDiasInterv;
+	private List<String> centrosCosto;
+	private String accion;
 
-    private static final long serialVersionUID = 1L;
-    private String codigo;
-    private String descripcion;
-    private String idGlg;
-    private String idCentroCostos;
-    private String estado;
-    private String codSup;
-    private String codFirma;
-    private String codAprobacionGlg;
-    private OSCAR oscar;
-    private String fechaDesde;
-    private String fechaHasta;
-    private String idNivCarga;
-    private String idNivAutoriz;
-    private String maInclExcl;
-    private String txAviso;
-    private String idOperEspe;
-    private String meDiasInterv;
-    private List<String> centrosCosto;
-    private String accion;
+	public void clear() {
+		this.codigo = null;
+		this.descripcion = null;
+		this.idGlg = null;
+		this.idCentroCostos = null;
+		this.estado = null;
+		this.codSup = null;
+		this.codFirma = null;
+		this.codAprobacionGlg = null;
+		this.oscar = new OSCAR();
+		this.fechaDesde = null;
+		this.fechaHasta = null;
+		this.idNivCarga = null;
+		this.idNivAutoriz = null;
+		this.maInclExcl = null;
+		this.txAviso = null;
+		this.idOperEspe = null;
+		this.meDiasInterv = null;
+		this.centrosCosto = new ArrayList<String>();
+	}
+	
+	public String getCodigo() {
+		return codigo;
+	}
 
-    public void clear() {
-        this.codigo = null;
-        this.descripcion = null;
-        this.idGlg = null;
-        this.idCentroCostos = null;
-        this.estado = null;
-        this.codSup = null;
-        this.codFirma = null;
-        this.codAprobacionGlg = null;
-        this.oscar = new OSCAR();
-        this.fechaDesde = null;
-        this.fechaHasta = null;
-        this.idNivCarga = null;
-        this.idNivAutoriz = null;
-        this.maInclExcl = null;
-        this.txAviso = null;
-        this.idOperEspe = null;
-        this.meDiasInterv = null;
-        this.centrosCosto = new ArrayList<String>();
-    }
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
 
-    public String getCodigo() {
-        return codigo;
-    }
+	public String getDescripcion() {
+		return descripcion;
+	}
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+	public String getIdGlg() {
+		return idGlg;
+	}
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+	public void setIdGlg(String idGlg) {
+		this.idGlg = idGlg;
+	}
 
-    public String getIdGlg() {
-        return idGlg;
-    }
+	public String getIdCentroCostos() {
+		return idCentroCostos;
+	}
 
-    public void setIdGlg(String idGlg) {
-        this.idGlg = idGlg;
-    }
+	public void setIdCentroCostos(String idCentroCostos) {
+		this.idCentroCostos = idCentroCostos;
+	}
 
-    public String getIdCentroCostos() {
-        return idCentroCostos;
-    }
+	public String getEstado() {
+		return estado;
+	}
 
-    public void setIdCentroCostos(String idCentroCostos) {
-        this.idCentroCostos = idCentroCostos;
-    }
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
 
-    public String getEstado() {
-        return estado;
-    }
+	public String getCodSup() {
+		return codSup;
+	}
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
+	public void setCodSup(String codSup) {
+		this.codSup = codSup;
+	}
 
-    public String getCodSup() {
-        return codSup;
-    }
+	public String getCodFirma() {
+		return codFirma;
+	}
 
-    public void setCodSup(String codSup) {
-        this.codSup = codSup;
-    }
+	public void setCodFirma(String codFirma) {
+		this.codFirma = codFirma;
+	}
 
-    public String getCodFirma() {
-        return codFirma;
-    }
+	public String getCodAprobacionGlg() {
+		return codAprobacionGlg;
+	}
 
-    public void setCodFirma(String codFirma) {
-        this.codFirma = codFirma;
-    }
+	public void setCodAprobacionGlg(String codAprobacionGlg) {
+		this.codAprobacionGlg = codAprobacionGlg;
+	}
+	
+	public OSCAR getOscar() {
+		return oscar;
+	}
 
-    public String getCodAprobacionGlg() {
-        return codAprobacionGlg;
-    }
+	public void setOscar(OSCAR oscar) {
+		this.oscar = oscar;
+	}
 
-    public void setCodAprobacionGlg(String codAprobacionGlg) {
-        this.codAprobacionGlg = codAprobacionGlg;
-    }
+	public String getFechaDesde() {
+		return fechaDesde;
+	}
 
-    public OSCAR getOscar() {
-        return oscar;
-    }
+	public void setFechaDesde(String fechaDesde) {
+		this.fechaDesde = fechaDesde;
+	}
 
-    public void setOscar(OSCAR oscar) {
-        this.oscar = oscar;
-    }
+	public String getFechaHasta() {
+		return fechaHasta;
+	}
 
-    public String getFechaDesde() {
-        return fechaDesde;
-    }
+	public void setFechaHasta(String fechaHasta) {
+		this.fechaHasta = fechaHasta;
+	}
 
-    public void setFechaDesde(String fechaDesde) {
-        this.fechaDesde = fechaDesde;
-    }
+	public String getIdNivCarga() {
+		return idNivCarga;
+	}
 
-    public String getFechaHasta() {
-        return fechaHasta;
-    }
+	public void setIdNivCarga(String idNivCarga) {
+		this.idNivCarga = idNivCarga;
+	}
 
-    public void setFechaHasta(String fechaHasta) {
-        this.fechaHasta = fechaHasta;
-    }
+	public String getIdNivAutoriz() {
+		return idNivAutoriz;
+	}
 
-    public String getIdNivCarga() {
-        return idNivCarga;
-    }
+	public void setIdNivAutoriz(String idNivAutoriz) {
+		this.idNivAutoriz = idNivAutoriz;
+	}
 
-    public void setIdNivCarga(String idNivCarga) {
-        this.idNivCarga = idNivCarga;
-    }
+	public String getMaInclExcl() {
+		return maInclExcl;
+	}
 
-    public String getIdNivAutoriz() {
-        return idNivAutoriz;
-    }
+	public void setMaInclExcl(String maInclExcl) {
+		this.maInclExcl = maInclExcl;
+	}
 
-    public void setIdNivAutoriz(String idNivAutoriz) {
-        this.idNivAutoriz = idNivAutoriz;
-    }
+	public String getTxAviso() {
+		return txAviso;
+	}
 
-    public String getMaInclExcl() {
-        return maInclExcl;
-    }
+	public void setTxAviso(String txAviso) {
+		this.txAviso = txAviso;
+	}
 
-    public void setMaInclExcl(String maInclExcl) {
-        this.maInclExcl = maInclExcl;
-    }
+	public String getIdOperEspe() {
+		return idOperEspe;
+	}
 
-    public String getTxAviso() {
-        return txAviso;
-    }
+	public void setIdOperEspe(String idOperEspe) {
+		this.idOperEspe = idOperEspe;
+	}
 
-    public void setTxAviso(String txAviso) {
-        this.txAviso = txAviso;
-    }
+	public String getMeDiasInterv() {
+		return meDiasInterv;
+	}
 
-    public String getIdOperEspe() {
-        return idOperEspe;
-    }
+	public void setMeDiasInterv(String meDiasInterv) {
+		this.meDiasInterv = meDiasInterv;
+	}
 
-    public void setIdOperEspe(String idOperEspe) {
-        this.idOperEspe = idOperEspe;
-    }
+	public List<String> getCentrosCosto() {
+		return centrosCosto;
+	}
 
-    public String getMeDiasInterv() {
-        return meDiasInterv;
-    }
+	public void setCentrosCosto(String centrosCosto) {
+	}
+	
+	public void setCentrosCostoList(List<String> centrosCosto) {
+		this.centrosCosto = centrosCosto;
+	}
 
-    public void setMeDiasInterv(String meDiasInterv) {
-        this.meDiasInterv = meDiasInterv;
-    }
+	public void setCentrosCostoI(int index, String value) {
+	    this.centrosCosto.set(index, value);
+	}
+	
+	public String getCentrosCostoI(int index) {
+	    return this.centrosCosto.get(index);
+	}
 
-    public List<String> getCentrosCosto() {
-        return centrosCosto;
-    }
+	public String getAccion() {
+		return accion;
+	}
 
-    public void setCentrosCosto(String centrosCosto) {
-    }
-
-    public void setCentrosCostoList(List<String> centrosCosto) {
-        this.centrosCosto = centrosCosto;
-    }
-
-    public void setCentrosCostoI(int index, String value) {
-        this.centrosCosto.set(index, value);
-    }
-
-    public String getCentrosCostoI(int index) {
-        return this.centrosCosto.get(index);
-    }
-
-    public String getAccion() {
-        return accion;
-    }
-
-    public void setAccion(String action) {
-        this.accion = action;
-    }
+	public void setAccion(String action) {
+		this.accion = action;
+	}
 }

@@ -382,5 +382,42 @@ class RendicionFormTest {
                 ()->assertEquals(resultTest,"CostosDestino")
         );
     }
+    
+    @Test
+    @DisplayName("Testeando set y get gastoFechaMin")
+    void setygetGastoFechaMin() {
+        realService.setGastoFechaMin("fecha");
+        String resultTest = realService.getGastoFechaMin();
+        assertAll(
+                ()->assertNotNull(resultTest),
+                ()->assertEquals(resultTest,"fecha")
+        );
+    }
+    
+    @Test
+    @DisplayName("Testeando set y get gastoFechaMax")
+    void setygetGastoFechaMax() {
+        realService.setGastoFechaMax("fecha");
+        String resultTest = realService.getGastoFechaMax();
+        assertAll(
+                ()->assertNotNull(resultTest),
+                ()->assertEquals(resultTest,"fecha")
+        );
+    }
+    
+    @Test
+    @DisplayName("Testeando de rest")
+    void reset() {
+        realService.reset();;
+        assertAll(
+                ()->assertNull(realService.getMotivo()),
+                ()->assertNull(realService.getFechaDesde()),
+                ()->assertNull(realService.getFechaHasta()),
+                ()->assertNull(realService.getDescripcion()),
+                ()->assertNull(realService.getGastoFechaMax()),
+                ()->assertNull(realService.getGastoFechaMin())
+        );
+    }
+    
 
 }

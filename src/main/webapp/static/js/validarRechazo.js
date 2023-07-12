@@ -1,28 +1,28 @@
-$(document).ready(function () {
+$(document).ready(function() {
 
-    $.validator.addMethod("valueNotEquals", function (value, element, arg) {
-        return arg != value;
-    }, "");
+	$.validator.addMethod("valueNotEquals", function(value, element, arg) {
+		return arg != value;
+	}, "");
 
-    $("#RechazarRendicionForm").validate({
-        rules: {
+	$("#RechazarRendicionForm").validate({
+		rules : {
+			
+			motivoRechazo: {
+				valueNotEquals : ""
+			}
 
-            motivoRechazo: {
-                valueNotEquals: ""
-            }
-
-        },
-        messages: {
-
-            motivoRechazo: " *"
-
-        }
-    });
+		},
+		messages : {
+			
+			motivoRechazo: " *"
+	
+		}
+	});
 });
 $.validator.setDefaults({
 
-    submitHandler: function () {
-        window.href.location = "motivoRechazo.do"
+	submitHandler : function() {
+		window.href.location = "motivoRechazo.do"
 
-    }
+	}
 });

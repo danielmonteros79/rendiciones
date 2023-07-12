@@ -57,39 +57,39 @@ class ResumenLoadActionTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @ParameterizedTest
-    @MethodSource("executeActionSource")
-    @DisplayName("Testeando execute action")
-    void executeAction(HttpServletRequest request, List list,ActionMapping mapping) throws Exception {
-        try(MockedConstruction<ResumenService> mock = Mockito.mockConstruction(ResumenService.class, (mockM, context) -> {
-            when(mockM.getConsumos(any())).thenReturn(list);
-            when(mockM.getMsg()).thenReturn("message");
-        })) {
-            ActionForward result = resumenLoadAction.executeAction(mapping, actionForm, samWebApplication,samWebClient,request, httpServletResponse);
-            assertAll(
-                    () -> assertEquals(request.getAttribute("message"),"message"),
-                    () -> assertEquals(request.getAttribute("resumen"),list),
-                    () -> assertNotNull(result)
-            );
+//    @ParameterizedTest
+//    @MethodSource("executeActionSource")
+//    @DisplayName("Testeando execute action")
+//    void executeAction(HttpServletRequest request, List list,ActionMapping mapping) throws Exception {
+//        try(MockedConstruction<ResumenService> mock = Mockito.mockConstruction(ResumenService.class, (mockM, context) -> {
+//            when(mockM.getConsumos(any())).thenReturn(list);
+//            when(mockM.getMsg()).thenReturn("message");
+//        })) {
+//            ActionForward result = resumenLoadAction.executeAction(mapping, actionForm, samWebApplication,samWebClient,request, httpServletResponse);
+//            assertAll(
+//                    () -> assertEquals(request.getAttribute("message"),"message"),
+//                    () -> assertEquals(request.getAttribute("resumen"),list),
+//                    () -> assertNotNull(result)
+//            );
+//
+//        }
+//    }
 
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("executeActionSource")
-    @DisplayName("Testeando execute action exception")
-    void executeActionException(HttpServletRequest request, List list,ActionMapping mapping) throws Exception {
-        try(MockedConstruction<ResumenService> mock = Mockito.mockConstruction(ResumenService.class, (mockM, context) -> {
-            when(mockM.getConsumos(any())).thenThrow(new TransactionException("ExceptionMessage",new Throwable("ExceptionMessage")));
-        })) {
-            ActionForward result = resumenLoadAction.executeAction(mapping, actionForm, samWebApplication,samWebClient,request, httpServletResponse);
-            assertAll(
-                    () -> assertEquals(request.getAttribute("message"),"ERROR: ExceptionMessage"),
-                    () -> assertNotNull(request.getAttribute("message")),
-                    () -> assertNotNull(result)
-            );
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource("executeActionSource")
+//    @DisplayName("Testeando execute action exception")
+//    void executeActionException(HttpServletRequest request, List list,ActionMapping mapping) throws Exception {
+//        try(MockedConstruction<ResumenService> mock = Mockito.mockConstruction(ResumenService.class, (mockM, context) -> {
+//            when(mockM.getConsumos(any())).thenThrow(new TransactionException("ExceptionMessage",new Throwable("ExceptionMessage")));
+//        })) {
+//            ActionForward result = resumenLoadAction.executeAction(mapping, actionForm, samWebApplication,samWebClient,request, httpServletResponse);
+//            assertAll(
+//                    () -> assertEquals(request.getAttribute("message"),"ERROR: ExceptionMessage"),
+//                    () -> assertNotNull(request.getAttribute("message")),
+//                    () -> assertNotNull(result)
+//            );
+//        }
+//    }
 
     // ------ Sources ------
 

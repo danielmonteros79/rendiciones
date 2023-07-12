@@ -2,51 +2,62 @@ package com.sa.form;
 
 import org.apache.struts.action.ActionForm;
 
-public class FiltrarAprobacionForm extends ActionForm {
+public class FiltrarAprobacionForm extends ActionForm{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6695247101936377048L;
+	private String user;
+	private String motivo;
+	private String estado;
+	private String idRendicion;
+	private String tipoAlerta;
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -6695247101936377048L;
-    private String user;
-    private String motivo;
-    private String estado;
-    private String idRendicion;
+	public FiltrarAprobacionForm(){
+		
+	}
 
-    public FiltrarAprobacionForm() {
+	public String getUser() {
+		return user;
+	}
 
-    }
+	public void setUser(String user) {
+		this.user = user;
+	}
 
-    public String getUser() {
-        return user;
-    }
+	public String getMotivo() {
+		return motivo;
+	}
 
-    public void setUser(String user) {
-        this.user = user;
-    }
+	public void setMotivo(String motivo) {
+		this.motivo = motivo;
+	}
 
-    public String getMotivo() {
-        return motivo;
-    }
+	public String getIdRendicion() {
+		return idRendicion;
+	}
 
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
-    }
+	public void setIdRendicion(String idRendicion) {
+		this.idRendicion = idRendicion;
+	}
 
-    public String getIdRendicion() {
-        return idRendicion;
-    }
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+	
+	public String getEstado() {
+		return estado;
+	}
+	
+	
+	public String getTipoAlerta() {
+		return tipoAlerta;
+	}
+	
+	public void setTipoAlerta(String tipoAlerta) {
+		this.tipoAlerta = tipoAlerta;
+	}
+	
 
-    public void setIdRendicion(String idRendicion) {
-        this.idRendicion = idRendicion;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
+	
 }
