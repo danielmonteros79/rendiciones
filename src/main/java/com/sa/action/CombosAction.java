@@ -28,7 +28,8 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 
 public class CombosAction extends RestriccionTransaccionAction {
-	
+		
+	private static final String COMBO = "combo";
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -72,9 +73,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		Map<String, Object> resp = new HashMap<String, Object>();
 
 		
-		resp.put("combo", jsonCombo);
-		//response.setHeader("Content-Type", "text/html; charset=UTF-8");
-		
+		resp.put(COMBO, jsonCombo);		
 		writeJson(response, resp);
 	}
 	
@@ -95,7 +94,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
@@ -118,7 +117,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
@@ -135,11 +134,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
-		resp.put("combo", jsonCombo);
-
-
-		
-		//response.setHeader("Content-Type", "text/html; charset=UTF-8");
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
@@ -156,7 +151,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		resp.put("selected", this.sessionUserWorking.getIdUser());
 		
 		writeJson(response, resp);
@@ -174,7 +169,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
