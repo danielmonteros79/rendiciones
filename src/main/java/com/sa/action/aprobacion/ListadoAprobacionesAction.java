@@ -58,9 +58,9 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 		List<Rendicion> rendicion = service.getAprobacionesPendientes(request.getParameter("idRendicion"), request.getParameter("usuario").trim().toUpperCase(),
 				request.getParameter("motivo"), request.getParameter("glg"), this.sessionUserWorking.getIdUser());
 	
-		List<Rendicion> rendicionAlerta = new ArrayList<Rendicion>();
 		
-		List<Rendicion> rendicionesAlerta = new ArrayList<Rendicion>();
+		List<Rendicion> rendicionesAlerta = new ArrayList<>();
+		
 		if(alerta.equals("1")) {
 			for (Rendicion r : rendicion) {
 				if(r.getAdea().substring(0,1).equals("1")) {
@@ -70,22 +70,14 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 			rendicion = rendicionesAlerta;
 		}else if(alerta.equals("0") ) {
 			for (Rendicion r : rendicion) {
-				System.out.println(r); 
-				System.out.println("Adea" + r.getAdea());
-			if(r.getAdea().equals("0000000000") || r.getIdu() ==null ) {
-				rendicionesAlerta.add(r);
-			}
+				if(r.getIdu() ==null || !(r.getAdea().substring(0,1).equals("1")) ) {
+					rendicionesAlerta.add(r);
+				}
 			}	
 			rendicion = rendicionesAlerta;
 		}	
-		
-		
-		
-
 		request.setAttribute("Rendicion", rendicion);
 
-
-	
 		this.message = service.getMsg();
 		
 		return mapping.findForward("aprobaciones");
