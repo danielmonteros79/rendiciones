@@ -22,7 +22,6 @@ function filtrar() {
 }
 
 function determinarRuta(){
-	console.log(paramGlg)
 	switch(paramGlg){
 		case "1" : 
 		$("#btnAprobar").attr("href","listadoAprobaciones.do?glg=1")

@@ -54,38 +54,31 @@ function clickearCheckbox(idResumen, moneda, monto, checkbox) {
 	if (moneda === "ARS") {
 		if (checkbox.checked && numberOfChecked <= 10) {
 			idRes.push(idResumen);
-			console.log(idRes);
 			selectedMoneda[moneda] = valor;
 			totalPesos += valor;
-			console.log(totalPesos);
-			console.log(selectedMoneda);
 			// document.getElementById("total").innerHTML = total;
 		} else if (!checkbox.checked && numberOfChecked <= 10) {
 			var index = idRes.indexOf(idResumen);
 			if (index > -1) {
 				idRes.splice(index, 1);
 			}
-			console.log(idRes);
 			selectedMoneda[moneda] = valor;
 			totalPesos -= valor;
 			// document.getElementById("total").innerHTML = numeroo;
-			console.log(totalPesos);
-			console.log(selectedMoneda);
+	
 		}
 		arreglar(totalPesos.toFixed(2), moneda);
 	} else if (moneda === "USD") {
 		if (checkbox.checked && numberOfChecked <= 10) {
 			selectedMoneda[moneda] = valor;
 			totalDolar += valor;
-			console.log(totalDolar);
-			console.log(selectedMoneda);
+
 			// document.getElementById("total").innerHTML = total;
 		} else if (!checkbox.checked && numberOfChecked <= 10) {
 			selectedMoneda[moneda] = valor;
 			totalDolar -= valor;
 			// document.getElementById("total").innerHTML = numeroo;
-			console.log(totalDolar);
-			console.log(selectedMoneda);
+	
 		}
 		arreglar(totalDolar.toFixed(2), moneda);
 	}

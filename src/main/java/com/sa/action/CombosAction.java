@@ -141,7 +141,6 @@ public class CombosAction extends RestriccionTransaccionAction {
 		
 		//response.setHeader("Content-Type", "text/html; charset=UTF-8");
 		
-		System.out.println(response + " RESPUESTA ");
 		writeJson(response, resp);
 	}
 	
