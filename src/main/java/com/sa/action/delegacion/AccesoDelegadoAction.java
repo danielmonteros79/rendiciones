@@ -24,7 +24,7 @@ import ar.com.bbva.web.impl.SAMWebClient;
 
 public class AccesoDelegadoAction extends RestriccionTransaccionAction {
 	protected static final Log log = LogFactory.getLog(AccesoDelegadoAction.class);
-
+	private static final String USER_WORKING = "userWorking";
 	@Override
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -50,7 +50,7 @@ public class AccesoDelegadoAction extends RestriccionTransaccionAction {
 					userWork = u;
 					if (u.getIdUser().equalsIgnoreCase(this.sessionUser.getIdUser())) {
 						userWork.setNombre(this.sessionUser.getNombre());
-						request.getSession().setAttribute("userWorking", this.sessionUser);
+						request.getSession().setAttribute(USER_WORKING, this.sessionUser);
 						break;
 					}
 				}
@@ -76,9 +76,9 @@ public class AccesoDelegadoAction extends RestriccionTransaccionAction {
 							} catch (Exception e) {}
 						}
 					}
-					request.getSession().setAttribute("userWorking", userWork);
+					request.getSession().setAttribute(USER_WORKING, userWork);
 				} else
-					request.getSession().setAttribute("userWorking", this.sessionUser);
+					request.getSession().setAttribute(USER_WORKING, this.sessionUser);
 			}
 
 			return writeJson(response, resp);

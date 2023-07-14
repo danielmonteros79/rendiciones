@@ -127,10 +127,6 @@ public class ArchivoUtil {
 
 				String ext = archivo.getNomArchivo().substring(archivo.getNomArchivo().lastIndexOf("."));
 
-				System.out.println("idu: " + archivo.getIdu() );
-				System.out.println(nombreNuevo );
-				System.out.println("path " + path);
-				System.out.println("archivo: " + archivo.getIdu());
 				
 				error = copyFile(archivo, nombreNuevo + (String) archivo.getIdu() + "_" + form.getUsuario().getIdUser()
 						+ "_" + cCostos + "_" + fechaString + ext, path);

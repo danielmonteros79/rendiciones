@@ -25,7 +25,9 @@ import com.sa.services.ParametrosService;
 public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosMotivoSaveAction.class);
 	private SimpleDateFormat sdfYMD = new SimpleDateFormat("dd/MM/yyyy");
-
+	private static final String MSG = "message";
+	private static final String SUCCESS = "success";
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ParametrosMotivoForm frm = (ParametrosMotivoForm) form;
@@ -51,28 +53,28 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 		
 		try {
 			String msg = service.altaMotivo(motivo);
-			request.setAttribute("message", "OK: " + msg);
-			ret = "success";
+			request.setAttribute(MSG, "OK: " + msg);
+			ret = SUCCESS;
 		} catch (TransactionException e) {
 			e.printStackTrace();
 			log.error(e);
-			request.setAttribute("message", e.getCause().getMessage());
+			request.setAttribute(MSG, e.getCause().getMessage());
 		}
 		
 		return ret;
 	}
 
-	private String baja(HttpServletRequest request, ParametrosMotivoForm frm, ParametrosService service) throws ParseException {
+	private String baja(HttpServletRequest request, ParametrosMotivoForm frm, ParametrosService service)  {
 		String ret = "errorBaja";
 		
 		try {
 			String msg = service.bajaMotivo(frm.getCodigo());
-			request.setAttribute("message", "OK: " + msg);
-			ret = "success";
+			request.setAttribute(MSG, "OK: " + msg);
+			ret = SUCCESS;
 		} catch (TransactionException e) {
 			e.printStackTrace();
 			log.error(e);
-			request.setAttribute("message", e.getCause().getMessage());
+			request.setAttribute(MSG, e.getCause().getMessage());
 		}
 		
 		return ret;
@@ -84,12 +86,12 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 		
 		try {
 			String msg = service.modificacionMotivo(motivo);
-			request.setAttribute("message", "OK: " + msg);
-			ret = "success";
+			request.setAttribute(MSG, "OK: " + msg);
+			ret = SUCCESS;
 		} catch (TransactionException e) {
 			e.printStackTrace();
 			log.error(e);
-			request.setAttribute("message", e.getCause().getMessage());
+			request.setAttribute(MSG, e.getCause().getMessage());
 		}
 		
 		return ret;
@@ -107,7 +109,6 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 		motivo.setMaInclExcl(frm.getMaInclExcl());
 		motivo.setCodSup(frm.getCodSup());
 		motivo.setCodFirma(frm.getCodFirma());
-//		motivo.setMeAviso(frm.getMeAviso());
 		motivo.setOscar(frm.getOscar());
 		motivo.setIdNivCarga(frm.getIdNivCarga());
 		motivo.setIdNivAutoriz(frm.getIdNivAutoriz());

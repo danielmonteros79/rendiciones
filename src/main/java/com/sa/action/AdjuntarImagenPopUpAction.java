@@ -35,6 +35,8 @@ import com.sa.util.CaratulaTemplate;
 
 @SuppressWarnings("deprecation")
 public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
+	
+	private static final String IMG_SRC = "<img src='";
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -127,8 +129,8 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 			String codigoBarraPath = (String) request.getSession().getServletContext().getAttribute("rendicion.image.idu");
 			File codigoBarrasIdu = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getIdu());
 			File codigoBarrasAdea = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getAdea());
-			String imgIdu = "<img src='" + codigoBarrasIdu + "' width='245px' height='65px' />";
-			String imgAdea = "<img src='" + codigoBarrasAdea + "' width='245px' height='65px'  />";
+			String imgIdu = IMG_SRC + codigoBarrasIdu + "' width='245px' height='65px' />";
+			String imgAdea = IMG_SRC + codigoBarrasAdea + "' width='245px' height='65px'  />";
 			html = html.replace(CaratulaTemplate.REPLACE_IDU, imgIdu);
 			html = html.replace(CaratulaTemplate.REPLACE_ADEA, imgAdea);
 
@@ -145,7 +147,7 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 
 			log.info("CARTULA - IMG:_ " + img);
 			File fileImg = new File(img);
-			String imgLogo = "<img src='" + img + "' height='45px' />";
+			String imgLogo = IMG_SRC + img + "' height='45px' />";
 			html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
 
 			String buffer = html;

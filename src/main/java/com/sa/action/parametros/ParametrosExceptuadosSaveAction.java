@@ -1,7 +1,5 @@
 package com.sa.action.parametros;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,12 +14,12 @@ import ar.com.bbva.web.impl.SAMWebClient;
 
 import com.sa.action.RestriccionTransaccionAction;
 import com.sa.entities.Usuario;
-import com.sa.entities.parametros.ParametroExceptuado;
 import com.sa.form.parametros.ParametrosExceptuadosForm;
 import com.sa.services.ParametrosService;
 
 public class ParametrosExceptuadosSaveAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosExceptuadosSaveAction.class);
+	private static final String MSG = "message";
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -35,10 +33,10 @@ public class ParametrosExceptuadosSaveAction extends RestriccionTransaccionActio
 			try{
 				respuesta = service.altaExceptuado(frm);
 				frm.clear();
-				request.setAttribute("message", "OK: " + respuesta);
+				request.setAttribute(MSG, "OK: " + respuesta);
 			}catch (Exception e)
 			{
-				request.setAttribute("message",e.getCause().getMessage());
+				request.setAttribute(MSG,e.getCause().getMessage());
 				return mapping.findForward("fail");
 			}
 			
@@ -46,14 +44,13 @@ public class ParametrosExceptuadosSaveAction extends RestriccionTransaccionActio
 			}
 		else if (frm.getAccion().equals("baja")){
 			respuesta = service.deleteExceptuado(frm);
-		request.setAttribute("message", "OK: " + respuesta);
+		request.setAttribute(MSG, "OK: " + respuesta);
 		}
 		else if (frm.getAccion().equals("modificacion")){
 			respuesta = service.saveModExceptuado(frm);
-			request.setAttribute("message", "OK: " + respuesta);
+			request.setAttribute(MSG, "OK: " + respuesta);
 		}
-//		List<ParametroExceptuado> exceptuado = service.getExceptuados(user.getIdUser());
-//		request.setAttribute("exceptuados", exceptuado);
+
 		return mapping.findForward("success");
 	}
 }

@@ -22,6 +22,9 @@ import com.sa.services.PagosService;
 
 public class DescripcionObligatoriaLoadAction extends RestriccionTransaccionAction {
 	
+	private static final String MSG_MODIF_TCJP = "messageModifTCJP";
+	private static final String TIPO_ENTRADA = "tipoEntrada";
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		DescripcionObligatoriaForm descForm = (DescripcionObligatoriaForm) form;
@@ -30,12 +33,11 @@ public class DescripcionObligatoriaLoadAction extends RestriccionTransaccionActi
 		log.info("Entra al action DescripcionObligatoriaLoadAction. Usuario ("+user.getIdUser()+")");
 		
 		try{
-			if(request.getParameter("tipoEntrada").equalsIgnoreCase("1"))
-				request.setAttribute("tipoEntrada", "1");
+			if(request.getParameter(TIPO_ENTRADA).equalsIgnoreCase("1"))
+				request.setAttribute(TIPO_ENTRADA, "1");
 			else
-				request.setAttribute("tipoEntrada", "2");
-			
-			String message = request.getAttribute("messageModifTCJP") == null ? "" :(String) request.getAttribute("messageModifTCJP") + "<br>";
+				request.setAttribute(TIPO_ENTRADA, "2");
+			String message = request.getAttribute(MSG_MODIF_TCJP) == null ? "" :(String) request.getAttribute(MSG_MODIF_TCJP) + "<br>";
 			String idRen = request.getParameter("rnd");
 			String idGasto = request.getParameter("rndg");
 			String codMotivo = request.getParameter("rndm");
@@ -49,7 +51,7 @@ public class DescripcionObligatoriaLoadAction extends RestriccionTransaccionActi
 			descForm.setCodGasto(codGasto);
 			descForm.setCodDetOblig(codObserv);
 			descForm.setIdRendicion(request.getParameter("rnd"));
-			descForm.setTipoEntrada((String)request.getAttribute("tipoEntrada"));
+			descForm.setTipoEntrada((String)request.getAttribute(TIPO_ENTRADA));
 			descForm.setEstadoRend(request.getParameter("estadoRend"));
 			if (descForm.getEstadoRend()==null || descForm.getEstadoRend().equalsIgnoreCase("")){
 				descForm.setEstadoRend("PENDI");
@@ -64,15 +66,42 @@ public class DescripcionObligatoriaLoadAction extends RestriccionTransaccionActi
 			
 			Map<Integer, String> headerMap = new TreeMap<Integer, String>();
 			for (DatosPantallaDinamica dato : fieldsScreen) {
-				if (dato.getTipoCampo().equals("COD1")) headerMap.put(1, dato.getTituloCampo());
-				else if (dato.getTipoCampo().equals("COD2")) headerMap.put(2, dato.getTituloCampo());
-				else if (dato.getTipoCampo().equals("TXT1")) headerMap.put(3, dato.getTituloCampo());
-				else if (dato.getTipoCampo().equals("TXT2")) headerMap.put(4, dato.getTituloCampo());
-				else if (dato.getTipoCampo().equals("NUM1")) headerMap.put(5, dato.getTituloCampo());
-				else if (dato.getTipoCampo().equals("NUM2")) headerMap.put(6, dato.getTituloCampo());
-				else if (dato.getTipoCampo().equals("FEC1")) headerMap.put(7, dato.getTituloCampo());
-				else if (dato.getTipoCampo().equals("FEC2")) headerMap.put(8, dato.getTituloCampo());
-				else if (dato.getTipoCampo().equals("TXT250")) headerMap.put(9, dato.getTituloCampo());
+			    int tipoCampoValue;
+		        switch (dato.getTipoCampo()) {
+		            case "COD1":
+		                tipoCampoValue = 1;
+		                break;
+		            case "COD2":
+		                tipoCampoValue = 2;
+		                break;
+		            case "TXT1":
+		                tipoCampoValue = 3;
+		                break;
+		            case "TXT2":
+		                tipoCampoValue = 4;
+		                break;
+		            case "NUM1":
+		                tipoCampoValue = 5;
+		                break;
+		            case "NUM2":
+		                tipoCampoValue = 6;
+		                break;
+		            case "FEC1":
+		                tipoCampoValue = 7;
+		                break;
+		            case "FEC2":
+		                tipoCampoValue = 8;
+		                break;
+		            case "TXT250":
+		                tipoCampoValue = 9;
+		                break;
+		            default:
+		                tipoCampoValue = -1; // Valor por defecto o manejo de error
+		                break;
+		        }
+		        if (tipoCampoValue != -1) {
+		            headerMap.put(tipoCampoValue, dato.getTituloCampo());
+		        }
 			}
 			request.setAttribute("headers", new ArrayList<String>(headerMap.values()));
 			
@@ -82,7 +111,7 @@ public class DescripcionObligatoriaLoadAction extends RestriccionTransaccionActi
 				message += service.getMsg() + "<br>";
 			
 			if (!message.equals(""))
-				request.setAttribute("messageModifTCJP", message);
+				request.setAttribute(MSG_MODIF_TCJP, message);
 		} catch (Exception e) {
 			log.error(e);
 			request.setAttribute("messageModifLoad", "ERROR AL CARGAR LAS DESCRIPCIONES OBLIGATORIAS: " + e.getCause().getMessage());

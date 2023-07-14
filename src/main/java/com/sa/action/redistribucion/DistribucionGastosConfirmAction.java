@@ -1,13 +1,6 @@
 package com.sa.action.redistribucion;
 
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,18 +11,10 @@ import net.sf.json.JSONObject;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.joda.time.Days;
-
 import com.sa.action.RestriccionTransaccionAction;
-import com.sa.entities.ComboMotivo;
-import com.sa.entities.Gastos;
-import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.RendicionForm;
 import com.sa.services.PagosService;
-import com.sa.services.RendicionesService;
-import com.sa.util.ParamsConstants;
-
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 
@@ -52,7 +37,7 @@ public class DistribucionGastosConfirmAction extends
 				+ "). Confirma "+accion+" del Gasto: " + gastoOriginal
 				+ " para la rendicion: " + idRendicion);
 		Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
-		// RendicionesService service = new RendicionesService(samClient);
+
 		PagosService service = new PagosService(samClient);
 		String error = "";
 		String msg = "";
@@ -62,11 +47,9 @@ public class DistribucionGastosConfirmAction extends
 					ccostoItems, gastoItems,user);
 			
 		} catch (Exception e) {
-			// TODO: handle exception
 			log.error(e);
 			error = e.getMessage().substring(e.getMessage().indexOf(":")+1);
 		}
-		// String usuarioRend = u.getIdUser();
 		JSONObject jsonObject = null;
 		Map<String, Object> resp = new HashMap<String, Object>();
 		resp.put("error", error);

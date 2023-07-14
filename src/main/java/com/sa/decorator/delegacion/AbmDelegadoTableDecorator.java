@@ -12,9 +12,9 @@ public class AbmDelegadoTableDecorator extends SumTableDecorator {
 	protected String getEditarLink() {
 		ParametriaUsuarioDelegado delegado = (ParametriaUsuarioDelegado) this.getCurrentRowObject();
 		String imgTag = "<i class=\"bbva-icon icon-coronita_contract fa-lg\" data-toggle=\"tooltip\" title=\"Editar\"></i>";
-		String editarLink = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalDelegadoShow('" + delegado.getId()
-				+ "')\">" + imgTag + "</a>";
-		return editarLink;
+
+		return "<a href=\"#a\" class=\"text-gray\" onclick=\"modalDelegadoShow('" + delegado.getId()
+		+ "')\">" + imgTag + "</a>";
 	}
 
 	protected String getBorrarLink() {
@@ -23,34 +23,30 @@ public class AbmDelegadoTableDecorator extends SumTableDecorator {
 			return "";
 		} else {
 			String imgTag = "<i class=\"bbva-icon icon-coronita_trash fa-lg\" data-toggle=\"tooltip\" title=\"Eliminar\"></i>";
-			String borrarLink = "<a href=\"#a\" class=\"text-gray\" onclick=\"eliminarDelegado('" + delegado.getDelegadoUser()
-					+ "', '" + DateUtil.formatDate(delegado.getFeDesde(), "yyyy-MM-dd") + "', '"
-					+ DateUtil.formatDate(delegado.getFeHasta(), "yyyy-MM-dd") + "')\">" + imgTag + "</a>";
-			return borrarLink;
+
+			return "<a href=\"#a\" class=\"text-gray\" onclick=\"eliminarDelegado('" + delegado.getDelegadoUser()
+			+ "', '" + DateUtil.formatDate(delegado.getFeDesde(), "yyyy-MM-dd") + "', '"
+			+ DateUtil.formatDate(delegado.getFeHasta(), "yyyy-MM-dd") + "')\">" + imgTag + "</a>";
 		}
 	}
 
 	@Override
 	protected String getDestinatariosLink() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected String getCuponesLink() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected String getScanLink() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected String getCaratulaLink() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

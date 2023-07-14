@@ -1,10 +1,5 @@
 package com.sa.action;
 
-import java.io.File;
-import java.sql.Connection;
-import java.util.List;
-import java.util.Properties;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -16,23 +11,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.sa.core.AccesoNoPermitidoException;
-import com.sa.core.ParametrosSUM;
 import com.sa.core.SecurityActionMapping;
-import com.sa.core.XMLConfigReader;
 import com.sa.entities.Usuario;
 import com.sa.services.LoggerSUM;
 
 public abstract class RestriccionAction extends Action {
-	
-//	private String ruta="/syscfg";
-	
-//	File agendaPropFile = new File(getSysConfPathResource(ruta + "/agenda.properties"));
-//	File agendaSysProFile = new File(getSysConfPathResource(ruta + "/agenda.sys.properties"));
-
-//	Properties agendaProp = new Properties();
-//	Properties agendaSysProp = new Properties();
-//	Properties propPass = new Properties();
-	
 	
 	
 	public static final Logger log = Logger.getLogger(RestriccionAction.class);
@@ -42,58 +25,7 @@ public abstract class RestriccionAction extends Action {
 			throws Exception {
 		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
 		log.info("Entra al action RestriccionAction. Usuario ("+user.getIdUser()+")");
-//		response.setCharacterEncoding("ISO-8859-1");
-//		HttpSession session = request.getSession();
-//
-//		Usuario usuario = (Usuario) session.getAttribute("usuario");
-//		if (usuario == null) {
-//			request.setAttribute("sessionVencida", new Boolean(true));
-//			return mapping.findForward("login");
-//		}
-////		else {
-////			return mapping.findForward("inicio");
-////		}
-//
-//		// se crean los objetos globales necesarios para la aplicacion que se
-//		// encapsularan en el objeto de parametros
-//		XMLConfigReader xml = null;
-//		Connection con = null;
-////		try {
-////			// produccion
-////			xml = new XMLConfigReader(request);
-////			con = SybaseConnection.getConnection(xml);
-////		} catch (ImposibleLeerXMLException e) {
-////			log.error(e);
-////			try {
-////				// desarrollo
-////				xml = new XMLConfigReader();
-////				con = SybaseConnection.getConnection(xml);
-////			} catch (ImposibleLeerXMLException ex) {
-////				log.error(ex);
-////				throw new RuntimeException(ex);
-////			}
-////		}
-//		LoggerSUM logger = new LoggerSUM(xml);
-//		final ParametrosSUM paramsSUM = new ParametrosSUM();
-//		paramsSUM.agregarParametro(ParametrosSUM.CONEXION_DB, con);
-//		paramsSUM.agregarParametro(ParametrosSUM.LOGGER_SIA, logger);
-//		paramsSUM.agregarParametro(ParametrosSUM.XML_CONFIGURACION, xml);
-//		paramsSUM.agregarParametro(ParametrosSUM.USUARIO, usuario);
-//		paramsSUM.agregarParametro(ParametrosSUM.TRANSACCION_MANAGER, session
-//				.getAttribute("transacionManager"));
-//		paramsSUM.agregarParametro(ParametrosSUM.GLOBAL_CONFIG, usuario);
-//
-//		try {
-//			doRestriccion(mapping, form, request, response, logger);
-//		} catch (AccesoNoPermitidoException e) {
-//			
-//			// redirecciona a una pagina de error mediante el manejador de
-//			// excepciones
-//			e.printStackTrace();
-//			log.error(e);
-//			logger.logException(e);
-//			throw e;
-//		}
+
 		return executeAction(mapping, form, request, response
 				//paramsSUM
 				);

@@ -29,6 +29,9 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	protected String message = "";
 	protected Usuario sessionUser;
 	protected Usuario sessionUserWorking;
+	private static final String ERROR = "error";
+	private static final String STATUS = "status";
+	private static final String USUARIO = "usuario";
 
 	public ActionForward execute(ActionMapping arg0, ActionForm arg1, SAMWebApplication arg2, SAMWebClient arg3,
 			HttpServletRequest arg4, HttpServletResponse arg5) throws Exception {
@@ -39,10 +42,10 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 				throw new SessionTimeOutException("Finalizo tiempo en sesion.");
 		}
 		
-		this.sessionUser = (Usuario) arg4.getSession().getAttribute("usuario");
+		this.sessionUser = (Usuario) arg4.getSession().getAttribute(USUARIO);
 		this.sessionUserWorking = (Usuario) arg4.getSession().getAttribute("userWorking");
 		
-		String user = ((Usuario) arg4.getSession().getAttribute("usuario")).getIdUser();
+		String user = ((Usuario) arg4.getSession().getAttribute(USUARIO)).getIdUser();
 		// SE SETEA EL USUARIO LOGUEADO A SAM WEB CLIENT.
 		arg3.setAttribute("userLoggin", user);
 		
@@ -79,7 +82,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 			HttpServletResponse response) throws AccesoNoPermitidoException {
 
 		HttpSession session = request.getSession();
-		Usuario usuario = (Usuario) session.getAttribute("usuario");
+		Usuario usuario = (Usuario) session.getAttribute(USUARIO);
 //		SecurityActionMapping sam = (SecurityActionMapping) mapping;
 //		int permisos = usuario.getPerfil();
 		boolean puedePasar = false;
@@ -105,7 +108,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	}
 
 	protected boolean chequearTimeOut(HttpServletRequest request) throws SessionTimeOutException {
-		Usuario u = (Usuario) request.getSession().getAttribute("usuario");
+		Usuario u = (Usuario) request.getSession().getAttribute(USUARIO);
 		if (u == null) {
 			request.getSession().invalidate();
 			return true;
@@ -117,7 +120,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws Exception {
 		PrintWriter writer = response.getWriter();
 		
-		resp.put("status", "OK");
+		resp.put(STATUS, "OK");
 		
 		writer.print(JSONObject.fromObject(resp));
 		writer.flush();
@@ -130,16 +133,16 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		PrintWriter writer = response.getWriter();
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("status", "ERROR");
+		resp.put(STATUS, ERROR);
 		
 		if (e instanceof TransactionException)
-			resp.put("error", e.getCause().getMessage());
+			resp.put(ERROR, e.getCause().getMessage());
 		else {
-			resp.put("error", "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+			resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
 			resp.put("stacktrace", ExceptionUtils.getStackTrace(e));
 		}
 		
-		this.message = "ERROR: " + (String) resp.get("error");
+		this.message = "ERROR: " + (String) resp.get(ERROR);
 		
 		writer.print(JSONObject.fromObject(resp));
 		writer.flush();
@@ -152,8 +155,8 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		PrintWriter writer = response.getWriter();
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("status", "ERROR");
-		resp.put("error", message);
+		resp.put(STATUS, ERROR);
+		resp.put(ERROR, message);
 		
 		writer.print(JSONObject.fromObject(resp));
 		writer.flush();

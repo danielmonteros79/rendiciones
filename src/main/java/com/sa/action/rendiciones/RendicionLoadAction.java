@@ -44,7 +44,6 @@ public class RendicionLoadAction extends RestriccionTransaccionAction {
 
 		if ("checkCDestino".equals(accion)) {
 			this.selectMotivo(response.getWriter(), request);
-			//response.setHeader("Content-Type", "text/html; charset=UTF-8");
 			response.setContentType("application/json");
 			response.getWriter().flush();
 			response.getWriter().close();
@@ -59,7 +58,7 @@ public class RendicionLoadAction extends RestriccionTransaccionAction {
 		Format formatter = new SimpleDateFormat("dd/MM/yyyy");
 		renForm.setFechaHoy(formatter.format(fechaHoy));
 
-		List<ComboMotivo> motivo = new ArrayList<ComboMotivo>();
+		List<ComboMotivo> motivo = new ArrayList<>();
 		
 		try {
 			motivo = service.getMotivoRendiciones("4", u.getIdUser());

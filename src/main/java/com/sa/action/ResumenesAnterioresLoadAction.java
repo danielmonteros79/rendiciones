@@ -27,10 +27,10 @@ public class ResumenesAnterioresLoadAction extends RestriccionTransaccionAction 
 		ResumenService service = new ResumenService(samClient);
 		Usuario user = ((Usuario) request.getSession().getAttribute("userWorking"));
 		
-		List<ComboOpcion> fechas = new ArrayList<ComboOpcion>();
+		List<ComboOpcion> fechas = new ArrayList<>();
 		
 		try {
-			fechas = (List<ComboOpcion>) service.getFechasResumenes(user.getIdUser());
+			fechas =  service.getFechasResumenes(user.getIdUser());
 			request.setAttribute("message", service.getMsg());
 		} catch (Exception e) {
 			request.setAttribute("message", "ERROR: " + e.getCause().getMessage());

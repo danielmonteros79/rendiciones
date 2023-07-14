@@ -22,15 +22,14 @@ import com.sa.entities.ComboOpcion;
 import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametroGasto;
 import com.sa.form.parametros.ParametrosGastosForm;
-import com.sa.form.parametros.ParametrosMotivoForm;
 import com.sa.manager.ManagerTransaction;
 import com.sa.services.ParametrosService;
 
 public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosGastosDetalleLoadAction.class);
-	List<ComboOpcion> cmbObservacion = new ArrayList<ComboOpcion>();
-	List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
-	List<ComboOpcion> cmbComprobante = new ArrayList<ComboOpcion>();
+	List<ComboOpcion> cmbObservacion = new ArrayList<>();
+	List<ComboOpcion> cmbMotivo = new ArrayList<>();
+	List<ComboOpcion> cmbComprobante = new ArrayList<>();
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -47,9 +46,9 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 		
 		log.info("HOLAAA ESTOY VIENDO SI ENTRA EN EL ACTION");
 		if (!frm.isBack()) {
-			cmbObservacion = new ArrayList<ComboOpcion>();
-			cmbMotivo = new ArrayList<ComboOpcion>();
-			cmbComprobante = new ArrayList<ComboOpcion>();
+			cmbObservacion = new ArrayList<>();
+			cmbMotivo = new ArrayList<>();
+			cmbComprobante = new ArrayList<>();
 			
 			
 			try {

@@ -1,6 +1,5 @@
 package com.sa.action.tarjetaCorporativa;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,7 @@ public class ConsumosNoRendidosAction extends RestriccionTransaccionAction {
 	private ActionForward filtrar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request)
 			throws Exception {
 		ResumenService service = new ResumenService(samClient);
-		List<Resumen> consumos = new ArrayList<Resumen>();
+		List<Resumen> consumos;
 		 consumos = service.getConsumos(this.sessionUserWorking.getIdUser(), null, null, null);
 		request.setAttribute("consumos", consumos);
 		this.message = service.getMsg();

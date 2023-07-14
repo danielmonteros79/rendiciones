@@ -42,7 +42,7 @@ public class CuadroGeneralFiltroAction extends RestriccionTransaccionAction {
 		String feD = frm.getFechaDesde().equals("") ? "" : df.format(formatter.parse(frm.getFechaDesde()));
 		String feH = frm.getFechaHasta().equals("") ? "" : df.format(formatter.parse(frm.getFechaHasta()));
 		
-		List<CuadroGeneral> rendicion = new ArrayList<CuadroGeneral>();
+		List<CuadroGeneral> rendicion = new ArrayList<>();
 		try {
 			rendicion = service.getCuadroGeneral(frm.getOpcion(), user.getIdUser(), feD, feH, frm.getMontoDesde(),
 					frm.getMontoHasta(), frm.getCodMotivo(), frm.getCodGlg(), frm.getUsuario().toUpperCase());

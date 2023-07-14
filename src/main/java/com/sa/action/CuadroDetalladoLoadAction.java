@@ -36,8 +36,8 @@ public class CuadroDetalladoLoadAction extends RestriccionTransaccionAction {
 		frm.setCostos(u.getCcostos());
 		
 		RendicionesService service = new RendicionesService(samClient);
-		List<ComboOpcion2> estado = new ArrayList<ComboOpcion2>();
-		List<ComboMotivo> motivo = new ArrayList<ComboMotivo>();
+		List<ComboOpcion2> estado = new ArrayList<>();
+		List<ComboMotivo> motivo = new ArrayList<>();
 		
 		try {
 			estado = service.getComboOpcion2(ParamsConstants.EST_REND_OPCION, ParamsConstants.EST_REND_TABLA

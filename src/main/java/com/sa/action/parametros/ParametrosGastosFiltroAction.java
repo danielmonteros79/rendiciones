@@ -27,9 +27,9 @@ import com.sa.services.ParametrosService;
 
 public class ParametrosGastosFiltroAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosGastosFiltroAction.class);
-	List<ComboOpcion> cmbObservacion = new ArrayList<ComboOpcion>();
-	List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
-	List<ComboOpcion> cmbComprobante = new ArrayList<ComboOpcion>();
+	List<ComboOpcion> cmbObservacion = new ArrayList<>();
+	List<ComboOpcion> cmbMotivo = new ArrayList<>();
+	List<ComboOpcion> cmbComprobante = new ArrayList<>();
 	
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
@@ -48,9 +48,9 @@ public class ParametrosGastosFiltroAction extends RestriccionTransaccionAction {
 			return this.agregarCentroCosto(frm, response);
 		
 		if (!frm.isBack()) {
-			cmbObservacion = new ArrayList<ComboOpcion>();
-			cmbMotivo = new ArrayList<ComboOpcion>();
-			cmbComprobante = new ArrayList<ComboOpcion>();
+			cmbObservacion = new ArrayList<>();
+			cmbMotivo = new ArrayList<>();
+			cmbComprobante = new ArrayList<>();
 			
 			try {
 				if (frm.getAccion().equals("alta")) {
