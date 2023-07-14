@@ -35,7 +35,6 @@ public class Rendicion {
 	private String journal;
 	private String costosDestino;
 	private String alerta;
-	private String descripcionCorta;
 
 	public Rendicion() {
 	}
@@ -297,19 +296,5 @@ public class Rendicion {
 		this.alerta = alerta;
 	}
 
-	public String getDescripcionCorta() {
-		if(this.descripcion.length() >= 50) {
-			return this.descripcion.substring(0,25) + "... ";
-		}
-		else {
-			return this.descripcion;
-		}
-		
-	}
 
-	public void setDescripcionCorta(String descripcionCorta) {
-		this.descripcionCorta = descripcionCorta;
-	}
-
-	
 }

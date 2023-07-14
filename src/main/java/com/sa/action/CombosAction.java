@@ -28,7 +28,8 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 
 public class CombosAction extends RestriccionTransaccionAction {
-	
+		
+	private static final String COMBO = "combo";
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -61,7 +62,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 	private void getTiposGasto(SAMWebClient samClient, HttpServletResponse response, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();
 		request.setCharacterEncoding("UTF-8");
-		List<String> jsonCombo = new ArrayList<String>();
+		List<String> jsonCombo = new ArrayList<>();
 		PagosService service = new PagosService(samClient);
 
 		List<ComboGasto> tiposGasto = service.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION, sessionUserWorking.getIdUser(), request.getParameter("codMotivo"));
@@ -72,16 +73,14 @@ public class CombosAction extends RestriccionTransaccionAction {
 		Map<String, Object> resp = new HashMap<String, Object>();
 
 		
-		resp.put("combo", jsonCombo);
-		//response.setHeader("Content-Type", "text/html; charset=UTF-8");
-		
+		resp.put(COMBO, jsonCombo);		
 		writeJson(response, resp);
 	}
 	
 	private void getMonedas(SAMWebClient samClient, HttpServletResponse response, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();
 		Usuario user = ((Usuario) request.getSession().getAttribute("userWorking"));
-		List<String> jsonCombo = new ArrayList<String>();
+		List<String> jsonCombo = new ArrayList<>();
 		RendicionesService service = new RendicionesService(samClient);
 		
 		List<ComboOpcion2> monedas = service.getComboOpcion2(
@@ -95,7 +94,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
@@ -103,7 +102,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 	private void getTiposComprobante(SAMWebClient samClient, HttpServletResponse response, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();
 		Usuario user = ((Usuario) request.getSession().getAttribute("userWorking"));
-		List<String> jsonCombo = new ArrayList<String>();
+		List<String> jsonCombo = new ArrayList<>();
 		RendicionesService service = new RendicionesService(samClient);
 		
 		List<ComboOpcion2> monedas = service.getComboOpcion2(
@@ -118,14 +117,14 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
 	
 	private void getMotivos(SAMWebClient samClient, HttpServletResponse response, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();
-		List<String> jsonCombo = new ArrayList<String>();
+		List<String> jsonCombo = new ArrayList<>();
 		RendicionesService service = new RendicionesService(samClient);
 		List<ComboMotivo> motivos = service.getMotivoRendiciones(request.getParameter("opcion"), this.sessionUserWorking.getIdUser());
 		
@@ -135,18 +134,14 @@ public class CombosAction extends RestriccionTransaccionAction {
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
-		resp.put("combo", jsonCombo);
-
-
-		
-		//response.setHeader("Content-Type", "text/html; charset=UTF-8");
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
 	
 	private void getDelegados(SAMWebClient samClient, HttpServletResponse response, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();
-		List<String> jsonCombo = new ArrayList<String>();
+		List<String> jsonCombo = new ArrayList<>();
 		
 		for (Usuario u : this.sessionUser.getDelegadosAsignados()) {
 			if (u.getIdUser().equalsIgnoreCase(this.sessionUser.getIdUser()))
@@ -156,7 +151,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		resp.put("selected", this.sessionUserWorking.getIdUser());
 		
 		writeJson(response, resp);
@@ -167,14 +162,14 @@ public class CombosAction extends RestriccionTransaccionAction {
 		List<String> jsonCombo = new ArrayList<String>();
 		ResumenService service = new ResumenService(samClient);
 		
-		List<ComboOpcion> fechas = (List<ComboOpcion>) service.getFechasResumenes(this.sessionUserWorking.getIdUser());
+		List<ComboOpcion> fechas =  service.getFechasResumenes(this.sessionUserWorking.getIdUser());
 		
 		for (ComboOpcion fecha : fechas) {
 			jsonCombo.add(gson.toJson(fecha));
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}

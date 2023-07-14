@@ -32,8 +32,9 @@ public class ParametrosAlertasLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosAlertasLoadAction.class);
 	private Map<String, String> mapGastoMotivo = new HashMap<String, String>();
 	private Map<String, List<ComboOpcion>> mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
-	private List<ComboOpcion> cmbGasto = new ArrayList<ComboOpcion>();
-	private List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
+	private List<ComboOpcion> cmbGasto = new ArrayList<>();
+	private List<ComboOpcion> cmbMotivo = new ArrayList<>();
+	private static final String COD_MOTIVO = "codMotivo";
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -46,14 +47,12 @@ public class ParametrosAlertasLoadAction extends RestriccionTransaccionAction {
 		String accion = request.getParameter("accion");
 		if ("selectMotivo".equals(accion)) {
 			this.selectMotivo(response.getWriter(), request);
-			//response.setHeader("Content-Type", "text/html; charset=UTF-8");
 			response.setContentType("application/json");
 			response.getWriter().flush();
 			response.getWriter().close();
 			return null;
 		} else if ("selectGasto".equals(accion)) {
 			this.selectGasto(response.getWriter(), request);
-			//response.setHeader("Content-Type", "text/html; charset=UTF-8");
 			response.setContentType("application/json");
 			response.getWriter().flush();
 			response.getWriter().close();
@@ -74,8 +73,8 @@ public class ParametrosAlertasLoadAction extends RestriccionTransaccionAction {
 			
 			mapGastoMotivo = new HashMap<String, String>();
 			mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
-			cmbGasto = new ArrayList<ComboOpcion>();
-			cmbMotivo = new ArrayList<ComboOpcion>();
+			cmbGasto = new ArrayList<>();
+			cmbMotivo = new ArrayList<>();
 			
 			for (String fila : combos) {
 				String combo = fila.substring(0, 2);
@@ -119,7 +118,7 @@ public class ParametrosAlertasLoadAction extends RestriccionTransaccionAction {
 	@SuppressWarnings("unchecked")
 	private void selectMotivo(PrintWriter writer, HttpServletRequest request) {
 		JSONArray jArray = new JSONArray();
-		String codMotivo = request.getParameter("codMotivo");
+		String codMotivo = request.getParameter(COD_MOTIVO);
 		if (codMotivo == null || codMotivo.trim().equals("")) {
 			for (ComboOpcion opcion : cmbGasto) {
 				JSONObject jGroup = new JSONObject();
@@ -129,8 +128,8 @@ public class ParametrosAlertasLoadAction extends RestriccionTransaccionAction {
 				jArray.add(jGroup);
 			}
 		} else {
-			if (mapMotivoGastos.get(request.getParameter("codMotivo")) != null)
-				for (ComboOpcion opcion : mapMotivoGastos.get(request.getParameter("codMotivo"))) {
+			if (mapMotivoGastos.get(request.getParameter(COD_MOTIVO)) != null)
+				for (ComboOpcion opcion : mapMotivoGastos.get(request.getParameter(COD_MOTIVO))) {
 					JSONObject jGroup = new JSONObject();
 					jGroup.put("codigo", opcion.getId());
 					jGroup.put("descripcion", opcion.getDescripcion());

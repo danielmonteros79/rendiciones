@@ -23,6 +23,11 @@ import com.sa.services.RendicionesService;
 import com.sa.util.ParamsConstants;
 
 public class ModificarGastoAction extends RestriccionTransaccionAction {
+	
+	private static final String COD_MOTIVO = "codMotivo";
+	private static final String CODIGO = "codigo";
+	
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
 			SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response)
@@ -37,12 +42,12 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 		PagosService service = new PagosService(samClient);
 		RendicionesService serviceCombos = new RendicionesService(samClient);
 		Integer idRendicion=null;
-		if (request.getParameter("codigo") == null) {
+		if (request.getParameter(CODIGO) == null) {
 			
 			idRendicion = (Integer.parseInt((String) request.getAttribute("idRendicion")));
-			// int idr = Integer.parseInt(idRendicion);
+			
 		} else {
-			idRendicion = Integer.valueOf(request.getParameter("codigo"));
+			idRendicion = Integer.valueOf(request.getParameter(CODIGO));
 		}
 		 request.setAttribute("idRendicion", idRendicion);
 		 String fechaD=request.getParameter("fechaD");
@@ -66,19 +71,15 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 		request.setAttribute("ComboComprobante", comprobante);
 
 		List<ComboGasto> tipoGastos = service
-				.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION,u.getIdUser(),request.getParameter("codMotivo"));
+				.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION,u.getIdUser(),request.getParameter(COD_MOTIVO));
 		request.setAttribute("ComboGastos", tipoGastos);
 		String idGasto = request.getParameter("idGasto");
-		List<Gastos> Gastos = serviceCombos.getGastos(idRendicion.toString(), idGasto, u.getIdUser(), request.getParameter("codMotivo"));
-		renForm.setIdRendicion(request.getParameter("codigo"));
-		renForm.setCodMotivo(request.getParameter("codMotivo"));
+		List<Gastos> Gastos = serviceCombos.getGastos(idRendicion.toString(), idGasto, u.getIdUser(), request.getParameter(COD_MOTIVO));
+		renForm.setIdRendicion(request.getParameter(CODIGO));
+		renForm.setCodMotivo(request.getParameter(COD_MOTIVO));
 		renForm.setCentroCostos(request.getParameter("cCosto"));
 		Gastos gasto = null;
-		// Recorre la lista de rendiciones
-//		if (idGasto != null
-//				&& !idGasto.equalsIgnoreCase("")) {
-//		idGasto= String.format("%09d", Integer.parseInt(idGasto));
-//		}
+
 		for (Gastos r : Gastos) {
 			if (r.getIdGasto().equalsIgnoreCase(idGasto)) {
 				gasto = r;
@@ -119,9 +120,7 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 		renForm.setMonto(gasto.getMonto());
 		renForm.setMontoMaximo(gasto.getMonto());
 		renForm.setObservacionGasto(gasto.getObservacionGasto());
-//		renForm.setCuit1("");
-//		renForm.setCuit2("");
-//		renForm.setCuit3("");
+
 		if (request.getParameter("tieneCupon").equalsIgnoreCase("1")){
 			renForm.setImporteCupon(gasto.getMonto().trim());
 			request.setAttribute("conCupon","1");

@@ -26,19 +26,18 @@ public class ReplaceDelegadoAction extends RestriccionTransaccionAction {
 	@Override
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
 		
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("El usuario: " + user.getIdUser() + " ingresa al Panel de Reemplazo de delegados.");
 				
-		List<ComboDelegado> comboDelegado = new ArrayList<ComboDelegado>();
-//		comboDelegado.add(new ComboDelegado(user.getIdUser(), "< Yo mismo >"));
+		List<ComboDelegado> comboDelegado = new ArrayList<>();
+
 		for (Usuario u : user.getDelegadosAsignados()) {
 			if(u.getIdUser().equalsIgnoreCase(user.getIdUser()))
 				comboDelegado.add(new ComboDelegado(user.getIdUser(), "< Yo mismo >"));
 			else
 				comboDelegado.add(new ComboDelegado(u.getIdUser(), "<" + u.getIdUser() + " - " + u.getNombre() + ">"));
-			// ComboDelegado del = new ComboDelegado(id, descripcion)
+			
 		}
 		request.setAttribute("ComboUsuarios", comboDelegado);
 

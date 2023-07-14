@@ -32,8 +32,21 @@ import com.sa.util.DateUtil;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import ar.org.bbva.util.DateUtils;
 
 public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
+	
+	private static final String PENDI = "PENDI";
+	private static final String COD_MOTIVO = "codMotivo";
+	private static final String CODIGO = "codigo";
+	private static final String ESTADO_REND = "estadoRend";
+	private static final String ID_REND = "idRendicion";
+	private static final String MSG = "message";
+	private static final String MOT_RECH_APROB = "motivoRechAprob";
+	private static final String USUARIO_REND = "usuarioRendicion";
+	
+	
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		this.message= "";
@@ -65,17 +78,17 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			request.setAttribute("readonly", "true");
 		}
 
-		if (request.getParameter("codigo") == null)
-			idRendicion = (Integer.parseInt((String) request.getAttribute("codigo")));
+		if (request.getParameter(CODIGO) == null)
+			idRendicion = (Integer.parseInt((String) request.getAttribute(CODIGO)));
 		else
-			idRendicion = Integer.valueOf(request.getParameter("codigo"));
+			idRendicion = Integer.valueOf(request.getParameter(CODIGO));
 
-		if (request.getParameter("usuarioRendicion") != null && !request.getParameter("usuarioRendicion").equals(""))
-			usuarioRend = request.getParameter("usuarioRendicion").toString();
+		if (request.getParameter(USUARIO_REND) != null && !request.getParameter(USUARIO_REND).equals(""))
+			usuarioRend = request.getParameter(USUARIO_REND).toString();
 
 		try {
 			List<Rendicion> rendiciones = service.obtenerListadoRendiciones(usuarioRend, idRendicion.toString(), "", "", "");
-			if (rendiciones.size() == 0) {
+			if (rendiciones.isEmpty()) {
 				request.setAttribute("Rendicion", new Rendicion());
 				this.message = "ERROR: RENDICION INEXISTENTE";
 			} else {
@@ -110,12 +123,12 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 				
 				for (Gastos gasto : gastos) {
 					if (renForm.getGastoFechaMin() == null || 
-							DateUtil.dfDDMMYYYY.parse(gasto.getFechagastos()).before(DateUtil.dfDDMMYYYY.parse(renForm.getGastoFechaMin())))
+							DateUtils.dfDDMMYYYY.parse(gasto.getFechagastos()).before(DateUtils.dfDDMMYYYY.parse(renForm.getGastoFechaMin())))
 						renForm.setGastoFechaMin(gasto.getFechagastos());
 					
 					if (renForm.getGastoFechaMax() == null || 
-							DateUtil.dfDDMMYYYY.parse(gasto.getFechagastos()).after(DateUtil.dfDDMMYYYY.parse(renForm.getGastoFechaMax())))
-					renForm.setGastoFechaMax(gasto.getFechagastos());
+							DateUtils.dfDDMMYYYY.parse(gasto.getFechagastos()).after(DateUtils.dfDDMMYYYY.parse(renForm.getGastoFechaMax())))
+					{	renForm.setGastoFechaMax(gasto.getFechagastos());}
 				}
 
 				if (!renForm.getAviso().equalsIgnoreCase("")) {
@@ -140,12 +153,12 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 				renForm.setMotivoRechazo(rendicion.getMotivoRechazo());
 				if (renForm.getMotivoRechazo() != null && !renForm.getMotivoRechazo().equalsIgnoreCase("")) {
 					if (rendicion.getEstado().equalsIgnoreCase("APROB"))
-						request.setAttribute("motivoRechAprob", "APROB");
+						request.setAttribute(MOT_RECH_APROB, "APROB");
 					else
-						request.setAttribute("motivoRechAprob", "RECHA");
+						request.setAttribute(MOT_RECH_APROB, "RECHA");
 
 				} else {
-					request.setAttribute("motivoRechAprob", "No");
+					request.setAttribute(MOT_RECH_APROB, "No");
 				}
 				
 				
@@ -161,7 +174,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 				if (renForm.getEstadoRend() == null)
 					renForm.setEstadoRend(request.getParameter("estadoRendicion"));
 
-				request.setAttribute("estadoRend", rendicion.getEstado());
+				request.setAttribute(ESTADO_REND, rendicion.getEstado());
 
 				if (rendicion.getEstado() != null && !gastos.isEmpty()) { // Siempre puede adjuntar imagenes sin importar el estado de la rend
 					request.setAttribute("showAviso", "true");
@@ -183,27 +196,27 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 
 	private ActionForward getRendicionGastos(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
 		RendicionesService service = new RendicionesService(samClient);
-		String estadoRend = (String) request.getParameter("estadoRend");
-		List<Gastos> gastos = service.getGastos(request.getParameter("idRendicion"), "", request.getParameter("usuarioRend"),
-				request.getParameter("codMotivo"));
+		String estadoRend =  request.getParameter(ESTADO_REND);
+		List<Gastos> gastos = service.getGastos(request.getParameter(ID_REND), "", request.getParameter("usuarioRend"),
+				request.getParameter(COD_MOTIVO));
 		this.message = service.getMsg();
 		request.setAttribute("gastos", gastos);
 		request.setAttribute("showOpciones", true);
-		request.setAttribute("showEditar", estadoRend.equals("PENDI"));
-		request.setAttribute("showBorrar", estadoRend.equals("PENDI"));
-		request.setAttribute("readOnlyDatosAdicionales", !(estadoRend.equals("PENDI") || estadoRend.equals("OBSER")));
-		request.setAttribute("readOnlyCupones", !(estadoRend.equals("PENDI") || estadoRend.equals("OBSER")));
+		request.setAttribute("showEditar", estadoRend.equals(PENDI));
+		request.setAttribute("showBorrar", estadoRend.equals(PENDI));
+		request.setAttribute("readOnlyDatosAdicionales", !(estadoRend.equals(PENDI) || estadoRend.equals("OBSER")));
+		request.setAttribute("readOnlyCupones", !(estadoRend.equals(PENDI) || estadoRend.equals("OBSER")));
 
 		return mapping.findForward("gastos");
 	}
 	
 	private ActionForward getConsumosPendientes(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
-		List<Resumen> consumosPendientes = new ArrayList<Resumen>();
+		List<Resumen> consumosPendientes = new ArrayList<>();
 		ResumenService service = new ResumenService(samClient);
 		
-		String fechaDesde = DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
-		String fechaHasta = DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
-		String codMotivo = request.getParameter("codMotivo");
+		String fechaDesde = DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
+		String fechaHasta = DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
+		String codMotivo = request.getParameter(COD_MOTIVO);
 		
 		
 		if(this.sessionUserWorking.isManejaFacultades()) consumosPendientes = service.getConsumos(this.sessionUserWorking.getIdUser(), fechaDesde, fechaHasta, codMotivo);
@@ -220,12 +233,12 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			Map<String, Object> resp = new HashMap<String, Object>();
 			RendicionesService service = new RendicionesService(samClient);
 
-			String idRendicion = request.getParameter("idRendicion");
+			String idRendicion = request.getParameter(ID_REND);
 			String estado = request.getParameter("estado");
 			service.activaRechazaRendicion(estado, this.sessionUserWorking.getIdUser(), idRendicion);
 
 			if (service.getMsg() != null)
-				resp.put("message", "OK: " + service.getMsg());
+				resp.put(MSG, "OK: " + service.getMsg());
 
 			return writeJson(response, resp);
 		} catch (Exception e) {
@@ -240,17 +253,17 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			Map<String, Object> resp = new HashMap<String, Object>();
 			RendicionesService service = new RendicionesService(samClient);
 
-			String idRendicion = request.getParameter("idRendicion");
-			String codMotivo = request.getParameter("codMotivo");
-			String estadoRend = request.getParameter("estadoRend");
-			String fechaDesde = DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
-			String fechaHasta = DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
+			String idRendicion = request.getParameter(ID_REND);
+			String codMotivo = request.getParameter(COD_MOTIVO);
+			String estadoRend = request.getParameter(ESTADO_REND);
+			String fechaDesde = DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
+			String fechaHasta = DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
 			String descRendicion = request.getParameter("descripcion");
 			
 			service.modificarRendicion(idRendicion, this.sessionUserWorking.getIdUser(), codMotivo, fechaDesde, fechaHasta, descRendicion, estadoRend);
 
 			if (service.getMsg() != null)
-				resp.put("message", "OK: " + service.getMsg());
+				resp.put(MSG, "OK: " + service.getMsg());
 
 			return writeJson(response, resp);
 		} catch (Exception e) {
@@ -265,13 +278,13 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			Map<String, Object> resp = new HashMap<String, Object>();
 			AprobacionesService service = new AprobacionesService(samClient);
 
-			String idRendicion = request.getParameter("idRendicion");
+			String idRendicion = request.getParameter(ID_REND);
 			String idu = request.getParameter("idu");
 			
 			service.cambiarEscanRendicion(idRendicion, this.sessionUserWorking.getIdUser(), idu);
 
 			if (service.getMsg() != null)
-				resp.put("message", "OK: " + service.getMsg());
+				resp.put(MSG, "OK: " + service.getMsg());
 
 			return writeJson(response, resp);
 		} catch (Exception e) {

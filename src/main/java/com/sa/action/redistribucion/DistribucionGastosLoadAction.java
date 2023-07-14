@@ -1,26 +1,14 @@
 package com.sa.action.redistribucion;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONObject;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.joda.time.Days;
-
 import com.sa.action.RestriccionTransaccionAction;
-import com.sa.entities.ComboGasto;
 import com.sa.entities.ComboMotivo;
 import com.sa.entities.Gastos;
 import com.sa.entities.Rendicion;
@@ -28,8 +16,6 @@ import com.sa.entities.Usuario;
 import com.sa.form.RendicionForm;
 import com.sa.services.PagosService;
 import com.sa.services.RendicionesService;
-import com.sa.util.ParamsConstants;
-
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 
@@ -46,27 +32,21 @@ public class DistribucionGastosLoadAction extends RestriccionTransaccionAction {
 		Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
 		RendicionesService service = new RendicionesService(samClient);
 		request.getSession().removeAttribute("rendicionSelectDerrame");
-		// request.setAttribute("estadoRend",
-		// request.getParameter("estadoRend"));
-		// Get codigo current row
+
 		Integer idRendicion = null;
 		String usuarioRend = u.getIdUser();
-		// request.setAttribute("reload", request.getParameter("reload"));
+		
 
 		idRendicion = Integer.valueOf(request.getParameter("idRendicion"));
 
-		// request.setAttribute("idRendicion", idRendicion);
-		// if (request.getParameter("usuarioRendicion") != null
-		// && !request.getParameter("usuarioRendicion").equals("")) {
 		usuarioRend = request.getParameter("usuarioRendicion").toString();
-		// }
-		// Service carga Listado de Rendiciones
+
 		log.info("Se llama al service para obtener los datos de la rendicion seleccionada y luego mapear los gastos");
 		List<Rendicion> rendiciones = service.obtenerListadoRendiciones(
 				usuarioRend, idRendicion.toString(), "", "", "");
 		PagosService serv = new PagosService(samClient);
 		Rendicion rendicion = null;
-		// Recorre la lista de rendiciones
+
 		for (Rendicion r : rendiciones) {
 			Integer idR = r.getId();
 			if (idR.compareTo(idRendicion) == 0) {
@@ -92,10 +72,7 @@ public class DistribucionGastosLoadAction extends RestriccionTransaccionAction {
 		List<Gastos> gastos = service.getGastos(idRendicion.toString(), "",
 				u.getIdUser(), rendicion.getCodMotivo());
 
-//		List<ComboGasto> tipoGastos = serv.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION, u.getIdUser(),
-//				rendicion.getCodMotivo());
-//		request.setAttribute("ComboGastos", tipoGastos);
-		
+
 		request.setAttribute("Gastos", gastos);
 		request.setAttribute("idRendicion", rendicion.getId());
 		request.setAttribute("descripcionMotivo", desMotivo);

@@ -24,7 +24,8 @@ import com.sa.services.ParametrosService;
 public class DelegadoSeleccionadoAction extends RestriccionTransaccionAction {
 
 	protected static final Log log = LogFactory.getLog(DelegadoSeleccionadoAction.class);
-	List<Usuario> usuarios = new ArrayList<Usuario>();
+	List<Usuario> usuarios = new ArrayList<>();
+	private static final String USER_WORKING = "userWorking";
 
 	@Override
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
@@ -46,7 +47,7 @@ public class DelegadoSeleccionadoAction extends RestriccionTransaccionAction {
 					userWork = u;
 					if (u.getIdUser().equalsIgnoreCase(user.getIdUser())) {
 						userWork.setNombre(user.getNombre());
-						request.getSession().setAttribute("userWorking", user);
+						request.getSession().setAttribute(USER_WORKING, user);
 						break;
 					}
 				}
@@ -63,9 +64,9 @@ public class DelegadoSeleccionadoAction extends RestriccionTransaccionAction {
 						}
 					}
 
-					request.getSession().setAttribute("userWorking", userWork);
+					request.getSession().setAttribute(USER_WORKING, userWork);
 				} else {
-					request.getSession().setAttribute("userWorking", user);
+					request.getSession().setAttribute(USER_WORKING, user);
 				}
 			}
 

@@ -13,7 +13,6 @@ import org.apache.struts.action.ActionMapping;
 
 import com.sa.entities.Usuario;
 import com.sa.services.CierreService;
-import com.sa.services.trxs.SU56;
 import com.sa.util.ParamsConstants;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
@@ -50,7 +49,6 @@ public class CierreMensualFormalAction extends RestriccionTransaccionAction {
 
 			);
 		} catch (TransactionException  e) {
-			// TODO: handle exception
 			log.error(e);
 			request.setAttribute("messageModifTCJP",
 					"ERROR AL COLOCAR MARCA: " + e.getMessage().replace("java.lang.Exception:", ""));

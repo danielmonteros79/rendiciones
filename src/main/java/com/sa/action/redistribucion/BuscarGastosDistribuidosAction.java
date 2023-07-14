@@ -1,11 +1,6 @@
 package com.sa.action.redistribucion;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,20 +14,13 @@ import net.sf.json.JSONObject;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.joda.time.Days;
-
 import com.google.gson.Gson;
 import com.sa.action.RestriccionTransaccionAction;
-import com.sa.entities.ComboGasto;
-import com.sa.entities.ComboMotivo;
 import com.sa.entities.Gastos;
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.RendicionForm;
-import com.sa.services.PagosService;
 import com.sa.services.RendicionesService;
-import com.sa.util.ParamsConstants;
-
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 
@@ -73,8 +61,7 @@ public class BuscarGastosDistribuidosAction extends
 		int i = 0;
 		map.put("gastos", gastos);
 
-		// resp.put("sizeCombo", i);
-		ArrayList<String> arrayJsons = new ArrayList<String>();
+		ArrayList<String> arrayJsons = new ArrayList<>();
 
 		arrayJsons.add(gson.toJson(map));
 

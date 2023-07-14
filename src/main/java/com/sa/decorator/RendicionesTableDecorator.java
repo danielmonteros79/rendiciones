@@ -15,8 +15,9 @@ public class RendicionesTableDecorator extends SumTableDecorator {
 
 		Rendicion rendicion = (Rendicion) this.getCurrentRowObject();
 		String imgTag = "<i class=\"bbva-icon icon-coronita_search\" data-toggle=\"tooltip\" title=\"Ver\"></i>";
-		String verLink = "<a href=\"" + contextPath + "/rendicionDetalleGastos.do?" + "codigo=" + rendicion.getId() + "\">" + imgTag + "</a>";
-		return verLink;
+		
+		return  "<a href=\"" + contextPath + "/rendicionDetalleGastos.do?" + "codigo=" + rendicion.getId() + "\">" + imgTag + "</a>";
+		
 	}
 
 	@Override
@@ -71,7 +72,6 @@ public class RendicionesTableDecorator extends SumTableDecorator {
 
 	@Override
 	protected String getDestinatariosLink() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -97,13 +97,11 @@ public class RendicionesTableDecorator extends SumTableDecorator {
 
 	@Override
 	protected String getScanLink() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected String getCaratulaLink() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

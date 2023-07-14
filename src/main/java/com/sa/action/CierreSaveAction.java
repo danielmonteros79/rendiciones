@@ -35,7 +35,7 @@ public class CierreSaveAction extends RestriccionTransaccionAction{
 		CierreService gestionarOrdenService = new CierreService(samClient);
 		@SuppressWarnings("unchecked")
 		Enumeration<String> params = request.getParameterNames();
-		List<Rendicion> rendicionesSeleccionadas = new ArrayList<Rendicion>();
+		List<Rendicion> rendicionesSeleccionadas = new ArrayList<>();
 		cierreForm.setEstado(null);
 		while (params.hasMoreElements()) {
 

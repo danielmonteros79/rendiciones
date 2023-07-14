@@ -6,6 +6,9 @@ import javax.servlet.jsp.PageContext;
 import com.sa.entities.Rendicion;
 
 public class AprobacionesTableDecorator extends SumTableDecorator {
+	
+	private static final String IMG_TAG = "<img width='25px' src='";
+	
 	@Override
 	protected String getVerLink() {
 		return "";
@@ -76,15 +79,15 @@ public class AprobacionesTableDecorator extends SumTableDecorator {
 		String contextPath = request.getContextPath();
 		
 		if (rend.getAlerta().equalsIgnoreCase("1"))
-			img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_riesgo_grave.png' alt='Riesgo grave' title='Riesgo grave'/>";
+			img = IMG_TAG + contextPath + "/images/iconos/alerta_riesgo_grave.png' alt='Riesgo grave' title='Riesgo grave'/>";
 		else if (rend.getAlerta().equalsIgnoreCase("2"))
-			img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_riesgo.png' alt='Riesgo' title='Riesgo'/>";
+			img = IMG_TAG + contextPath + "/images/iconos/alerta_riesgo.png' alt='Riesgo' title='Riesgo'/>";
 		else if (rend.getAlerta().equalsIgnoreCase("3"))
-			img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_incidencia_grave.png' alt='Incidencia grave' title='Incidencia grave'/>";
+			img = IMG_TAG+ contextPath + "/images/iconos/alerta_incidencia_grave.png' alt='Incidencia grave' title='Incidencia grave'/>";
 		else if (rend.getAlerta().equalsIgnoreCase("4"))
-			img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_incidente.png' alt='Incidente' title='Incidente'/>";
+			img = IMG_TAG + contextPath + "/images/iconos/alerta_incidente.png' alt='Incidente' title='Incidente'/>";
 		else if (rend.getAlerta().equalsIgnoreCase("5"))
-			img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_anomalia.png' alt='Anomal&iacute;a' title='Anomal&iacute;a'/>";
+			img = IMG_TAG + contextPath + "/images/iconos/alerta_anomalia.png' alt='Anomal&iacute;a' title='Anomal&iacute;a'/>";
 		
 		return img;
 	}
@@ -130,7 +133,7 @@ public class AprobacionesTableDecorator extends SumTableDecorator {
 		
 		else rend.setAlerta(rend.getAdea().substring(0,1));
 			
-		img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_riesgo_grave.png' alt='riesgo' data-toggle='tooltip' title='Riesgo'/>";
+		img = IMG_TAG + contextPath + "/images/iconos/alerta_riesgo_grave.png' alt='riesgo' data-toggle='tooltip' title='Riesgo'/>";
 		
 		String link = "<a href=\"#a\" class=\"text-gray\" onclick=\"obtenerDetalleAlerta("+rend.getId() + "," +  rend.getAdea() + ")\">" + img + "</a>";
 

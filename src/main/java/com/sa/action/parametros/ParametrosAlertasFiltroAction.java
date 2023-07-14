@@ -22,6 +22,7 @@ import com.sa.services.ParametrosService;
 
 public class ParametrosAlertasFiltroAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosAlertasFiltroAction.class);
+	private static final String MSG = "message";
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -30,18 +31,18 @@ public class ParametrosAlertasFiltroAction extends RestriccionTransaccionAction 
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("Entra al action ParametrosAlertaFiltroAction. Usuario (" + user.getIdUser() + ")");
 		
-		String message = (String) request.getAttribute("message");
+		String message = (String) request.getAttribute(MSG);
 		if(message == null && ((frm.getCodMotivo().equals("") && !frm.getCodGasto().equals("")) || (!frm.getCodMotivo().equals("") && frm.getCodGasto().equals(""))) ){
-			request.setAttribute("message","Debe completar ambos filtros o ninguno");
+			request.setAttribute(MSG,"Debe completar ambos filtros o ninguno");
 			return mapping.findForward("fail");
 		}
 
-		List<ParametroAlerta> alerta = new ArrayList<ParametroAlerta>();
+		List<ParametroAlerta> alerta = new ArrayList<>();
 		try {
 			alerta = service.getAlertas("CONS", frm.getCodMotivo(), frm.getCodGasto());
-			request.setAttribute("message", service.getMsgAviso());
+			request.setAttribute(MSG, service.getMsgAviso());
 		} catch (Exception e) {
-			request.setAttribute("message", "ERROR: " + e.getCause().getMessage());
+			request.setAttribute(MSG, "ERROR: " + e.getCause().getMessage());
 		}
 		request.setAttribute("alerta", alerta);
 

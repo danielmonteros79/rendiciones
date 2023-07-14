@@ -21,6 +21,8 @@ import ar.com.bbva.web.impl.SAMWebClient;
 
 public class GastosAction extends RestriccionTransaccionAction {
 	
+	private static final String UTF8_CHARSET = "text/html; charset=UTF-8";
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
@@ -54,7 +56,7 @@ public class GastosAction extends RestriccionTransaccionAction {
 		resp.put("idGasto", idGasto);
 		resp.put("showModalDatosAdicionales", datosAdicionales.equalsIgnoreCase("S"));
 
-		response.setContentType("text/html; charset=UTF-8");
+		response.setContentType(UTF8_CHARSET);
 		return writeJson(response, resp);
 	}
 	
@@ -64,7 +66,7 @@ public class GastosAction extends RestriccionTransaccionAction {
 		pagosService.bajaGasto(renForm.getIdGasto(), this.sessionUserWorking.getIdUser(), renForm.getIdRendicion());
 		resp.put("message", pagosService.getMsg());
 
-		response.setContentType("text/html; charset=UTF-8");
+		response.setContentType(UTF8_CHARSET);
 		return writeJson(response, resp);
 	}
 	
@@ -72,11 +74,11 @@ public class GastosAction extends RestriccionTransaccionAction {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		RendicionesService serviceCombos = new RendicionesService(samClient);
 		List<Gastos> gastos = serviceCombos.getGastos(renForm.getIdRendicion(), renForm.getIdGasto(), this.sessionUserWorking.getIdUser(), renForm.getCodMotivo());
-		if (gastos.size() == 0)
+		if (gastos.isEmpty())
 			return writeError(response, "Gasto inexistente");
 		resp.put("gasto", gastos.get(0));
 		
-		response.setContentType("text/html; charset=UTF-8");
+		response.setContentType(UTF8_CHARSET);
 		
 		return writeJson(response, resp);
 	}

@@ -29,7 +29,15 @@ import ar.com.bbva.web.impl.SAMWebClient;
 
 public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(AprobacionDetalleAction.class);
-
+	private static final String OPERACION_EFECTUADA = "OPERACION EFECTUADA";
+	private static final String RENDICION = "Rendicion";
+	private static final String ID_RENDICION = "idRendicion";
+	private static final String MSG = "message";
+	private static final String SUCCESS = "success";
+	
+	
+	
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String action = request.getParameter("action") == null ? "" : request.getParameter("action");
@@ -58,9 +66,9 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 				List<Rendicion> aprobaciones = aprobacionesService.getAprobacionesPendientes(idRendicion, "", "", request.getParameter("glg"),
 						this.sessionUserWorking.getIdUser());
 				if (aprobaciones.size() == 0) {
-					request.setAttribute("Rendicion", new Rendicion());
+					request.setAttribute(RENDICION, new Rendicion());
 					this.message = "ERROR: APROBACION INEXISTENTE";
-					return mapping.findForward("success");
+					return mapping.findForward(SUCCESS);
 				}
 				
 				idUsuarioRendicion = aprobaciones.get(0).getUsuarioRendicion();
@@ -70,9 +78,9 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			
 			List<Rendicion> rendiciones = service.obtenerListadoRendiciones(idUsuarioRendicion, idRendicion, "", "", "");
 			if (rendiciones.size() == 0) {
-				request.setAttribute("Rendicion", new Rendicion());
+				request.setAttribute(RENDICION, new Rendicion());
 				this.message = "ERROR: RENDICION INEXISTENTE";
-				return mapping.findForward("success");
+				return mapping.findForward(SUCCESS);
 			}
 			
 			Rendicion rendicion = rendiciones.get(0);
@@ -87,7 +95,7 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			String dateD = df.format(rendicion.getFechaDesde());
 			String dateH = df.format(rendicion.getFechaHasta());
-			request.setAttribute("Rendicion", rendicion);
+			request.setAttribute(RENDICION, rendicion);
 			renForm.setUser(usuarioRendicion.getIdUser());
 			renForm.setNombreUsuario(usuarioRendicion.getNombre());
 			renForm.setCostos(usuarioRendicion.getCcostos());
@@ -108,20 +116,18 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			
 			renForm.setLinkThuban((String) request.getSession().getServletContext().getAttribute("rendicion.link.thuban") + idRendicion);
 			
-//			log.info(message + " mensaje recibido");
-//			if (!message.equals(""))
-//				request.setAttribute("message", message);
+
 		} catch (Exception e) {
 			log.error("", e);
 			this.setErrorMessage(e);
 		}
 
-		return mapping.findForward("success");
+		return mapping.findForward(SUCCESS);
 	}
 	
 	private ActionForward getRendicionGastos(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
 		RendicionesService service = new RendicionesService(samClient);
-		List<Gastos> gastos = service.getGastos(request.getParameter("idRendicion"), "", request.getParameter("usuarioRend"), request.getParameter("codMotivo"));
+		List<Gastos> gastos = service.getGastos(request.getParameter(ID_RENDICION), "", request.getParameter("usuarioRend"), request.getParameter("codMotivo"));
 		this.message = service.getMsg();
 		request.setAttribute("gastos", gastos);
 		request.setAttribute("showOpciones", true);
@@ -138,12 +144,12 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			Map<String, Object> resp = new HashMap<String, Object>();
 
 			AprobacionesService service = new AprobacionesService(samClient);
-			this.message = service.cambiarEstadoDeUnaRendicion(this.sessionUserWorking.getIdUser(), Integer.parseInt( request.getParameter("idRendicion")), "APROB", 
+			this.message = service.cambiarEstadoDeUnaRendicion(this.sessionUserWorking.getIdUser(), Integer.parseInt( request.getParameter(ID_RENDICION)), "APROB", 
 					request.getParameter("comentario"), request.getParameter("glg"));
-			if (this.message != null && this.message.equalsIgnoreCase("OPERACION EFECTUADA"))
+			if (this.message != null && this.message.equalsIgnoreCase(OPERACION_EFECTUADA))
 				this.message = "OK: APROBO CORRECTAMENTE LA RENDICION";
 			
-			resp.put("message", this.message);
+			resp.put(MSG, this.message);
 
 			return writeJson(response, resp);
 		} catch (Exception e) {
@@ -157,12 +163,12 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			Map<String, Object> resp = new HashMap<String, Object>();
 
 			AprobacionesService service = new AprobacionesService(samClient);
-			this.message = service.cambiarEstadoDeUnaRendicion(this.sessionUserWorking.getIdUser(), Integer.parseInt( request.getParameter("idRendicion")), "RECHA", 
+			this.message = service.cambiarEstadoDeUnaRendicion(this.sessionUserWorking.getIdUser(), Integer.parseInt( request.getParameter(ID_RENDICION)), "RECHA", 
 					request.getParameter("motivo") + " - " + request.getParameter("descripcion"), request.getParameter("glg"));
-			if (this.message != null && this.message.equalsIgnoreCase("OPERACION EFECTUADA"))
+			if (this.message != null && this.message.equalsIgnoreCase(OPERACION_EFECTUADA))
 				this.message = "OK: RECHAZO CORRECTAMENTE LA RENDICION";
 			
-			resp.put("message", this.message);
+			resp.put(MSG, this.message);
 
 			return writeJson(response, resp);
 		} catch (Exception e) {
@@ -176,12 +182,12 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			Map<String, Object> resp = new HashMap<String, Object>();
 
 			AprobacionesService service = new AprobacionesService(samClient);
-			this.message = service.cambiarEstadoDeUnaRendicion(this.sessionUserWorking.getIdUser(),  Integer.parseInt( request.getParameter("idRendicion")), "OBSER", 
+			this.message = service.cambiarEstadoDeUnaRendicion(this.sessionUserWorking.getIdUser(),  Integer.parseInt( request.getParameter(ID_RENDICION)), "OBSER", 
 					request.getParameter("motivo") + " - " + request.getParameter("descripcion"), request.getParameter("glg"));
-			if (this.message != null && this.message.equalsIgnoreCase("OPERACION EFECTUADA"))
+			if (this.message != null && this.message.equalsIgnoreCase(OPERACION_EFECTUADA))
 				this.message = "OK: OBSERVACION DADA DE ALTA CORRECTAMENTE";
 			
-			resp.put("message", this.message);
+			resp.put(MSG, this.message);
 
 			return writeJson(response, resp);
 		} catch (Exception e) {

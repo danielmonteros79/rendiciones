@@ -34,6 +34,7 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 	Map<String, List<ComboOpcion>> mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
 	List<ComboOpcion> cmbGasto = new ArrayList<ComboOpcion>();
 	private List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
+	private static final String COD_MOTIVO = "codMotivo";
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -52,7 +53,6 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 			return null;
 		} else if ("selectGasto".equals(accion)) {
 			this.selectGasto(response.getWriter(), request);
-			//response.setHeader("Content-Type", "text/html; charset=UTF-8");
 			response.setContentType("application/json");
 			response.getWriter().flush();
 			response.getWriter().close();
@@ -139,7 +139,7 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 	@SuppressWarnings("unchecked")
 	private void selectMotivo(PrintWriter writer, HttpServletRequest request) {
 		JSONArray jArray = new JSONArray();
-		String codMotivo = request.getParameter("codMotivo");
+		String codMotivo = request.getParameter(COD_MOTIVO);
 		if (codMotivo == null || codMotivo.trim().equals("")) {
 			for (ComboOpcion opcion : cmbGasto) {
 				JSONObject jGroup = new JSONObject();
@@ -149,8 +149,8 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 				jArray.add(jGroup);
 			}
 		} else {
-			if (mapMotivoGastos.get(request.getParameter("codMotivo")) != null)
-				for (ComboOpcion opcion : mapMotivoGastos.get(request.getParameter("codMotivo"))) {
+			if (mapMotivoGastos.get(request.getParameter(COD_MOTIVO)) != null)
+				for (ComboOpcion opcion : mapMotivoGastos.get(request.getParameter(COD_MOTIVO))) {
 					JSONObject jGroup = new JSONObject();
 					jGroup.put("codigo", opcion.getId());
 					jGroup.put("descripcion", opcion.getDescripcion());

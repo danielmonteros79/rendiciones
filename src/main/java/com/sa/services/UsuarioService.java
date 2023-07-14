@@ -18,7 +18,7 @@ import ar.com.itrsa.sam.TransactionException;
 public class UsuarioService {
 	protected static final Log log = LogFactory.getLog(UsuarioService.class);
 
-	List<Usuario> usuarios = new ArrayList<Usuario>();
+	List<Usuario> usuarios = new ArrayList<>();
 	private SAMWebClient client;
 	private String msg;
 

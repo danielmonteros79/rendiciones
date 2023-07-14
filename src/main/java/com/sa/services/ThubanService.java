@@ -38,7 +38,7 @@ public class ThubanService {
 				parametersExecute.put("ClaseDocumental", claseDoc);
 				parametersExecute.put("NombreArchivo", file.getNomArchivo());
 				parametersExecute.put("ListaCampos", "N_DOC=" + rendicion.getId());
-				//parametersExecute.put("Documento", file.getBase64());
+			
 				this.publicarDoc(parametersExecute);
 			} catch (Exception e) {
 				log.error("", e);

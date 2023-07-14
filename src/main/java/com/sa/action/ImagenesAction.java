@@ -23,7 +23,6 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.sa.entities.Gastos;
-import com.sa.form.RendicionAvisoForm;
 import com.sa.services.AprobacionesService;
 import com.sa.services.CaratulaService;
 import com.sa.services.RendicionesService;
@@ -31,7 +30,6 @@ import com.sa.services.trxs.WM95;
 import com.sa.util.ArchivoUtil;
 import com.sa.util.CaratulaTemplate;
 
-import org.apache.commons.codec.binary.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +41,10 @@ import com.sa.services.ThubanService;
 
 public class ImagenesAction extends RestriccionTransaccionAction {
 
+	private static final String IMG_SRC = "<img src='";
+	private static final String NOMBRE_ARCHIVO = "nombreArchivo";
+	
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
@@ -89,15 +91,13 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		if (extension.equals(".pdf") && !data.equals("%PDF-"))
 			return writeError(response, frm.getArchivo().getFileName() + ": El archivo no es un PDF v&aacute;lido.");
 		
-		resp.put("nombreArchivo", frm.getArchivo().getFileName());
+		resp.put(NOMBRE_ARCHIVO, frm.getArchivo().getFileName());
 
 		Archivo archivo = new Archivo();
 		archivo.setNomArchivo(frm.getArchivo().getFileName());
 		archivo.setInputStream(frm.getArchivo().getInputStream());
 	
-		//byte[] data2 = frm.getArchivo().getFileData();
-		//String base63 =  Base64.getEncoder().encode(data2).toString();
-		//archivo.setBase64(base63);
+	
 		frm.getArchivosASubir().add(archivo);
 
 		return writeJson(response, resp);
@@ -106,13 +106,13 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 	private ActionForward borrarArchivo(HttpServletRequest request, HttpServletResponse response, ImagenesForm frm) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
+		resp.put(NOMBRE_ARCHIVO, request.getParameter(NOMBRE_ARCHIVO));
 		
 		boolean encontro = false;
 		for (int i = 0; i < frm.getArchivosASubir().size() && !encontro; i++) {
 			Archivo archivo = frm.getArchivosASubir().get(i);
 
-			if (archivo.getNomArchivo().equals(request.getParameter("nombreArchivo"))) {
+			if (archivo.getNomArchivo().equals(request.getParameter(NOMBRE_ARCHIVO))) {
 				encontro = true;
 				frm.getArchivosASubir().remove(i);
 			}
@@ -124,11 +124,8 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 	private ActionForward generar(ImagenesForm frm, ActionMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			SAMWebClient samClient) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
-//		String thubanUser = (String) request.getSession().getServletContext().getAttribute("esb.thuban.user");
-//		String thubanPass = (String) request.getSession().getServletContext().getAttribute("esb.thuban.pass");
-//		String thubanClaseDoc = (String) request.getSession().getServletContext().getAttribute("esb.thuban.clase.documental");
 		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
+		resp.put(NOMBRE_ARCHIVO, request.getParameter(NOMBRE_ARCHIVO));
 		
 		Usuario user = ((Usuario) request.getSession().getAttribute("userWorking"));
 		String nombreNuevo = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.rename.archivo");
@@ -142,10 +139,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 
 		RendicionesService rendicionesService = new RendicionesService(samClient);
 		AprobacionesService aprobacionesService = new AprobacionesService(samClient);
-		//ThubanService thubanService = new ThubanService(samClient);
-		
-	
-		
+
 		Rendicion rendicion = null;
 		if (esAprobacion)
 			rendicion = aprobacionesService.getAprobacionesPendientes(idRendicion, "", "", glg, this.sessionUserWorking.getIdUser()).get(0);
@@ -162,9 +156,9 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		log.info("Se obtienen gastos");
 		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, "", rendicion.getUsuarioRendicion() != null ? rendicion.getUsuarioRendicion() : 
 			this.sessionUserWorking.getIdUser(), rendicion.getCodMotivo());
-		if (gastos.size() == 0) {
+		if (gastos.isEmpty()) {
 			return writeError(response, "La rendici&oacute;n no tiene gastos cargados.");
-			//request.setAttribute("msg", msg);
+			
 		}
 		
 		
@@ -172,7 +166,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			this.generateCaratula(response, frm, request, samClient, aprobacionesService, gastos);
 		
 			String path = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.path");
-			//List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo);
+
 			
 			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo);
 			
@@ -183,27 +177,6 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			
 			request.setAttribute("msg", msg);
 		
-		
-		
-		
-		
-		
-		
-//		List<String> errores = thubanService.publicarDocumentos(thubanClaseDoc, thubanUser, thubanPass, rendicion, frm.getArchivosASubir());
-//		
-//		if (errores.size() == frm.getArchivosASubir().size())
-//			return writeError(response, StringUtils.join(errores.toArray(), "<br><br>"));
-//		else if (rendicion.getEstado().equals("PENDI") || rendicion.getEstado().equals("OBSER")) {
-//			String idu = aprobacionesService.obtenerIDU(rendicion, WM95.DELIM_04_SIN_ADEA);
-//			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()), this.sessionUserWorking.getIdUser(), idu);
-//			if (aprobacionesService.getMsg() != null)
-//				message += "<br>" + aprobacionesService.getMsg();
-//		}
-//		
-//		if (errores.size() > 0)
-//			message += "<br><br>" + StringUtils.join(errores.toArray(), "<br>");
-//		
-//		resp.put("message", message);
 
 		resp.put("message", message);		
 		return writeJson(response, resp);
@@ -248,8 +221,8 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			String codigoBarraPath = (String) request.getSession().getServletContext().getAttribute("rendicion.image.idu");
 			File codigoBarrasIdu = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getIdu());
 			File codigoBarrasAdea = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getAdea());
-			String imgIdu = "<img src='" + codigoBarrasIdu + "' width='245px' height='65px' />";
-			String imgAdea = "<img src='" + codigoBarrasAdea + "' width='245px' height='65px'  />";
+			String imgIdu = IMG_SRC + codigoBarrasIdu + "' width='245px' height='65px' />";
+			String imgAdea = IMG_SRC + codigoBarrasAdea + "' width='245px' height='65px'  />";
 			html = html.replace(CaratulaTemplate.REPLACE_IDU, imgIdu);
 			html = html.replace(CaratulaTemplate.REPLACE_ADEA, imgAdea);
 
@@ -266,7 +239,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 
 			log.info("CARTULA - IMG:_ " + img);
 			File fileImg = new File(img);
-			String imgLogo = "<img src='" + img + "' height='45px' />";
+			String imgLogo = IMG_SRC + img + "' height='45px' />";
 			html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
 
 			String buffer = html;
@@ -282,9 +255,9 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			imagen.scaleAbsoluteWidth(100f);
 
 			// HTMLWorker
+			@SuppressWarnings("deprecation")
 			HTMLWorker htmlWorker = new HTMLWorker(document);
-			// String str =
-			// "Este es el contenido HTML, bien en String o reemplazalo por el contenido del fichero del ejemplo anterior";
+		
 			htmlWorker.parse(new StringReader(buffer));
 
 			document.close();

@@ -68,6 +68,7 @@ public class GastosTableDecorator extends SumTableDecorator {
 		return link;
 	}
 
+	@Override
 	public String getCupones() {
 		PageContext pc = this.getPageContext();
 		HttpServletRequest request = (HttpServletRequest) pc.getRequest();

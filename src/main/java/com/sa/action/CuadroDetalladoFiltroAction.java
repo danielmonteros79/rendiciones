@@ -33,8 +33,8 @@ public class CuadroDetalladoFiltroAction extends RestriccionTransaccionAction {
 		request.setAttribute("ComboGlg", frm.getComboGlg());
 		request.setAttribute("ComboMotivo", frm.getComboMotivo());
 
-		List<ComboOpcion2> estado = new ArrayList<ComboOpcion2>();
-		List<CuadroDetallado> rendicion = new ArrayList<CuadroDetallado>();
+		List<ComboOpcion2> estado = new ArrayList<>();
+		List<CuadroDetallado> rendicion = new ArrayList<>();
 		try {
 			String message = "";
 			

@@ -23,6 +23,7 @@ import com.sa.services.ParametrosService;
 
 public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosMotivoLoadAction.class);
+	private static final String MSG = "message";
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -33,14 +34,14 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 		
 		frm.clear();
 		
-		List<ParametroMotivo> motivos = new ArrayList<ParametroMotivo>();
+		List<ParametroMotivo> motivos = new ArrayList<>();
 		try {
 			motivos = service.getMotivos(frm.getCodigo(), user.getIdUser());
 			
-			if (request.getAttribute("message") == null)
-				request.setAttribute("message", service.getMsgAviso());
+			if (request.getAttribute(MSG) == null)
+				request.setAttribute(MSG, service.getMsgAviso());
 		} catch (Exception e) {
-			request.setAttribute("message", "ERROR: " + e.getCause().getMessage());
+			request.setAttribute(MSG, "ERROR: " + e.getCause().getMessage());
 		}
 		
 		request.setAttribute("motivos", motivos);
