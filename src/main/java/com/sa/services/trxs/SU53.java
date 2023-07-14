@@ -15,8 +15,11 @@ import ar.com.itrsa.sam.TransactionException;
 
 @SuppressWarnings("rawtypes")
 public class SU53 extends Transaction {
-	public List<Rendicion> listaRendiciones = new ArrayList<Rendicion>();
-
+	public List<Rendicion> listaRendiciones = new ArrayList<>();
+	private static final String AVISO = "aviso";
+	private static final String DES_EST_REND = "desc_est_rend";
+	private static final String FEC_ULT_MOD = "fec_ult_mod";
+	
 	public SU53() {
 		this.PARAMETER_TRX = "SUM_CONS_RENDICIONES";
 		this.CURRENT_TRX = "SU53";
@@ -45,8 +48,8 @@ public class SU53 extends Transaction {
 				String str = getStrLista(obj);
 				Rendicion rendicion = new Rendicion();
 				
-				if (parametersExecute.get("aviso") != null && !((String) parametersExecute.get("aviso")).trim().equals(""))
-					rendicion.setAviso((String) parametersExecute.get("aviso"));
+				if (parametersExecute.get(AVISO) != null && !((String) parametersExecute.get(AVISO)).trim().equals(""))
+					rendicion.setAviso((String) parametersExecute.get(AVISO));
 				else
 					rendicion.setAviso("");
 
@@ -72,13 +75,13 @@ public class SU53 extends Transaction {
 					rendicion.setIdu("");
 					rendicion.setAdea("");
 				}
-				rendicion.setDescripcionEstado(((String) parametersExecute.get("desc_est_rend")).trim());
+				rendicion.setDescripcionEstado(((String) parametersExecute.get(DES_EST_REND)).trim());
 				rendicion.setUsuarioAprobador(((String) parametersExecute.get("nomUsrAprob")).trim());
 				rendicion.setCodUsuarioAprobador(((String) parametersExecute.get("codUsrAprob")).trim());
 				rendicion.setMotivoRechazo(((String) parametersExecute.get("desc_rechazo")).trim());
 				
-				if (parametersExecute.get("fec_ult_mod") != null) {
-					rendicion.setFechaUltimaModificacion(((String) parametersExecute.get("fec_ult_mod")).trim());
+				if (parametersExecute.get(FEC_ULT_MOD) != null) {
+					rendicion.setFechaUltimaModificacion(((String) parametersExecute.get(FEC_ULT_MOD)).trim());
 				}
 				
 				
@@ -113,12 +116,12 @@ public class SU53 extends Transaction {
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
-		parametersExecute.put("desc_est_rend", "");
+		parametersExecute.put(DES_EST_REND, "");
 		parametersExecute.put("nomUsrAprob", "");
 		parametersExecute.put("codUsrAprob", "");
 		parametersExecute.put("desc_rechazo", "");
-		parametersExecute.put("fec_ult_mod", "01/02/2018");
-		parametersExecute.put("aviso", "SE ACTUALIZO LA POLITICA DE GASTOS - NUEVOS TOPES VIGENTES");
+		parametersExecute.put(FEC_ULT_MOD, "01/02/2018");
+		parametersExecute.put(AVISO, "SE ACTUALIZO LA POLITICA DE GASTOS - NUEVOS TOPES VIGENTES");
 	
 		List<String> retList = new ArrayList<String>();
 		List<String> list = new ArrayList<String>();
@@ -141,13 +144,13 @@ public class SU53 extends Transaction {
 		if (!parametersExecute.get("idRendicion").equals("")) {
 			for (String row : list) {
 				if (Integer.parseInt(row.substring(0, 16)) == Integer.parseInt((String) parametersExecute.get("idRendicion"))) {
-					parametersExecute.put("desc_est_rend", row.substring(190, 195));
+					parametersExecute.put(DES_EST_REND, row.substring(190, 195));
 					retList.add(row);
 					break;
 				}
 			}
-		} else
-			retList = list;
+		} else {
+			retList = list;}
 		
 		parametersExecute.put("lista", retList);
 	}

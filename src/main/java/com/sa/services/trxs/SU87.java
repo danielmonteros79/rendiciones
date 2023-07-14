@@ -15,7 +15,7 @@ import ar.com.itrsa.sam.TransactionException;
 
 public class SU87 extends Transaction {
 	private static final Log log = LogFactory.getLog(SU87.class);
-	private List<ParametroExceptuado> parametroExceptuado = new ArrayList<ParametroExceptuado>();
+	private List<ParametroExceptuado> parametroExceptuado = new ArrayList<>();
 	private String descripcion = null;
 
 	public SU87() {
@@ -51,5 +51,6 @@ public class SU87 extends Transaction {
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+		//metodo no utilizado
 	}
 }

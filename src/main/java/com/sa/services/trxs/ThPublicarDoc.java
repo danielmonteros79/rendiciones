@@ -35,11 +35,13 @@ public class ThPublicarDoc extends Transaction {
 		this.idThuban = (String) parametersExecute.get("IdThuban");
 	}
 
+	@Override
 	public Object getDataReturn() {
 		return this.idThuban;
 	}
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+		//metodo no utilizado
 	}
 }

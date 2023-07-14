@@ -19,8 +19,9 @@ import ar.com.itrsa.sam.TransactionException;
 @SuppressWarnings("rawtypes")
 public class SU68 extends Transaction {
 	private static final Log log = LogFactory.getLog(SU68.class);
-	private List<Resumen> resumen = new ArrayList<Resumen>();
-	public List<Cupones> listaCupones = new ArrayList<Cupones>();
+	private List<Resumen> resumen = new ArrayList<>();
+	public List<Cupones> listaCupones = new ArrayList<>();
+	private static final String MONTO_MIN = "montoMin";
 
 	public SU68() {
 		this.PARAMETER_TRX = "SUM_CONS_CONSUMOS_GRALES";
@@ -97,8 +98,8 @@ public class SU68 extends Transaction {
 					cupon.setDisponible(str.substring(224, 238).replaceFirst("^0*", "") + str.substring(238, 239) + "," + str.substring(239, 241));
 					
 					BigDecimal disponible = new BigDecimal(cupon.getDisponible().replace(",", ""));
-					BigDecimal montoMin = (parametersExecute.get("montoMin") == null || parametersExecute.get("montoMin").equals("") ? BigDecimal.ZERO : 
-						new BigDecimal(((String) parametersExecute.get("montoMin")).replace(",", "").trim()));
+					BigDecimal montoMin = (parametersExecute.get(MONTO_MIN) == null || parametersExecute.get(MONTO_MIN).equals("") ? BigDecimal.ZERO : 
+						new BigDecimal(((String) parametersExecute.get(MONTO_MIN)).replace(",", "").trim()));
 					String moneda = parametersExecute.get("moneda") == null ? "" : (String) parametersExecute.get("moneda");
 					
 					if(!str.substring(86, 87).contains("-") && !str.substring(87, 104).equals("00000000000000000") && disponible.compareTo(montoMin) > -1  &&

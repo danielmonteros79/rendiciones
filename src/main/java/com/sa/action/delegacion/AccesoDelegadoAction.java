@@ -38,54 +38,64 @@ public class AccesoDelegadoAction extends RestriccionTransaccionAction {
 
 	private ActionForward reemplazar(HttpServletRequest request, HttpServletResponse response, SAMWebClient samClient) throws Exception {
 		try {
-			Map<String, Object> resp = new HashMap<String, Object>();
-
+			Map<String, Object> resp = new HashMap<>();
 			ParametrosService service = new ParametrosService(samClient);
 			String delegadoSel = request.getParameter("delegado");
 			List<ParametriaUsuarioDelegado> usuarioDelegado = service.getDelegaciones(delegadoSel);
-
-			Usuario userWork = null;
-			for (Usuario u : this.sessionUser.getDelegadosAsignados()) {
-				if (u.getIdUser().equalsIgnoreCase(delegadoSel)) {
-					userWork = u;
-					if (u.getIdUser().equalsIgnoreCase(this.sessionUser.getIdUser())) {
-						userWork.setNombre(this.sessionUser.getNombre());
-						request.getSession().setAttribute(USER_WORKING, this.sessionUser);
-						break;
-					}
-				}
-				
-				if (userWork != null) {
-					for (ParametriaUsuarioDelegado delegado : usuarioDelegado) {
-						if (this.sessionUser.getIdUser().equals(delegado.getDelegadoUser())) {
-							if (delegado.getDelegadoAccion().equals("A"))
-								userWork.setTipoPerfil("DELEG_APROB");
-							else if (delegado.getDelegadoAccion().equals("I"))
-								userWork.setTipoPerfil("DELEG_REND");
-							else if (delegado.getDelegadoAccion().equals("T"))
-								userWork.setTipoPerfil("DELEG_REND_APROB");
-						}
-					}
-
-					if (userWork.getTipoPerfil().getPantalla().contains("Aprobacion")) {
-						AprobacionesService aprobacionesService = new AprobacionesService(samClient);
-						for (int i = 1; i < 5; i++) {
-							try {
-								aprobacionesService.getAprobacionesPendientes("", "", "", Integer.toString(i), userWork.getIdUser());
-								userWork.getGlgAprobacion().add(i);
-							} catch (Exception e) {}
-						}
-					}
-					request.getSession().setAttribute(USER_WORKING, userWork);
-				} else
-					request.getSession().setAttribute(USER_WORKING, this.sessionUser);
+			Usuario userWork = obtenerUsuarioTrabajo(delegadoSel);
+			if (userWork != null) {
+				actualizarTipoPerfilDelegado(usuarioDelegado, userWork);
+				verificarAprobaciones(userWork, samClient);
+				request.getSession().setAttribute(USER_WORKING, userWork);
+			} else {
+				request.getSession().setAttribute(USER_WORKING, this.sessionUser);
 			}
-
 			return writeJson(response, resp);
 		} catch (Exception e) {
 			log.error("", e);
 			return writeError(response, e);
 		}
 	}
+
+	private Usuario obtenerUsuarioTrabajo(String delegadoSel) {
+		for (Usuario u : this.sessionUser.getDelegadosAsignados()) {
+			if (u.getIdUser().equalsIgnoreCase(delegadoSel)) {
+				if (u.getIdUser().equalsIgnoreCase(this.sessionUser.getIdUser())) {
+					u.setNombre(this.sessionUser.getNombre());
+					return u;
+				} else {
+					return u;
+				}
+			}
+		}
+		return null;
+	}
+
+	private void actualizarTipoPerfilDelegado(List<ParametriaUsuarioDelegado> usuarioDelegado, Usuario userWork) {
+		for (ParametriaUsuarioDelegado delegado : usuarioDelegado) {
+			if (this.sessionUser.getIdUser().equals(delegado.getDelegadoUser())) {
+				if (delegado.getDelegadoAccion().equals("A"))
+					userWork.setTipoPerfil("DELEG_APROB");
+				else if (delegado.getDelegadoAccion().equals("I"))
+					userWork.setTipoPerfil("DELEG_REND");
+				else if (delegado.getDelegadoAccion().equals("T"))
+					userWork.setTipoPerfil("DELEG_REND_APROB");
+			}
+		}
+	}
+
+	private void verificarAprobaciones(Usuario userWork, SAMWebClient samClient) {
+		if (userWork.getTipoPerfil().getPantalla().contains("Aprobacion")) {
+			AprobacionesService aprobacionesService = new AprobacionesService(samClient);
+			for (int i = 1; i < 5; i++) {
+				try {
+					aprobacionesService.getAprobacionesPendientes("", "", "", Integer.toString(i), userWork.getIdUser());
+					userWork.getGlgAprobacion().add(i);
+				} catch (Exception e) {}
+			}
+		}
+	}
+
+
 
 }

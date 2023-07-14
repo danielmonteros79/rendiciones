@@ -16,6 +16,7 @@ import ar.org.bbva.util.DateUtils;
 
 public class SU65 extends Transaction {
 	private static final Log log = LogFactory.getLog(SU65.class);
+	private static final String LISTA = "lista";
 	
 	public SU65() {
 		this.PARAMETER_TRX = "SUM_ACTUALIZA_RESUMEN";
@@ -38,8 +39,8 @@ public class SU65 extends Transaction {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) throws Exception {
-		if (parametersExecute.get("lista") != null) {
-			for (Object obj : (List) parametersExecute.get("lista")) {
+		if (parametersExecute.get(LISTA) != null) {
+			for (Object obj : (List) parametersExecute.get(LISTA)) {
 				String str = getStrLista(obj);
 				CierreTarjeta cd = new CierreTarjeta();
 				int i = 0;
@@ -103,7 +104,7 @@ public class SU65 extends Transaction {
 		list.add("A2345678000000000012345612345678901234562019-02-21123456789012123456789012123456789012ESTABLECIMIENTO DE 50 CARACTERES                  0000012345678ARS12345678901232019-03-16P2019-03-142018-12-26-15.10.28.785850A23456782019-12-26-15.10.28.785850");
 		list.add("A2345678000000000012345712345678901234562019-02-21123456789012123456789012123456789012ESTABLECIMIENTO DE 50 CARACTERES                  0000012345678ARS12345678901232019-03-16P2019-03-142018-12-26-15.10.28.785850A23456782019-12-26-15.10.28.785850");
 		
-		parametersExecute.put("lista", list);
+		parametersExecute.put(LISTA, list);
 	}
 
 }

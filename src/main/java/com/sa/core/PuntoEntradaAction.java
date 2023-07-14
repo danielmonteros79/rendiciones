@@ -20,7 +20,9 @@ import org.apache.struts.action.ActionMapping;
 
 public class PuntoEntradaAction extends ISAMWebAction {
 	private static final Log log = LogFactory.getLog(PuntoEntradaAction.class);
-
+	private static final String FAILURE = "failure"; 
+	private static final String ERRORES = "errores"; 
+	
 	public ActionForward execute(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		List<String> errorList = new ArrayList();
@@ -49,34 +51,34 @@ public class PuntoEntradaAction extends ISAMWebAction {
 							usuario = serviceUsuario.obtenerDelegadosUsuario(loginForm.getUsername().toUpperCase());
 							if (usuario == null) {
 								errorList.add(new String("Usuario inexistente"));
-								request.setAttribute("errores", errorList);
-								return mapping.findForward("failure");
+								request.setAttribute(ERRORES, errorList);
+								return mapping.findForward(FAILURE);
 							}
 							break label78;
 						}
 
 						errorList.add(new String("Por favor, ingresar Contrase�a"));
-						request.setAttribute("errores", errorList);
-						return mapping.findForward("failure");
+						request.setAttribute(ERRORES, errorList);
+						return mapping.findForward(FAILURE);
 					}
 
 					errorList.add(new String("Por favor, ingresar Usuario"));
-					request.setAttribute("errores", errorList);
-					return mapping.findForward("failure");
+					request.setAttribute(ERRORES, errorList);
+					return mapping.findForward(FAILURE);
 				}
 			}
 		} catch (TransactionException var14) {
 			log.error(var14);
 			errorList.add(new String(var14.getCause().getMessage()));
-			request.setAttribute("errores", errorList);
+			request.setAttribute(ERRORES, errorList);
 			request.getSession().invalidate();
-			return mapping.findForward("failure");
+			return mapping.findForward(FAILURE);
 		} catch (Exception var15) {
 			log.error(var15);
 			errorList.add(new String("Error al ingresar"));
-			request.setAttribute("errores", errorList);
+			request.setAttribute(ERRORES, errorList);
 			request.getSession().invalidate();
-			return mapping.findForward("failure");
+			return mapping.findForward(FAILURE);
 		}
 
 		if (usuario.getTipoPerfil().getPantalla().contains("Aprobacion")) {

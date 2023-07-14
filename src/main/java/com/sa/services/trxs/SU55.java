@@ -16,9 +16,11 @@ import ar.com.bbva.web.IWebClient;
 import ar.com.itrsa.sam.TransactionException;
 
 public class SU55 extends Transaction {
-	public List<Gastos> listaGastos = new ArrayList<Gastos>();
-	public List<Gastos> listaGastosRedistribuidos = new ArrayList<Gastos>();
-	public List<Cupones> listaCupones = new ArrayList<Cupones>();
+	public List<Gastos> listaGastos = new ArrayList<>();
+	public List<Gastos> listaGastosRedistribuidos = new ArrayList<>();
+	public List<Cupones> listaCupones = new ArrayList<>();
+	private static final String LISTA2 = "lista2";
+	private static final String ID_REND = "id_rendicion";
 
 	public SU55() {
 		this.PARAMETER_TRX = "SUM_CONS_DET_GASTOS_REND";
@@ -42,14 +44,14 @@ public class SU55 extends Transaction {
 	protected void mapData(Map<String, Object> parametersExecute) {
 		log.info("Mapeo SU55");
 		List list = (List) parametersExecute.get("lista");
-		List lista2 = (List) parametersExecute.get("lista2");
+		List lista2 = (List) parametersExecute.get(LISTA2);
 		
 		try {
 			if (lista2 == null || lista2.isEmpty()) {
 				for (Object obj : list) {
 					String str = getStrLista(obj);
 					Gastos gasto = new Gastos();
-					gasto.setIdRendicion((String)parametersExecute.get("id_rendicion"));
+					gasto.setIdRendicion((String)parametersExecute.get(ID_REND));
 					gasto.setCodMotivo((String)parametersExecute.get("cod_motivo"));
 					gasto.setCostosDestino((String)parametersExecute.get("centro_costo"));
 					gasto.setIdGasto(str.substring(0, 9).replaceFirst("^0*", ""));
@@ -103,7 +105,7 @@ public class SU55 extends Transaction {
 				}
 			} else {
 				for (Object obj : lista2) {
-					String str = getStrLista(obj, "lista2");
+					String str = getStrLista(obj, LISTA2);
 					Cupones cupones = new Cupones();
 					cupones.setFechaPresentacion(str.substring(0, 10));
 					cupones.setNroCupon(str.substring(10, 22));
@@ -168,13 +170,13 @@ public class SU55 extends Transaction {
 		
 		if (parametersExecute.get("tipo_consult") != null && parametersExecute.get("tipo_consult").equals("CUPT")) {
 			retList.add("2018-04-160000S1GFN930ADELANTO ATM                            2000,00ARS8570");
-			parametersExecute.put("lista2", retList);
+			parametersExecute.put(LISTA2, retList);
 		} else {
 			if (parametersExecute.get("id_gasto").equals(""))
-				retList = mapRendGastos.get(parametersExecute.get("id_rendicion")) != null ? mapRendGastos.get(parametersExecute.get("id_rendicion")) :
+				retList = mapRendGastos.get(parametersExecute.get(ID_REND)) != null ? mapRendGastos.get(parametersExecute.get(ID_REND)) :
 					new ArrayList<String>();
 			else {
-				for (String row : mapRendGastos.get(parametersExecute.get("id_rendicion"))) {
+				for (String row : mapRendGastos.get(parametersExecute.get(ID_REND))) {
 					if (Integer.parseInt(row.substring(0, 9)) == Integer.parseInt((String) parametersExecute.get("id_gasto"))) {
 						retList = new ArrayList<String>();
 						retList.add(row);

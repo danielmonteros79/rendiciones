@@ -14,7 +14,7 @@ run(){
     }
     email = { object ->
         from='noreply@bbva.com'
-        to='rodrigo.baulan@bbva.com,pablosebastian.lucero@bbva.com,martina.pereyra@bbva.com'
+        to='martina.pereyra@bbva.com'
     }
     
 }

@@ -16,7 +16,7 @@ import ar.com.itrsa.sam.TransactionException;
 
 public class SU86 extends Transaction {
 	private static final Log log = LogFactory.getLog(SU86.class);
-	private List<ParametroExceptuado> parametroExceptuado = new ArrayList<ParametroExceptuado>();
+	private List<ParametroExceptuado> parametroExceptuado = new ArrayList<>();
 	private SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyy-MM-dd");
 
 	public SU86() {
@@ -76,5 +76,6 @@ public class SU86 extends Transaction {
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+		//metodo no utilizado
 	}
 }

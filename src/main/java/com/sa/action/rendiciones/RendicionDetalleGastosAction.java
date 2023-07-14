@@ -3,9 +3,6 @@ package com.sa.action.rendiciones;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +29,7 @@ import com.sa.util.DateUtil;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import ar.com.itrsa.sam.TransactionException;
 import ar.org.bbva.util.DateUtils;
 
 public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
@@ -48,151 +46,159 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 	
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		this.message= "";
-		Usuario u = this.sessionUserWorking;
-		String action = request.getParameter("action") == null ? "" : request.getParameter("action");
+	        HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    this.message = "";
+	    Usuario u = this.sessionUserWorking;
+	    String action = request.getParameter("action") == null ? "" : request.getParameter("action");
 
-		if (action.equals("getRendicionGastos"))
-			return this.getRendicionGastos(samClient, mapping, request);
-		else if (action.equals("getConsumosPendientes"))
-			return this.getConsumosPendientes(samClient, mapping, request);
-		else if (action.equals("activarRechazar"))
-			return this.activarRechazar(samClient, mapping, request, response);
-		else if (action.equals("modificarRendicion"))
-			return this.modificarRendicion(samClient, mapping, request, response);
-		else if (action.equals("finalizarObservacion"))
-			return this.finalizarObservacion(samClient, mapping, request, response);
+	    if (action.equals("getRendicionGastos"))
+	        return this.getRendicionGastos(samClient, mapping, request);
+	    else if (action.equals("getConsumosPendientes"))
+	        return this.getConsumosPendientes(samClient, mapping, request);
+	    else if (action.equals("activarRechazar"))
+	        return this.activarRechazar(samClient, mapping, request, response);
+	    else if (action.equals("modificarRendicion"))
+	        return this.modificarRendicion(samClient, mapping, request, response);
+	    else if (action.equals("finalizarObservacion"))
+	        return this.finalizarObservacion(samClient, mapping, request, response);
 
-		RendicionForm renForm = (RendicionForm) form;
-		renForm.reset();
-		RendicionesService service = new RendicionesService(samClient);
-		Integer idRendicion = null;
-		String usuarioRend = u.getIdUser();
+	    RendicionForm renForm = (RendicionForm) form;
+	    renForm.reset();
+	    RendicionesService service = new RendicionesService(samClient);
+	    Integer idRendicion = null;
+	    String usuarioRend = u.getIdUser();
 
-		// Chequea si viene de Cuadro detallado
-		if (request.getParameter("usuario") != null) {
-			UsuarioService usuarioService = new UsuarioService(samClient);
-			usuarioRend = request.getParameter("usuario").trim().toUpperCase();
-			u = usuarioService.obtenerDelegadosUsuario(usuarioRend);
-			request.setAttribute("readonly", "true");
-		}
+	    // Chequea si viene de Cuadro detallado
+	    if (request.getParameter("usuario") != null) {
+	        UsuarioService usuarioService = new UsuarioService(samClient);
+	        usuarioRend = request.getParameter("usuario").trim().toUpperCase();
+	        u = usuarioService.obtenerDelegadosUsuario(usuarioRend);
+	        request.setAttribute("readonly", "true");
+	    }
 
-		if (request.getParameter(CODIGO) == null)
-			idRendicion = (Integer.parseInt((String) request.getAttribute(CODIGO)));
-		else
-			idRendicion = Integer.valueOf(request.getParameter(CODIGO));
+	    if (request.getParameter(CODIGO) == null)
+	        idRendicion = (Integer.parseInt((String) request.getAttribute(CODIGO)));
+	    else
+	        idRendicion = Integer.valueOf(request.getParameter(CODIGO));
 
-		if (request.getParameter(USUARIO_REND) != null && !request.getParameter(USUARIO_REND).equals(""))
-			usuarioRend = request.getParameter(USUARIO_REND).toString();
+	    if (request.getParameter(USUARIO_REND) != null && !request.getParameter(USUARIO_REND).equals(""))
+	        usuarioRend = request.getParameter(USUARIO_REND).toString();
 
-		try {
-			List<Rendicion> rendiciones = service.obtenerListadoRendiciones(usuarioRend, idRendicion.toString(), "", "", "");
-			if (rendiciones.isEmpty()) {
-				request.setAttribute("Rendicion", new Rendicion());
-				this.message = "ERROR: RENDICION INEXISTENTE";
-			} else {
-				Rendicion rendicion = rendiciones.get(0);
-				this.message = service.getMsg();
+	    try {
+	        List<Rendicion> rendiciones = service.obtenerListadoRendiciones(usuarioRend, idRendicion.toString(), "", "", "");
+	        if (rendiciones.isEmpty()) {
+	            handleRendicionNotFound(request);
+	        } else {
+	            Rendicion rendicion = rendiciones.get(0);
+	            this.message = service.getMsg();
 
-				List<ComboMotivo> motivo = service.getMotivoRendiciones("4", usuarioRend);
-				for (ComboMotivo fila : motivo) {
-					if (fila.getId().equals(rendicion.getCodMotivo()))
-						renForm.setCostosDestino(fila.getCostosDestino());
-				}
-				request.setAttribute("ComboMotivo", motivo);
+	            populateRendicionForm(rendicion, renForm, usuarioRend, service, request, u);
+	        }
+	    } catch (Exception e) {
+	        log.error("", e);
+	        this.setErrorMessage(e);
+	    }
 
-				List<Gastos> gastos = service.getGastos(idRendicion.toString(), "", usuarioRend, rendicion.getCodMotivo());
-
-				DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-				String dateD = df.format(rendicion.getFechaDesde());
-				String dateH = df.format(rendicion.getFechaHasta());
-				rendicion.setGastosRendicion(gastos);
-				request.setAttribute("Rendicion", rendicion);
-				renForm.setUser(usuarioRend);
-				renForm.setNombreUsuario(u.getNombre());
-				renForm.setCostos(u.getCcostos());
-				renForm.setSector(u.getSector());
-				renForm.setIdRendicion(rendicion.getId());
-				renForm.setCodMotivo(rendicion.getCodMotivo());
-				renForm.setMotivo(rendicion.getMotivo());
-				renForm.setFechaDesde(dateD);
-				renForm.setFechaHasta(dateH);
-				renForm.setFechaUltimaModificacion(rendicion.getFechaUltimaModificacion());
-				renForm.setAviso(rendicion.getAviso());
-				
-				for (Gastos gasto : gastos) {
-					if (renForm.getGastoFechaMin() == null || 
-							DateUtils.dfDDMMYYYY.parse(gasto.getFechagastos()).before(DateUtils.dfDDMMYYYY.parse(renForm.getGastoFechaMin())))
-						renForm.setGastoFechaMin(gasto.getFechagastos());
-					
-					if (renForm.getGastoFechaMax() == null || 
-							DateUtils.dfDDMMYYYY.parse(gasto.getFechagastos()).after(DateUtils.dfDDMMYYYY.parse(renForm.getGastoFechaMax())))
-					{	renForm.setGastoFechaMax(gasto.getFechagastos());}
-				}
-
-				if (!renForm.getAviso().equalsIgnoreCase("")) {
-					request.setAttribute("avisoRendicion", "si");
-					request.setAttribute("avisoMostrar", rendicion.getAviso());
-				}
-
-				if (!(rendicion.getFechaUltimaModificacion() != null) || !rendicion.getFechaUltimaModificacion().equalsIgnoreCase("")) {
-					request.setAttribute("ultimaModif", "si");
-				}
-				// se calculan dias entre fecha desde y hasta de la rendicion
-				Calendar cal1 = new GregorianCalendar();
-				Calendar cal2 = new GregorianCalendar();
-
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-				Date date = sdf.parse(dateD);
-				cal1.setTime(date);
-				date = sdf.parse(dateH);
-				cal2.setTime(date);
-				renForm.setCantDias(DateUtil.daysBetween(cal1.getTime(), cal2.getTime()) + 1);
-				renForm.setMotivoRechazo(rendicion.getMotivoRechazo());
-				if (renForm.getMotivoRechazo() != null && !renForm.getMotivoRechazo().equalsIgnoreCase("")) {
-					if (rendicion.getEstado().equalsIgnoreCase("APROB"))
-						request.setAttribute(MOT_RECH_APROB, "APROB");
-					else
-						request.setAttribute(MOT_RECH_APROB, "RECHA");
-
-				} else {
-					request.setAttribute(MOT_RECH_APROB, "No");
-				}
-				
-				
-				renForm.setDescripcion(rendicion.getDescripcion());
-				renForm.setEstadoRend(rendicion.getEstado());
-				renForm.setDescripcionEstado(rendicion.getDescripcionEstado());
-				renForm.setUsuarioAprobador(rendicion.getUsuarioAprobador());
-
-				if (renForm.getUsuarioAprobador() != null && !renForm.getUsuarioAprobador().equalsIgnoreCase("")) {
-					request.setAttribute("usuarioAprobador", "SI");
-				}
-
-				if (renForm.getEstadoRend() == null)
-					renForm.setEstadoRend(request.getParameter("estadoRendicion"));
-
-				request.setAttribute(ESTADO_REND, rendicion.getEstado());
-
-				if (rendicion.getEstado() != null && !gastos.isEmpty()) { // Siempre puede adjuntar imagenes sin importar el estado de la rend
-					request.setAttribute("showAviso", "true");
-				} else {
-					if (!rendicion.getIdu().equals("") && !rendicion.getAdea().equalsIgnoreCase("")) {
-						request.setAttribute("showCaratula", "true");
-					}
-				}
-				if (idRendicion != null)
-					renForm.setLinkThuban((String) request.getSession().getServletContext().getAttribute("rendicion.link.thuban") + idRendicion);
-			}
-		} catch (Exception e) {
-			log.error("", e);
-			this.setErrorMessage(e);
-		}
-
-		return mapping.findForward("rendicionDetalleGastos");
+	    return mapping.findForward("rendicionDetalleGastos");
 	}
+
+	private void handleRendicionNotFound(HttpServletRequest request) {
+	    request.setAttribute("Rendicion", new Rendicion());
+	    this.message = "ERROR: RENDICION INEXISTENTE";
+	}
+
+	private void populateRendicionForm(Rendicion rendicion, RendicionForm renForm, String usuarioRend, RendicionesService service, HttpServletRequest request, Usuario u) throws TransactionException {
+	    List<ComboMotivo> motivo = service.getMotivoRendiciones("4", usuarioRend);
+	    renForm.setCostosDestino(getCostosDestino(rendicion.getCodMotivo(), motivo));
+	    request.setAttribute("ComboMotivo", motivo);
+
+	    List<Gastos> gastos = service.getGastos(rendicion.getId().toString(), "", usuarioRend, rendicion.getCodMotivo());
+
+	    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+	    String dateD = df.format(rendicion.getFechaDesde());
+	    String dateH = df.format(rendicion.getFechaHasta());
+	    rendicion.setGastosRendicion(gastos);
+	    request.setAttribute("Rendicion", rendicion);
+	    renForm.setUser(usuarioRend);
+	    renForm.setNombreUsuario(u.getNombre());
+	    renForm.setCostos(u.getCcostos());
+	    renForm.setSector(u.getSector());
+	    renForm.setIdRendicion(rendicion.getId());
+	    renForm.setCodMotivo(rendicion.getCodMotivo());
+	    renForm.setMotivo(rendicion.getMotivo());
+	    renForm.setFechaDesde(dateD);
+	    renForm.setFechaHasta(dateH);
+	    renForm.setFechaUltimaModificacion(rendicion.getFechaUltimaModificacion());
+	    renForm.setAviso(rendicion.getAviso());
+
+	    renForm.setGastoFechaMin(getMinGastoFecha(gastos));
+	    renForm.setGastoFechaMax(getMaxGastoFecha(gastos));
+
+	    String avisoRendicion = renForm.getAviso().isEmpty() ? "No" : "Si";
+	    request.setAttribute("avisoRendicion", avisoRendicion);
+	    request.setAttribute("avisoMostrar", rendicion.getAviso());
+
+	    String ultimaModif = rendicion.getFechaUltimaModificacion().isEmpty() ? "No" : "Si";
+	    request.setAttribute("ultimaModif", ultimaModif);
+	    renForm.setMotivoRechazo(rendicion.getMotivoRechazo());
+
+	    String ternarioResol = rendicion.getEstado().equalsIgnoreCase("APROB") ? "APROB" : "RECHA";
+	    String motRechAprob = renForm.getMotivoRechazo().isEmpty() ? "No" : ternarioResol;
+	    request.setAttribute(MOT_RECH_APROB, motRechAprob);
+
+	    renForm.setDescripcion(rendicion.getDescripcion());
+	    renForm.setEstadoRend(rendicion.getEstado());
+	    renForm.setDescripcionEstado(rendicion.getDescripcionEstado());
+	    renForm.setUsuarioAprobador(rendicion.getUsuarioAprobador());
+	    String usuarioAprobador = renForm.getUsuarioAprobador().isEmpty() ? "No" : "SI";
+	    request.setAttribute("usuarioAprobador", usuarioAprobador);
+
+	    if (renForm.getEstadoRend() == null)
+	        renForm.setEstadoRend(request.getParameter("estadoRendicion"));
+
+	    request.setAttribute(ESTADO_REND, rendicion.getEstado());
+
+	    String showAviso = rendicion.getEstado() != null && !gastos.isEmpty() ? "true" : "false";
+	    request.setAttribute("showAviso", showAviso);
+
+	    if (rendicion.getIdu() != null && !rendicion.getIdu().equals("") && !rendicion.getAdea().equalsIgnoreCase("")) {
+	        String showCaratula = "true";
+	        request.setAttribute("showCaratula", showCaratula);
+	    }
+
+	    if (rendicion.getId() != null)
+	        renForm.setLinkThuban((String) request.getSession().getServletContext().getAttribute("rendicion.link.thuban") + rendicion.getId());
+	}
+
+	private String getCostosDestino(String codMotivo, List<ComboMotivo> motivo) {
+	    for (ComboMotivo fila : motivo) {
+	        if (fila.getId().equals(codMotivo))
+	            return fila.getCostosDestino();
+	    }
+	    return null;
+	}
+
+	private String getMinGastoFecha(List<Gastos> gastos) {
+	    String minDate = null;
+	    for (Gastos gasto : gastos) {
+	        if (minDate == null || gasto.getFechagastos().compareTo(minDate) < 0) {
+	            minDate = gasto.getFechagastos();
+	        }
+	    }
+	    return minDate;
+	}
+
+	private String getMaxGastoFecha(List<Gastos> gastos) {
+	    String maxDate = null;
+	    for (Gastos gasto : gastos) {
+	        if (maxDate == null || gasto.getFechagastos().compareTo(maxDate) > 0) {
+	            maxDate = gasto.getFechagastos();
+	        }
+	    }
+	    return maxDate;
+	}
+
+
 
 	private ActionForward getRendicionGastos(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
 		RendicionesService service = new RendicionesService(samClient);

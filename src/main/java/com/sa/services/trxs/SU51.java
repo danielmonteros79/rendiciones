@@ -21,11 +21,14 @@ import ar.com.itrsa.sam.TransactionException;
 @SuppressWarnings("rawtypes")
 public class SU51 extends Transaction {
 	private static final Log log = LogFactory.getLog(SU51.class);
-	public List<ComboOpcion2> listaOpcion2 = new ArrayList<ComboOpcion2>();
-	public List<ComboMotivo> listaMotivo = new ArrayList<ComboMotivo>();
-	public List<ComboMoneda> listaMoneda = new ArrayList<ComboMoneda>();
-	public List<ComboComprobante> listaComprobante = new ArrayList<ComboComprobante>();
-	public List<ComboGasto> listaTipoGasto = new ArrayList<ComboGasto>();
+	public List<ComboOpcion2> listaOpcion2 = new ArrayList<>();
+	public List<ComboMotivo> listaMotivo = new ArrayList<>();
+	public List<ComboMoneda> listaMoneda = new ArrayList<>();
+	public List<ComboComprobante> listaComprobante = new ArrayList<>();
+	public List<ComboGasto> listaTipoGasto = new ArrayList<>();
+	
+	private static final String OPCION = "opcion";
+	private static final String COD_MOTIVO = "cod_motivo";
 
 	public SU51() {
 		this.PARAMETER_TRX = "SUM_CONS_PARAMETROS";
@@ -53,7 +56,7 @@ public class SU51 extends Transaction {
 	protected void mapData(Map<String, Object> parametersExecute) {
 		List lista = (List) parametersExecute.get("lista");
 
-		Integer opcion = Integer.valueOf((String) parametersExecute.get("opcion"));
+		Integer opcion = Integer.valueOf((String) parametersExecute.get(OPCION));
 		switch (opcion) {
 		case 1:
 			break;
@@ -129,29 +132,29 @@ public class SU51 extends Transaction {
 	protected void hardcodear(Map<String, Object> parametersExecute) {
 		List<String> retList = new ArrayList<String>();
 		
-		if (parametersExecute.get("opcion").equals("2") && 
+		if (parametersExecute.get(OPCION).equals("2") && 
 			parametersExecute.get("claves_cons").equals(ParamsConstants.MONEDA_TABLA + ParamsConstants.MONEDA_SUBTABLA + ParamsConstants.MONEDA_CODIGO)) {
 			retList.add("0000200004ARS PESOS ARGENTINOS");
 			retList.add("0000200004USD DOLARES");
 			retList.add("0000200004EUR EUROS");
-		} else if (parametersExecute.get("opcion").equals("2") && 
+		} else if (parametersExecute.get(OPCION).equals("2") && 
 				parametersExecute.get("claves_cons").equals(ParamsConstants.COMPROBANTE_TABLA + ParamsConstants.COMPROBANTE_SUBTABLA + ParamsConstants.COMPROBANTE_CODIGO)) {
 			retList.add("00002000060001FACTURA");
 			retList.add("00002000060002MAIL");
 			retList.add("00002000060003SIN COMPROBANTE");
 			retList.add("00002000060004TICKET");
 			retList.add("00002000060006FACTURA OBLIGATORIA");
-		} else if (parametersExecute.get("opcion").equals("3")) {
-			if (parametersExecute.get("cod_motivo").equals("0202")) {
+		} else if (parametersExecute.get(OPCION).equals("3")) {
+			if (parametersExecute.get(COD_MOTIVO).equals("0202")) {
 				retList.add("0200ALMUERZOS                                         00202N");
 				retList.add("0201CENAS                                             00202N");
-			} else if (parametersExecute.get("cod_motivo").equals("0203")) {
+			} else if (parametersExecute.get(COD_MOTIVO).equals("0203")) {
 				retList.add("0214COMIDAS                                           00204N");
 				retList.add("0215ALQUILER SALON                                    00204N");
 				retList.add("0216ALQUILER EQUIPOS                                  00204N");
 				retList.add("0217SERVICIO DE CATERING                              00204N");
 				retList.add("0218VARIOS                                            00204N");
-			} else if (parametersExecute.get("cod_motivo").equals("0204")) {
+			} else if (parametersExecute.get(COD_MOTIVO).equals("0204")) {
 				retList.add("0219COMBUSTIBLE                                       00205N");
 				retList.add("0220PEAJES                                            00000N");
 				retList.add("0221ESTACIONAMIENTO                                   00000N");
@@ -159,9 +162,9 @@ public class SU51 extends Transaction {
 				retList.add("0223SERVICE CONCESIONARIO                             00000N");
 				retList.add("0224VARIOS                                            00206N");
 				retList.add("45345345345                                           00001N");
-			} else if (parametersExecute.get("cod_motivo").equals("0205"))
-				retList.add("0225BIEN DE USO                                       00207N");
-		} else if (parametersExecute.get("opcion").equals("4")) {
+			} else if (parametersExecute.get(COD_MOTIVO).equals("0205")) {
+				retList.add("0225BIEN DE USO                                       00207N");}
+		} else if (parametersExecute.get(OPCION).equals("4")) {
 			retList.add("0200GASTOS DE REPRESENTACION                          0000");
 			retList.add("0201VIAJE AL EXTERIOR                                 0000");
 			retList.add("0202VIAJES DE GESTION LOCAL                           0000");
@@ -189,12 +192,12 @@ public class SU51 extends Transaction {
 			retList.add("6904FORMACION CAPACITACION EXTERNA                    1830");
 			retList.add("6905FORMACION VIAJES AL INTERIOR                      9999");
 			retList.add("6906FORMACION VIAJES AL EXTERIOR                      1830");
-		} else if (parametersExecute.get("opcion").equals("5")) {
+		} else if (parametersExecute.get(OPCION).equals("5")) {
 			retList.add("MOT1MOTIVO RECH1");
 			retList.add("MOT2MOTIVO RECH2");
 			retList.add("MOT3MOTIVO RECH3");
 			retList.add("MOT4MOTIVO RECH4");
-		} else if (parametersExecute.get("opcion").equals("6")) {
+		} else if (parametersExecute.get(OPCION).equals("6")) {
 			retList.add("MOP0motivo de prueba");
 			retList.add("MOP1mot prue 1");
 			retList.add("MOP2prueba de suspension");
@@ -208,13 +211,13 @@ public class SU51 extends Transaction {
 			retList.add("MOPAprueba de suspension");
 			retList.add("MOPBprueba de suspension");
 			retList.add("MOPCmotivo de prueba susp 12");
-		} else if (parametersExecute.get("opcion").equals("7")) {
+		} else if (parametersExecute.get(OPCION).equals("7")) {
 			retList.add("MOP1prueba motivo observacion 1");
 			retList.add("MOP2prueba motivo observacion 2");
 			retList.add("MOP3prueba motivo observacion 3");
 			retList.add("MOP4prueba motivo observacion 4");
 			retList.add("MOP5prueba motivo observacion 5");
-		} else if (parametersExecute.get("opcion").equals("8") || parametersExecute.get("opcion").equals("9")) {
+		} else if (parametersExecute.get(OPCION).equals("8") || parametersExecute.get(OPCION).equals("9")) {
 			retList.add("0123123                                               0123");
 			retList.add("0200REPRESENTACION AACC - COMIDAS                     0000");
 			retList.add("0201VIAJE AL EXTERIOR                                 0000");

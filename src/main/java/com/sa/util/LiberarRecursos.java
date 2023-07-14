@@ -38,8 +38,8 @@ public class LiberarRecursos
 	}
 	
 	
-	public Map<?, ?> execute(Map<?, ?> parameters){
-		Map<?, ?> paramsLogoff = new HashMap<Object, Object>();
+	public Map<Object, Object> execute(Map<Object, Object> parameters){
+		Map<Object, Object> paramsLogoff = new HashMap<Object, Object>();
 		
         try {
         		
@@ -50,8 +50,8 @@ public class LiberarRecursos
             /* Estas l�neas es s�lo si para desarrollo les interesa ver en el log un
              * dump de todo el mapa de par�metros que devolvi� SAM...
              */
-            if (log.isDebugEnabled())
-            log.debug(PropertiesUtils.LSEP + DumpUtils.dumpMap(paramsLogoff, true));
+            if (log.isDebugEnabled()) {
+            log.debug(PropertiesUtils.LSEP + DumpUtils.dumpMap(paramsLogoff, true));}
 
             stat = (BbvaSoaStatus) paramsLogoff.get(BbvaPaqConstants.NOMBRE_PARAM_STATUS);
             if (stat != null) {
@@ -66,8 +66,8 @@ public class LiberarRecursos
                                         " DescDetallada=" + mens.getDescripcionDetallada());
                     }
             }
-            } else
-            log.error("No recibimos el " + BbvaPaqConstants.NOMBRE_PARAM_STATUS);
+            } else {
+            log.error("No recibimos el " + BbvaPaqConstants.NOMBRE_PARAM_STATUS);}
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

@@ -57,10 +57,10 @@ public class DelegadoSeleccionadoAction extends RestriccionTransaccionAction {
 							if (delegado.getDelegadoAccion().equals("A")) {
 								userWork.setTipoPerfil("DELEG_APROB");
 								forward = "aprobaciones";
-							} else if (delegado.getDelegadoAccion().equals("I"))
-								userWork.setTipoPerfil("DELEG_REND");
-							else if (delegado.getDelegadoAccion().equals("T"))
-								userWork.setTipoPerfil("DELEG_REND_APROB");
+							} else if (delegado.getDelegadoAccion().equals("I")) {
+								userWork.setTipoPerfil("DELEG_REND");}
+							else if (delegado.getDelegadoAccion().equals("T")) {
+								userWork.setTipoPerfil("DELEG_REND_APROB");}
 						}
 					}
 

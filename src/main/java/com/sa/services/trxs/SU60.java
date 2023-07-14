@@ -38,6 +38,7 @@ public class SU60 extends Transaction {
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+		//metodo no utilizado
 	}
 	
 	
