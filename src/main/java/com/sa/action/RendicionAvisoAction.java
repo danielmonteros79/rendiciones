@@ -116,7 +116,7 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 
 		frm.getRendicion().setUsuarioRendicion(frm.getRendicion().getUsuarioRendicion() != null ? frm.getRendicion().getUsuarioRendicion() : frm.getUsuario().getIdUser());
 
-		if (!validarGastos(frm, rendicionesService, redirect, request, mapping)) {
+		if (!validarGastos(frm, rendicionesService, request, mapping)) {
 			return redirect;
 		}
 
@@ -125,7 +125,7 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 			String iduAdea = obtenerIduAdea(frm, aprobacionesService, isCaratula);
 
 			if (iduAdea == null) {
-				return crearRedirectErrorGenerar(request, redirect, "Error al generar IDU y ADEA", mapping);
+				return crearRedirectErrorGenerar(request, "Error al generar IDU y ADEA", mapping);
 			}
 
 			CaratulaService servCaratula = new CaratulaService(samClient);
@@ -163,12 +163,12 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 		}
 	}
 
-	private boolean validarGastos(ImagenesForm frm, RendicionesService rendicionesService, ActionRedirect redirect, HttpServletRequest request, ActionMapping mapping) throws Exception {
+	private boolean validarGastos(ImagenesForm frm, RendicionesService rendicionesService, HttpServletRequest request, ActionMapping mapping) throws Exception {
 		List<Gastos> gastos = rendicionesService.getGastos(String.valueOf(frm.getRendicion().getId()), "",
 				frm.getRendicion().getUsuarioRendicion(), frm.getRendicion().getCodMotivo());
 		if (gastos.isEmpty()) {
-			redirect = new ActionRedirect(mapping.findForward(FAILURE_GENERAR));
-			redirect.addParameter(ACTION, ERROR_GENERAR);
+			ActionRedirect newRedirect2 = new ActionRedirect(mapping.findForward(FAILURE_GENERAR));
+			newRedirect2.addParameter(ACTION, ERROR_GENERAR);
 			String msg = "NO SE PUDO GENERAR CARATULA - La rendicion no tiene gastos cargados";
 			request.getSession().setAttribute("msg", msg);
 			return false;
@@ -184,11 +184,12 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 		}
 	}
 
-	private ActionRedirect crearRedirectErrorGenerar(HttpServletRequest request, ActionRedirect redirect, String msg, ActionMapping mapping) {
-		redirect = new ActionRedirect(mapping.findForward(FAILURE_GENERAR));
-		redirect.addParameter(ACTION, ERROR_GENERAR);
+	private ActionRedirect crearRedirectErrorGenerar(HttpServletRequest request, String msg, ActionMapping mapping) {
+		
+		ActionRedirect newRedirect = new ActionRedirect(mapping.findForward(FAILURE_GENERAR));
+		newRedirect.addParameter(ACTION, ERROR_GENERAR);
 		request.getSession().setAttribute("msg", msg);
-		return redirect;
+		return newRedirect;
 	}
 
 
