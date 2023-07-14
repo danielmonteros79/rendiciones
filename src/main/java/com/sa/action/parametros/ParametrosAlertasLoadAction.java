@@ -92,8 +92,8 @@ public class ParametrosAlertasLoadAction extends RestriccionTransaccionAction {
 						List<ComboOpcion> gastos = new ArrayList<ComboOpcion>();
 						gastos.add(opcionGasto);
 						mapMotivoGastos.put(codMotivo, gastos);
-					} else
-						mapMotivoGastos.get(codMotivo).add(opcionGasto);
+					} else {
+						mapMotivoGastos.get(codMotivo).add(opcionGasto);}
 				}
 			}
 			

@@ -42,8 +42,8 @@ public class ParametrosMotivoDetalleLoadAction extends RestriccionTransaccionAct
 		if ("alta".equals(frm.getAccion())) {
 			frm.clear();
 			frm.setEstado("A");
-		} else
-			this.motivoToForm(frm, service.getMotivos(frm.getCodigo(), user.getIdUser()).get(0));
+		} else {
+			this.motivoToForm(frm, service.getMotivos(frm.getCodigo(), user.getIdUser()).get(0));}
 		
 		return mapping.findForward(frm.getAccion());
 	}
@@ -86,8 +86,8 @@ public class ParametrosMotivoDetalleLoadAction extends RestriccionTransaccionAct
 		if (frm.getCentrosCosto().size() < 15) {
 			frm.getCentrosCosto().add("");
 			out.print(frm.getCentrosCosto().size() - 1);
-		} else
-			out.print(-1);
+		} else {
+			out.print(-1);}
 		
 		out.close();
 		return null;

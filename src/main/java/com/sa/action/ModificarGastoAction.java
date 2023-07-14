@@ -16,7 +16,6 @@ import ar.com.itrsa.sam.TransactionException;
 import com.sa.entities.ComboGasto;
 import com.sa.entities.ComboOpcion2;
 import com.sa.entities.Gastos;
-import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.RendicionDetalleForm;
 import com.sa.services.PagosService;
@@ -27,6 +26,7 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 	
 	private static final String COD_MOTIVO = "codMotivo";
 	private static final String CODIGO = "codigo";
+	private static final String LISTADO_APRO = "listadoAprob";
 	
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
@@ -41,8 +41,8 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 
 		    cargarEstadoRendicion(request, renForm);
 		    cargarIdRendicion(request, renForm);
-		    cargarFechas(request, renForm);
-		    cargarCombos(request, samClient, renForm, u.getIdUser());
+		    cargarFechas(request);
+		    cargarCombos(request, samClient, u.getIdUser());
 		    obtenerDatosGasto(request, samClient, renForm, u.getIdUser());
 		    asignarValores(request, renForm);
 
@@ -64,14 +64,14 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 		    renForm.setCentroCostos(request.getParameter("cCosto"));
 		}
 
-		private void cargarFechas(HttpServletRequest request, RendicionDetalleForm renForm) {
+		private void cargarFechas(HttpServletRequest request ) {
 		    String fechaD = request.getParameter("fechaD");
 		    String fechaH = request.getParameter("fechaH");
 		    request.setAttribute("fechaD", fechaD);
 		    request.setAttribute("fechaH", fechaH);
 		}
 
-		private void cargarCombos(HttpServletRequest request, SAMWebClient samClient, RendicionDetalleForm renForm,
+		private void cargarCombos(HttpServletRequest request, SAMWebClient samClient,
 		        String userId) throws TransactionException {
 		    RendicionesService serviceCombos = new RendicionesService(samClient);
 
@@ -151,14 +151,14 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 
 		private void asignarValores(HttpServletRequest request, RendicionDetalleForm renForm) {
 		    String tieneCupon = request.getParameter("tieneCupon");
-		    String listadoAprob = request.getParameter("listadoAprob");
+		    String listadoAprob = request.getParameter(LISTADO_APRO);
 		    String opcion = request.getParameter("opcion");
 
 		    renForm.setImporteCupon(tieneCupon.equalsIgnoreCase("1") ? renForm.getMonto().trim() : "");
 		    request.setAttribute("conCupon", tieneCupon);
 
 		    if (listadoAprob.equalsIgnoreCase("1")) {
-		        request.setAttribute("listadoAprob", "1");
+		        request.setAttribute(LISTADO_APRO, "1");
 		    }
 
 		    renForm.setUsuarioRend(request.getParameter("user"));
@@ -187,8 +187,8 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 		}
 
 		private void asignarAtributoListadoAprob(HttpServletRequest request) {
-		    if (request.getParameter("listadoAprob").equalsIgnoreCase("1")) {
-		        request.setAttribute("listadoAprob", "1");
+		    if (request.getParameter(LISTADO_APRO).equalsIgnoreCase("1")) {
+		        request.setAttribute(LISTADO_APRO, "1");
 		    }
 		}
 

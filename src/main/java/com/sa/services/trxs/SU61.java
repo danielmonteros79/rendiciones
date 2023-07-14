@@ -119,8 +119,8 @@ public class SU61 extends Transaction {
 					break;
 				}
 			}
-		} else
-			retList = list;
+		} else {
+			retList = list;}
 		
 		parametersExecute.put("lista", retList);
 		parametersExecute.put("cantidad", String.valueOf(list.size()));

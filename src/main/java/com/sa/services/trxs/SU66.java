@@ -32,9 +32,11 @@ public class SU66 extends Transaction {
 
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) {
+		//metodo no utilizado
 	}
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+		//metodo no utilizado
 	}
 }

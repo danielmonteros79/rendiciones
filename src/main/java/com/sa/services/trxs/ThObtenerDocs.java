@@ -16,7 +16,8 @@ import ar.com.itrsa.sam.TransactionException;
 @SuppressWarnings("rawtypes")
 public class ThObtenerDocs extends Transaction {
 	private static final Log log = LogFactory.getLog(ThObtenerDocs.class);
-	public List<Archivo> archivos = new ArrayList<Archivo>();
+	public List<Archivo> archivos = new ArrayList<>();
+	private static final String LISTA = "lista";
 
 	public ThObtenerDocs() {
 		this.PARAMETER_TRX = "TH_OBTENERDOCS";
@@ -36,8 +37,8 @@ public class ThObtenerDocs extends Transaction {
 	
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) {
-		if (parametersExecute.get("lista") != null) {
-			for (Object obj : (List) parametersExecute.get("lista")) {
+		if (parametersExecute.get(LISTA) != null) {
+			for (Object obj : (List) parametersExecute.get(LISTA)) {
 				String str = getStrLista(obj);
 				Archivo archivo = new Archivo();
 				
@@ -49,16 +50,17 @@ public class ThObtenerDocs extends Transaction {
 		}
 	}
 
+	@Override
 	public List getDataReturnList() {
 		return this.archivos;
 	}
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
-		List<String> retList = new ArrayList<String>();
+		List<String> retList = new ArrayList<>();
 		
 		retList.add("NOMBRE ARCHIVO 1                                  A123456789");
 		
-		parametersExecute.put("lista", retList);
+		parametersExecute.put(LISTA, retList);
 	}
 }

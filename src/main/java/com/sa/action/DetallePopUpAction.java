@@ -32,6 +32,8 @@ import com.sa.util.ParamsConstants;
 
 public class DetallePopUpAction extends RestriccionTransaccionAction {
 	
+	private static final String COD_MOTIVO = "codMotivo";
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RendicionDetalleForm renForm = (RendicionDetalleForm) form;
@@ -89,7 +91,7 @@ public class DetallePopUpAction extends RestriccionTransaccionAction {
 				+ ParamsConstants.MONEDA_SUBTABLA + ParamsConstants.MONEDA_CODIGO, ParamsConstants.MONEDA_CANTIDAD, u.getIdUser());
 
 		List<ComboGasto> tipoGastos = service.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION, u.getIdUser(),
-				request.getParameter("codMotivo"));
+				request.getParameter(COD_MOTIVO));
 		request.setAttribute("ComboGastos", tipoGastos);
 		
 		List<ComboOpcion2> comprobante = serviceCombos.getComboOpcion2(ParamsConstants.COMPROBANTE_OPCION,
@@ -99,10 +101,10 @@ public class DetallePopUpAction extends RestriccionTransaccionAction {
 
 		renForm.setIdRendicion(request.getParameter("codigo"));
 		renForm.setEstadoRendicion(request.getParameter("estadoRendicion"));
-		renForm.setCodMotivo(request.getParameter("codMotivo"));
+		renForm.setCodMotivo(request.getParameter(COD_MOTIVO));
 		renForm.setNombreUsuario(u.getNombre());
 		renForm.setCostos(u.getCcostos());
-		renForm.setCodMotivo(request.getParameter("codMotivo"));
+		renForm.setCodMotivo(request.getParameter(COD_MOTIVO));
 		renForm.setCentroCostos(request.getParameter("cCosto"));
 		renForm.setMoneda("");
 		renForm.setCupon("");

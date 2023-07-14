@@ -35,6 +35,7 @@ public class RendicionesService {
 	private static final Log log = LogFactory.getLog(RendicionesService.class);
 	private SAMWebClient client;
 	private String msg;
+	private static final String ID_REND = "id_rendicion";
 
 	public RendicionesService(SAMWebClient samClient) {
 		this.client = samClient;
@@ -147,7 +148,7 @@ public class RendicionesService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		parametersExecute.put("opcion", "MODI");
-		parametersExecute.put("id_rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
+		parametersExecute.put(ID_REND, String.format("%016d", Integer.parseInt(idRendicion)));
 		parametersExecute.put("id_user", idUser);
 		parametersExecute.put("fecha_desde", fechaDesde);
 		parametersExecute.put("fecha_hasta", fechaHasta);
@@ -173,7 +174,7 @@ public class RendicionesService {
 		if (idGasto != null && !idGasto.equalsIgnoreCase("")) {
 			idGasto = String.format("%09d", Integer.parseInt(idGasto));
 		}
-		parametersExecute.put("id_rendicion", idRendicion);
+		parametersExecute.put(ID_REND, idRendicion);
 		parametersExecute.put("id_gasto", idGasto);
 		parametersExecute.put("id_user", idUser);
 		parametersExecute.put("cod_motivo", codMotivo);
@@ -196,7 +197,7 @@ public class RendicionesService {
 		if (idGasto != null && !idGasto.equalsIgnoreCase("")) {
 			idGasto = String.format("%09d", Integer.parseInt(idGasto));
 		}
-		parametersExecute.put("id_rendicion", idRendicion);
+		parametersExecute.put(ID_REND, idRendicion);
 		parametersExecute.put("id_gasto", idGasto);
 		parametersExecute.put("id_user", idUser);
 		parametersExecute.put("cod_motivo", codMotivo);
@@ -216,7 +217,7 @@ public class RendicionesService {
 		
 		parametersExecute.put("opcion", "BAJA");
 		parametersExecute.put("id_user", user);
-		parametersExecute.put("id_rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
+		parametersExecute.put(ID_REND, String.format("%016d", Integer.parseInt(idRendicion)));
 		manager.executeTrx(this.client, parametersExecute);
 		
 		String idRendicionBorrada = (String) manager.getDataReturn();

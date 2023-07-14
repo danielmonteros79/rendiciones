@@ -26,9 +26,11 @@ public class SU58 extends Transaction {
 
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) {
-	}
+		//metodo no utilziado
+ }
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
-	}
+		//metodo no utilziado
+ }
 }

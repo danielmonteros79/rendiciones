@@ -57,8 +57,8 @@ public class ParametrosGastosFiltroAction extends RestriccionTransaccionAction {
 					frm.clear();
 					frm.setEstado("A");
 					this.cargarCombos(request, service.getGastosCombos());
-				} else if (frm.getAccion().equals("modificacion"))
-					this.gastoToForm(frm, request, service.loadModificacionGasto(frm.getCodigo(), user.getIdUser()));
+				} else if (frm.getAccion().equals("modificacion")) {
+					this.gastoToForm(frm, request, service.loadModificacionGasto(frm.getCodigo(), user.getIdUser()));}
 				else if (frm.getAccion().equals("baja")) {
 					this.cargarCombos(request, service.getGastosCombos()); //Gracias Amadi
 					this.gastoToForm(frm, request, service.loadBajaGasto(frm.getCodigo(), user.getIdUser()));
@@ -126,8 +126,8 @@ public class ParametrosGastosFiltroAction extends RestriccionTransaccionAction {
 		if (frm.getCentrosCosto().size() < 15) {
 			frm.getCentrosCosto().add("");
 			out.print(frm.getCentrosCosto().size() - 1);
-		} else
-			out.print(-1);
+		} else {
+			out.print(-1);}
 		
 		out.close();
 		return null;
