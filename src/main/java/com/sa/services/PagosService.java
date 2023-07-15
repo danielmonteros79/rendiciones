@@ -103,93 +103,96 @@ public class PagosService {
 		manager.executeTrx(this.samClient, parametersExecute);
 	}
 	
-
 	public Integer altaModifGasto(String opcion, String idGasto, String idRendicion, String moneda, String tipoComprobante, String tipoFactura,
-			String factura, String cuit, String tipoGasto, String importe, String fechaGasto, String codMotivo, String centroCosto,
-			String cupCred, String cupDeb, String cupon, String descCupon, String importeCupon, String nroTarjeta, String observacionGasto)
-					throws TransactionException {
-		log.info("Comienza llamado a trx para crear o modificar nuevo gasto)");
-		if (idRendicion != null && !idRendicion.equalsIgnoreCase("")) {
-			idRendicion = String.format(FORMAT_16, Integer.parseInt(idRendicion));
-		}
-		centroCosto = String.format("%04d", Integer.parseInt(centroCosto));
-		
-		
-		double value = Double.parseDouble(importe.replace(",", "."));
-		DecimalFormat decimalFormat = new DecimalFormat("#.00");
-		String imp = decimalFormat.format(value).replace(".", "");
-		importe = String.format("%015.0f", Double.parseDouble(imp.replace(",", "")));
+	        String factura, String cuit, String tipoGasto, String importe, String fechaGasto, String codMotivo, String centroCosto,
+	        String cupCred, String cupDeb, String cupon, String descCupon, String importeCupon, String nroTarjeta, String observacionGasto)
+	        throws TransactionException {
+	    log.info("Comienza llamado a trx para crear o modificar nuevo gasto)");
 
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-		Date date = null;
+	    if (idRendicion != null && !idRendicion.isEmpty()) {
+	        idRendicion = String.format(FORMAT_16, Integer.parseInt(idRendicion));
+	    }
+	    centroCosto = String.format("%04d", Integer.parseInt(centroCosto));
 
-		if (fechaGasto != null && !fechaGasto.equalsIgnoreCase("")) {
-			try {
-				date = formatter.parse(fechaGasto);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
+	    double value = Double.parseDouble(importe.replace(",", "."));
+	    DecimalFormat decimalFormat = new DecimalFormat("#.00");
+	    String imp = decimalFormat.format(value).replace(".", "");
+	    importe = String.format("%015.0f", Double.parseDouble(imp.replace(",", "")));
 
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
-		if (date != null) {
-			fechaGasto = df.format(date).trim();
-		}
-		String codGasto = (tipoGasto.substring(0, 4));
-		String descGasto = (tipoGasto.substring(4, 54));
-		String cod_det_oblig = (tipoGasto.substring(54, 59));
-		ManagerTransaction manager = new ManagerTransaction(new SU56());
-		Map parametersExecute = new HashMap();
-		parametersExecute.put(OPCION, opcion);
-		parametersExecute.put(ID_REND, idRendicion);
-		if (!idGasto.equalsIgnoreCase("")) {
-			idGasto = String.format("%09d", Integer.parseInt(idGasto));
-			parametersExecute.put(ID_GASTO, idGasto);
-		}
-		// cod motivo corresponde al codigo de gasto del combo.
-		parametersExecute.put(COD_MOTIVO, codGasto);
-		parametersExecute.put("tipo_comprobante", tipoComprobante);
-		if (tipoComprobante.equals("0006")) {
-			parametersExecute.put("clave_ident", cuit);
-			parametersExecute.put("cod_sit_imp", tipoFactura); 
-			parametersExecute.put("cod_pvnro_p", String.format("%04d", Integer.parseInt(factura.substring(0, 4))));
-			parametersExecute.put("nro_comprobante", String.format("%08d", Integer.parseInt(factura.substring(4))));
-			
-		}
-		parametersExecute.put("cod_moneda", moneda);
-		log.info("Setea importe_gasto (" + importe + ")");
-		parametersExecute.put("importe_gasto", importe);
-		parametersExecute.put("fecha_gasto", fechaGasto);
-		// parametersExecute.put("desc_gasto", "");
-		parametersExecute.put("centro_costo", centroCosto);
-		parametersExecute.put(COD_DET_OBLI, cod_det_oblig);
-		if (!observacionGasto.equalsIgnoreCase(""))
-			parametersExecute.put("desc_gasto", observacionGasto);
+	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	    Date date = null;
 
-		if (cupon != null && !cupon.equalsIgnoreCase("")) {
-			log.info("va con cupon");
-			double valueCupon = Double.parseDouble(importeCupon.replace(",", "."));
+	    if (fechaGasto != null && !fechaGasto.isEmpty()) {
+	        try {
+	            date = formatter.parse(fechaGasto);
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+	    }
 
-			String impCupon = decimalFormat.format(valueCupon).replace(",", "");
-			log.info(impCupon);
+	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    if (date != null) {
+	        fechaGasto = df.format(date).trim();
+	    }
 
-			importeCupon = String.format(FORMAT_15, Integer.parseInt(impCupon.replace(".", "")));
-			parametersExecute.put("cupon_deb", String.format(FORMAT, Integer.parseInt(cupDeb.trim().equals("") ? "0" : cupDeb)));
-			parametersExecute.put("cupon_cred", String.format(FORMAT, Integer.parseInt(cupCred)));
-			try {
-				parametersExecute.put(CUPON_TARJETA, String.format(FORMAT, Integer.parseInt(cupon)));
-			} catch (Exception e) {
-				parametersExecute.put(CUPON_TARJETA, cupon);
-			}
-			parametersExecute.put("descrip_cupon", descCupon);
-			parametersExecute.put("importe_cupon", String.format(FORMAT_15, Integer.parseInt(importeCupon)));
-			parametersExecute.put("nro_tarjeta", nroTarjeta);
-		}
-		manager.executeTrx(this.samClient, parametersExecute);
-		msg = (String) manager.getMensajeAviso();
-		Integer idGastoTrx = (Integer) manager.getDataReturn();
-		return idGastoTrx;
+	    String codGasto = tipoGasto.substring(0, 4);
+	    String descGasto = tipoGasto.substring(4, 54);
+	    String cod_det_oblig = tipoGasto.substring(54, 59);
+	    ManagerTransaction manager = new ManagerTransaction(new SU56());
+	    Map<String, Object> parametersExecute = new HashMap<>();
+	    parametersExecute.put(OPCION, opcion);
+	    parametersExecute.put(ID_REND, idRendicion);
+	    if (!idGasto.isEmpty()) {
+	        idGasto = String.format("%09d", Integer.parseInt(idGasto));
+	        parametersExecute.put(ID_GASTO, idGasto);
+	    }
+	    parametersExecute.put(COD_MOTIVO, codGasto);
+	    parametersExecute.put("tipo_comprobante", tipoComprobante);
+
+	    if (tipoComprobante.equals("0006")) {
+	        parametersExecute.put("clave_ident", cuit);
+	        parametersExecute.put("cod_sit_imp", tipoFactura);
+	        parametersExecute.put("cod_pvnro_p", String.format("%04d", Integer.parseInt(factura.substring(0, 4))));
+	        parametersExecute.put("nro_comprobante", String.format("%08d", Integer.parseInt(factura.substring(4))));
+	    }
+
+	    parametersExecute.put("cod_moneda", moneda);
+	    log.info("Setea importe_gasto (" + importe + ")");
+	    parametersExecute.put("importe_gasto", importe);
+	    parametersExecute.put("fecha_gasto", fechaGasto);
+	    parametersExecute.put("centro_costo", centroCosto);
+	    parametersExecute.put(COD_DET_OBLI, cod_det_oblig);
+	    if (!observacionGasto.isEmpty()) {
+	        parametersExecute.put("desc_gasto", observacionGasto);
+	    }
+
+	    if (!cupon.isEmpty()) {
+	        log.info("va con cupon");
+	        double valueCupon = Double.parseDouble(importeCupon.replace(",", "."));
+	        String impCupon = decimalFormat.format(valueCupon).replace(",", "");
+	        log.info(impCupon);
+
+	        importeCupon = String.format(FORMAT_15, Integer.parseInt(impCupon.replace(".", "")));
+	        parametersExecute.put("cupon_deb", String.format(FORMAT, Integer.parseInt(cupDeb.trim().isEmpty() ? "0" : cupDeb)));
+	        parametersExecute.put("cupon_cred", String.format(FORMAT, Integer.parseInt(cupCred)));
+	        try {
+	            parametersExecute.put(CUPON_TARJETA, String.format(FORMAT, Integer.parseInt(cupon)));
+	        } catch (NumberFormatException e) {
+	            parametersExecute.put(CUPON_TARJETA, cupon);
+	        }
+	        parametersExecute.put("descrip_cupon", descCupon);
+	        parametersExecute.put("importe_cupon", String.format(FORMAT_15, Integer.parseInt(importeCupon)));
+	        parametersExecute.put("nro_tarjeta", nroTarjeta);
+	    }
+
+	    manager.executeTrx(this.samClient, parametersExecute);
+	    msg = (String) manager.getMensajeAviso();
+	    Integer idGastoTrx = (Integer) manager.getDataReturn();
+	    return idGastoTrx;
 	}
+
+
+
 
 	public List<Cupones> getCupones(String opcion, String subTrx, String codapli, String user,
 			String fechaDesde, String fechaHasta, String idRendicion, String codMotivo, String montoMin, String moneda) throws TransactionException {

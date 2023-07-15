@@ -130,19 +130,31 @@ public abstract class Transaction {
 	 * @throws GeneralException
 	 */
 	private IContext getSAMContext() throws TransactionException, GeneralException {
-		if (this.contexto == null) {
-			if ((this.client != null) && (this.client instanceof SAMWebClient)) {
-				this.mustDestroyContext = false;
-				this.contexto = ((SAMWebClient) this.client).getSamContext();
-			} else {
-				this.mustDestroyContext = true;
-				this.contexto = SAMReference.getSAM().getContextManager().createContext("", new HashMap());
-			}
-			log.info("Context obtenido: " + (String) this.client.getAttribute("userLoggin"));
-			this.contexto.setUserName((String) this.client.getAttribute("userLoggin"));
-		}
-		return this.contexto;
+	    if (this.contexto == null) {
+	        if (this.client != null) {
+	            if (this.client instanceof SAMWebClient) {
+	                this.mustDestroyContext = false;
+	                this.contexto = ((SAMWebClient) this.client).getSamContext();
+	            } else {
+	                this.mustDestroyContext = true;
+	                this.contexto = SAMReference.getSAM().getContextManager().createContext("", new HashMap());
+	            }
+	            log.info("Context obtenido: " + (String) this.client.getAttribute("userLoggin"));
+	            String userLoggin = (String) this.client.getAttribute("userLoggin");
+	            if (userLoggin != null) {
+	                this.contexto.setUserName(userLoggin);
+	            } else {
+	                // Manejar el caso en que userLoggin es null
+	            }
+	        } else {
+	            // Manejar el caso en que this.client es null
+	        }
+	    }
+	    return this.contexto;
 	}
+
+
+
 
 	private IServiceAccessManager getSAM() throws GeneralException {
 		return SAMReference.getSAM();

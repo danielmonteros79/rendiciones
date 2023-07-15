@@ -1,5 +1,6 @@
 package com.sa.services.trxs;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,74 +37,99 @@ public class SU82 extends Transaction {
 				log.error("", e);
 				throw new TransactionException("Error de mapeo " + this.CURRENT_TRX);
 			}
- 		} catch (Exception e) {
+		} catch (Exception e) {
 			log.error("", e);
 			throw new TransactionException(e);
 		}
 	}
-	
+
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) throws Exception {
-		boolean tieneCodMotivo = !(parametersExecute.get("cod_motivo") == null || ((String)parametersExecute.get("cod_motivo")).trim().equals(""));
-		
+		boolean tieneCodMotivo = hasCodMotivo(parametersExecute);
+
 		if (!tieneCodMotivo) {
-			for (Object obj : (List) parametersExecute.get("lista")) {
-				String str = getStrLista(obj);
-				int i = 0;
-				ParametroMotivo motivo = new ParametroMotivo();
-				
-				motivo.setCodigo(str.substring(i, i += 4));
-				motivo.setDescripcion(str.substring(i, i += 50));
-				motivo.setIdGlg(str.substring(i, i += 2));
-				motivo.setIdCentroCostos(str.substring(i, i += 4));
-				motivo.setCodSup(str.substring(i, i += 5));
-				motivo.setCodFirma(str.substring(i, i += 5));
-				motivo.setCodAprobacionGlg(str.substring(i, i += 5));
-				motivo.setEstado(str.substring(i, i += 1));
-				
-				this.parametroMotivos.add(motivo);
-			}
+			mapDataWithoutCodMotivo(parametersExecute);
 		} else {
+			mapDataWithCodMotivo(parametersExecute);
+		}
+	}
+
+	private boolean hasCodMotivo(Map<String, Object> parametersExecute) {
+		String codMotivo = (String) parametersExecute.get("cod_motivo");
+		return codMotivo != null && !codMotivo.trim().isEmpty();
+	}
+
+	private void mapDataWithoutCodMotivo(Map<String, Object> parametersExecute) {
+		List<Object> lista = (List<Object>) parametersExecute.get("lista");
+
+		for (Object obj : lista) {
+			String str = getStrLista(obj);
 			ParametroMotivo motivo = new ParametroMotivo();
-			motivo.setCodigo((String) parametersExecute.get("cod_motivo"));
-			motivo.setEstado((String) parametersExecute.get("estado"));
-			motivo.setDescripcion((String) parametersExecute.get("desc_motivo"));
-			motivo.setIdGlg((String) parametersExecute.get("idglg"));
-			motivo.setCodAprobacionGlg((String) parametersExecute.get("aprglg"));
-			motivo.setIdCentroCostos((String) parametersExecute.get("ccosto"));
-			motivo.setMaInclExcl((String) parametersExecute.get("inclexc"));
-			motivo.setCodSup((String) parametersExecute.get("codsup"));
-			motivo.setCodFirma((String) parametersExecute.get("firma"));
-			motivo.setMeAviso((String) parametersExecute.get("maviso"));
-			motivo.setOscar(new OSCAR((String) parametersExecute.get("oscar")));
-			motivo.setIdNivCarga((String) parametersExecute.get("ncarga"));
-			motivo.setIdNivAutoriz((String) parametersExecute.get("nautor"));
-			motivo.setTxAviso((String) parametersExecute.get("txaviso"));
-			motivo.setIdOperEspe((String) parametersExecute.get("oespe"));
-			String dinterv = (String) parametersExecute.get("dinterv");
-			motivo.setMeDiasInterv("000000000".equals(dinterv) ? "" : dinterv);
-			
-			String fechaDesde = (String) parametersExecute.get("fdesde");
-			if (!"".equals(fechaDesde))
-				motivo.setFechaDesde(sdfYMD.parse(fechaDesde));
-			
-			String fechaHasta = (String) parametersExecute.get("fhasta");
-			if (!"".equals(fechaHasta))
-				motivo.setFechaHasta(sdfYMD.parse(fechaHasta));
-			
-			List<String> centrosCosto = new ArrayList<String>();
-			String vcccost = (String) parametersExecute.get("vcccost");
-			if (vcccost != null) {
-				int index = 0;
-				while (index < vcccost.length()) {
-					centrosCosto.add(vcccost.substring(index, Math.min(index + 4, vcccost.length())));
-				    index += 4;
-				}
-			}
-			motivo.setCentrosCosto(centrosCosto);
+
+			int i = 0;
+			motivo.setCodigo(str.substring(i, i += 4));
+			motivo.setDescripcion(str.substring(i, i += 50));
+			motivo.setIdGlg(str.substring(i, i += 2));
+			motivo.setIdCentroCostos(str.substring(i, i += 4));
+			motivo.setCodSup(str.substring(i, i += 5));
+			motivo.setCodFirma(str.substring(i, i += 5));
+			motivo.setCodAprobacionGlg(str.substring(i, i += 5));
+			motivo.setEstado(str.substring(i, i += 1));
 
 			this.parametroMotivos.add(motivo);
 		}
+	}
+
+	private void mapDataWithCodMotivo(Map<String, Object> parametersExecute) throws ParseException {
+		ParametroMotivo motivo = new ParametroMotivo();
+		motivo.setCodigo((String) parametersExecute.get("cod_motivo"));
+		motivo.setEstado((String) parametersExecute.get("estado"));
+		motivo.setDescripcion((String) parametersExecute.get("desc_motivo"));
+		motivo.setIdGlg((String) parametersExecute.get("idglg"));
+		motivo.setCodAprobacionGlg((String) parametersExecute.get("aprglg"));
+		motivo.setIdCentroCostos((String) parametersExecute.get("ccosto"));
+		motivo.setMaInclExcl((String) parametersExecute.get("inclexc"));
+		motivo.setCodSup((String) parametersExecute.get("codsup"));
+		motivo.setCodFirma((String) parametersExecute.get("firma"));
+		motivo.setMeAviso((String) parametersExecute.get("maviso"));
+		motivo.setOscar(new OSCAR((String) parametersExecute.get("oscar")));
+		motivo.setIdNivCarga((String) parametersExecute.get("ncarga"));
+		motivo.setIdNivAutoriz((String) parametersExecute.get("nautor"));
+		motivo.setTxAviso((String) parametersExecute.get("txaviso"));
+		motivo.setIdOperEspe((String) parametersExecute.get("oespe"));
+
+		String dinterv = (String) parametersExecute.get("dinterv");
+		motivo.setMeDiasInterv("000000000".equals(dinterv) ? "" : dinterv);
+
+		String fechaDesde = (String) parametersExecute.get("fdesde");
+		if (!"".equals(fechaDesde)) {
+			motivo.setFechaDesde(sdfYMD.parse(fechaDesde));
+		}
+
+		String fechaHasta = (String) parametersExecute.get("fhasta");
+		if (!"".equals(fechaHasta)) {
+			motivo.setFechaHasta(sdfYMD.parse(fechaHasta));
+		}
+
+		List<String> centrosCosto = extractCentrosCosto(parametersExecute);
+		motivo.setCentrosCosto(centrosCosto);
+
+		this.parametroMotivos.add(motivo);
+	}
+
+	private List<String> extractCentrosCosto(Map<String, Object> parametersExecute) {
+		List<String> centrosCosto = new ArrayList<>();
+
+		String vcccost = (String) parametersExecute.get("vcccost");
+		if (vcccost != null) {
+			int index = 0;
+			while (index < vcccost.length()) {
+				centrosCosto.add(vcccost.substring(index, Math.min(index + 4, vcccost.length())));
+				index += 4;
+			}
+		}
+
+		return centrosCosto;
 	}
 
 	@Override
@@ -113,6 +139,6 @@ public class SU82 extends Transaction {
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
-		//metodo no utilizado
+		// metodo no utilizado
 	}
 }

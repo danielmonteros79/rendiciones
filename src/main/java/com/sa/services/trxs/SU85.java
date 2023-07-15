@@ -16,7 +16,7 @@ import ar.com.itrsa.sam.TransactionException;
 
 public class SU85 extends Transaction {
 	private static final Log log = LogFactory.getLog(SU85.class);
-	public final static String OPCION_MODIFICAR = "MODI";
+	public static final String OPCION_MODIFICAR = "MODI";
 	public List<ParametroGasto> gastos = new ArrayList<>();
 	ParametroGasto gastoReturn = new ParametroGasto();
 
@@ -36,85 +36,82 @@ public class SU85 extends Transaction {
 		}
 	}
 
-	@Override
-	protected void mapData(Map<String, Object> parametersExecute) {
-		if (parametersExecute.get("modo").equals("I")) {
-			if (parametersExecute.get("opcion").equals("ALTA")) {
-				for (Object obj : (List) parametersExecute.get("lista")) {
-					try {
-						String str = getStrLista(obj);
-						this.getDataReturnList().add(str);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			} else if(parametersExecute.get("opcion").equals("MODI")) {
-				for (Object obj : (List) parametersExecute.get("lista")) {
-					try {
-						String str = getStrLista(obj);
 
-						this.getDataReturnList().add(str);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				gastoReturn.setOscar(new OSCAR((String) parametersExecute.get("oscar")));
-				gastoReturn.setAntiguedad(((String) parametersExecute.get("antig")));
-				gastoReturn.setBimon((String) parametersExecute.get("bimon"));
-				gastoReturn.setDescripcionGasto((String) parametersExecute.get("desc_gasto"));
-				gastoReturn.setObserv((String) parametersExecute.get("observ"));
-				gastoReturn.setEstado((String) parametersExecute.get("estado"));
-				gastoReturn.setCcostos((String) parametersExecute.get("cent_costo"));
-				gastoReturn.setComprob((String) parametersExecute.get("compte"));
-				gastoReturn.setPlazoAprob((String) parametersExecute.get("plazo_ap"));
-				gastoReturn.setRistra((String) parametersExecute.get("ristra"));
-				gastoReturn.setMaInclExcl((String) parametersExecute.get("inc_excl"));
-				gastoReturn.setNivelIngreso((String) parametersExecute.get("ni_ing"));
-				
-				List<String> centrosCosto = new ArrayList<String>();
-				String vcccost = (String) parametersExecute.get("vcccost");
-				if (vcccost != null) {
-					int index = 0;
-					while (index < vcccost.length()) {
-						centrosCosto.add(vcccost.substring(index, Math.min(index + 4, vcccost.length())));
-					    index += 4;
-					}
-				}
-				gastoReturn.setCentrosCosto(centrosCosto);
-				
-			} else if(parametersExecute.get("opcion").equals("BAJA")) {
-				gastoReturn.setOscar(new OSCAR((String) parametersExecute.get("oscar")));
-				gastoReturn.setAntiguedad(((String) parametersExecute.get("antig")));
-				gastoReturn.setBimon((String) parametersExecute.get("bimon"));
-				gastoReturn.setDescripcionGasto((String) parametersExecute.get("desc_gasto"));
-				gastoReturn.setObserv((String) parametersExecute.get("observ"));
-				gastoReturn.setEstado((String) parametersExecute.get("estado"));
-				gastoReturn.setCcostos((String) parametersExecute.get("cent_costo"));
-				gastoReturn.setComprob((String) parametersExecute.get("compte"));
-				gastoReturn.setPlazoAprob((String) parametersExecute.get("plazo_ap"));
-				gastoReturn.setRistra((String) parametersExecute.get("ristra"));
-				gastoReturn.setMaInclExcl((String) parametersExecute.get("inc_excl"));
-				gastoReturn.setNivelIngreso((String) parametersExecute.get("ni_ing"));
-				
-				List<String> centrosCosto = new ArrayList<String>();
-				String vcccost = (String) parametersExecute.get("vcccost");
-				if (vcccost != null) {
-					int index = 0;
-					while (index < vcccost.length()) {
-						centrosCosto.add(vcccost.substring(index, Math.min(index + 4, vcccost.length())));
-					    index += 4;
-					}
-				}
-				gastoReturn.setCentrosCosto(centrosCosto);
-			}
-		}
-	}
+@Override
+protected void mapData(Map<String, Object> parametersExecute) {
+    String modo = (String) parametersExecute.get("modo");
+
+    if (modo.equals("I")) {
+        handleInsertMode(parametersExecute);
+    }
+}
+
+private void handleInsertMode(Map<String, Object> parametersExecute) {
+    String opcion = (String) parametersExecute.get("opcion");
+
+    if (opcion.equals("ALTA") || opcion.equals("MODI")) {
+        List<Object> lista = (List<Object>) parametersExecute.get("lista");
+
+        for (Object obj : lista) {
+            try {
+                String str = getStrLista(obj);
+                this.getDataReturnList().add(str);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    if (opcion.equals("MODI")) {
+        setGastoReturnValues(parametersExecute);
+    }
+
+    if (opcion.equals("BAJA")) {
+        setGastoReturnValues(parametersExecute);
+    }
+}
+
+private void setGastoReturnValues(Map<String, Object> parametersExecute) {
+    gastoReturn.setOscar(new OSCAR((String) parametersExecute.get("oscar")));
+    gastoReturn.setAntiguedad(((String) parametersExecute.get("antig")));
+    gastoReturn.setBimon((String) parametersExecute.get("bimon"));
+    gastoReturn.setDescripcionGasto((String) parametersExecute.get("desc_gasto"));
+    gastoReturn.setObserv((String) parametersExecute.get("observ"));
+    gastoReturn.setEstado((String) parametersExecute.get("estado"));
+    gastoReturn.setCcostos((String) parametersExecute.get("cent_costo"));
+    gastoReturn.setComprob((String) parametersExecute.get("compte"));
+    gastoReturn.setPlazoAprob((String) parametersExecute.get("plazo_ap"));
+    gastoReturn.setRistra((String) parametersExecute.get("ristra"));
+    gastoReturn.setMaInclExcl((String) parametersExecute.get("inc_excl"));
+    gastoReturn.setNivelIngreso((String) parametersExecute.get("ni_ing"));
+
+    List<String> centrosCosto = extractCentrosCosto(parametersExecute);
+    gastoReturn.setCentrosCosto(centrosCosto);
+}
+
+private List<String> extractCentrosCosto(Map<String, Object> parametersExecute) {
+    List<String> centrosCosto = new ArrayList<>();
+
+    String vcccost = (String) parametersExecute.get("vcccost");
+    if (vcccost != null) {
+        int index = 0;
+        while (index < vcccost.length()) {
+            centrosCosto.add(vcccost.substring(index, Math.min(index + 4, vcccost.length())));
+            index += 4;
+        }
+    }
+
+    return centrosCosto;
+}
+
+
 
 	@Override
 	public List getDataReturnList() {
 		return gastos;
 	}
 
+	@Override
 	public Object getDataReturn() {
 		return this.gastoReturn;
 	}

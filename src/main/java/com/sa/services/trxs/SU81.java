@@ -53,8 +53,8 @@ public class SU81 extends Transaction {
 				parametersExecute.put("sector", "8568");
 				parametersExecute.put("centro_costo", "0099");
 				parametersExecute.put("nombre", "RED DEVIL, ANALIA LAURA");
-			} else
-				throw new Exception("ERROR: USUARIO INEXISTENTE:SUE0011");
+			} else {
+				throw new Exception("ERROR: USUARIO INEXISTENTE:SUE0011");}
 		}
 	}
 

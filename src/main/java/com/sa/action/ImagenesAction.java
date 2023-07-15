@@ -183,94 +183,109 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 	}
 	
 	
-	private void generateCaratula(HttpServletResponse response, ImagenesForm frm, HttpServletRequest request,
-			SAMWebClient samClient, AprobacionesService aprobacionesService, List<Gastos> gastos) throws Exception {
-		try {
-			String msg = "";
-			
-			// Verifica si ya tiene codigo adea la rendicion
-			boolean isCaratula = frm.getRendicion().getAdea().equalsIgnoreCase("") ? false : true;
-			String iduAdea = null;
-			if (!isCaratula) {
-				log.info("Se obtiene idu y adea para caratula");
-				iduAdea = aprobacionesService.obtenerIDU(frm, WM95.DELIM_04_CON_ADEA);
-			} else {
-				log.info("Caratula ya generada se obtiene el idu y adea de la rendicion");
-				iduAdea = frm.getRendicion().getIdu() + ";" + frm.getRendicion().getAdea();
-			}
-			if (iduAdea == null) {
-				msg = "ERROR: Error al generar IDU y ADEA";
-				request.setAttribute("msg", msg);
-				return;
-			}
 
-			CaratulaService servCaratula = new CaratulaService(samClient);
-			String[] thubanCod = iduAdea.split(";");
+private void generateCaratula(HttpServletResponse response, ImagenesForm frm, HttpServletRequest request,
+        SAMWebClient samClient, AprobacionesService aprobacionesService, List<Gastos> gastos) throws Exception {
+    try {
+        String msg = "";
 
-			log.info("Se obtiene template para caratula");
-			String html = servCaratula.generarCaratulaTemplate(frm, thubanCod, gastos);
-			log.info("Template obtenido: " + html);
-			if (!isCaratula) {
-				aprobacionesService.cambiarEscanRendicion(String.valueOf(frm.getRendicion().getId()), frm.getRendicion()
-						.getUsuarioRendicion(), thubanCod[0], thubanCod[1]);
-				frm.getRendicion().setIdu(thubanCod[0]);
-				frm.getRendicion().setAdea(thubanCod[1]);
-			}
-			log.info("Se obtiene caratula pdf");
-			
-			String codigoBarraPath = (String) request.getSession().getServletContext().getAttribute("rendicion.image.idu");
-			File codigoBarrasIdu = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getIdu());
-			File codigoBarrasAdea = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getAdea());
-			String imgIdu = IMG_SRC + codigoBarrasIdu + "' width='245px' height='65px' />";
-			String imgAdea = IMG_SRC + codigoBarrasAdea + "' width='245px' height='65px'  />";
-			html = html.replace(CaratulaTemplate.REPLACE_IDU, imgIdu);
-			html = html.replace(CaratulaTemplate.REPLACE_ADEA, imgAdea);
+        // Verifica si ya tiene codigo adea la rendicion
+        boolean isCaratula = frm.getRendicion().getAdea().equalsIgnoreCase("") ? false : true;
+        String iduAdea = null;
+        if (!isCaratula) {
+            log.info("Se obtiene idu y adea para caratula");
+            iduAdea = aprobacionesService.obtenerIDU(frm, WM95.DELIM_04_CON_ADEA);
+        } else {
+            log.info("Caratula ya generada se obtiene el idu y adea de la rendicion");
+            iduAdea = frm.getRendicion().getIdu() + ";" + frm.getRendicion().getAdea();
+        }
+        if (iduAdea == null) {
+            msg = "ERROR: Error al generar IDU y ADEA";
+            request.setAttribute("msg", msg);
+            return;
+        }
 
-			String fileName = "caratulaRendicion_" + frm.getRendicion().getId();
-			String fileType = "pdf";
+        CaratulaService servCaratula = new CaratulaService(samClient);
+        String[] thubanCod = iduAdea.split(";");
 
-			response.setContentType("application/vnd.pdf");
-			response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "." + fileType + "\"");
-			OutputStream out = response.getOutputStream();
+        log.info("Se obtiene template para caratula");
+        String html = servCaratula.generarCaratulaTemplate(frm, thubanCod, gastos);
+        log.info("Template obtenido: " + html);
+        if (!isCaratula) {
+            aprobacionesService.cambiarEscanRendicion(String.valueOf(frm.getRendicion().getId()), frm.getRendicion()
+                    .getUsuarioRendicion(), thubanCod[0], thubanCod[1]);
+            frm.getRendicion().setIdu(thubanCod[0]);
+            frm.getRendicion().setAdea(thubanCod[1]);
+        }
+        log.info("Se obtiene caratula pdf");
 
-			Document document = new Document(PageSize.A4);
-			PdfWriter.getInstance(document, out);
-			String img = (String) request.getSession().getServletContext().getAttribute("rendicion.image.caratula");
+        String codigoBarraPath = (String) request.getSession().getServletContext().getAttribute("rendicion.image.idu");
+        File codigoBarrasIdu = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getIdu());
+        File codigoBarrasAdea = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getAdea());
+        String imgIdu = IMG_SRC + codigoBarrasIdu + "' width='245px' height='65px' />";
+        String imgAdea = IMG_SRC + codigoBarrasAdea + "' width='245px' height='65px'  />";
+        html = html.replace(CaratulaTemplate.REPLACE_IDU, imgIdu);
+        html = html.replace(CaratulaTemplate.REPLACE_ADEA, imgAdea);
 
-			log.info("CARTULA - IMG:_ " + img);
-			File fileImg = new File(img);
-			String imgLogo = IMG_SRC + img + "' height='45px' />";
-			html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
+        String fileName = "caratulaRendicion_" + frm.getRendicion().getId();
+        String fileType = "pdf";
 
-			String buffer = html;
-			log.info("CARATULA - IMG FILE: " + fileImg.getAbsolutePath());
-			log.info("CARATULA - IMG FILE EXIST? " + fileImg.exists());
-			log.info("CARATULA - IMG IS FILE ? " + fileImg.isFile());
-			byte[] imgByte = FileUtils.readFileToByteArray(fileImg);
+        response.setContentType("application/vnd.pdf");
+        response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "." + fileType + "\"");
+        OutputStream out = response.getOutputStream();
 
-			Image imagen = Image.getInstance(imgByte);
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, out);
+        String img = (String) request.getSession().getServletContext().getAttribute("rendicion.image.caratula");
 
-			document.open();
+        log.info("CARTULA - IMG:_ " + img);
+        File fileImg = new File(img);
+        String imgLogo = IMG_SRC + img + "' height='45px' />";
+        html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
 
-			imagen.scaleAbsoluteWidth(100f);
+        String buffer = html;
+        log.info("CARATULA - IMG FILE: " + fileImg.getAbsolutePath());
+        log.info("CARATULA - IMG FILE EXIST? " + fileImg.exists());
+        log.info("CARATULA - IMG IS FILE ? " + fileImg.isFile());
+        byte[] imgByte = FileUtils.readFileToByteArray(fileImg);
 
-			// HTMLWorker
-			@SuppressWarnings("deprecation")
-			HTMLWorker htmlWorker = new HTMLWorker(document);
-		
-			htmlWorker.parse(new StringReader(buffer));
+        Image imagen = Image.getInstance(imgByte);
 
-			document.close();
-			out.flush();
-			out.close();
-			codigoBarrasIdu.delete();
-			codigoBarrasAdea.delete();
-		} catch (Exception e) {
-			request.setAttribute("msg", "ERROR: Error al generar car\u00e1tula");
-			log.error(e);
-			throw new Exception(e);
-		}
-	}
+        document.open();
+
+        imagen.scaleAbsoluteWidth(100f);
+
+        // HTMLWorker
+        @SuppressWarnings("deprecation")
+        HTMLWorker htmlWorker = new HTMLWorker(document);
+
+        htmlWorker.parse(new StringReader(buffer));
+
+        document.close();
+        out.flush();
+        out.close();
+
+        boolean deletedIdu = codigoBarrasIdu.delete();
+        boolean deletedAdea = codigoBarrasAdea.delete();
+
+        if (!deletedIdu) {
+            // Manejar la falla en la eliminación del archivo codigoBarrasIdu
+            log.error("No se pudo eliminar el archivo codigoBarrasIdu");
+        }
+
+        if (!deletedAdea) {
+            // Manejar la falla en la eliminación del archivo codigoBarrasAdea
+            log.error("No se pudo eliminar el archivo codigoBarrasAdea");
+        }
+    } catch (Exception e) {
+        request.setAttribute("msg", "ERROR: Error al generar car\u00e1tula");
+        log.error(e);
+        throw new Exception(e);
+    }
+}
+
+
+
 	
 	
 	
