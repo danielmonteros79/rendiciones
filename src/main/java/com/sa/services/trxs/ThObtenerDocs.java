@@ -16,7 +16,7 @@ import ar.com.itrsa.sam.TransactionException;
 @SuppressWarnings("rawtypes")
 public class ThObtenerDocs extends Transaction {
 	private static final Log log = LogFactory.getLog(ThObtenerDocs.class);
-	public List<Archivo> archivos = new ArrayList<>();
+	private List<Archivo> archivos = new ArrayList<>();
 	private static final String LISTA = "lista";
 
 	public ThObtenerDocs() {
