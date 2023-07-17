@@ -60,7 +60,6 @@ public class SU68 extends Transaction {
 						resumenParams.setFecha(DateUtil.dfYYYYMMDD.parse(str.substring(104, 114)));
 					} catch (Exception e) {
 						log.error("error al general caratula", e);
-						e.printStackTrace();
 					}
 					resumenParams.setMoneda(str.substring(124, 127));
 					resumenParams.setEstablecimiento(str.substring(127, 157));
