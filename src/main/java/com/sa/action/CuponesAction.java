@@ -42,7 +42,7 @@ public class CuponesAction extends RestriccionTransaccionAction {
 
 	private ActionForward consulta(SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
-		List<Cupones> cupones = new ArrayList<>();
+		List<Cupones> cupones = new ArrayList<Cupones>();
 		PagosService service = new PagosService(samClient);
 
 		String idRendicion = request.getParameter("idRendicion");
@@ -81,7 +81,7 @@ public class CuponesAction extends RestriccionTransaccionAction {
 		String fechaPresentacion = request.getParameter("fechaPresentacion");
 
 		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, idGasto, this.sessionUserWorking.getIdUser(), codMotivo);
-		if (gastos.isEmpty())
+		if (gastos.size() == 0)
 			return writeError(response, "Gasto inexistente");
 
 		Gastos gasto = gastos.get(0);

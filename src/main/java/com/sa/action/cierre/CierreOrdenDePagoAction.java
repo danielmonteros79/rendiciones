@@ -15,10 +15,10 @@ import org.apache.struts.action.ActionMapping;
 import com.sa.action.RestriccionTransaccionAction;
 import com.sa.entities.Rendicion;
 import com.sa.services.CierreService;
-import com.sa.util.DateUtil;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import ar.org.bbva.util.DateUtils;
 import net.sf.json.JSONArray;
 
 public class CierreOrdenDePagoAction extends RestriccionTransaccionAction {
@@ -52,8 +52,8 @@ public class CierreOrdenDePagoAction extends RestriccionTransaccionAction {
 		String fechaDesde = request.getParameter("fechaDesde");
 		String fechaHasta = request.getParameter("fechaHasta");
 
-		fechaDesde = fechaDesde == null || fechaDesde.equalsIgnoreCase("") ? "" : DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(fechaDesde));
-		fechaHasta = fechaHasta == null || fechaHasta.equalsIgnoreCase("") ? "" : DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(fechaHasta));
+		fechaDesde = fechaDesde == null || fechaDesde.equalsIgnoreCase("") ? "" : DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(fechaDesde));
+		fechaHasta = fechaHasta == null || fechaHasta.equalsIgnoreCase("") ? "" : DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(fechaHasta));
 
 		List<Rendicion> rendiciones = service.getDatosRendicion(this.sessionUserWorking.getIdUser(), idRendicion, motivo, user, fechaDesde, fechaHasta);
 		request.setAttribute("rendiciones", rendiciones);

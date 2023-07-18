@@ -16,10 +16,10 @@ import org.apache.struts.action.ActionMapping;
 
 import com.sa.entities.DatosPantallaDinamica;
 import com.sa.services.PagosService;
-import com.sa.util.DateUtil;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import ar.org.bbva.util.DateUtils;
 
 public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 
@@ -28,7 +28,6 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 	private static final String ID_RENDICION ="idRendicion";
 	private static final String ID_GASTO ="idGasto";
 	private static final String MENSAJE ="message";
-	
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -108,7 +107,7 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		String codGasto = request.getParameter("codGasto");
 		String codObserv = request.getParameter(COD_OBSERV);
 		String idObservacion = request.getParameter("IDOBS");
-
+		
 		String txt1 = request.getParameter("TXT1") == null ? "" : request.getParameter("TXT1");
 		String txt2 = request.getParameter("TXT2") == null ? "" : request.getParameter("TXT2");
 		String txt250 = request.getParameter(TXT250) == null ? "" : request.getParameter(TXT250);
@@ -117,9 +116,9 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		String cod1 = request.getParameter("COD1") == null ? "" : StringUtils.leftPad(request.getParameter("COD1"), 5, "0");
 		String cod2 = request.getParameter("COD2") == null ? "" : StringUtils.leftPad(request.getParameter("COD2"), 5, "0");
 		String fecha1 = request.getParameter("FEC1") == null || request.getParameter("FEC1").equals("") ? "" :
-			DateUtil.formatearFecha(request.getParameter("FEC1"), DateUtil.dfDDMMYYYY, DateUtil.dfYYYYMMDD);
+			DateUtils.formatearFecha(request.getParameter("FEC1"), DateUtils.dfDDMMYYYY, DateUtils.dfYYYYMMDD);
 		String fecha2 = request.getParameter("FEC2") == null || request.getParameter("FEC2").equals("") ? "" :
-			DateUtil.formatearFecha(request.getParameter("FEC2"), DateUtil.dfDDMMYYYY, DateUtil.dfYYYYMMDD);
+			DateUtils.formatearFecha(request.getParameter("FEC2"), DateUtils.dfDDMMYYYY, DateUtils.dfYYYYMMDD);
 	
 		service.altaModifDatoAdicional(idRendicion, idGasto, codGasto, codObserv, idObservacion, txt1, txt2, num1, num2, cod1, cod2, txt250, fecha1, fecha2);
 		resp.put(MENSAJE, "OK: LUEGO DE CARGAR TODAS LAS OBSERVACIONES, PRESIONE SALIR");

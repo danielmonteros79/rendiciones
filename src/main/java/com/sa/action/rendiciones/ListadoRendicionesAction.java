@@ -14,7 +14,6 @@ import org.apache.struts.action.ActionMapping;
 import com.sa.action.RestriccionTransaccionAction;
 import com.sa.entities.Rendicion;
 import com.sa.services.RendicionesService;
-import com.sa.util.DateUtil;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
@@ -44,9 +43,9 @@ public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 		String id = request.getParameter("id");
 		String fechaDesde = request.getParameter("fechaDesde");
 		String fechaHasta = request.getParameter("fechaHasta");
-
-		fechaDesde = fechaDesde == null || fechaDesde.equalsIgnoreCase("") ? "" : DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(fechaDesde));
-		fechaHasta = fechaHasta == null || fechaHasta.equalsIgnoreCase("") ? "" : DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(fechaHasta));
+		
+		fechaDesde = fechaDesde == null || fechaDesde.equalsIgnoreCase("") ? "" : DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(fechaDesde));
+		fechaHasta = fechaHasta == null || fechaHasta.equalsIgnoreCase("") ? "" : DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(fechaHasta));
 
 		List<Rendicion> rendiciones = service.obtenerListadoRendiciones(this.sessionUserWorking.getIdUser(), id, null, fechaDesde, fechaHasta);
 		request.setAttribute("rendiciones", rendiciones);
