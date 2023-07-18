@@ -15,13 +15,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ar.com.bbva.web.IWebClient;
-import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
 
 import com.sa.entities.ComboGasto;
 import com.sa.entities.Cupones;
 import com.sa.entities.DatosPantallaDinamica;
-import com.sa.entities.Gastos;
 import com.sa.entities.Usuario;
 import com.sa.manager.ManagerTransaction;
 import com.sa.services.trxs.SU51;
@@ -450,4 +448,3 @@ public class PagosService {
 		return msg;
 	}
 }
-

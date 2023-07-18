@@ -25,7 +25,6 @@ import com.sa.services.AprobacionesService;
 import com.sa.services.RendicionesService;
 import com.sa.services.ResumenService;
 import com.sa.services.UsuarioService;
-import com.sa.util.DateUtil;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
@@ -219,9 +218,9 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 	private ActionForward getConsumosPendientes(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
 		List<Resumen> consumosPendientes = new ArrayList<>();
 		ResumenService service = new ResumenService(samClient);
-		
-		String fechaDesde = DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
-		String fechaHasta = DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
+	
+		String fechaDesde = DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
+		String fechaHasta = DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
 		String codMotivo = request.getParameter(COD_MOTIVO);
 		
 		
@@ -258,12 +257,11 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 		try {
 			Map<String, Object> resp = new HashMap<String, Object>();
 			RendicionesService service = new RendicionesService(samClient);
-
 			String idRendicion = request.getParameter(ID_REND);
 			String codMotivo = request.getParameter(COD_MOTIVO);
 			String estadoRend = request.getParameter(ESTADO_REND);
-			String fechaDesde = DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
-			String fechaHasta = DateUtil.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
+			String fechaDesde = DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
+			String fechaHasta = DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
 			String descRendicion = request.getParameter("descripcion");
 			
 			service.modificarRendicion(idRendicion, this.sessionUserWorking.getIdUser(), codMotivo, fechaDesde, fechaHasta, descRendicion, estadoRend);
