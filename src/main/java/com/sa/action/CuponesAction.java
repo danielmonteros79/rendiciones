@@ -56,8 +56,8 @@ public class CuponesAction extends RestriccionTransaccionAction {
 			String fechaHasta = DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
 
 			cupones = service.getCupones("USU", "MOP", "SU", this.sessionUserWorking.getIdUser(), fechaDesde, fechaHasta, idRendicion, codMotivo, montoMin, moneda);
-		} else
-			cupones = service.getCuponUnico(idRendicion, idGasto, this.sessionUserWorking.getIdUser(), codMotivo);
+		} else {
+			cupones = service.getCuponUnico(idRendicion, idGasto, this.sessionUserWorking.getIdUser(), codMotivo);}
 
 		resp.put("filas", cupones);
 		resp.put("message", service.getMsg());
