@@ -45,13 +45,16 @@ public class SU69 extends Transaction  {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) throws Exception {
+		
+		DateUtil dateUtil = new DateUtil();
+		
 		if (parametersExecute.get("lista") != null) {
 			for (Object obj : (List) parametersExecute.get("lista")) {
 				String str = getStrLista(obj);
 				
 				if (((String) parametersExecute.get("subtran")).equals("FEC"))
 					this.dataReturnList.add(new ComboOpcion(str.substring(0, 10), 
-							DateUtils.formatearFecha(str.substring(0, 10), DateUtils.dfDDMMYYYY, DateUtils.dfDDMMYYYY)));
+							DateUtils.formatearFecha(str.substring(0, 10), dateUtil.getDfDDMMYYYYGuion(), dateUtil.getDfDDMMYYYY())));
 				else {
 					Resumen resumenParams = new Resumen();
 					int i = 0;
@@ -81,6 +84,7 @@ public class SU69 extends Transaction  {
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
-//		metodo no utilizados
+	// Metodo que no se utilzia
+
 	}
 }
