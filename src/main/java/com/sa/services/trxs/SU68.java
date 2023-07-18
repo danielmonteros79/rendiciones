@@ -12,8 +12,6 @@ import org.apache.commons.logging.LogFactory;
 import com.sa.entities.Cupones;
 import com.sa.entities.parametros.Resumen;
 import com.sa.services.Transaction;
-import com.sa.util.DateUtil;
-
 import ar.com.bbva.web.IWebClient;
 import ar.com.itrsa.sam.TransactionException;
 import ar.org.bbva.util.DateUtils;
