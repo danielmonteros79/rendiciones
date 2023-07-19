@@ -7,8 +7,7 @@
 	<display:column property="id" class="text-right" title="ID" style="width:1%;"/>
 		<display:column property="nombreUsuarioRendicion" title="USUARIO" style="width:15%;"/>
 		<display:column property="descripcionMotivo" title="MOTIVO" style="width:20%;"/>
-		<display:column property="descripcionEstado" title="ESTADO" style="width:10%;"/>
-		<display:column property="descripcion" title="DESCRIPCI&Oacute;N" maxLength="20" style="width:25%;"/>
+		<display:column property="descripcion" title="DESCRIPCI&Oacute;N" maxLength="30" style="width:15%;"/>
 		<display:column property="fechaDesde" class="text-center" format="{0,date,dd/MM/yyyy}" title="DESDE" style="width:2%;"/>
 		<display:column property="fechaHasta" class="text-center" format="{0,date,dd/MM/yyyy}" title="HASTA" style="width:2%;"/>
 		<display:column property="importeNum" class="text-right nowrap" format="$ {0,number,#,##0.00}" title="IMPORTE" style="width:2%;"/>
