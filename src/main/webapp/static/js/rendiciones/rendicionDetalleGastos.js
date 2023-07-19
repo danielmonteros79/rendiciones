@@ -15,6 +15,34 @@ $(document).ready(function() {
     	"&codMotivo=" + $('#codMotivo').val() +
     	"&estadoRend=" + $('#estadoRend').val());
 
+
+	//Mensaje de rechazo, aprobación u observacion
+	if($('#motivoRechazo').val().trim().length > 0 ){
+		let tagDesc = $('#descripcionRechazo');
+		let divTagDesc = $('#mostrarMensajeRend');
+		divTagDesc.removeClass('d-none')
+		
+		if($('#estadoRend').val().includes('RECHA')){
+			$('#estadoDiv').addClass('text-danger')
+			divTagDesc.addClass('text-danger border-danger')
+			let descripcionMotivoRechazo = $('#motivoRechazo').val().lastIndexOf('-')
+			let descripcionMotivoRechazoSinTipo = $('#motivoRechazo').val().substring(descripcionMotivoRechazo + 1 );
+			tagDesc.html('Motivo del Rechazo: ' + descripcionMotivoRechazoSinTipo);
+			
+		}else if($('#estadoRend').val().includes('APROB')){
+			divTagDesc.addClass('text-success border border-success')
+			tagDesc.html('Motivo de Aprobaci&oacute;n: ' + $('#motivoRechazo').val());
+		}else {
+			divTagDesc.addClass('text-warning border border-warning')
+			tagDesc.html('Motivo de Observaci&oacute;n: ' + $('#motivoRechazo').val());
+		}
+		
+	}else{
+		$('#descripcionRechazo').html('')
+	}
+
+
+
 });
 
 function init(data) {

@@ -164,31 +164,39 @@ function selectGlg() {
 	});
 }
 
-function keyPressMonto(e, id){
-	var code = e.charCode || e.keyCode;
-	var monto = $("#" + id).val();
-	var indexNewChar = $("#" + id)[0].selectionStart;
-	var indexDecimal = $("#" + id).val().indexOf(',');
-	
-	if (indexDecimal == -1 && (code == 44 || code == 46)) {
-		if (code == 46) {
-			$("#" + id).val((monto.substring(0, indexNewChar) + "," + monto.substring(indexNewChar)));
-			return false;
-		}
-		
-		return;
-	}
-    else if ($.inArray(code, [8, 9, 13]) !== -1 || (code >= 35 && code <= 40))
+function keyPressMonto(e, id) {
+    let code = e.charCode || e.keyCode;
+    let monto = $("#" + id).val();
+    let indexNewChar = $("#" + id)[0].selectionStart;
+    let indexDecimal = $("#" + id).val().indexOf(',');
+
+    // Eliminar puntos y espacios del valor del campo de entrada
+    monto = monto.replace(/[.,\s]/g, '');
+
+    if (indexDecimal == -1 && (code == 44 || code == 46)) {
+        // Si ya hay una coma, no permitir otra coma
+        if (monto.indexOf(',') !== -1) {
+            return false;
+        }
+
+        $("#" + id).val((monto.substring(0, indexNewChar) + "," + monto.substring(indexNewChar)));
+        return false;
+    } else if ($.inArray(code, [8, 9, 13]) !== -1 || (code >= 35 && code <= 40)) {
         return;
-    if (!(code >= 48 && code <= 57))
+    }
+
+    // Solo permitir números y una coma (,)
+    if (!(code >= 48 && code <= 57) && code !== 44) {
         return false;
-    
+    }
+
     // Hasta 2 decimales
-    if (indexDecimal != -1 && indexNewChar > indexDecimal && monto.substring(indexDecimal).length > 2)
+    if (indexDecimal != -1 && indexNewChar > indexDecimal && monto.substring(indexDecimal).length > 2) {
         return false;
-    
+    }
+
     // Hasta 13 enteros
-    if (monto.substring(0, indexDecimal == -1 ? monto.length : indexDecimal).length > 12 &&
-       (indexDecimal == -1 || indexNewChar < indexDecimal))
+    if (monto.length > 15) {
         return false;
+    }
 }

@@ -3,6 +3,9 @@ var modalCuponesSubmitted;
 var modalCuponesCupones;
 var modalCuponesCuponesSel = [];
 
+
+
+
 function modalCuponesShow(idRendicion, estadoRend, codMotivo, fechaDesde, fechaHasta, idGasto, montoMin, moneda, verCupon) {
 	modalCuponesSubmitted = false;
 	modalCuponesCupones = {};
@@ -11,6 +14,14 @@ function modalCuponesShow(idRendicion, estadoRend, codMotivo, fechaDesde, fechaH
 	
 	$('#modalCuponesTitulo').html(verCupon ? 'Cup&oacute;n asignado al gasto' : idGasto == null ? 'Nuevo gasto con cup&oacute;n' : 'Asignar cup&oacute;n');
 	
+	if(verCupon ){
+		$('#modalCuponesAviso').removeClass('bg-warning p-1 mb-3')
+		$('#modalCuponesAviso').html('');
+	}else{
+		$('#modalCuponesAviso').addClass('bg-warning p-1 mb-3')
+		$('#modalCuponesAviso').html('<b> Recordatorio: </b> Solo se muestran los consumos comprendidos en el intervalo de la rendici&oacute;n ') 
+	}
+
 	modalCuponesLoadParams = {
 		action: 'consulta',
 		idRendicion: idRendicion,

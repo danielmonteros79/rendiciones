@@ -1,7 +1,14 @@
-<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="org.apache.struts.action.ActionForm"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
-<%@ taglib uri="/WEB-INF/displaytag.tld" prefix="display"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
+<%@ taglib uri="/WEB-INF/displaytag.tld" prefix="display"%>
+<%@ taglib uri="/WEB-INF/c.tld" prefix="c"%>
+<%@ page import="com.sa.entities.Rendicion"%>
+<%@ page import="java.util.*"%>
+
+<bean:define id="RendicionForm" name="RendicionForm" scope="session" toScope="request" />
 
 
 <div class="container py-5">
@@ -29,7 +36,7 @@
 	</div>
 	<div id="editRendicion" class="px-3 pb-3 font-weight-bold">
 		<div class="row">
-			<div class="col-sm-12 py-3 border bg-light">
+			<div class="col-sm-12 py-3 border  bg-light" >
 				ID-Rendici&oacute;n:
 				<span id="idRendicion"><bean:write name="Rendicion" property="id" /></span>
 			</div>
@@ -58,7 +65,7 @@
 				</div>
 			</div>
 			
-			<div class="col-5 py-3 border d-no-edit">
+			<div class="col-5 py-3 border d-no-edit" id="estadoDiv">
 				Estado de rendici&oacute;n:
 				<bean:write name="RendicionForm" property="descripcionEstado" />
 			</div>
@@ -130,6 +137,11 @@
 				Descripci&oacute;n/Observaciones:
 				<span id="descripcion"><bean:write name="RendicionForm" property="descripcion" /></span>
 			</div>
+			<div id="mostrarMensajeRend" class="col-12 py-3 border  d-none ">
+				<span class="" id="descripcionRechazo"></span>
+			</div>
+			  
+			  
 			<div class="col-12 py-3 border-right border-bottom border-left d-edit d-none">
 				<div class="has-float-label">
 					<textarea class="form-control bg-light" id="editRendicionDescripcion" maxlength="120" required
@@ -141,6 +153,8 @@
 		</div>
 	</div>
 </div>
+
+
 
 	<div class="bg-light d-no-edit" id="divNuevoGasto">
 				<div class="container py-3 text-center">
@@ -243,6 +257,8 @@
 <input type="hidden" id="idu" value="<bean:write name="Rendicion" property="idu"/>" />
 <input type="hidden" id="gastoFechaMin" value="<bean:write name="RendicionForm" property="gastoFechaMin"/>" />
 <input type="hidden" id="gastoFechaMax" value="<bean:write name="RendicionForm" property="gastoFechaMax"/>" />
+
+<input type="hidden" id="motivoRechazo" value="<bean:write name="Rendicion" property="motivoRechazo" /> "/>
 
 <jsp:include page="../global/modalGasto.jsp" />
 <jsp:include page="../global/modalDatosAdicionales.jsp" />

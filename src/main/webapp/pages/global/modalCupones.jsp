@@ -9,14 +9,15 @@
 			<div class="modal-body px-3 mx-3 px-lg-3 mx-lg-5">
 				<div class="row div-resultado pb-3" id="modalCuponesDivResultado">
 					<div class="col-sm-12">
-						<h1 class="font-weight-300" id="modalCuponesTitulo"></h1>
+						<h1 class="font-weight-300 mb-4" id="modalCuponesTitulo"></h1>
+						<span id="modalCuponesAviso" > </span>
 					</div>
 				</div>
 				<div class="py-3 d-none" id="modalCuponesMessageContainer">
 					<h5 id="modalCuponesMessage"></h5>
 				</div>
 				
-				<div class="row" id="modalCuponesTablaDiv">
+				<div class="row mt-2" id="modalCuponesTablaDiv">
 					<div class="col-md-12 py-3 table-responsive-lg">
 						<table class="table small" id="modalCuponesTabla">
 							<thead>
@@ -55,5 +56,6 @@
 		</div>
 	</div>
 </div>
+
 
 <script type="text/javascript" src="static/js/global/modalCupones.js"></script>
