@@ -97,7 +97,7 @@ label.error {
 								<html:options collection="ComboGlg" property="id"
 									labelProperty="descripcion" />
 							</html:select>
-							<label
+							 <label
 								for="codGlg">GLG</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -112,7 +112,7 @@ label.error {
 								<html:options collection="ComboMotivo" property="id"
 									labelProperty="descripcion" />
 							</html:select>
-							<label
+							 <label
 								for="modalDelegadoInforme">Motivo</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -179,7 +179,7 @@ label.error {
 								<html:options collection="ComboEstado" property="id"
 									labelProperty="descripcion" />
 							</html:select>
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							<label
 								for="codEstado">Estado</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -256,6 +256,7 @@ label.error {
 			<p>(*) importe rendici&oacute;n estimado</p>
 		</div>
 	</logic:equal>
+
 
 	<script type="text/javascript" src="static/js/select2.min.js"></script>
 	<script type="text/javascript" src="./static/js/cuadroDetallado.js"></script>

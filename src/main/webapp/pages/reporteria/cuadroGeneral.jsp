@@ -101,7 +101,7 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 								<html:options collection="ComboGlg" property="id"
 									labelProperty="descripcion" />
 							</html:select>
-							 <label
+							<label
 								for="modalDelegadoInforme">GLG</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -149,10 +149,10 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 
 					<div class="col-sm-6 col-lg-3 pt-2 pl-1 has-float-label scroll-err">
 						<div class="has-float-label">
-							<input type="text" class="form-control" id="montoDesde"
-								placeholder="montoDesde"
-								onkeypress="return keyPressMonto(event, 'montoDesde');" /> <label
-								for="montoDesde">Monto desde</label>
+						<label
+							for="montoDesde">Monto desde</label>
+							<html:text property="montoDesde" styleId="montoDesde" styleClass="form-control"
+							maxlength="16" onkeypress="return keyPressMonto(event, 'montoDesde');"/>
 						</div>
 						<div id="errorMonto" style="color: red;"></div>
 					</div>
@@ -160,10 +160,9 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 					<div
 						class="col-sm-6 col-lg-3 pt-2  pl-lg-1 has-float-label scroll-err">
 						<div class="has-float-label">
-							<input type="text" class="form-control" id="montoHasta"
-								placeholder="montoHasta"
-								onkeypress="return keyPressMonto(event, 'montoHasta');" /> <label
-								for="montoHasta">Monto hasta</label>
+							<label for="montoHasta">Monto hasta</label> 
+								<html:text property="montoHasta" styleId="montoHasta" styleClass="form-control"  
+								maxlength="16" onkeypress="return keyPressMonto(event, 'montoHasta');"/>
 						</div>
 						<div id="errorMonto" style="color: red;"></div>
 					</div>
@@ -243,6 +242,7 @@ Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 			<p>(*) importe rendici&oacute;n estimado</p>
 		</div>
 	</logic:equal>
+
 
 	<script type="text/javascript" src="static/js/select2.min.js"></script>
 	<script type="text/javascript" src="./static/js/cuadroGeneral.js"></script>
