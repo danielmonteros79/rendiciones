@@ -1,21 +1,13 @@
-var dtLink = 'rendicionDetalleGastos.do';
-var dtParamsGastos = {};
-var dtParamsConsumosPendientes = {};
-var paramsEliminarGasto;
-var isEditing = false;
-var tableFirstLoad = true;
+let dtLink = 'rendicionDetalleGastos.do';
+let dtParamsGastos = {};
+let dtParamsConsumosPendientes = {};
+let paramsEliminarGasto;
+let isEditing = false;
+let tableFirstLoad = true;
 
 $(document).ready(function() {
-	callAjax('rendicionDetalleGastos.do', 'action=getMessage', 'init');
 	$('.nav-rendiciones').addClass('active');
 	
-	// TODO: Hacer si viene desde crear rendicion
-	window.history.pushState("", "", "rendicionDetalleGastos.do" +
-    	"?codigo=" + $('#idRendicion').html() +
-    	"&codMotivo=" + $('#codMotivo').val() +
-    	"&estadoRend=" + $('#estadoRend').val());
-
-
 	//Mensaje de rechazo, aprobación u observacion
 	if($('#motivoRechazo').val().trim().length > 0 ){
 		let tagDesc = $('#descripcionRechazo');
@@ -23,12 +15,8 @@ $(document).ready(function() {
 		divTagDesc.removeClass('d-none')
 		
 		if($('#estadoRend').val().includes('RECHA')){
-			$('#estadoDiv').addClass('text-danger')
-			divTagDesc.addClass('text-danger border-danger')
-			let descripcionMotivoRechazo = $('#motivoRechazo').val().lastIndexOf('-')
-			let descripcionMotivoRechazoSinTipo = $('#motivoRechazo').val().substring(descripcionMotivoRechazo + 1 );
-			tagDesc.html('Motivo del Rechazo: ' + descripcionMotivoRechazoSinTipo);
-			
+		
+			setDescripcionRechazo(divTagDesc, tagDesc)
 		}else if($('#estadoRend').val().includes('APROB')){
 			divTagDesc.addClass('text-success border border-success')
 			tagDesc.html('Motivo de Aprobaci&oacute;n: ' + $('#motivoRechazo').val());
@@ -42,8 +30,43 @@ $(document).ready(function() {
 	}
 
 
+	callAjax('rendicionDetalleGastos.do', 'action=getMessage', 'init');
+	
+	// si viene desde crear rendicion
+	window.history.pushState("", "", "rendicionDetalleGastos.do" +
+    	"?codigo=" + $('#idRendicion').html() +
+    	"&codMotivo=" + $('#codMotivo').val() +
+    	"&estadoRend=" + $('#estadoRend').val());
+
 
 });
+
+
+function setDescripcionRechazo(divDes, tag) {
+  $('#estadoDiv').addClass('text-danger');
+  divDes.addClass('text-danger border-danger');
+  
+  let descripcionMotivoRechazo = $('#motivoRechazo').val().lastIndexOf('-');
+  let descripcionMotivoRechazoSinTipo = $('#motivoRechazo').val().substring(descripcionMotivoRechazo + 1);
+  let codMotivoRechazo = $('#motivoRechazo').val().substring(0, descripcionMotivoRechazo);
+  
+  setMotivoDescripcionRechazo(codMotivoRechazo, function(descripcionFinal) {
+    tag.html('Motivo del Rechazo: ' +  descripcionFinal.substring(5) + " - " + descripcionMotivoRechazoSinTipo);
+  });
+}
+
+function setMotivoDescripcionRechazo(codigo, callback) {
+  setOnlyDataCombo('combos.do?action=getMotivos', { opcion: '5' }, function (comboData) {
+    let descripcionesMotRechazo = [...comboData];
+    let descripcionFinal = descripcionesMotRechazo.filter((d) => d.id.trim() == codigo.trim());
+    descripcionFinal.length > 0 ? callback(descripcionFinal[0].descripcion) : callback("")
+    
+  }, function (error) {
+    console.error('Error al obtener datos del combo:', error);
+  });
+}
+
+
 
 function init(data) {
 	var lsMessage = getLocalStorageItem('message');
