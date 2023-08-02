@@ -21,11 +21,11 @@ import ar.com.itrsa.sam.TransactionException;
 @SuppressWarnings("rawtypes")
 public class SU51 extends Transaction {
 	private static final Log log = LogFactory.getLog(SU51.class);
-	public List<ComboOpcion2> listaOpcion2 = new ArrayList<>();
-	public List<ComboMotivo> listaMotivo = new ArrayList<>();
-	public List<ComboMoneda> listaMoneda = new ArrayList<>();
-	public List<ComboComprobante> listaComprobante = new ArrayList<>();
-	public List<ComboGasto> listaTipoGasto = new ArrayList<>();
+	private List<ComboOpcion2> listaOpcion2 = new ArrayList<>();
+	private List<ComboMotivo> listaMotivo = new ArrayList<>();
+	private List<ComboMoneda> listaMoneda = new ArrayList<>();
+	private List<ComboComprobante> listaComprobante = new ArrayList<>();
+	private List<ComboGasto> listaTipoGasto = new ArrayList<>();
 
 	public SU51() {
 		this.PARAMETER_TRX = "SUM_CONS_PARAMETROS";
