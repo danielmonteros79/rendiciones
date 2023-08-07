@@ -388,7 +388,7 @@ class AprobacionDetalleActionTest {
     }
   }
 
-  @Disabled("Log lanza NPE - reveer")
+  @Disabled("sessionUserWorking lanza NPE - reveer")
   @ParameterizedTest
   @MethodSource("aprobarRechazarObservarSource")
   @DisplayName("Should approve rendicion")
@@ -411,7 +411,7 @@ class AprobacionDetalleActionTest {
     }
   }
 
-  @Disabled("Log lanza NPE - reveer")
+  @Disabled("sessionUserWorking lanza NPE - reveer")
   @ParameterizedTest
   @MethodSource("aprobarRechazarObservarSource")
   @DisplayName("Should reject rendicion")
@@ -433,7 +433,7 @@ class AprobacionDetalleActionTest {
     }
   }
 
-  @Disabled("Log lanza NPE - reveer")
+  @Disabled("sessionUserWorking lanza NPE - reveer")
   @ParameterizedTest
   @MethodSource("aprobarRechazarObservarSource")
   @DisplayName("Should observe rendicion")
