@@ -94,7 +94,7 @@ class ListadoAprobacionesActionTest {
     MockitoAnnotations.openMocks(this);
   }
 
-  @Disabled("Log lanza NPE")
+  @Disabled("sessionUserWorking lanza NPE - reveer")
   @ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should execute Action")
@@ -107,7 +107,7 @@ class ListadoAprobacionesActionTest {
     assertNotNull(actionForwardToAssert);
   }
 
-  @Disabled("Log lanza NPE")
+  @Disabled("sessionUserWorking lanza NPE - reveer")
   @ParameterizedTest
   @MethodSource("filtrarSource")
   @DisplayName("Should filter rendiciones")
@@ -130,7 +130,7 @@ class ListadoAprobacionesActionTest {
     }
   }
 
-  @Disabled("Log lanza NPE")
+  @Disabled("sessionUserWorking lanza NPE - reveer")
   @Test
   @DisplayName("Should aprove rendiciones")
   void shouldAproveRendiciones() throws Exception {
