@@ -21,6 +21,8 @@ public class UsuarioService {
 	List<Usuario> usuarios = new ArrayList<>();
 	private SAMWebClient client;
 	private String msg;
+	// AW Refactorizado para facilitar pruebas con JUnit 5
+	private Usuario user;
 
 	public UsuarioService() {
 	}
@@ -30,7 +32,7 @@ public class UsuarioService {
 	}
 
 	public Usuario obtenerDelegadosUsuario(String usuario) throws TransactionException {
-		Usuario user = null;
+//		Usuario user = null;
 		ManagerTransaction manager = new ManagerTransaction(new SU52());
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		
