@@ -1,37 +1,64 @@
 package com.sa.services;
 
 import com.sa.core.XMLConfigReader;
+import com.sa.exceptions.ImposibleLeerXMLException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class LoggerSUMTest {
-    /**
-     * Method under test: {@link LoggerSUM#LoggerSUM(XMLConfigReader)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testConstructor() {
-        // TODO: Complete this test.
-        //   Reason: R081 Exception in arrange section.
-        //   Diffblue Cover was unable to construct an instance of the class under test using
-        //   com.sa.services.LoggerSUM.<init>(XMLConfigReader).
-        //   The arrange section threw
-        //   java.lang.IllegalArgumentException: InputStream cannot be null
-        //       at javax.xml.parsers.DocumentBuilder.parse(DocumentBuilder.java:117)
-        //       at com.sa.core.XMLConfigReader.inicilizarXMLDesarrollo(XMLConfigReader.java:192)
-        //       at com.sa.core.XMLConfigReader.<init>(XMLConfigReader.java:67)
-        //       at com.sa.core.XMLConfigReader.getXml(XMLConfigReader.java:98)
-        //   See https://diff.blue/R081 to resolve this issue.
 
-        // Arrange
-        // TODO: Populate arranged inputs
-        XMLConfigReader xml = null;
+    @InjectMocks
+    LoggerSUM loggerSUM;
 
-        // Act
-        LoggerSUM actualLoggerSUM = new LoggerSUM(xml);
-
-        // Assert
-        // TODO: Add assertions on result
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
-}
 
+
+    @Test
+    @DisplayName("Testeando log")
+    void Log() {
+        XMLConfigReader xml = mock(XMLConfigReader.class);
+        when(xml.getExceptionsLogFileName()).thenReturn("test.txt");
+        when(xml.getLogsPath()).thenReturn("src/test/java/resources/");
+        (new LoggerSUM(xml)).log("Msg", 1);
+        verify(xml).getExceptionsLogFileName();
+        verify(xml).getLogsPath();
+    }
+
+    @Test
+    @DisplayName("Testeando logException")
+    void logException() {
+        XMLConfigReader xml = mock(XMLConfigReader.class);
+        when(xml.getExceptionsLogFileName()).thenReturn("logException.txt");
+        when(xml.getLogsPath()).thenReturn("src/test/java/resources/");
+        LoggerSUM loggerSUM = new LoggerSUM(xml);
+        loggerSUM.logException(new Exception("foo"));
+        verify(xml).getExceptionsLogFileName();
+        verify(xml).getLogsPath();
+    }
+
+
+    @Test
+    @DisplayName("Testeando logExceptionStackTrace")
+    void logExceptionStackTrace() {
+        XMLConfigReader xml = mock(XMLConfigReader.class);
+        when(xml.getExceptionsLogFileName()).thenReturn("logExceptionStackTrace.txt");
+        when(xml.getLogsPath()).thenReturn("src/test/java/resources/");
+        LoggerSUM loggerSUM = new LoggerSUM(xml);
+        loggerSUM.logExceptionStackTrace(new Exception("exception"));
+        verify(xml).getExceptionsLogFileName();
+        verify(xml).getLogsPath();
+    }
+
+}
