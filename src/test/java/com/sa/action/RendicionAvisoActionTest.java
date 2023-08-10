@@ -7,6 +7,7 @@ import com.sa.entities.Archivo;
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.ImagenesForm;
+import com.sa.form.RendicionAvisoForm;
 import com.sa.form.RendicionForm;
 import com.sa.manager.ManagerTransaction;
 import org.apache.struts.action.ActionForm;
@@ -52,7 +53,7 @@ class RendicionAvisoActionTest {
   @Mock
   ActionForward actionForwardMocked;
   @Mock
-  ImagenesForm imagenesFormMocked;
+  RendicionAvisoForm imagenesFormMocked;
   @Mock
   SAMWebClient samWebClientMocked;
   @Mock
