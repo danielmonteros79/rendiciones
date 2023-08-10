@@ -23,6 +23,7 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.sa.entities.Gastos;
+import com.sa.form.RendicionAvisoForm;
 import com.sa.services.AprobacionesService;
 import com.sa.services.CaratulaService;
 import com.sa.services.RendicionesService;
@@ -30,6 +31,7 @@ import com.sa.services.trxs.WM95;
 import com.sa.util.ArchivoUtil;
 import com.sa.util.CaratulaTemplate;
 
+import org.apache.commons.codec.binary.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,15 +42,14 @@ import com.sa.form.ImagenesForm;
 import com.sa.services.ThubanService;
 
 public class ImagenesAction extends RestriccionTransaccionAction {
-
+	
 	private static final String IMG_SRC = "<img src='";
 	private static final String NOMBRE_ARCHIVO = "nombreArchivo";
-	
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
-			ImagenesForm frm = (ImagenesForm) form;
+			RendicionAvisoForm frm = (RendicionAvisoForm) form;
 
 			if ("inicializar".equals(frm.getAction()))
 				return this.inicializar(request, response, frm, samClient);
@@ -66,7 +67,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		}
 	}
 
-	private ActionForward inicializar(HttpServletRequest request, HttpServletResponse response, ImagenesForm frm, SAMWebClient samClient) throws Exception {
+	private ActionForward inicializar(HttpServletRequest request, HttpServletResponse response, RendicionAvisoForm frm, SAMWebClient samClient) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		ThubanService thubanService = new ThubanService(samClient);
 		String thubanUser = (String) request.getSession().getServletContext().getAttribute("esb.thuban.user");
@@ -83,7 +84,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		return writeJson(response, resp);
 	}
 
-	private ActionForward cargarArchivo(HttpServletResponse response, ImagenesForm frm) throws Exception {
+	private ActionForward cargarArchivo(HttpServletResponse response, RendicionAvisoForm frm) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
 		String extension = frm.getArchivo().getFileName().substring(frm.getArchivo().getFileName().lastIndexOf("."));
@@ -97,13 +98,13 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		archivo.setNomArchivo(frm.getArchivo().getFileName());
 		archivo.setInputStream(frm.getArchivo().getInputStream());
 	
-	
+		
 		frm.getArchivosASubir().add(archivo);
 
 		return writeJson(response, resp);
 	}
 
-	private ActionForward borrarArchivo(HttpServletRequest request, HttpServletResponse response, ImagenesForm frm) throws Exception {
+	private ActionForward borrarArchivo(HttpServletRequest request, HttpServletResponse response, RendicionAvisoForm frm) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
 		resp.put(NOMBRE_ARCHIVO, request.getParameter(NOMBRE_ARCHIVO));
@@ -121,7 +122,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		return writeJson(response, resp);
 	}
 
-	private ActionForward generar(ImagenesForm frm, ActionMapping mapping, HttpServletRequest request, HttpServletResponse response,
+	private ActionForward generar(RendicionAvisoForm frm, ActionMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			SAMWebClient samClient) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
@@ -140,6 +141,9 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		RendicionesService rendicionesService = new RendicionesService(samClient);
 		AprobacionesService aprobacionesService = new AprobacionesService(samClient);
 
+		
+	
+		
 		Rendicion rendicion = null;
 		if (esAprobacion)
 			rendicion = aprobacionesService.getAprobacionesPendientes(idRendicion, "", "", glg, this.sessionUserWorking.getIdUser()).get(0);
@@ -157,8 +161,8 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, "", rendicion.getUsuarioRendicion() != null ? rendicion.getUsuarioRendicion() : 
 			this.sessionUserWorking.getIdUser(), rendicion.getCodMotivo());
 		if (gastos.isEmpty()) {
-			return writeError(response, "La rendici&oacute;n no tiene gastos cargados.");
-			
+			return writeError(response, "La rendici&oacute;n no tiene gastos cargados. ");
+			//request.setAttribute("msg", msg);
 		}
 		
 		
@@ -166,9 +170,9 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			this.generateCaratula(response, frm, request, samClient, aprobacionesService, gastos);
 		
 			String path = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.path");
-
+			//List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo);
 			
-			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo);
+			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo, esAprobacion);
 			
 			if (errores.size() != 0)
 				msg = StringUtils.join(errores.toArray(), "\\n");
@@ -177,115 +181,126 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			
 			request.setAttribute("msg", msg);
 		
+		
+		
+		
+		
+		
+		
+//		List<String> errores = thubanService.publicarDocumentos(thubanClaseDoc, thubanUser, thubanPass, rendicion, frm.getArchivosASubir());
+//		
+//		if (errores.size() == frm.getArchivosASubir().size())
+//			return writeError(response, StringUtils.join(errores.toArray(), "<br><br>"));
+//		else if (rendicion.getEstado().equals("PENDI") || rendicion.getEstado().equals("OBSER")) {
+//			String idu = aprobacionesService.obtenerIDU(rendicion, WM95.DELIM_04_SIN_ADEA);
+//			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()), this.sessionUserWorking.getIdUser(), idu);
+//			if (aprobacionesService.getMsg() != null)
+//				message += "<br>" + aprobacionesService.getMsg();
+//		}
+//		
+//		if (errores.size() > 0)
+//			message += "<br><br>" + StringUtils.join(errores.toArray(), "<br>");
+//		
+//		resp.put("message", message);
 
 		resp.put("message", message);		
 		return writeJson(response, resp);
 	}
 	
 	
+	private void generateCaratula(HttpServletResponse response, RendicionAvisoForm frm, HttpServletRequest request,
+			SAMWebClient samClient, AprobacionesService aprobacionesService, List<Gastos> gastos) throws Exception {
+		try {
+			String msg = "";
+			
+			// Verifica si ya tiene codigo adea la rendicion
+			boolean isCaratula = frm.getRendicion().getAdea().equalsIgnoreCase("") ? false : true;
+			String iduAdea = null;
+			if (!isCaratula) {
+				log.info("Se obtiene idu y adea para caratula");
+				iduAdea = aprobacionesService.obtenerIDU(frm, WM95.DELIM_04_CON_ADEA);
+			} else {
+				log.info("Caratula ya generada se obtiene el idu y adea de la rendicion");
+				iduAdea = frm.getRendicion().getIdu() + ";" + frm.getRendicion().getAdea();
+			}
+			if (iduAdea == null) {
+				msg = "ERROR: Error al generar IDU y ADEA";
+				request.setAttribute("msg", msg);
+				return;
+			}
 
-private void generateCaratula(HttpServletResponse response, ImagenesForm frm, HttpServletRequest request,
-        SAMWebClient samClient, AprobacionesService aprobacionesService, List<Gastos> gastos) throws Exception {
-    try {
-        String msg = "";
+			CaratulaService servCaratula = new CaratulaService(samClient);
+			String[] thubanCod = iduAdea.split(";");
 
-        // Verifica si ya tiene codigo adea la rendicion
-        boolean isCaratula = frm.getRendicion().getAdea().equalsIgnoreCase("") ? false : true;
-        String iduAdea = null;
-        if (!isCaratula) {
-            log.info("Se obtiene idu y adea para caratula");
-            iduAdea = aprobacionesService.obtenerIDU(frm, WM95.DELIM_04_CON_ADEA);
-        } else {
-            log.info("Caratula ya generada se obtiene el idu y adea de la rendicion");
-            iduAdea = frm.getRendicion().getIdu() + ";" + frm.getRendicion().getAdea();
-        }
-        if (iduAdea == null) {
-            msg = "ERROR: Error al generar IDU y ADEA";
-            request.setAttribute("msg", msg);
-            return;
-        }
+			log.info("Se obtiene template para caratula. ");
+			String html = servCaratula.generarCaratulaTemplate(frm, thubanCod, gastos);
+			log.info("Template obtenido: " + html);
+			if (!isCaratula) {
+				aprobacionesService.cambiarEscanRendicion(String.valueOf(frm.getRendicion().getId()), frm.getRendicion()
+						.getUsuarioRendicion(), thubanCod[0], thubanCod[1]);
+				frm.getRendicion().setIdu(thubanCod[0]);
+				frm.getRendicion().setAdea(thubanCod[1]);
+			}
+			log.info("Se obtiene caratula pdf");
+			
+			String codigoBarraPath = (String) request.getSession().getServletContext().getAttribute("rendicion.image.idu");
+			File codigoBarrasIdu = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getIdu());
+			File codigoBarrasAdea = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getAdea());
+			String imgIdu = IMG_SRC + codigoBarrasIdu + "' width='245px' height='65px' />";
+			String imgAdea = IMG_SRC + codigoBarrasAdea + "' width='245px' height='65px'  />";
+			html = html.replace(CaratulaTemplate.REPLACE_IDU, imgIdu);
+			html = html.replace(CaratulaTemplate.REPLACE_ADEA, imgAdea);
 
-        CaratulaService servCaratula = new CaratulaService(samClient);
-        String[] thubanCod = iduAdea.split(";");
+			String fileName = "caratulaRendicion_" + frm.getRendicion().getId();
+			String fileType = "pdf";
 
-        log.info("Se obtiene template para caratula");
-        String html = servCaratula.generarCaratulaTemplate(frm, thubanCod, gastos);
-        log.info("Template obtenido: " + html);
-        if (!isCaratula) {
-            aprobacionesService.cambiarEscanRendicion(String.valueOf(frm.getRendicion().getId()), frm.getRendicion()
-                    .getUsuarioRendicion(), thubanCod[0], thubanCod[1]);
-            frm.getRendicion().setIdu(thubanCod[0]);
-            frm.getRendicion().setAdea(thubanCod[1]);
-        }
-        log.info("Se obtiene caratula pdf");
+			response.setContentType("application/vnd.pdf");
+			response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "." + fileType + "\"");
+			OutputStream out = response.getOutputStream();
 
-        String codigoBarraPath = (String) request.getSession().getServletContext().getAttribute("rendicion.image.idu");
-        File codigoBarrasIdu = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getIdu());
-        File codigoBarrasAdea = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getAdea());
-        String imgIdu = IMG_SRC + codigoBarrasIdu + "' width='245px' height='65px' />";
-        String imgAdea = IMG_SRC + codigoBarrasAdea + "' width='245px' height='65px'  />";
-        html = html.replace(CaratulaTemplate.REPLACE_IDU, imgIdu);
-        html = html.replace(CaratulaTemplate.REPLACE_ADEA, imgAdea);
+			Document document = new Document(PageSize.A4);
+			PdfWriter.getInstance(document, out);
+			String img = (String) request.getSession().getServletContext().getAttribute("rendicion.image.caratula");
 
-        String fileName = "caratulaRendicion_" + frm.getRendicion().getId();
-        String fileType = "pdf";
+			log.info("CARTULA - IMG:_ " + img);
+			File fileImg = new File(img);
+			String imgLogo = IMG_SRC + img + "' height='45px' />";
+			html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
 
-        response.setContentType("application/vnd.pdf");
-        response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "." + fileType + "\"");
-        OutputStream out = response.getOutputStream();
+			String buffer = html;
+			log.info("CARATULA - IMG FILE: " + fileImg.getAbsolutePath());
+			log.info("CARATULA - IMG FILE EXIST? " + fileImg.exists());
+			log.info("CARATULA - IMG IS FILE ? " + fileImg.isFile());
+			byte[] imgByte = FileUtils.readFileToByteArray(fileImg);
 
-        Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document, out);
-        String img = (String) request.getSession().getServletContext().getAttribute("rendicion.image.caratula");
+			Image imagen = Image.getInstance(imgByte);
 
-        log.info("CARTULA - IMG:_ " + img);
-        File fileImg = new File(img);
-        String imgLogo = IMG_SRC + img + "' height='45px' />";
-        html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
+			document.open();
 
-        String buffer = html;
-        log.info("CARATULA - IMG FILE: " + fileImg.getAbsolutePath());
-        log.info("CARATULA - IMG FILE EXIST? " + fileImg.exists());
-        log.info("CARATULA - IMG IS FILE ? " + fileImg.isFile());
-        byte[] imgByte = FileUtils.readFileToByteArray(fileImg);
+			imagen.scaleAbsoluteWidth(100f);
 
-        Image imagen = Image.getInstance(imgByte);
+			// HTMLWorker
+			HTMLWorker htmlWorker = new HTMLWorker(document);
+			// String str =
+			// "Este es el contenido HTML, bien en String o reemplazalo por el contenido del fichero del ejemplo anterior";
+			htmlWorker.parse(new StringReader(buffer));
 
-        document.open();
-
-        imagen.scaleAbsoluteWidth(100f);
-
-        // HTMLWorker
-        @SuppressWarnings("deprecation")
-        HTMLWorker htmlWorker = new HTMLWorker(document);
-
-        htmlWorker.parse(new StringReader(buffer));
-
-        document.close();
-        out.flush();
-        out.close();
-
-        boolean deletedIdu = codigoBarrasIdu.delete();
-        boolean deletedAdea = codigoBarrasAdea.delete();
-
-        if (!deletedIdu) {
-            // Manejar la falla en la eliminación del archivo codigoBarrasIdu
-            log.error("No se pudo eliminar el archivo codigoBarrasIdu");
-        }
-
-        if (!deletedAdea) {
-            // Manejar la falla en la eliminación del archivo codigoBarrasAdea
-            log.error("No se pudo eliminar el archivo codigoBarrasAdea");
-        }
-    } catch (Exception e) {
-        request.setAttribute("msg", "ERROR: Error al generar car\u00e1tula");
-        log.error(e);
-        throw new Exception(e);
-    }
-}
-
-
-
+			document.close();
+			out.flush();
+			out.close();
+			boolean codigoBorrado = codigoBarrasIdu.delete();
+			boolean codigoBarrasBorrado = codigoBarrasAdea.delete();
+			
+			if (codigoBorrado || codigoBarrasBorrado) {
+				System.out.println("cod.barras borrado con exito");
+			}
+			
+		} catch (Exception e) {
+			request.setAttribute("msg", "ERROR: Error al generar car\u00e1tula");
+			log.error(e);
+			throw new Exception(e);
+		}
+	}
 	
 	
 	

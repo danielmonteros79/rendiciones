@@ -6,16 +6,12 @@ import com.sa.entities.Archivo;
 import com.sa.entities.Gastos;
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
-import com.sa.form.ImagenesForm;
+import com.sa.form.RendicionAvisoForm;
 import com.sa.manager.ManagerTransaction;
-import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.mock.MockHttpServletRequest;
-import org.apache.struts.mock.MockHttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,7 +21,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,8 +58,8 @@ class AdjuntarImagenPopUpActionTest {
     Usuario usuario = new Usuario("", "", "", 0, "", new ArrayList<>());
     Rendicion rendicion = new Rendicion(1, "", "", new Date(), new Date(), "", new ArrayList<>(),"", "");
     List<Rendicion> rendicionList = new ArrayList<>();
-    ImagenesForm imagenesFormEmptyAction = new ImagenesForm();
-    ImagenesForm imagenesFormCaratula = new ImagenesForm();
+    RendicionAvisoForm imagenesFormEmptyAction = new RendicionAvisoForm();
+    RendicionAvisoForm imagenesFormCaratula = new RendicionAvisoForm();
     Archivo archivo = new Archivo();
     List<Archivo> archivoList = new ArrayList<>();
     Gastos gastos = new Gastos();
@@ -97,7 +92,7 @@ class AdjuntarImagenPopUpActionTest {
   @ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should execute action")
-  void shouldExecuteAction(Usuario usuario, List<Rendicion> rendicionList, ImagenesForm imagenesForm, List<Gastos> gastosList) throws Exception {
+  void shouldExecuteAction(Usuario usuario, List<Rendicion> rendicionList, RendicionAvisoForm imagenesForm, List<Gastos> gastosList) throws Exception {
     //when
     when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
     when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuario);

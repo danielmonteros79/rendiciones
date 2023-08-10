@@ -14,7 +14,6 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
-import org.apache.poi.util.SystemOutLogger;
 import org.apache.struts.upload.FormFile;
 import org.json.simple.JSONArray;
 
@@ -22,7 +21,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sa.entities.Archivo;
 import com.sa.entities.Rendicion;
-import com.sa.form.ImagenesForm;
 import com.sa.form.RendicionAvisoForm;
 import com.sa.services.AprobacionesService;
 import com.sa.services.trxs.WM95;
@@ -79,31 +77,23 @@ public class ArchivoUtil {
 		}
 	}
 
-	public static List<String> grabarArchivos(ImagenesForm form, AprobacionesService aprobacionesService,
-			String path, String nombreNuevo) throws Exception {
+	public static List<String> grabarArchivos(RendicionAvisoForm form, AprobacionesService aprobacionesService,
+			String path, String nombreNuevo, boolean apr) throws Exception {
 		List<String> errores = new ArrayList<String>();
 		Rendicion rend = new Rendicion();
 		rend = form.getRendicion();
 		String idu = "";
 
 		idu = aprobacionesService.obtenerIDU(form, WM95.DELIM_04_SIN_ADEA);
-		int i = 0;
 		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
 		
 		for (Archivo archivo : form.getArchivosASubir()) {
 			String error = "";
-			// Verifica si ya tiene codigo adea la rendicion
-
-			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-			Date fecha = new Date();
-			if (i > 0) {
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(fecha);
-				cal.add(Calendar.SECOND, 1);
-
-				fecha = cal.getTime();
-			}
+			
+			cal.add(Calendar.SECOND, 1);
+			Date fecha = cal.getTime();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
 			String fechaString = "";
 
@@ -127,23 +117,20 @@ public class ArchivoUtil {
 
 				String ext = archivo.getNomArchivo().substring(archivo.getNomArchivo().lastIndexOf("."));
 
-				
 				error = copyFile(archivo, nombreNuevo + (String) archivo.getIdu() + "_" + form.getUsuario().getIdUser()
 						+ "_" + cCostos + "_" + fechaString + ext, path);
 			}
 			if (!error.equals(""))
 				errores.add(error);
-
-			i++;
-
 		}
 		if (errores.size() == 0) {
 			try {
+				if(!apr) {
 				aprobacionesService.cambiarEscanRendicion(String.valueOf(form.getRendicion().getId()),
-						form.getRendicion().getUsuarioRendicion(), idu, null);
+						form.getRendicion().getUsuarioRendicion(), idu, null);}
 			} catch (Exception e) {
 				e.printStackTrace();
-				errores.add("Error al obtener IDU de la rendiciÃ³n: " + form.getRendicion().getId());
+				errores.add(e.getCause().getMessage());
 			}
 		}
 		return errores;
@@ -159,18 +146,14 @@ public class ArchivoUtil {
 			fout = new FileOutputStream(file);
 			byte data[] = new byte[1024];
 			int count;
-			
-			System.out.println("Archivo GET INPUT STREAM: " + archivo.getInputStream() );
-			
 			while ((count = archivo.getInputStream().read(data, 0, 1024)) != -1) {
 				fout.write(data, 0, count);
 			}
-
 			fout.close();
 			archivo.getInputStream().close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			error = "Error en la grabacion o lectura del archivo " + archivo.getNomArchivo();
+			error = " Error en la grabacion o lectura del archivo " + archivo.getNomArchivo();
 		}
 
 		return error;
