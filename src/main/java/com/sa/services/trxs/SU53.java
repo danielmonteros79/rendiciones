@@ -13,7 +13,7 @@ import ar.com.itrsa.sam.TransactionException;
 
 @SuppressWarnings("rawtypes")
 public class SU53 extends Transaction {
-	public List<Rendicion> listaRendiciones = new ArrayList<>();
+	private List<Rendicion> listaRendiciones = new ArrayList<>();
 	private static final String AVISO = "aviso";
 	private static final String DES_EST_REND = "desc_est_rend";
 	private static final String FEC_ULT_MOD = "fec_ult_mod";

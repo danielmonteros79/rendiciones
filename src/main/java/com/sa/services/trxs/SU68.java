@@ -20,7 +20,7 @@ import ar.org.bbva.util.DateUtils;
 public class SU68 extends Transaction {
 	private static final Log log = LogFactory.getLog(SU68.class);
 	private List<Resumen> resumen = new ArrayList<>();
-	public List<Cupones> listaCupones = new ArrayList<>();
+	private List<Cupones> listaCupones = new ArrayList<>();
 	private static final String MONTO_MIN = "montoMin";
 	private static final String LISTA = "lista";
 

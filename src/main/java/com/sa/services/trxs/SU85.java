@@ -17,7 +17,7 @@ import ar.com.itrsa.sam.TransactionException;
 public class SU85 extends Transaction {
 	private static final Log log = LogFactory.getLog(SU85.class);
 	public static final String OPCION_MODIFICAR = "MODI";
-	public List<ParametroGasto> gastos = new ArrayList<>();
+  private List<ParametroGasto> gastos = new ArrayList<>();
 	ParametroGasto gastoReturn = new ParametroGasto();
 
 	public SU85() {
