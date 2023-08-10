@@ -12,7 +12,7 @@
 		<form-bean name="CierreFiltroForm" type="com.sa.form.CierreFiltroForm" />
 		<form-bean name="CierreForm" type="com.sa.form.CierreForm" />
 		<form-bean name="ResumenForm" type="com.sa.form.ResumenForm"/>
-		<form-bean name="ImagenesForm" type="com.sa.form.ImagenesForm" />
+		<form-bean name="ImagenesForm" type="com.sa.form.RendicionAvisoForm" />
 		<form-bean name="ParametrosMotivoForm" type="com.sa.form.parametros.ParametrosMotivoForm" />
 		<form-bean name="ParametrosMotivoFiltroForm" type="com.sa.form.parametros.ParametrosMotivoFiltroForm" />
 		<form-bean name="ParametrosGastosForm" type="com.sa.form.parametros.ParametrosGastosForm" />
@@ -102,6 +102,9 @@
 			<forward name="success" path="cierreOrdenDePago"></forward>
 			<forward name="cierreOrdenDePago" path="/pages/cierre/dtCierreOrdenDePago.jsp"/>
 		</action>
+		<action path="/reasignarBandeja" type="com.sa.action.cierre.ReasignarBandejaAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="reasignarBandeja"></forward>
+		</action>
 		<action path="/cierreDetalle" type="com.sa.action.cierre.CierreDetalleAction" className="com.sa.core.SecurityActionMapping" name="RendicionForm">
 			<forward name="success" path="cierreDetalle"/>
 			<forward name="gastos" path="/pages/global/dtGastos.jsp"/>
@@ -159,14 +162,8 @@
 		<action path="/parametrosMotivo"
 			type="com.sa.action.parametros.ParametrosMotivoLoadAction" name="ParametrosMotivoFiltroForm">
 			<forward name="success" path="parametrosMotivo" />
+			<forward name="parametrosMotivoFiltro" path="/pages/parametros/dtMotivos.jsp"/>
 		</action>
-		
-		<action path="/parametrosMotivoFiltro"
-			type="com.sa.action.parametros.ParametrosMotivoFiltroAction" name="ParametrosMotivoFiltroForm" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="parametrosMotivo" />
-			<forward name="motivos" path="/pages/parametros/dtMotivos.jsp"/>
-		</action>
-		
 		<action path="/parametrosMotivoDetalle"
 			type="com.sa.action.parametros.ParametrosMotivoDetalleLoadAction"
 			name="ParametrosMotivoForm">
@@ -186,12 +183,13 @@
 		<action path="/parametrosGastos"
 			type="com.sa.action.parametros.ParametrosGastosLoadAction" name="ParametrosGastosFiltroForm">
 			<forward name="success" path="parametrosGastos" />
+			<forward name="parametrosGastoFiltro" path="/pages/parametros/dtGastos.jsp"/> 
 		</action>
 		
 		<action path="/parametrosGastosFiltro"
 			type="com.sa.action.parametros.ParametrosGastosFiltroAction" name="ParametrosGastosFiltroForm">
 			<forward name="success" path="parametrosGastos" />
-			<!-- <forward name="gastos" path="/pages/parametros/dtGastos.jsp"/> -->
+		
 		</action>
 				
 		<action path="/parametrosGastosDetalle"
