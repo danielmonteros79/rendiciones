@@ -29,6 +29,7 @@ import com.sa.entities.Gastos;
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.ImagenesForm;
+import com.sa.form.RendicionAvisoForm;
 import com.sa.services.AprobacionesService;
 import com.sa.services.CaratulaService;
 import com.sa.services.RendicionesService;
@@ -46,13 +47,13 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 			SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		ImagenesForm frm = (ImagenesForm) form;
+		RendicionAvisoForm frm = (RendicionAvisoForm) form;
 		
 		if (request.getParameter("generate") != null) {
 			
 			String idRendicion = (String) request.getParameter("rnd");
 			log.info("Se procede a reimprimir la cartaula RENDICION:"+idRendicion);
-			frm = new ImagenesForm();
+			frm = new RendicionAvisoForm();
 			frm.setAccion("caratula");
 			frm.setAction("generar");
 			frm.setRendicion(new Rendicion());
@@ -81,7 +82,7 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 		return mapping.findForward("success");
 	}
 
-	private void mostrarPantalla(ImagenesForm frm, HttpServletRequest request) {
+	private void mostrarPantalla(RendicionAvisoForm frm, HttpServletRequest request) {
 		frm.clean();
 		
 		frm.getRendicion().setId(Integer.parseInt(request.getParameter("codigo")));
@@ -89,7 +90,7 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 		frm.getRendicion().setGlg((request.getParameter("glg")));
 	}
 
-	private ActionRedirect generar(ImagenesForm frm, ActionMapping mapping, HttpServletRequest request,
+	private ActionRedirect generar(RendicionAvisoForm frm, ActionMapping mapping, HttpServletRequest request,
 			HttpServletResponse response, SAMWebClient samClient) throws Exception {
 		Usuario user = (Usuario) request.getSession().getAttribute("userWorking");
 		String nombreNuevo = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.rename.archivo");
@@ -121,7 +122,7 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 		}
 
 		if (frm.getAccion().equals("caratula")) {
-			boolean isCaratula = frm.getRendicion().getAdea().isEmpty();
+			boolean isCaratula = frm.getRendicion().getAdea().length() == 0;
 			String iduAdea = obtenerIduAdea(frm, aprobacionesService, isCaratula);
 
 			if (iduAdea == null) {
@@ -151,7 +152,7 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 			return null;
 		} else {
 			String path = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.path");
-			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo);
+			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo, apr);
 			String msg = "Archivos subidos con \u00e9xito.";
 			if (!errores.isEmpty()) {
 				msg = StringUtils.join(errores.toArray(), "\\n");
@@ -163,20 +164,20 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 		}
 	}
 
-	private boolean validarGastos(ImagenesForm frm, RendicionesService rendicionesService, HttpServletRequest request, ActionMapping mapping) throws Exception {
+	private boolean validarGastos(RendicionAvisoForm frm, RendicionesService rendicionesService, HttpServletRequest request, ActionMapping mapping) throws Exception {
 		List<Gastos> gastos = rendicionesService.getGastos(String.valueOf(frm.getRendicion().getId()), "",
 				frm.getRendicion().getUsuarioRendicion(), frm.getRendicion().getCodMotivo());
 		if (gastos.isEmpty()) {
 			ActionRedirect newRedirect2 = new ActionRedirect(mapping.findForward(FAILURE_GENERAR));
 			newRedirect2.addParameter(ACTION, ERROR_GENERAR);
-			String msg = "NO SE PUDO GENERAR CARATULA - La rendicion no tiene gastos cargados";
+			String msg = "NO SE PUDO GENERAR CARATULA  -  La rendicion no tiene gastos cargados. ";
 			request.getSession().setAttribute("msg", msg);
 			return false;
 		}
 		return true;
 	}
 
-	private String obtenerIduAdea(ImagenesForm frm, AprobacionesService aprobacionesService, boolean isCaratula) throws Exception {
+	private String obtenerIduAdea(RendicionAvisoForm frm, AprobacionesService aprobacionesService, boolean isCaratula) throws Exception {
 		if (!isCaratula) {
 			return aprobacionesService.obtenerIDU(frm, WM95.DELIM_04_CON_ADEA);
 		} else {
@@ -198,7 +199,7 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 
 
 	private void generateCaratula(String html, HttpServletResponse response,
-			ImagenesForm frm, HttpServletRequest request, SAMWebClient samClient)
+			RendicionAvisoForm frm, HttpServletRequest request, SAMWebClient samClient)
 			throws Exception {
 		// TODO Auto-generated method stub
 		try {
@@ -233,9 +234,9 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 			html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
 
 			String buffer = html;
-			log.info("CARATULA - IMG FILE: "+fileImg.getAbsolutePath());
-			log.info("CARATULA - IMG FILE EXIST? "+fileImg.exists());
-			log.info("CARATULA - IMG IS FILE ? "+fileImg.isFile());
+			log.info("CARATULA  -  IMG FILE: "+fileImg.getAbsolutePath());
+			log.info("CARATULA  -  IMG FILE EXIST? "+fileImg.exists());
+			log.info("CARATULA  -  IMG IS FILE ? "+fileImg.isFile());
 			byte[] imgByte = FileUtils.readFileToByteArray(fileImg);
 //			byte[] codigoBarrasByte =  FileUtils.readFileToByteArray(codigoBarras);
 			

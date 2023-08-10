@@ -31,23 +31,18 @@ public class CaratulaService {
 	public CaratulaService(SAMWebClient client) {		
 		this.client = client;
 	}
-	public String generarCaratulaTemplate(ImagenesForm frm, String[] iduAdea, List<Gastos> gastos ) {		
+	public String generarCaratulaTemplate(RendicionAvisoForm frm, String[] iduAdea, List<Gastos> gastos ) {		
 		
 		String html = CaratulaTemplate.CARATULA_HTML;
 		
 		html = this.replaceCabeceraCaratula(frm, html);
 		html = this.replaceGastosCaratula(gastos,html);
-//		html = html.replace(CaratulaTemplate.REPLACE_IDU, iduAdea[0]);
-//		html = html.replace(CaratulaTemplate.REPLACE_ADEA, iduAdea[1]);
+
 		
 		
 		return html;
 		
 	}
-	
-
-	
-	
 	private String replaceGastosCaratula(List<Gastos> gastos, String html) {		
 		String trGastos = "";
 		for (Gastos g : gastos) {
@@ -81,7 +76,7 @@ public class CaratulaService {
 		return comprobante;
 	}
 	
-	private String replaceCabeceraCaratula(ImagenesForm frm, String html) {	
+	private String replaceCabeceraCaratula(RendicionAvisoForm frm, String html) {	
 		SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
 		Date fechaHoy = new Date ();
 		html = html.replace(CaratulaTemplate.REPLACE_RENDICION, String.valueOf(frm.getRendicion().getId()));
@@ -133,14 +128,14 @@ try {
 	// Signal end of generation
 	canvas.finish();
 	out.close();
-	log.info("Bar Code is generated successfully");
+	log.info("Bar Code is generated successfully ");
 //	File file = new File();
 	return imgBarcode;
 
 } catch (Exception ex) {
 	log.error(ex);
 	throw new ServiceException(
-			"Error al obtener path raiz para generar la imagen del codigo de Barra",
+			"Error al obtener path raiz para generar la imagen del codigo de Barra. ",
 			ex);
 }
 

@@ -42,9 +42,6 @@ function arreglar(total, moneda) {
 	}
 }
 
-// $(document).ready(function() {
-//	
-// });
 
 function clickearCheckbox(idResumen, moneda, monto, checkbox) {
 	var selectedMoneda = {};
@@ -56,7 +53,6 @@ function clickearCheckbox(idResumen, moneda, monto, checkbox) {
 			idRes.push(idResumen);
 			selectedMoneda[moneda] = valor;
 			totalPesos += valor;
-			// document.getElementById("total").innerHTML = total;
 		} else if (!checkbox.checked && numberOfChecked <= 10) {
 			var index = idRes.indexOf(idResumen);
 			if (index > -1) {
@@ -64,7 +60,7 @@ function clickearCheckbox(idResumen, moneda, monto, checkbox) {
 			}
 			selectedMoneda[moneda] = valor;
 			totalPesos -= valor;
-			// document.getElementById("total").innerHTML = numeroo;
+			
 	
 		}
 		arreglar(totalPesos.toFixed(2), moneda);
@@ -73,11 +69,10 @@ function clickearCheckbox(idResumen, moneda, monto, checkbox) {
 			selectedMoneda[moneda] = valor;
 			totalDolar += valor;
 
-			// document.getElementById("total").innerHTML = total;
 		} else if (!checkbox.checked && numberOfChecked <= 10) {
 			selectedMoneda[moneda] = valor;
 			totalDolar -= valor;
-			// document.getElementById("total").innerHTML = numeroo;
+		
 	
 		}
 		arreglar(totalDolar.toFixed(2), moneda);

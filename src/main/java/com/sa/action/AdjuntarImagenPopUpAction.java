@@ -24,7 +24,6 @@ import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.sa.entities.Gastos;
 import com.sa.entities.Usuario;
-import com.sa.form.ImagenesForm;
 import com.sa.form.RendicionAvisoForm;
 import com.sa.services.AprobacionesService;
 import com.sa.services.CaratulaService;
@@ -35,21 +34,21 @@ import com.sa.util.CaratulaTemplate;
 
 @SuppressWarnings("deprecation")
 public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
-	
-	private static final String IMG_SRC = "<img src='";
 
+	private  static final String IMG_SRC = "<img src='";
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ImagenesForm frm = (ImagenesForm) form;
+		RendicionAvisoForm frm = (RendicionAvisoForm) form;
 		
 		this.generar(frm, mapping, request, response, samClient);
 		
 		if (frm.getAccion().equals("caratula"))
 			return null;
+		
 		return mapping.findForward("success");
 	}
 
-	private void generar(ImagenesForm frm, ActionMapping mapping, HttpServletRequest request, HttpServletResponse response,
+	private void generar(RendicionAvisoForm frm, ActionMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			SAMWebClient samClient) throws Exception {
 		Usuario user = ((Usuario) request.getSession().getAttribute("userWorking"));
 		String nombreNuevo = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.rename.archivo");
@@ -67,10 +66,11 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 				frm.getRendicion().getUsuarioRendicion() != null ? frm.getRendicion().getUsuarioRendicion() : frm.getUsuario().getIdUser());
 
 		// Validacion si tiene gastos la rendicion
+		
 		log.info("Se obtienen gastos");
 		List<Gastos> gastos = rendicionesService.getGastos(String.valueOf(frm.getRendicion().getId()), "", frm.getRendicion()
 				.getUsuarioRendicion(), frm.getRendicion().getCodMotivo());
-		if (gastos.size() == 0) {
+		if (gastos.isEmpty()) {
 			msg = "ERROR: NO SE PUDO GENERAR CARATULA - La rendicion no tiene gastos cargados";
 			request.setAttribute("msg", msg);
 			return;
@@ -80,9 +80,9 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 			this.generateCaratula(response, frm, request, samClient, aprobacionesService, gastos);
 		else {
 			String path = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.path");
-			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo);
+			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo, false);
 			
-			if (errores.size() != 0)
+			if (!errores.isEmpty())
 				msg = StringUtils.join(errores.toArray(), "\\n");
 			else
 				msg = "OK: La rendici\u00f3n Nro. " + frm.getRendicion().getId() + " se ha generado con \u00e9xito.";
@@ -91,13 +91,13 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 		}
 	}
 	
-	private void generateCaratula(HttpServletResponse response, ImagenesForm frm, HttpServletRequest request,
+	private void generateCaratula(HttpServletResponse response, RendicionAvisoForm frm, HttpServletRequest request,
 			SAMWebClient samClient, AprobacionesService aprobacionesService, List<Gastos> gastos) throws Exception {
 		try {
 			String msg = "";
 			
 			// Verifica si ya tiene codigo adea la rendicion
-			boolean isCaratula = frm.getRendicion().getAdea().equalsIgnoreCase("") ? false : true;
+			boolean isCaratula = frm.getRendicion().getAdea().equalsIgnoreCase("");
 			String iduAdea = null;
 			if (!isCaratula) {
 				log.info("Se obtiene idu y adea para caratula");
@@ -151,9 +151,9 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 			html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
 
 			String buffer = html;
-			log.info("CARATULA - IMG FILE: " + fileImg.getAbsolutePath());
-			log.info("CARATULA - IMG FILE EXIST? " + fileImg.exists());
-			log.info("CARATULA - IMG IS FILE ? " + fileImg.isFile());
+			log.info("CARATULA  -  IMG FILE: " + fileImg.getAbsolutePath());
+			log.info("CARATULA  -  IMG FILE EXIST? " + fileImg.exists());
+			log.info("CARATULA  -  IMG IS FILE ? " + fileImg.isFile());
 			byte[] imgByte = FileUtils.readFileToByteArray(fileImg);
 
 			Image imagen = Image.getInstance(imgByte);
