@@ -1,6 +1,8 @@
 package com.sa.services;
 
 import ar.com.bbva.web.impl.SAMWebClient;
+
+import com.sa.action.RendicionAvisoAction;
 import com.sa.entities.Cupones;
 import com.sa.entities.Gastos;
 import com.sa.entities.Rendicion;
@@ -51,7 +53,7 @@ class CaratulaServiceTest {
     @ParameterizedTest
     @MethodSource("generarCaratulaTemplateSource")
     @DisplayName("Testeando generar caratula template")
-    void generarCaratulaTemplate(ImagenesForm frm, String[] iduAdea, List<Gastos> gastos, String html) {
+    void generarCaratulaTemplate(RendicionAvisoForm frm, String[] iduAdea, List<Gastos> gastos, String html) {
         String result = caratulaService.generarCaratulaTemplate(frm, iduAdea, gastos);
         Assertions.assertEquals(html, result);
     }

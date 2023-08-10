@@ -2,6 +2,8 @@ package com.sa.services;
 
 import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
+
+import com.sa.action.RendicionAvisoAction;
 import com.sa.entities.Journal;
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
@@ -103,7 +105,7 @@ class AprobacionesServiceTest {
     @ParameterizedTest
     @MethodSource("obtenerIDUSource")
     @DisplayName("Testeando obtener IDU")
-    void obtenerIDU(ImagenesForm form, String tipoAdea, String iduAdea, String msg)  {
+    void obtenerIDU(RendicionAvisoForm form, String tipoAdea, String iduAdea, String msg)  {
         try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
             doNothing().when(mockM).executeTrx(any(),anyMap());
             when(mockM.getDataReturn()).thenReturn(iduAdea);
