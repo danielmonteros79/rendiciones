@@ -12,7 +12,6 @@
 	height:35px;
 	background-color:rgba(0,0,0,0);
   }
-  
    .link-overlay2{
 	top:373px;
 	left:285px;
@@ -49,8 +48,6 @@
 
 
 }
-
-
 	
 </style> 
 <div id="container-modal">
@@ -75,7 +72,6 @@
 </div>
 
 <script>
-
 	let mostrarModalInicio = ${modalInicio}
 	$(document).ready(function() { 
 		mostrarModalInicio ? $('#miModal').modal('show') : $('#miModal').modal('hide')
