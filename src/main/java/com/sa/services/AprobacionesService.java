@@ -31,6 +31,11 @@ public class AprobacionesService {
 	private String msg;
 	private String cantRendiciones;
 	private SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyy-MM-dd");
+	private static final String FORMAT16 = "%016d";
+	private static final String CAMPO1 = "campo1";
+	private static final String COD_USER = "cod_user";
+	private static final String ID_REND = "id_rend";
+	private static final String ESTADO_REND = "estado_rendicion";
 
 	public AprobacionesService(SAMWebClient samClient) {
 		this.client = samClient;
@@ -40,11 +45,11 @@ public class AprobacionesService {
 			throws TransactionException {
 		log.info("Comienza llamado a trx SU61");
 		if (id != null && !id.equalsIgnoreCase("")) {
-			id = String.format("%016d",Integer.parseInt(id));
+			id = String.format(FORMAT16,Integer.parseInt(id));
 		}
 		ManagerTransaction manager = new ManagerTransaction(new SU61());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
-		parametersExecute.put("id_rend", id);
+		parametersExecute.put(ID_REND, id);
 		parametersExecute.put("id_user", usuarioFiltro);
 		parametersExecute.put("cod_motivo", motivo);
 		parametersExecute.put("glg", estado);
@@ -74,25 +79,25 @@ public class AprobacionesService {
 		
 		for (Integer idRend : rendicionesSeleccionadas) {
 			if (rendiciones.length() <= 480)
-				rendiciones += String.format("%016d", idRend);
+				rendiciones += String.format(FORMAT16, idRend);
 			else if (rendiciones2.length() <= 480)
-				rendiciones2 += String.format("%016d", idRend);
+				rendiciones2 += String.format(FORMAT16, idRend);
 			else if (rendiciones3.length() <= 480)
-				rendiciones3 += String.format("%016d", idRend);
+				rendiciones3 += String.format(FORMAT16, idRend);
 			else
-				rendiciones4 += String.format("%016d", idRend);
+				rendiciones4 += String.format(FORMAT16, idRend);
 		}
 		
 	
-		parametersExecute.put("cod_user", user);
-		parametersExecute.put("estado_rendicion", estado);
-		parametersExecute.put("campo1", rendiciones);
+		parametersExecute.put(COD_USER, user);
+		parametersExecute.put(ESTADO_REND, estado);
+		parametersExecute.put(CAMPO1, rendiciones);
 		parametersExecute.put("campo2", rendiciones2);
 		parametersExecute.put("campo3", rendiciones3);
 		parametersExecute.put("campo4", rendiciones4);
 		parametersExecute.put("glg", glg);
 
-		if (estado == "RECHA")
+		if (estado.equals("RECHA"))
 			parametersExecute.put("", motivoRechazo);
 		
 		manager.executeTrx(this.client, parametersExecute);
@@ -104,10 +109,10 @@ public class AprobacionesService {
 		log.info("Se llama a la trx que realiza el cambio de estado de una sola rendicion (aprob-recha)");
 		ManagerTransaction manager = new ManagerTransaction(new SU62());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
-		parametersExecute.put("cod_user", user);
-		parametersExecute.put("estado_rendicion", estado);
+		parametersExecute.put(COD_USER, user);
+		parametersExecute.put(ESTADO_REND, estado);
 		parametersExecute.put("desc_rechazo", motivoRechazo);
-		parametersExecute.put("campo1", String.format("%016d", i));
+		parametersExecute.put(CAMPO1, String.format(FORMAT16, i));
 		parametersExecute.put("glg", glg);
 		manager.executeTrx(this.client, parametersExecute);
 		String aviso = (String) manager.getDataReturn();
@@ -141,7 +146,7 @@ public class AprobacionesService {
 		// String nroTramite =
 		// FormatosCampos.formatString(String.valueOf(form.getRendicion().getId()),
 		// WM95.NRO_TRAMITE);
-		String nroTramite = String.format("%016d",form.getRendicion().getId());
+		String nroTramite = String.format(FORMAT16,form.getRendicion().getId());
 		String usuario = FormatosCampos.formatString(form.getUsuario()
 				.getIdUser(), WM95.USUARIO);
 		String fechaGen = sdfYMD.format(new Date());
@@ -183,7 +188,7 @@ public class AprobacionesService {
 //	private Map<String, Object> mapDataIdu(Rendicion rendicion, String tipoAdea) {
 //		Map<String, Object> parameters = new HashMap<String, Object>();
 //		
-//		String nroTramite = String.format("%016d", rendicion.getId());
+//		String nroTramite = String.format(FORMAT16, rendicion.getId());
 //		String usuario = FormatosCampos.formatString(rendicion.getUsuarioRendicion(), WM95.USUARIO);
 //		String fechaGen = DateUtil.dfYYYYMMDD.format(new Date());
 //		
@@ -208,9 +213,9 @@ public class AprobacionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU60());
 		Map<String, Object> parameters = new HashMap<String, Object>();
 
-		parameters.put("id_rend", String.format("%016d", Integer
+		parameters.put(ID_REND, String.format(FORMAT16, Integer
 				.parseInt(String.valueOf(idRendicion))));
-		parameters.put("cod_user", user);
+		parameters.put(COD_USER, user);
 		// parameters.put("id_thuban", "R"+ String.format("%015d",
 		// Integer.parseInt(String.valueOf(idRendicion))));
 		// parameters.put("cod_adea", "A"+String.format("%010d",
@@ -232,8 +237,8 @@ public class AprobacionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU60());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 
-		parametersExecute.put("id_rend", String.format("%016d", Integer.parseInt(String.valueOf(idRendicion))));
-		parametersExecute.put("cod_user", user);
+		parametersExecute.put(ID_REND, String.format(FORMAT16, Integer.parseInt(String.valueOf(idRendicion))));
+		parametersExecute.put(COD_USER, user);
 		parametersExecute.put("idu_thuban", idu);
 		
 		manager.executeTrx(client, parametersExecute);
@@ -250,9 +255,9 @@ public class AprobacionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU60());
 		Map<String, Object> parameters = new HashMap<String, Object>();
 
-		parameters.put("id_rend", String.format("%016d", Integer
+		parameters.put(ID_REND, String.format(FORMAT16, Integer
 				.parseInt(String.valueOf(idRendicion))));
-		parameters.put("cod_user", user);
+		parameters.put(COD_USER, user);
 		// parameters.put("id_thuban", "R"+ String.format("%015d",
 		// Integer.parseInt(String.valueOf(idRendicion))));
 		// parameters.put("cod_adea", "A"+String.format("%010d",
@@ -308,34 +313,34 @@ String rendiciones4 = "";
 // Recorre la lista de rendiciones
 for (Rendicion r : rendicionesSeleccionadas) {
 	if (rendiciones.length() <= 480) {
-		rendiciones += String.format("%016d", Integer.parseInt(String
+		rendiciones += String.format(FORMAT16, Integer.parseInt(String
 				.valueOf(r.getId())));
 	} else {
 		if (rendiciones2.length() <= 480) {
-			rendiciones2 += String.format("%016d", Integer
+			rendiciones2 += String.format(FORMAT16, Integer
 					.parseInt(String.valueOf(r.getId())));
 
 		} else {
 			if (rendiciones3.length() <= 480) {
-				rendiciones3 += String.format("%016d", Integer
+				rendiciones3 += String.format(FORMAT16, Integer
 						.parseInt(String.valueOf(r.getId())));
 
 					} else {
-						rendiciones4 += String.format("%016d", Integer
+						rendiciones4 += String.format(FORMAT16, Integer
 									.parseInt(String.valueOf(r.getId())));
 						}
 					}
 				}
 			}
-			parametersExecute.put("cod_user", user);
-			parametersExecute.put("estado_rendicion", estado);
-			parametersExecute.put("campo1", rendiciones);
+			parametersExecute.put(COD_USER, user);
+			parametersExecute.put(ESTADO_REND, estado);
+			parametersExecute.put(CAMPO1, rendiciones);
 			parametersExecute.put("campo2", rendiciones2);
 			parametersExecute.put("campo3", rendiciones3);
 			parametersExecute.put("campo4", rendiciones4);
 			parametersExecute.put("glg", glg);
 			
-			if (estado == "RECHA") {
+			if (estado.equals("RECHA")) {
 			parametersExecute.put("", motivoRechazo);
 			}
 			

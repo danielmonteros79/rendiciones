@@ -125,9 +125,9 @@ public class ArchivoUtil {
 		}
 		if (errores.size() == 0) {
 			try {
-				if(!apr)
+				if(!apr) {
 				aprobacionesService.cambiarEscanRendicion(String.valueOf(form.getRendicion().getId()),
-						form.getRendicion().getUsuarioRendicion(), idu, null);
+						form.getRendicion().getUsuarioRendicion(), idu, null);}
 			} catch (Exception e) {
 				e.printStackTrace();
 				errores.add(e.getCause().getMessage());

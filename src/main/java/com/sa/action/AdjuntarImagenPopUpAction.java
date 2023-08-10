@@ -35,6 +35,7 @@ import com.sa.util.CaratulaTemplate;
 @SuppressWarnings("deprecation")
 public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 
+	private  static final String IMG_SRC = "<img src='";
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RendicionAvisoForm frm = (RendicionAvisoForm) form;
@@ -69,7 +70,7 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 		log.info("Se obtienen gastos");
 		List<Gastos> gastos = rendicionesService.getGastos(String.valueOf(frm.getRendicion().getId()), "", frm.getRendicion()
 				.getUsuarioRendicion(), frm.getRendicion().getCodMotivo());
-		if (gastos.size() == 0) {
+		if (gastos.isEmpty()) {
 			msg = "ERROR: NO SE PUDO GENERAR CARATULA - La rendicion no tiene gastos cargados";
 			request.setAttribute("msg", msg);
 			return;
@@ -81,7 +82,7 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 			String path = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.path");
 			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo, false);
 			
-			if (errores.size() != 0)
+			if (!errores.isEmpty())
 				msg = StringUtils.join(errores.toArray(), "\\n");
 			else
 				msg = "OK: La rendici\u00f3n Nro. " + frm.getRendicion().getId() + " se ha generado con \u00e9xito.";
@@ -96,7 +97,7 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 			String msg = "";
 			
 			// Verifica si ya tiene codigo adea la rendicion
-			boolean isCaratula = frm.getRendicion().getAdea().equalsIgnoreCase("") ? false : true;
+			boolean isCaratula = frm.getRendicion().getAdea().equalsIgnoreCase("");
 			String iduAdea = null;
 			if (!isCaratula) {
 				log.info("Se obtiene idu y adea para caratula");
@@ -128,8 +129,8 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 			String codigoBarraPath = (String) request.getSession().getServletContext().getAttribute("rendicion.image.idu");
 			File codigoBarrasIdu = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getIdu());
 			File codigoBarrasAdea = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getAdea());
-			String imgIdu = "<img src='" + codigoBarrasIdu + "' width='245px' height='65px' />";
-			String imgAdea = "<img src='" + codigoBarrasAdea + "' width='245px' height='65px'  />";
+			String imgIdu = IMG_SRC + codigoBarrasIdu + "' width='245px' height='65px' />";
+			String imgAdea = IMG_SRC + codigoBarrasAdea + "' width='245px' height='65px'  />";
 			html = html.replace(CaratulaTemplate.REPLACE_IDU, imgIdu);
 			html = html.replace(CaratulaTemplate.REPLACE_ADEA, imgAdea);
 
@@ -146,7 +147,7 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 
 			log.info("CARTULA - IMG:_ " + img);
 			File fileImg = new File(img);
-			String imgLogo = "<img src='" + img + "' height='45px' />";
+			String imgLogo = IMG_SRC + img + "' height='45px' />";
 			html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
 
 			String buffer = html;

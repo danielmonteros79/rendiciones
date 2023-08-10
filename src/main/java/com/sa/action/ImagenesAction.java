@@ -42,7 +42,10 @@ import com.sa.form.ImagenesForm;
 import com.sa.services.ThubanService;
 
 public class ImagenesAction extends RestriccionTransaccionAction {
-
+	
+	private static final String IMG_SRC = "<img src='";
+	private static final String NOMBRE_ARCHIVO = "nombreArchivo";
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
@@ -89,7 +92,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		if (extension.equals(".pdf") && !data.equals("%PDF-"))
 			return writeError(response, frm.getArchivo().getFileName() + ": El archivo no es un PDF v&aacute;lido.");
 		
-		resp.put("nombreArchivo", frm.getArchivo().getFileName());
+		resp.put(NOMBRE_ARCHIVO, frm.getArchivo().getFileName());
 
 		Archivo archivo = new Archivo();
 		archivo.setNomArchivo(frm.getArchivo().getFileName());
@@ -104,13 +107,13 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 	private ActionForward borrarArchivo(HttpServletRequest request, HttpServletResponse response, RendicionAvisoForm frm) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
+		resp.put(NOMBRE_ARCHIVO, request.getParameter(NOMBRE_ARCHIVO));
 		
 		boolean encontro = false;
 		for (int i = 0; i < frm.getArchivosASubir().size() && !encontro; i++) {
 			Archivo archivo = frm.getArchivosASubir().get(i);
 
-			if (archivo.getNomArchivo().equals(request.getParameter("nombreArchivo"))) {
+			if (archivo.getNomArchivo().equals(request.getParameter(NOMBRE_ARCHIVO))) {
 				encontro = true;
 				frm.getArchivosASubir().remove(i);
 			}
@@ -123,7 +126,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			SAMWebClient samClient) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
+		resp.put(NOMBRE_ARCHIVO, request.getParameter(NOMBRE_ARCHIVO));
 		
 		Usuario user = ((Usuario) request.getSession().getAttribute("userWorking"));
 		String nombreNuevo = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.rename.archivo");
@@ -157,7 +160,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		log.info("Se obtienen gastos");
 		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, "", rendicion.getUsuarioRendicion() != null ? rendicion.getUsuarioRendicion() : 
 			this.sessionUserWorking.getIdUser(), rendicion.getCodMotivo());
-		if (gastos.size() == 0) {
+		if (gastos.isEmpty()) {
 			return writeError(response, "La rendici&oacute;n no tiene gastos cargados. ");
 			//request.setAttribute("msg", msg);
 		}
@@ -243,8 +246,8 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			String codigoBarraPath = (String) request.getSession().getServletContext().getAttribute("rendicion.image.idu");
 			File codigoBarrasIdu = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getIdu());
 			File codigoBarrasAdea = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getAdea());
-			String imgIdu = "<img src='" + codigoBarrasIdu + "' width='245px' height='65px' />";
-			String imgAdea = "<img src='" + codigoBarrasAdea + "' width='245px' height='65px'  />";
+			String imgIdu = IMG_SRC + codigoBarrasIdu + "' width='245px' height='65px' />";
+			String imgAdea = IMG_SRC + codigoBarrasAdea + "' width='245px' height='65px'  />";
 			html = html.replace(CaratulaTemplate.REPLACE_IDU, imgIdu);
 			html = html.replace(CaratulaTemplate.REPLACE_ADEA, imgAdea);
 
@@ -261,7 +264,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 
 			log.info("CARTULA - IMG:_ " + img);
 			File fileImg = new File(img);
-			String imgLogo = "<img src='" + img + "' height='45px' />";
+			String imgLogo = IMG_SRC + img + "' height='45px' />";
 			html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
 
 			String buffer = html;
@@ -285,8 +288,13 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			document.close();
 			out.flush();
 			out.close();
-			codigoBarrasIdu.delete();
-			codigoBarrasAdea.delete();
+			boolean codigoBorrado = codigoBarrasIdu.delete();
+			boolean codigoBarrasBorrado = codigoBarrasAdea.delete();
+			
+			if (codigoBorrado || codigoBarrasBorrado) {
+				System.out.println("cod.barras borrado con exito");
+			}
+			
 		} catch (Exception e) {
 			request.setAttribute("msg", "ERROR: Error al generar car\u00e1tula");
 			log.error(e);
