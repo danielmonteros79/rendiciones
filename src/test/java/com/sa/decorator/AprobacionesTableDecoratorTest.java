@@ -1,6 +1,5 @@
 package com.sa.decorator;
 
-import com.sa.entities.Gastos;
 import com.sa.entities.Rendicion;
 import org.displaytag.model.TableModel;
 import org.junit.jupiter.api.Assertions;
@@ -20,12 +19,16 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 class AprobacionesTableDecoratorTest {
+
     @Spy
     Object currentRowObject;
     @Mock
@@ -67,50 +70,43 @@ class AprobacionesTableDecoratorTest {
         Assertions.assertEquals("", result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @Test
     @DisplayName("Testeando get destinatarios link")
     void getDestinatariosLink() {
+        //then
         String result = aprobacionesTableDecorator.getDestinatariosLink();
-        Assertions.assertEquals("", result);
+        assertNull(result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
+    @Disabled("No se puede asegurar que el objeto a castear sea una instancia de Rendicion. Refactorizar para poder testear")
     @Test
     @DisplayName("Testeando get cupones link")
-    void getCuponesLink() {
-        String result = aprobacionesTableDecorator.getCuponesLink();
-        Assertions.assertEquals("<input type=\"checkbox\" name=\"asignada\" value=\"on\" onclick=\"checkRendiciones(this)\" id=\"checkAprobacion\">", result);
+    void getCuponesLink() throws Exception {
+        //when
+        //then
+        Method getCuponesLinkMocked = AprobacionesTableDecorator.class.getDeclaredMethod("getCuponesLink");
+        getCuponesLinkMocked.setAccessible(true);
+        String stringLinkToAssert = (String) getCuponesLinkMocked.invoke(aprobacionesTableDecorator);
+        assertEquals("", stringLinkToAssert);
+
+//        String result = aprobacionesTableDecorator.getCuponesLink();
+//        Assertions.assertEquals("<input type=\"checkbox\" name=\"asignada\" value=\"on\" onclick=\"checkRendiciones(this)\" id=\"checkAprobacion\">", result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @Test
     @DisplayName("Testeando get scan link")
     void getScanLink() {
         String result = aprobacionesTableDecorator.getScanLink();
-        Assertions.assertEquals("", result);
+        assertNull(result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
-    @ParameterizedTest
-    @MethodSource("getCaratulaLinkSource")
+    @Test
     @DisplayName("Testeando get caratula link")
-    void getCaratulaLink(String idu, String adea, Integer id, String contextPath, String resultado) {
-        rendicion = new Rendicion();
-        rendicion.setIdu(idu);
-        rendicion.setAdea(adea);
-        rendicion.setId(id);
-        currentRowObject = rendicion;
-        MockitoAnnotations.openMocks(this);
-
-        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
-
+    void getCaratulaLink() {
         String result = aprobacionesTableDecorator.getCaratulaLink();
-        Assertions.assertEquals(resultado, result);
+        assertNull(result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("getEditarLinkSource")
     @DisplayName("Testeando get editar link")
@@ -129,62 +125,122 @@ class AprobacionesTableDecoratorTest {
         Assertions.assertEquals(resultado, result);
     }
 
-//    @ParameterizedTest
-//    @MethodSource("getThubanLinkSource")
-//    @DisplayName("Testeando get thuban link")
-//    void getThubanLink(Integer id, String linkThuban, String respuesta) {
-//        Rendicion rendicion = new Rendicion();
-//        rendicion.setId(id);
-//        currentRowObject = rendicion;
-//        MockitoAnnotations.openMocks(this);
-//
-//        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-//        when(httpServletRequest.getContextPath()).thenReturn("contextPath");
-//        when(httpServletRequest.getSession()).thenReturn(session);
-//        when(session.getServletContext()).thenReturn(context);
-//        when(context.getAttribute("rendicion.link.thuban")).thenReturn(linkThuban);
-//
-//
-//        String result = aprobacionesTableDecorator.getThubanLink();
-//        Assertions.assertEquals(respuesta, result);
-//    }
+    @ParameterizedTest
+    @MethodSource("getThubanLinkSource")
+    @DisplayName("Testeando get thuban link")
+    void getThubanLink(Integer id, String linkThuban, String respuesta) {
+        Rendicion rendicion = new Rendicion();
+        rendicion.setId(id);
+        currentRowObject = rendicion;
+        MockitoAnnotations.openMocks(this);
 
-//    @ParameterizedTest
-//    @MethodSource("getJournalLinkSource")
-//    @DisplayName("Testeando get journal link")
-//    void getJournalLink(Integer id,String contextPath,String respuesta) {
-//        Rendicion rendicion = new Rendicion();
-//        rendicion.setId(id);
-//        currentRowObject = rendicion;
-//        MockitoAnnotations.openMocks(this);
-//
-//        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-//        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
-//
-//        String result = aprobacionesTableDecorator.getJournalLink();
-//        Assertions.assertEquals(respuesta, result);
-//    }
+        when(pageContext.getRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getContextPath()).thenReturn("contextPath");
+        when(httpServletRequest.getSession()).thenReturn(session);
+        when(session.getServletContext()).thenReturn(context);
+        when(context.getAttribute("rendicion.link.thuban")).thenReturn(linkThuban);
 
-//    @ParameterizedTest
-//    @MethodSource("getOpcionesSource")
-//    @DisplayName("Testeando get opciones link")
-//    void getOpciones(String usuarioRendicion, Integer id, String estado, String contextPath, String linkThuban, String resultado) {
-//        rendicion = new Rendicion();
-//        rendicion.setUsuarioRendicion(usuarioRendicion);
-//        rendicion.setId(id);
-//        rendicion.setEstado(estado);
-//        currentRowObject = rendicion;
-//        MockitoAnnotations.openMocks(this);
-//
-//        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-//        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
-//        when(httpServletRequest.getSession()).thenReturn(session);
-//        when(session.getServletContext()).thenReturn(context);
-//        when(context.getAttribute("rendicion.link.thuban")).thenReturn(linkThuban);
-//
-//        String result = aprobacionesTableDecorator.getOpciones();
-//        Assertions.assertEquals(resultado, result);
-//    }
+
+        String result = aprobacionesTableDecorator.getThubanLink();
+        Assertions.assertEquals(respuesta, result);
+    }
+
+    @ParameterizedTest
+    @MethodSource("getJournalLinkSource")
+    @DisplayName("Testeando get journal link")
+    void getJournalLink(Integer id,String contextPath,String respuesta) {
+        Rendicion rendicion = new Rendicion();
+        rendicion.setId(id);
+        currentRowObject = rendicion;
+        MockitoAnnotations.openMocks(this);
+
+        when(pageContext.getRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
+
+        String result = aprobacionesTableDecorator.getJournalLink();
+        Assertions.assertEquals(respuesta, result);
+    }
+
+    @ParameterizedTest
+    @MethodSource("getOpcionesSource")
+    @DisplayName("Testeando get opciones link")
+    void getOpciones(String usuarioRendicion, Integer id, String estado, String contextPath, String linkThuban, String resultado) {
+        rendicion = new Rendicion();
+        rendicion.setUsuarioRendicion(usuarioRendicion);
+        rendicion.setId(id);
+        rendicion.setEstado(estado);
+        currentRowObject = rendicion;
+        MockitoAnnotations.openMocks(this);
+
+        when(pageContext.getRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
+        when(httpServletRequest.getSession()).thenReturn(session);
+        when(session.getServletContext()).thenReturn(context);
+        when(context.getAttribute("rendicion.link.thuban")).thenReturn(linkThuban);
+
+        String result = aprobacionesTableDecorator.getOpciones();
+        Assertions.assertEquals(resultado, result);
+    }
+
+    @Disabled("No se puede asegurar que el objeto a castear sea una instancia de Rendicion. Refactorizar para poder testear")
+    @Test
+    @DisplayName("Should getCheck")
+    void shouldGetCheck() {
+        //then
+        String stringToAssert = aprobacionesTableDecorator.getCheck();
+        assertEquals("", stringToAssert);
+    }
+
+    @Disabled("No se puede asegurar que el objeto a castear sea una instancia de Rendicion. Refactorizar para poder testear")
+    @Test
+    @DisplayName("Should getChecks")
+    void shouldGetChecks() {
+        //then
+        String stringToAssert = aprobacionesTableDecorator.getChecks();
+        assertEquals("", stringToAssert);
+    }
+
+    @Disabled("No se puede asegurar que el objeto a castear sea una instancia de Rendicion. Refactorizar para poder testear")
+    @Test
+    @DisplayName("Should getAlertas")
+    void shouldGetAlertas() {
+        //then
+        String stringToAssert = aprobacionesTableDecorator.getAlertas();
+        assertEquals("", stringToAssert);
+    }
+
+    @Test
+    @DisplayName("Should getScan")
+    void shouldGetScan() {
+        //then
+        String stringToAssert = aprobacionesTableDecorator.getScan();
+        assertNull(stringToAssert);
+    }
+
+    @Test
+    @DisplayName("Should get caratula")
+    void shouldGetCaratula() {
+        //then
+        String stringToAssert = aprobacionesTableDecorator.getCaratula();
+        assertNull(stringToAssert);
+    }
+
+    @Test
+    @DisplayName("Should get comentarios")
+    void shouldGetComentarios() {
+        //then
+        String stringToAssert = aprobacionesTableDecorator.getComentarios();
+        assertNull(stringToAssert);
+    }
+
+    @Disabled("No se puede asegurar que el objeto a castear sea una instancia de Rendicion. Refactorizar para poder testear")
+    @Test
+    @DisplayName("Should get cupones")
+    void shouldGetCupones() {
+        //then
+        String stringToAssert = aprobacionesTableDecorator.getCupones();
+        assertEquals("", stringToAssert);
+    }
 
     // ------ Sources ------
 
@@ -214,7 +270,7 @@ class AprobacionesTableDecoratorTest {
         Integer id = 1;
         String estado = "estado";
         String contextPath = "contextPath";
-        String resultado = "<a href=\"contextPath/aprobacionDetalle.do?action=aprobacionDetalle&codigo=1&usuarioRendicion=usuarioRendicion&glg=null&estadoRend=estado\"><img width='24px' height='24px' src=\"contextPath/images/search_button_32x32.png\" alt=\"Ver detalle\" title=\"Ver detalle\" border=\"0\" /></a></a>";
+        String resultado = "<a href=\"contextPath/aprobacionDetalle.do?codigo=1&glg=null\"><i class=\"bbva-icon icon-coronita_search\" data-toggle=\"tooltip\" title=\"Ver\"></i></a>";
 
         return Stream.of(
                 Arguments.of(usuarioRendicion, id, estado, contextPath, resultado)
@@ -224,7 +280,7 @@ class AprobacionesTableDecoratorTest {
     private static Stream<Arguments> getThubanLinkSource(){
         Integer id = 1;
         String linkThuban = "linkThuban";
-        String respuesta = "<a href=\"#\" onclick=\"showThuban('linkThuban','1')\"><img src=\"contextPath/images/iconos/info.png\" alt=\"Thuban\" title=\"Thuban\" border=\"0\" style=\"margin-bottom:4px;\"/>";
+        String respuesta = "<a href=\"#a\" class=\"text-gray\" onclick=\"showThuban('linkThuban1')\"><i class=\"bbva-icon icon-uniE0D2 fa-lg\" data-toggle=\"tooltip\" title=\"Thuban\"></i></a>";
 
         return Stream.of(
                 Arguments.of(id, linkThuban, respuesta)
@@ -234,7 +290,7 @@ class AprobacionesTableDecoratorTest {
     private static Stream<Arguments> getJournalLinkSource(){
         Integer id = 1;
         String contextPath = "contextPath";
-        String respuesta = "<a href=\"#\" onclick=\"showJournal('1')\"><img width='20px' height='20px' style='margin-bottom:2px;' src=\"contextPath/images/iconos/journal.png\" alt=\"Journal\" title=\"Journal\" border=\"0\" /></a>";
+        String respuesta = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalJournalShow('1')\"><i class=\"bbva-icon icon-coronita_bookstore fa-lg\" data-toggle=\"tooltip\" title=\"Journal\"></i></a>";
 
         return Stream.of(
                 Arguments.of(id, contextPath, respuesta)
@@ -247,7 +303,7 @@ class AprobacionesTableDecoratorTest {
         String estado = "estado";
         String contextPath = "contextPath";
         String linkThuban = "linkThuban";
-        String resultado = "<a href=\"contextPath/aprobacionDetalle.do?action=aprobacionDetalle&codigo=1&usuarioRendicion=usuarioRendicion&glg=null&estadoRend=estado\"><img width='24px' height='24px' src=\"contextPath/images/search_button_32x32.png\" alt=\"Ver detalle\" title=\"Ver detalle\" border=\"0\" /></a></a>&nbsp;<a href=\"#\" onclick=\"showThuban('linkThuban','1')\"><img src=\"contextPath/images/iconos/info.png\" alt=\"Thuban\" title=\"Thuban\" border=\"0\" style=\"margin-bottom:4px;\"/>&nbsp;<a href=\"#\" onclick=\"showJournal('1')\"><img width='20px' height='20px' style='margin-bottom:2px;' src=\"contextPath/images/iconos/journal.png\" alt=\"Journal\" title=\"Journal\" border=\"0\" /></a>";
+        String resultado = "<a href=\"contextPath/aprobacionDetalle.do?codigo=1&glg=null\"><i class=\"bbva-icon icon-coronita_search\" data-toggle=\"tooltip\" title=\"Ver\"></i></a>&nbsp;<a href=\"#a\" class=\"text-gray\" onclick=\"showThuban('linkThuban1')\"><i class=\"bbva-icon icon-uniE0D2 fa-lg\" data-toggle=\"tooltip\" title=\"Thuban\"></i></a>&nbsp;<a href=\"#a\" class=\"text-gray\" onclick=\"modalJournalShow('1')\"><i class=\"bbva-icon icon-coronita_bookstore fa-lg\" data-toggle=\"tooltip\" title=\"Journal\"></i></a>";
 
         return Stream.of(
                 Arguments.of(usuarioRendicion, id, estado, contextPath, linkThuban, resultado)
