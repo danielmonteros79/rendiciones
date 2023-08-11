@@ -7,9 +7,11 @@ import com.sa.form.RendicionAvisoForm;
 import com.sa.services.AprobacionesService;
 import com.sa.services.trxs.WM95;
 import org.apache.struts.upload.FormFile;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,14 +19,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -45,6 +48,8 @@ class ArchivoUtilTest {
   PrintWriter printWriterMocked;
   @Mock
   FormFile formFileMocked;
+  @TempDir
+  Path tempDir = Paths.get("src/test/resources/grabarArchivos");
 
   public static Stream<Arguments> getArchivosASubirSource() {
     //given
@@ -136,20 +141,17 @@ class ArchivoUtilTest {
     when(rendicionMocked.getId()).thenReturn(1);
 
     //then
-    List<String> archivoListtoAssert = ArchivoUtil.grabarArchivos(rendicionAvisoFormMocked, aprobacionesServiceMocked, "src/test/resources",
+    List<String> archivoListtoAssert = ArchivoUtil.grabarArchivos(rendicionAvisoFormMocked, aprobacionesServiceMocked, tempDir.toString(),
         "grabarArchivoTestFile",
         false);
     assertNotNull(archivoListtoAssert);
   }
 
-
-
-
-
-
-
-
-
-
-
+  @AfterEach // Dynamically deletes files created in tempDir before each test
+  public void cleanup() throws IOException {
+    Files.walk(tempDir)
+        .sorted(Comparator.reverseOrder())
+        .map(Path::toFile)
+        .forEach(File::delete);
+  }
 }
