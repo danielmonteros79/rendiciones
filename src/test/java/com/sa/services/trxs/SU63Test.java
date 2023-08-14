@@ -1,9 +1,6 @@
 package com.sa.services.trxs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -53,13 +50,28 @@ class SU63Test {
 
     @Test
     @DisplayName("Testeando mapData")
-    void mapData() {
+    void mapDataEmpty() {
         SU63 su63 = new SU63();
 
         HashMap<String, Object> parametersExecute = new HashMap<>();
         parametersExecute.put((String) "lista", new ArrayList<>());
         su63.mapData(parametersExecute);
         assertTrue(su63.getDataReturnList().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Testeando mapData con datos")
+    void mapData() {
+        SU63 su63 = new SU63();
+
+        List<String> contenidoLista = new ArrayList<>();
+        contenidoLista.add("0000000000001108A103555 MOTIVO DE 60 CARACTERES                                     NOMBRE DE 60 CARACTERES                                     12345678901234,6712345678901234,67");
+        contenidoLista.add("0000000000001109A103555 MOTIVO DE 60 CARACTERES                                     NOMBRE DE 60 CARACTERES                                     12345678901234,6712345678901234,67");
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "lista", contenidoLista);
+        su63.mapData(parametersExecute);
+        assertEquals(false, su63.getDataReturnList().isEmpty());
     }
 
 
