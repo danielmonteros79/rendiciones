@@ -78,19 +78,20 @@ class AprobacionesTableDecoratorTest {
         assertNull(result);
     }
 
-    @Disabled("No se puede asegurar que el objeto a castear sea una instancia de Rendicion. Refactorizar para poder testear")
     @Test
     @DisplayName("Testeando get cupones link")
     void getCuponesLink() throws Exception {
-        //when
-        //then
-        Method getCuponesLinkMocked = AprobacionesTableDecorator.class.getDeclaredMethod("getCuponesLink");
-        getCuponesLinkMocked.setAccessible(true);
-        String stringLinkToAssert = (String) getCuponesLinkMocked.invoke(aprobacionesTableDecorator);
-        assertEquals("", stringLinkToAssert);
+        Rendicion rendicion = new Rendicion();
+        rendicion.setAdea("1adea");
 
-//        String result = aprobacionesTableDecorator.getCuponesLink();
-//        Assertions.assertEquals("<input type=\"checkbox\" name=\"asignada\" value=\"on\" onclick=\"checkRendiciones(this)\" id=\"checkAprobacion\">", result);
+        currentRowObject = rendicion;
+        MockitoAnnotations.openMocks(this);
+
+        when(pageContext.getRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getContextPath()).thenReturn("contextPath");
+
+        String result = aprobacionesTableDecorator.getCuponesLink();
+        Assertions.assertEquals("<a href=\"#a\" class=\"text-gray\" onclick=\"obtenerDetalleAlerta(null,1adea)\"><img width='25px' src='contextPath/images/iconos/alerta_riesgo_grave.png' alt='riesgo' data-toggle='tooltip' title='Riesgo'/></a>", result);
     }
 
     @Test
@@ -182,13 +183,17 @@ class AprobacionesTableDecoratorTest {
         Assertions.assertEquals(resultado, result);
     }
 
-    @Disabled("No se puede asegurar que el objeto a castear sea una instancia de Rendicion. Refactorizar para poder testear")
     @Test
     @DisplayName("Should getCheck")
     void shouldGetCheck() {
-        //then
+        Rendicion rendicion = new Rendicion();
+        rendicion.setId(1);
+
+        currentRowObject = rendicion;
+        MockitoAnnotations.openMocks(this);
+
         String stringToAssert = aprobacionesTableDecorator.getCheck();
-        assertEquals("", stringToAssert);
+        assertEquals("<input class='seleccionar-todo' type='checkbox' value='1' onchange=\"clickCheckbox(1, this)\" \"' >", stringToAssert);
     }
 
     @Disabled("No se puede asegurar que el objeto a castear sea una instancia de Rendicion. Refactorizar para poder testear")
@@ -200,13 +205,19 @@ class AprobacionesTableDecoratorTest {
         assertEquals("", stringToAssert);
     }
 
-    @Disabled("No se puede asegurar que el objeto a castear sea una instancia de Rendicion. Refactorizar para poder testear")
-    @Test
+    @ParameterizedTest
+    @MethodSource("getAlertasSource")
     @DisplayName("Should getAlertas")
-    void shouldGetAlertas() {
-        //then
+    void shouldGetAlertas(Rendicion rend, String res) {
+
+        currentRowObject = rend;
+        MockitoAnnotations.openMocks(this);
+
+        when(pageContext.getRequest()).thenReturn(httpServletRequest);
+        when(httpServletRequest.getContextPath()).thenReturn("contextPath");
+
         String stringToAssert = aprobacionesTableDecorator.getAlertas();
-        assertEquals("", stringToAssert);
+        assertEquals(res, stringToAssert);
     }
 
     @Test
@@ -309,5 +320,37 @@ class AprobacionesTableDecoratorTest {
                 Arguments.of(usuarioRendicion, id, estado, contextPath, linkThuban, resultado)
         );
     }
+
+    private static Stream<Arguments> getAlertasSource(){
+        Rendicion rend = new Rendicion();
+        rend.setAlerta("1");
+
+        Rendicion rend2 = new Rendicion();
+        rend2.setAlerta("2");
+
+        Rendicion rend3 = new Rendicion();
+        rend3.setAlerta("3");
+
+        Rendicion rend4 = new Rendicion();
+        rend4.setAlerta("4");
+
+        Rendicion rend5 = new Rendicion();
+        rend5.setAlerta("5");
+
+        String res = "<img width='25px' src='contextPath/images/iconos/alerta_riesgo_grave.png' alt='Riesgo grave' title='Riesgo grave'/>";
+        String res2 = "<img width='25px' src='contextPath/images/iconos/alerta_riesgo.png' alt='Riesgo' title='Riesgo'/>";
+        String res3 = "<img width='25px' src='contextPath/images/iconos/alerta_incidencia_grave.png' alt='Incidencia grave' title='Incidencia grave'/>";
+        String res4 = "<img width='25px' src='contextPath/images/iconos/alerta_incidente.png' alt='Incidente' title='Incidente'/>";
+        String res5 = "<img width='25px' src='contextPath/images/iconos/alerta_anomalia.png' alt='Anomal&iacute;a' title='Anomal&iacute;a'/>";
+
+        return Stream.of(
+                Arguments.of(rend, res),
+                Arguments.of(rend2, res2),
+                Arguments.of(rend3, res3),
+                Arguments.of(rend4, res4),
+                Arguments.of(rend5, res5)
+        );
+    }
+
 }
 
