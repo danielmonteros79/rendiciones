@@ -45,7 +45,6 @@ class CuadroGeneralTableDecoratorTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("getVerLinkSource")
     @DisplayName("Testeando get ver link")
@@ -119,7 +118,6 @@ class CuadroGeneralTableDecoratorTest {
         Assertions.assertEquals("", result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("getVerLinkSource")
     @DisplayName("Testeando get opciones link")
@@ -145,8 +143,8 @@ class CuadroGeneralTableDecoratorTest {
         String estado2 = "GLG (ENTRADA)";
         String codEstado = "codEstado";
         String contextPath = "contextPath";
-        String resultado = "<img style=\"cursor:pointer;\"src=\"contextPath/images/iconos/ver.png\" onClick=\"detalle('codEstado')\" alt=\"Ver\" title=\"Ver\" border=\"0\" />";
-        String resultado2 = "<img style=\"cursor:pointer;\"src=\"contextPath/images/iconos/ver.png\" onClick=\"detalle('PGLGE')\" alt=\"Ver\" title=\"Ver\" border=\"0\" />";
+        String resultado = "<i class=\"bbva-icon icon-coronita_search text-primary\" style=\"cursor:pointer;\"  data-toggle=\"tooltip\" title=\"Ver\" onClick=\"detalle('codEstado')\" alt=\"Ver\" title=\"Ver\" border=\"0\" />";
+        String resultado2 = "<i class=\"bbva-icon icon-coronita_search text-primary\" style=\"cursor:pointer;\"  data-toggle=\"tooltip\" title=\"Ver\" onClick=\"detalle('PGLGE')\" alt=\"Ver\" title=\"Ver\" border=\"0\" />";
 
         return Stream.of(
                 Arguments.of(estado, codEstado, contextPath, resultado),
