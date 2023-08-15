@@ -16,6 +16,7 @@ import com.itextpdf.text.Element;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.internal.utils.ArrayIterator;
@@ -58,6 +59,17 @@ class SU72Test {
         verify(chapter).iterator();
     }
 
+    @Test
+    @DisplayName("Testeando mapData")
+    void mapDataConDatos() {
+        SU72 su72 = new SU72();
+        List <String> datosLista = new ArrayList<>();
+        datosLista.add("000000000000000100020000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400005000000000000000000000000000006000000072017-02-1200000000000000009");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "lista", datosLista);
+        su72.mapData(parametersExecute);
+
+    }
 
 }
 
