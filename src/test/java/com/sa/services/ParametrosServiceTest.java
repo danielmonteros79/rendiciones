@@ -166,7 +166,6 @@ class ParametrosServiceTest {
         }
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("abmDelegacionesSource")
     @DisplayName("Testeando abm delegaciones")
@@ -224,41 +223,6 @@ class ParametrosServiceTest {
         }
     }
 
-//    @ParameterizedTest
-//    @MethodSource("modifRelacionUsuarioDelegadoSource")
-//    @DisplayName("Testeando get relacion usuario delegado")
-//    void modifRelacionUsuarioDelegado(String idusr, String delegado, String feDesde, String feHasta, String estInf, String estCarg, String idRendicion) throws TransactionException {
-//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-//            when(mockM.getDataReturn()).thenReturn(idRendicion);
-//        })) {
-//
-//            ParametrosService parametrosService = new ParametrosService(samWebClient);
-//            String result = parametrosService.modifRelacionUsuarioDelegado(idusr, delegado, feDesde, feHasta, estInf, estCarg);
-//
-//            assertAll(
-//                    () -> assertNotNull(result),
-//                    () -> assertEquals(idRendicion, result)
-//            );
-//        }
-//    }
-//
-//    @ParameterizedTest
-//    @MethodSource("bajaRelacionUsuarioDelegadoSource")
-//    @DisplayName("Testeando baja relacion usuario delegado")
-//    void bajaRelacionUsuarioDelegado(String idusr, String delegado, String idRendicion) throws TransactionException {
-//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-//            when(mockM.getDataReturn()).thenReturn(idRendicion);
-//        })) {
-//
-//            ParametrosService parametrosService = new ParametrosService(samWebClient);
-//            String result = parametrosService.bajaRelacionUsuarioDelegado(idusr, delegado);
-//
-//            assertAll(
-//                    () -> assertNotNull(result),
-//                    () -> assertEquals(idRendicion, result)
-//            );
-//        }
-//    }
 
     @ParameterizedTest
     @MethodSource("getUsuarioDelegacionSource")
@@ -663,14 +627,14 @@ class ParametrosServiceTest {
     }
 
     private static Stream<Arguments> abmDelegacionesSource() {
-        RelacionUsuarioDelegadoForm formulario = new RelacionUsuarioDelegadoForm();
-        RelacionUsuarioDelegadoForm formulario2 = new RelacionUsuarioDelegadoForm();
-        RelacionUsuarioDelegadoForm formulario3 = new RelacionUsuarioDelegadoForm();
+        AbmDelegadoForm formulario = new AbmDelegadoForm();
+        AbmDelegadoForm formulario2 = new AbmDelegadoForm();
+        AbmDelegadoForm formulario3 = new AbmDelegadoForm();
         Usuario user = new Usuario("idUser", "perfil", "nombre", 1, "sector", new ArrayList<>());
         String aviso = "msg";
         String aviso2 = null;
 
-        formulario.setOpcion("");
+        formulario.setOpcion(ParamsConstants.SU81_MODIFICACION+"   ");
         formulario.setUsuario("");
         formulario.setDelegadoUser("");
         formulario.setFeDesde("2000/01/01");
