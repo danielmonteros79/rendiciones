@@ -135,25 +135,25 @@ class RendicionesServiceTest {
         );
     }
 
-//    @ParameterizedTest
-//    @MethodSource("altaRendicionSource")
-//    @DisplayName("Testeando alta rendicion")
-//    void altaRendicion(String idusr, String nombreUsr, String motivo, String feDesde, String feHasta, String descripcion,String idRendicion,String msg) throws TransactionException {
-//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-//            doNothing().when(mockM).executeTrx(any(), anyMap());
-//            when(mockM.getMensajeAviso()).thenReturn(msg);
-//            when(mockM.getDataReturn()).thenReturn(idRendicion);
-//        })) {
-//
-//            RendicionesService rendicionesService1 = new RendicionesService(samWebClient);
-//            String result = rendicionesService1.altaRendicion(idusr, nombreUsr, motivo, feDesde, feHasta, descripcion);
-//
-//            assertAll(
-//                    () -> assertNotNull(result),
-//                    () -> assertEquals(idRendicion, result)
-//            );
-//        }
-//    }
+    @ParameterizedTest
+    @MethodSource("altaRendicionSource")
+    @DisplayName("Testeando alta rendicion")
+    void altaRendicion(String idusr, String motivo, String feDesde, String feHasta, String descripcion,String idRendicion,String msg) throws TransactionException {
+        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
+            doNothing().when(mockM).executeTrx(any(), anyMap());
+            when(mockM.getMensajeAviso()).thenReturn(msg);
+            when(mockM.getDataReturn()).thenReturn(idRendicion);
+        })) {
+
+            RendicionesService rendicionesService1 = new RendicionesService(samWebClient);
+            String result = rendicionesService1.altaRendicion(idusr, motivo, feDesde, feHasta, descripcion);
+
+            assertAll(
+                    () -> assertNotNull(result),
+                    () -> assertEquals(idRendicion, result)
+            );
+        }
+    }
 
     @ParameterizedTest
     @MethodSource("getGastosSource")
@@ -194,25 +194,25 @@ class RendicionesServiceTest {
         }
     }
 
-//    @ParameterizedTest
-//    @MethodSource("bajaRendicionSource")
-//    @DisplayName("Testeando baja rendicion")
-//    void bajaRendicion(String opcion, String user, String idRendicion,String idRendicionBorrada,String aviso) throws TransactionException {
-//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-//            doNothing().when(mockM).executeTrx(any(), anyMap());
-//            when(mockM.getMensajeAviso()).thenReturn(aviso);
-//            when(mockM.getDataReturn()).thenReturn(idRendicionBorrada);
-//        })) {
-//
-//            RendicionesService rendicionesService1 = new RendicionesService(samWebClient);
-//            String result = rendicionesService1.bajaRendicion(opcion, user, idRendicion);
-//
-//            assertAll(
-//                    () -> assertNotNull(result),
-//                    () -> assertEquals(idRendicionBorrada, result)
-//            );
-//        }
-//    }
+    @ParameterizedTest
+    @MethodSource("bajaRendicionSource")
+    @DisplayName("Testeando baja rendicion")
+    void bajaRendicion(String user, String idRendicion,String idRendicionBorrada,String aviso) throws TransactionException {
+        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
+            doNothing().when(mockM).executeTrx(any(), anyMap());
+            when(mockM.getMensajeAviso()).thenReturn(aviso);
+            when(mockM.getDataReturn()).thenReturn(idRendicionBorrada);
+        })) {
+
+            RendicionesService rendicionesService1 = new RendicionesService(samWebClient);
+            String result = rendicionesService1.bajaRendicion(user, idRendicion);
+
+            assertAll(
+                    () -> assertNotNull(result),
+                    () -> assertEquals(idRendicionBorrada, result)
+            );
+        }
+    }
 
     @ParameterizedTest
     @MethodSource("getCuadroGeneralSource")
@@ -366,7 +366,6 @@ class RendicionesServiceTest {
 
     private static Stream<Arguments> altaRendicionSource(){
         String idusr = "1";
-        String nombreUsr = "1";
         String motivo = "1";
         String feDesde = "1";
         String feHasta = "1";
@@ -375,7 +374,7 @@ class RendicionesServiceTest {
         String msg = "1";
 
         return Stream.of(
-                Arguments.of(idusr, nombreUsr, motivo, feDesde, feHasta, descripcion, idRendicion, msg)
+                Arguments.of(idusr, motivo, feDesde, feHasta, descripcion, idRendicion, msg)
         );
     }
 
@@ -405,7 +404,6 @@ class RendicionesServiceTest {
     }
 
     private static Stream<Arguments> bajaRendicionSource(){
-        String opcion = "1";
         String user = "1";
         String idRendicion = "1";
         String idRendicionBorrada = "1";
@@ -415,9 +413,9 @@ class RendicionesServiceTest {
 
 
         return Stream.of(
-                Arguments.of(opcion, user, idRendicion, idRendicionBorrada, aviso),
-                Arguments.of(opcion, user, idRendicion, idRendicionBorrada, aviso2),
-                Arguments.of(opcion, user, idRendicion, idRendicionBorrada, aviso3)
+                Arguments.of( user, idRendicion, idRendicionBorrada, aviso),
+                Arguments.of( user, idRendicion, idRendicionBorrada, aviso2),
+                Arguments.of( user, idRendicion, idRendicionBorrada, aviso3)
         );
     }
 
