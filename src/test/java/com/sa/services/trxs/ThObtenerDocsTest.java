@@ -57,11 +57,12 @@ class ThObtenerDocsTest {
     @DisplayName("Testeando mapData")
     void mapData() {
         ThObtenerDocs thObtenerDocs = new ThObtenerDocs();
-
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("NOMBRE ARCHIVO 1                                  A123456789");
         HashMap<String, Object> parametersExecute = new HashMap<>();
-        parametersExecute.put((String) "lista", new ArrayList<>());
+        parametersExecute.put((String) "lista", datosLista);
         thObtenerDocs.mapData(parametersExecute);
-        assertTrue(thObtenerDocs.getDataReturnList().isEmpty());
+        assertFalse(thObtenerDocs.getDataReturnList().isEmpty());
     }
 
     @Test
