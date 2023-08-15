@@ -2,7 +2,6 @@ package com.sa.action.aprobacion;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
-import com.sa.entities.Gastos;
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.RendicionForm;
@@ -12,7 +11,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.mock.MockHttpServletRequest;
 import org.apache.struts.mock.MockHttpSession;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -59,16 +57,19 @@ class AprobacionDetalleActionTest {
     ActionForward actionForward = new ActionForward();
     HttpSession httpSession = new MockHttpSession();
     MockHttpServletRequest requestEmptyAction = new MockHttpServletRequest();
-    Rendicion rendicion = new Rendicion();
+    Rendicion rendicionUsuario = new Rendicion();
+    Rendicion rendicionUsuarioEmpty = new Rendicion();
     List<Rendicion> rendicionList = new ArrayList<>();
     List<Rendicion> rendicionListEmpty = new ArrayList<>();
+    List<Rendicion> rendicionListUserEmpty = new ArrayList<>();
     List<Usuario> usuarioList = new ArrayList<>();
     Usuario user = new Usuario("", "", "", 1, "", new ArrayList<>());
     usuarioList.add(user);
     Usuario usuario = new Usuario("", "", "", 1, "", usuarioList);
 
-    rendicion.setUsuarioRendicion("");
-    rendicionList.add(rendicion);
+    rendicionUsuario.setUsuarioRendicion("");
+    rendicionList.add(rendicionUsuario);
+    rendicionListUserEmpty.add(rendicionUsuarioEmpty);
 
     httpSession.setAttribute("rendicion.link.thuban", "");
     httpSession.setAttribute("userWorking", usuario);
@@ -77,9 +78,7 @@ class AprobacionDetalleActionTest {
     requestEmptyAction.addParameter("glg", "");
     requestEmptyAction.addParameter("codigo", "");
 
-    return Stream.of(
-        Arguments.of(requestEmptyAction, rendicionList, user, actionForward) // retorna usuario nulo en linea 67
-                    );
+    return Stream.of(Arguments.of(requestEmptyAction, rendicionList, user, actionForward));
   }
 
   public static Stream<Arguments> executeActionIfElseBlockSource() {
@@ -110,22 +109,31 @@ class AprobacionDetalleActionTest {
     requestActionAprobar.addParameter("action", "aprobar");
     requestActionAprobar.addParameter("glg", "");
     requestActionAprobar.addParameter("codigo", "");
+    requestActionAprobar.addParameter("idRendicion", "1");
+    requestActionAprobar.addParameter("comentario", "comentario");
+    requestActionAprobar.addParameter("descripcion", "descripcion");
 
     requestActionRechazar.setHttpSession(httpSession);
     requestActionRechazar.addParameter("action", "rechazar");
     requestActionRechazar.addParameter("glg", "");
     requestActionRechazar.addParameter("codigo", "");
+    requestActionRechazar.addParameter("idRendicion", "1");
+    requestActionRechazar.addParameter("comentario", "comentario");
+    requestActionRechazar.addParameter("descripcion", "descripcion");
 
     requestActionObservar.setHttpSession(httpSession);
     requestActionObservar.addParameter("action", "observar");
     requestActionObservar.addParameter("glg", "");
     requestActionObservar.addParameter("codigo", "");
+    requestActionObservar.addParameter("idRendicion", "1");
+    requestActionObservar.addParameter("comentario", "comentario");
+    requestActionObservar.addParameter("descripcion", "descripcion");
 
     return Stream.of(
-        Arguments.of(requestActionGastos, actionGastos)
-//        Arguments.of(requestActionAprobar, actionAprobar), // Log lanza NPE
-//        Arguments.of(requestActionRechazar, actionRechazar), // Log lanza NPE
-//        Arguments.of(requestActionObservar, actionObservar) // Log lanza NPE
+        Arguments.of(requestActionGastos, actionGastos, usuario),
+        Arguments.of(requestActionAprobar, actionAprobar, usuario),
+        Arguments.of(requestActionRechazar, actionRechazar, usuario),
+        Arguments.of(requestActionObservar, actionObservar, usuario)
                     );
   }
 
@@ -184,36 +192,43 @@ class AprobacionDetalleActionTest {
     return Stream.of(Arguments.of(request));
   }
 
-  public static Stream<Arguments> getRendicionGastosSource() {
+  public static Stream<Arguments> aprobarRechazarObservarExceptionSource() {
     //given
-    Gastos gastos = new Gastos();
-    List<Gastos> gastosList = new ArrayList<>();
-    MockHttpServletRequest request = new MockHttpServletRequest();
+    String actionAprobar = "aprobar";
+    String actionRechazar = "rechazar";
+    String actionObservar = "observar";
 
-    request.addParameter("idRendicion", "1");
-    request.addParameter("usuarioRend", "A23");
-    request.addParameter("codMotivo", "1");
-
-    gastosList.add(gastos);
-
-    return Stream.of(Arguments.of(request, gastosList));
+    return Stream.of(
+        Arguments.of(actionAprobar),
+        Arguments.of(actionRechazar),
+        Arguments.of(actionObservar)
+                    );
   }
 
-  public static Stream<Arguments> aprobarRechazarObservarSource() {
+  public static Stream<Arguments> executeActionHappyTrailHandleErrorSource() {
     //given
-    Usuario usuario = new Usuario("A23", "", "", 1, "", new ArrayList<>());
-    Gastos gastos = new Gastos();
-    List<Gastos> gastosList = new ArrayList<>();
-    MockHttpServletRequest request = new MockHttpServletRequest();
+    ActionForward actionForward = new ActionForward();
+    HttpSession httpSession = new MockHttpSession();
+    MockHttpServletRequest requestEmptyAction = new MockHttpServletRequest();
+    List<Usuario> usuarioList = new ArrayList<>();
+    Usuario user = new Usuario("", "", "", 1, "", new ArrayList<>());
+    usuarioList.add(user);
+    Usuario usuario = new Usuario("", "", "", 1, "", usuarioList);
 
-    request.addParameter("idRendicion", "1");
-    request.addParameter("comentario", "comentario");
-    request.addParameter("glg", "glg");
-    request.addParameter("descripcion", "descripcion");
+    Rendicion rendicionUsuarioEmpty = new Rendicion();
+    List<Rendicion> rendicionListIDUserRendicionEmpty = new ArrayList<>();
+    rendicionListIDUserRendicionEmpty.add(rendicionUsuarioEmpty);
 
-    gastosList.add(gastos);
+    httpSession.setAttribute("rendicion.link.thuban", "");
+    httpSession.setAttribute("userWorking", usuario);
 
-    return Stream.of(Arguments.of(request, gastosList, usuario));
+    requestEmptyAction.setHttpSession(httpSession);
+    requestEmptyAction.addParameter("glg", "");
+    requestEmptyAction.addParameter("codigo", "");
+
+    return Stream.of(
+        Arguments.of(requestEmptyAction, rendicionListIDUserRendicionEmpty, user, actionForward)
+                    );
   }
 
   @BeforeEach
@@ -222,15 +237,17 @@ class AprobacionDetalleActionTest {
   }
 
   @ParameterizedTest
-  @MethodSource("executeActionHappyTrailSource")  // Usuario en linea 67 es nulo
+  @MethodSource("executeActionHappyTrailSource") // Revisar 2da instancia de ManagerTransaction
   @DisplayName("Should execute action in happy trail")
   void shouldExecuteActionInHappyTrail(MockHttpServletRequest request, List<Rendicion> rendicionList, Usuario usuario, ActionForward actionForward) throws Exception {
+    //given
+    aprobacionDetalleAction.setSessionUserWorking(usuario);
     //when
     when(actionMappingMock.findForward("success")).thenReturn(actionForward);
     try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class, (mockManagerTransaction, context) -> {
-
+      doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
       when(mockManagerTransaction.getDataReturnList()).thenReturn(rendicionList);
-//      when(mockManagerTransaction.getDataReturn()).thenReturn(usuario);
+      when(mockManagerTransaction.getDataReturn()).thenReturn("");
       when(mockManagerTransaction.getMensajeAviso()).thenReturn("");
     })) {
       //then
@@ -240,19 +257,44 @@ class AprobacionDetalleActionTest {
     }
   }
 
-  @ParameterizedTest //Aprobacion, Rechazo y Observacion lanzan NPEs
-  @MethodSource("executeActionIfElseBlockSource")
-  @DisplayName("Should execute action in if else block")
-  void shouldExecuteActionInIfElseBlock(MockHttpServletRequest request, String action) throws Exception {
+  @ParameterizedTest
+  @MethodSource("executeActionHappyTrailHandleErrorSource")
+  @DisplayName("Should handle errors in happy trail")
+  void shouldHandleErrorsInHappyTrail(MockHttpServletRequest request, List<Rendicion> rendicionList, Usuario usuario, ActionForward actionForward) throws Exception {
     //when
-    when(actionMappingMock.findForward(action)).thenReturn(actionForwardMock);
+    when(actionMappingMock.findForward("success")).thenReturn(actionForward);
     try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class, (mockManagerTransaction, context) -> {
+
+      when(mockManagerTransaction.getDataReturnList()).thenReturn(rendicionList);
       when(mockManagerTransaction.getMensajeAviso()).thenReturn("");
     })) {
       //then
       ActionForward actionForwardToAssert = aprobacionDetalleAction.executeAction(actionMappingMock, rendicionFormMock, samWebApplicationMocked,
           samWebClientMocked, request, httpServletResponseMocked);
       assertNotNull(actionForwardToAssert);
+    }
+  }
+
+  @ParameterizedTest
+  @MethodSource("executeActionIfElseBlockSource")
+  @DisplayName("Should execute action in if else block")
+  void shouldExecuteActionInIfElseBlock(MockHttpServletRequest request, String action, Usuario usuario) throws Exception {
+    //given
+    aprobacionDetalleAction.setSessionUserWorking(usuario);
+    //when
+    when(actionMappingMock.findForward(action)).thenReturn(actionForwardMock);
+    try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class, (mockManagerTransaction, context) -> {
+      when(mockManagerTransaction.getDataReturn()).thenReturn("OPERACION EFECTUADA");
+      when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
+    })) {
+      //then
+      ActionForward actionForwardToAssert = aprobacionDetalleAction.executeAction(actionMappingMock, rendicionFormMock, samWebApplicationMocked,
+          samWebClientMocked, request, httpServletResponseMocked);
+      if (action.equals("aprobar") || action.equals("rechazar") || action.equals("observar")) {
+        assertNull(actionForwardToAssert);
+      } else {
+        assertNotNull(actionForwardToAssert);
+      }
     }
   }
 
@@ -369,89 +411,16 @@ class AprobacionDetalleActionTest {
   }
 
   @ParameterizedTest
-  @MethodSource("getRendicionGastosSource")
-  @DisplayName("Should get rendicion gastos")
-  void shouldGetRendicionGastos(MockHttpServletRequest request, List<Gastos> gastosList) throws Exception {
+  @MethodSource("aprobarRechazarObservarExceptionSource")
+  @DisplayName("Should catch an Exception on action")
+  void shouldCatchAnExceptionOnAction(String action) throws Exception {
     //when
-    when(actionMappingMock.findForward("gastos")).thenReturn(actionForwardMock);
-    try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class, (mockManagerTransaction, context) -> {
-      when(mockManagerTransaction.getDataReturnList()).thenReturn(gastosList);
-      when(mockManagerTransaction.getMensajeAviso()).thenReturn("");
-    })) {
-      //then
-      Method getRendicionGastosMocked = AprobacionDetalleAction.class.getDeclaredMethod("getRendicionGastos", SAMWebClient.class, ActionMapping.class,
-          HttpServletRequest.class);
-      getRendicionGastosMocked.setAccessible(true);
-      ActionForward actionForwardToAssert = (ActionForward) getRendicionGastosMocked.invoke(aprobacionDetalleAction, samWebClientMocked, actionMappingMock,
-          request);
-      assertNotNull(actionForwardToAssert);
-    }
-  }
-
-  @Disabled("sessionUserWorking lanza NPE - reveer")
-  @ParameterizedTest
-  @MethodSource("aprobarRechazarObservarSource")
-  @DisplayName("Should approve rendicion")
-  void shouldApproveRendicion(MockHttpServletRequest request, List<Gastos> gastosList, Usuario usuario) throws Exception {
-    //when
-    try (MockedConstruction<ManagerTransaction> managerTransactionMC = mockConstruction(ManagerTransaction.class,
-        (mockManagerTransaction, context) -> {
-          when(mockManagerTransaction.getDataReturnList()).thenReturn(gastosList);
-          when(mockManagerTransaction.getMensajeAviso()).thenReturn("");
-          when(actionMappingMock.findForward("gastos")).thenReturn(actionForwardMock);
-          when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
-        })) {
-      //then
-      Method aprobarMocked = AprobacionDetalleAction.class.getDeclaredMethod("aprobar", SAMWebClient.class, ActionMapping.class, HttpServletRequest.class,
-          HttpServletResponse.class);
-      aprobarMocked.setAccessible(true);
-      ActionForward actionForwardToAssert = (ActionForward) aprobarMocked.invoke(aprobacionDetalleAction, samWebClientMocked, actionMappingMock, request,
-          httpServletResponseMocked);
-      assertNull(actionForwardToAssert);
-    }
-  }
-
-  @Disabled("sessionUserWorking lanza NPE - reveer")
-  @ParameterizedTest
-  @MethodSource("aprobarRechazarObservarSource")
-  @DisplayName("Should reject rendicion")
-  void shouldRejectRendicion(MockHttpServletRequest request, List<Gastos> gastosList, Usuario usuario) throws Exception {
-    //when
-    try (MockedConstruction<ManagerTransaction> managerTransactionMC = mockConstruction(ManagerTransaction.class,
-        (mockManagerTransaction, context) -> {
-          when(mockManagerTransaction.getDataReturnList()).thenReturn(gastosList);
-          when(mockManagerTransaction.getMensajeAviso()).thenReturn("");
-          when(actionMappingMock.findForward("gastos")).thenReturn(actionForwardMock);
-          when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
-        })) {
-      //then
-      Method aprobarMocked = AprobacionDetalleAction.class.getDeclaredMethod("rechazar", SAMWebClient.class, ActionMapping.class, HttpServletRequest.class, HttpServletResponse.class);
-      aprobarMocked.setAccessible(true);
-      ActionForward actionForwardToAssert = (ActionForward) aprobarMocked.invoke(aprobacionDetalleAction, samWebClientMocked, actionMappingMock, request,
-          httpServletResponseMocked);
-      assertNull(actionForwardToAssert);
-    }
-  }
-
-  @Disabled("sessionUserWorking lanza NPE - reveer")
-  @ParameterizedTest
-  @MethodSource("aprobarRechazarObservarSource")
-  @DisplayName("Should observe rendicion")
-  void shouldObserveRendicion(MockHttpServletRequest request, List<Gastos> gastosList, Usuario usuario) throws Exception {
-    //when
-    try (MockedConstruction<ManagerTransaction> managerTransactionMC = mockConstruction(ManagerTransaction.class,
-        (mockManagerTransaction, context) -> {
-          when(mockManagerTransaction.getDataReturnList()).thenReturn(gastosList);
-          when(mockManagerTransaction.getMensajeAviso()).thenReturn("");
-          when(actionMappingMock.findForward("gastos")).thenReturn(actionForwardMock);
-          when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
-        })) {
-      //then
-      Method aprobarMocked = AprobacionDetalleAction.class.getDeclaredMethod("observar", SAMWebClient.class, ActionMapping.class, HttpServletRequest.class, HttpServletResponse.class);
-      aprobarMocked.setAccessible(true);
-      ActionForward actionForwardToAssert = (ActionForward) aprobarMocked.invoke(aprobacionDetalleAction, samWebClientMocked, actionMappingMock, request,
-          httpServletResponseMocked);
-      assertNull(actionForwardToAssert);
-    }
+    when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
+    //then
+    Method actionMocked = AprobacionDetalleAction.class.getDeclaredMethod(action, SAMWebClient.class, ActionMapping.class, HttpServletRequest.class,
+        HttpServletResponse.class);
+    actionMocked.setAccessible(true);
+    ActionForward actionForwardToAssert = (ActionForward) actionMocked.invoke(aprobacionDetalleAction, samWebClientMocked, actionMappingMock, httpServletRequestMocked, httpServletResponseMocked);
+    assertNull(actionForwardToAssert);
   }
 }
