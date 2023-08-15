@@ -101,7 +101,7 @@ class AprobacionesServiceTest {
         }
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a version actual")
+
     @ParameterizedTest
     @MethodSource("obtenerIDUSource")
     @DisplayName("Testeando obtener IDU")

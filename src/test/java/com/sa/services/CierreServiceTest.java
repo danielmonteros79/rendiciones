@@ -57,23 +57,22 @@ class CierreServiceTest {
         }
     }
 
-//    @Disabled("Desabilitado porque se debe adecuar a version actual")
-//    @ParameterizedTest
-//    @MethodSource("crearOrdenDePagoSource")
-//    @DisplayName("Testeando crear orden de pago")
-//    void crearOrdenDePago(String estado, List<Rendicion> rendicionesSeleccionadas, String user, String descripcion,
-//                          String cmboMotivo) throws TransactionException {
-//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-//            doNothing().when(mockM).executeTrx(any(), anyMap());
-//            when(mockM.getMensajeAviso()).thenReturn("msg");
-//        })) {
-//
-//            CierreService cierreService = new CierreService(samWebClient);
-//            cierreService.crearOrdenDePago(estado, rendicionesSeleccionadas, user, descripcion, cmboMotivo);
-//
-//            assertNotNull(cierreService.getMsg());
-//        }
-//    }
+    @ParameterizedTest
+    @MethodSource("crearOrdenDePagoSource")
+    @DisplayName("Testeando crear orden de pago")
+    void crearOrdenDePago(String estado, List<Integer> idRendiciones, String user, String descripcion,
+                          String cmboMotivo) throws TransactionException {
+        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
+            doNothing().when(mockM).executeTrx(any(), anyMap());
+            when(mockM.getMensajeAviso()).thenReturn("msg");
+        })) {
+
+            CierreService cierreService = new CierreService(samWebClient);
+            cierreService.crearOrdenDePago(estado, idRendiciones, user, descripcion, cmboMotivo);
+
+            assertNotNull(cierreService.getMsg());
+        }
+    }
 
     @ParameterizedTest
     @MethodSource("generarPagoMarcaSource")
@@ -162,15 +161,13 @@ class CierreServiceTest {
         String descripcion = "descripcion";
         String cmboMotivo = "1";
         String msg = "msg";
-        List<Rendicion> rendicionesSeleccionadas = new ArrayList<>();
+        List<Integer> idRendiciones = new ArrayList<>();
         for (int i = 0; i < 1450; i++) {
-            Rendicion rendicion = new Rendicion();
-            rendicion.setId(i);
-            rendicionesSeleccionadas.add(rendicion);
+            idRendiciones.add(i);
         }
 
         return Stream.of(
-                Arguments.of(estado, rendicionesSeleccionadas, user, descripcion, cmboMotivo)
+                Arguments.of(estado, idRendiciones, user, descripcion, cmboMotivo)
         );
     }
 
