@@ -24,16 +24,22 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 class ListadoAprobacionesActionTest {
 
+  @Mock
+  ActionForward actionForwardMocked;
   @Mock
   PrintWriter printWriterMocked;
   @Mock
@@ -48,37 +54,19 @@ class ListadoAprobacionesActionTest {
   SAMWebClient samWebClientMocked;
   @Mock
   SAMWebApplication samWebApplicationMocked;
+  @Mock
+  AprobacionesService aprobacionesServiceMocked;
   @InjectMocks
   ListadoAprobacionesAction listadoAprobacionesAction;
 
   public static Stream<Arguments> executeActionSource() {
     //given
     ActionForward actionForward = new ActionForward();
-    String actionFiltrar = "aprobaciones";
+    String actionFiltrar = "filtrar";
     String actionAprobar = "aprobar";
     String actionSuccess = "success";
-
-    MockHttpServletRequest requestActionFiltrar = new MockHttpServletRequest();
-    requestActionFiltrar.addParameter("action", "filtrar");
-    requestActionFiltrar.addParameter("nroAlerta", "1");
-    requestActionFiltrar.addParameter("usuario", "usuario");
-    requestActionFiltrar.addParameter("motivo", "motivo");
-    requestActionFiltrar.addParameter("glg", "glg");
-
-    MockHttpServletRequest requestActionFiltrar2 = new MockHttpServletRequest();
-    requestActionFiltrar2.addParameter("action", "filtrar");
-    requestActionFiltrar2.addParameter("nroAlerta", "0");
-    requestActionFiltrar2.addParameter("usuario", "usuario");
-    requestActionFiltrar2.addParameter("motivo", "motivo");
-    requestActionFiltrar2.addParameter("glg", "glg");
-
-    MockHttpServletRequest requestActionAprobar = new MockHttpServletRequest();
-    requestActionAprobar.addParameter("action", "aprobar");
-    requestActionAprobar.addParameter("idRendiciones", "[\"1\", \"2\", \"3\"]");
-    requestActionAprobar.addParameter("glg", "glg");
-
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    request.addParameter("glg", "1234567");
+    String alerta1 = "1";
+    String alerta0 = "0";
 
     Rendicion rendicion = new Rendicion();
     rendicion.setAdea("1");
@@ -86,10 +74,10 @@ class ListadoAprobacionesActionTest {
     rendicionList.add(rendicion);
 
     return Stream.of(
-        Arguments.of(request, actionSuccess, actionForward, rendicionList),
-        Arguments.of(requestActionFiltrar, actionFiltrar, actionForward, rendicionList),
-        Arguments.of(requestActionFiltrar2, actionFiltrar, actionForward, rendicionList),
-        Arguments.of(requestActionAprobar, actionAprobar, actionForward, rendicionList)
+        Arguments.of(actionSuccess, alerta0, rendicionList),
+        Arguments.of(actionFiltrar, alerta1, rendicionList),
+        Arguments.of(actionFiltrar, alerta0, rendicionList),
+        Arguments.of(actionAprobar, alerta0, rendicionList)
                     );
   }
 
@@ -117,9 +105,16 @@ class ListadoAprobacionesActionTest {
   @ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should execute Action")
-  void shouldExecuteAction(MockHttpServletRequest request, String action, ActionForward actionForward, List<Rendicion> rendicionList) throws Exception {
+  void shouldExecuteAction(String action, String alerta, List<Rendicion> rendicionList) throws Exception {
     //when
-    when(actionMappingMocked.findForward(action)).thenReturn(actionForward);
+    when(httpServletRequestMocked.getParameter("action")).thenReturn(action);
+    when(httpServletRequestMocked.getParameter("nroAlerta")).thenReturn(alerta);
+    when(httpServletRequestMocked.getParameter("usuario")).thenReturn("");
+    when(httpServletRequestMocked.getParameter("motivo")).thenReturn("");
+    when(httpServletRequestMocked.getParameter("glg")).thenReturn("1234567");
+    when(httpServletRequestMocked.getParameter("idRendiciones")).thenReturn("[\"1\", \"2\", \"3\"]");
+
+    when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
     when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
 
     try (MockedConstruction<AprobacionesService> aprobacionesServiceMC = Mockito.mockConstruction(AprobacionesService.class,
@@ -129,11 +124,10 @@ class ListadoAprobacionesActionTest {
       try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
           (mockManagerTransaction, context) -> {
             doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
-            when(mockManagerTransaction.getDataReturn()).thenReturn("OPERACION EFECTUADA");
           })) {
         //then
         ActionForward actionForwardToAssert = listadoAprobacionesAction.executeAction(actionMappingMocked, actionFormMocked, samWebApplicationMocked,
-            samWebClientMocked, request, httpServletResponseMocked);
+            samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
         if (action.equals("aprobar")) {
           assertNull(actionForwardToAssert);
         } else {
