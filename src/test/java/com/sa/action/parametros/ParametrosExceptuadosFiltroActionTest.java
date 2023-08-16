@@ -13,7 +13,6 @@ import org.apache.struts.mock.MockHttpServletRequest;
 import org.apache.struts.mock.MockHttpSession;
 import org.apache.struts.mock.MockServletContext;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,8 +22,10 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,14 +33,18 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ParametrosExceptuadosFiltroActionTest {
 
     @Mock
-    HttpServletResponse httpServletResponse;
-
+    HttpServletResponse httpServletResponseMocked;
+    @Mock
+    HttpServletRequest httpServletRequestMocked;
+    @Mock
+    PrintWriter printWriterMocked;
     @InjectMocks
     ParametrosExceptuadosFiltroAction parametrosExceptuadosFiltroAction;
 
@@ -68,9 +73,9 @@ class ParametrosExceptuadosFiltroActionTest {
         actionMapping.addForwardConfig(new ActionForward("exceptuados", "path1", false));
 
         return Stream.of(
-                Arguments.of(actionMapping, parametrosExceptuadosFiltroForm, samWebApplication, samWebClient, request, exceptuados, userWorking),
-                Arguments.of(actionMapping, parametrosExceptuadosFiltroForm, samWebApplication, samWebClient, request2, exceptuados, userWorking)
-        );
+            Arguments.of(actionMapping, parametrosExceptuadosFiltroForm, samWebApplication, samWebClient, request, exceptuados, userWorking),
+            Arguments.of(actionMapping, parametrosExceptuadosFiltroForm, samWebApplication, samWebClient, request2, exceptuados, userWorking)
+                        );
     }
 
     public static Stream<Arguments> executeActionExceptionSource() {
@@ -126,9 +131,9 @@ class ParametrosExceptuadosFiltroActionTest {
         samWebApplication.setAttribute("usuario", usuario);
 
         return Stream.of(
-                Arguments.of(actionMapping, samWebApplication, samWebClient, request, parametrosExceptuadosFiltroForm, usuario, parametroExceptuadoList),
-                Arguments.of(actionMapping, samWebApplication, samWebClient, request, parametrosExceptuadosFiltroFormFiltroNull, usuario, parametroExceptuadoList)
-        );
+            Arguments.of(actionMapping, samWebApplication, samWebClient, request, parametrosExceptuadosFiltroForm, usuario, parametroExceptuadoList),
+            Arguments.of(actionMapping, samWebApplication, samWebClient, request, parametrosExceptuadosFiltroFormFiltroNull, usuario, parametroExceptuadoList)
+                        );
     }
 
     @BeforeEach
@@ -143,37 +148,29 @@ class ParametrosExceptuadosFiltroActionTest {
         //when
         parametrosExceptuadosFiltroAction.setSessionUserWorking(userWorking);
         try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class,
-                (mockParametrosService, context) -> {
-                    when(mockParametrosService.getExceptuado(any(), any(), any())).thenReturn(exceptuados);
-                    when(mockParametrosService.getMsgAviso()).thenReturn("Message");
-                })) {
+            (mockParametrosService, context) -> {
+                when(mockParametrosService.getExceptuado(any(), any(), any())).thenReturn(exceptuados);
+                when(mockParametrosService.getMsgAviso()).thenReturn("Message");
+            })) {
             //then
-            ActionForward actionForwardToAssert = parametrosExceptuadosFiltroAction.executeAction(actionMapping, form, samApplication, samClient, request, httpServletResponse);
+            ActionForward actionForwardToAssert = parametrosExceptuadosFiltroAction.executeAction(actionMapping, form, samApplication, samClient, request,
+                httpServletResponseMocked);
             assertNotNull(actionForwardToAssert);
         }
     }
 
-
-    @Disabled("Terminar")
     @ParameterizedTest
     @MethodSource("executeActionExceptionSource")
-    @DisplayName("Should throw an Exception")
-    void shouldThrowAnException(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
+    @DisplayName("Should catch an Exception")
+    void shouldCatchAnException(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
                                 ParametrosExceptuadosFiltroForm parametrosExceptuadosFiltroForm, Usuario usuario,
                                 List<ParametroExceptuado> parametroExceptuadoList) throws Exception {
         //when
-        try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class,
-                (mockParametrosService, context) -> {
-                    when(mockParametrosService.getExceptuados(usuario.getIdUser())).thenReturn(parametroExceptuadoList);
-                    when(mockParametrosService.getMsgAviso()).thenReturn("Message");
-                })) {
-            //then
-            ActionForward actionForwardToAssert = parametrosExceptuadosFiltroAction.executeAction(actionMapping, parametrosExceptuadosFiltroForm, samApplication, samClient,
-                    request, httpServletResponse);
-            assertAll(
-                    () -> assertNotNull(actionForwardToAssert),
-                    () -> assertEquals("ERROR: Para motivos solo se permiten caracteres numericos", request.getAttribute("message"))
-            );
-        }
+        doThrow(new NullPointerException()).when(httpServletRequestMocked).getParameter("action");
+        when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
+        //then
+        ActionForward actionForwardToAssert = parametrosExceptuadosFiltroAction.executeAction(actionMapping, parametrosExceptuadosFiltroForm, samApplication, samClient,
+            httpServletRequestMocked, httpServletResponseMocked);
+        assertNull(actionForwardToAssert);
     }
 }
