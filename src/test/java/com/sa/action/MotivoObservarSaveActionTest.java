@@ -49,7 +49,6 @@ class MotivoObservarSaveActionTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("executeActionSource")
     @DisplayName("Testeando execute action")
@@ -58,7 +57,7 @@ class MotivoObservarSaveActionTest {
             when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenReturn(motivo);
         })) {
             try(MockedConstruction<AprobacionesService> mock2 = mockConstruction(AprobacionesService.class, (mockAprobacionesService, context) -> {
-                when(mockAprobacionesService.cambiarEstadoDeUnaRendicion(any(),any(),any(),any(),any())).thenReturn("");
+                when(mockAprobacionesService.cambiarEstadoDeUnaRendicion(any(),anyInt(),any(),any(),any())).thenReturn("");
             })) {
                 ActionForward result = motivoObservarSaveAction.executeAction(mapping, form, null, null, request, null);
 
@@ -70,7 +69,6 @@ class MotivoObservarSaveActionTest {
         }
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("executeActionSource")
     @DisplayName("Testeando execute action exception")
@@ -79,7 +77,7 @@ class MotivoObservarSaveActionTest {
             when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenReturn(motivo);
         })) {
             try(MockedConstruction<AprobacionesService> mock2 = mockConstruction(AprobacionesService.class, (mockAprobacionesService, context) -> {
-                when(mockAprobacionesService.cambiarEstadoDeUnaRendicion(any(),any(),any(),any(),any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
+                when(mockAprobacionesService.cambiarEstadoDeUnaRendicion(any(),anyInt(),any(),any(),any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
             })) {
                 ActionForward result = motivoObservarSaveAction.executeAction(mapping, form, null, null, request, null);
 
