@@ -1,8 +1,5 @@
 package com.sa.services.trxs;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import ar.com.bbva.web.IWebClient;
 import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
@@ -10,12 +7,15 @@ import ar.com.itrsa.sam.TransactionException;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Disabled;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class SU71Test {
 
@@ -46,12 +46,14 @@ class SU71Test {
     void mapData() {
         SU71 su71 = new SU71();
 
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("01234 8475643092713485764392810457438297 0123456789 012345678987654 A");
         HashMap<String, Object> parametersExecute = new HashMap<>();
-        parametersExecute.put((String) "lista", new ArrayList<>());
+        parametersExecute.put((String) "lista", datosLista);
         parametersExecute.put((String) "cod_mot_sel", "foo");
         parametersExecute.put((String) "cod_glg_sel", "foo");
         su71.mapData(parametersExecute);
-        assertTrue(su71.getDataReturnList().isEmpty());
+        assertFalse(su71.getDataReturnList().isEmpty());
     }
 }
 
