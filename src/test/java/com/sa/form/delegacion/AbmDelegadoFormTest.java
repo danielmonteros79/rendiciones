@@ -5,43 +5,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 class AbmDelegadoFormTest {
-    /**
-     * Methods under test:
-     *
-     * <ul>
-     *   <li>default or parameterless constructor of {@link AbmDelegadoForm}
-     *   <li>{@link AbmDelegadoForm#setAccion(String)}
-     *   <li>{@link AbmDelegadoForm#setDelegadoCentroCostos(String)}
-     *   <li>{@link AbmDelegadoForm#setDelegadoNombre(String)}
-     *   <li>{@link AbmDelegadoForm#setDelegadoSector(String)}
-     *   <li>{@link AbmDelegadoForm#setDelegadoUser(String)}
-     *   <li>{@link AbmDelegadoForm#setEstado(String)}
-     *   <li>{@link AbmDelegadoForm#setFeDesde(String)}
-     *   <li>{@link AbmDelegadoForm#setFeDesdeOld(String)}
-     *   <li>{@link AbmDelegadoForm#setFeHasta(String)}
-     *   <li>{@link AbmDelegadoForm#setFeHastaOld(String)}
-     *   <li>{@link AbmDelegadoForm#setFechaAlta(String)}
-     *   <li>{@link AbmDelegadoForm#setInforme(String)}
-     *   <li>{@link AbmDelegadoForm#setOpcion(String)}
-     *   <li>{@link AbmDelegadoForm#setUserAlta(String)}
-     *   <li>{@link AbmDelegadoForm#setUsuario(String)}
-     *   <li>{@link AbmDelegadoForm#getAccion()}
-     *   <li>{@link AbmDelegadoForm#getDelegadoCentroCostos()}
-     *   <li>{@link AbmDelegadoForm#getDelegadoNombre()}
-     *   <li>{@link AbmDelegadoForm#getDelegadoSector()}
-     *   <li>{@link AbmDelegadoForm#getDelegadoUser()}
-     *   <li>{@link AbmDelegadoForm#getEstado()}
-     *   <li>{@link AbmDelegadoForm#getFeDesde()}
-     *   <li>{@link AbmDelegadoForm#getFeDesdeOld()}
-     *   <li>{@link AbmDelegadoForm#getFeHasta()}
-     *   <li>{@link AbmDelegadoForm#getFeHastaOld()}
-     *   <li>{@link AbmDelegadoForm#getFechaAlta()}
-     *   <li>{@link AbmDelegadoForm#getInforme()}
-     *   <li>{@link AbmDelegadoForm#getOpcion()}
-     *   <li>{@link AbmDelegadoForm#getUserAlta()}
-     *   <li>{@link AbmDelegadoForm#getUsuario()}
-     * </ul>
-     */
+
+
+    @Test
+    void testClearData() {
+        AbmDelegadoForm abmDelegadoForm = new AbmDelegadoForm();
+        abmDelegadoForm.clearData();
+        assertEquals("I", abmDelegadoForm.getAccion());
+        assertEquals("", abmDelegadoForm.getFeHasta());
+        assertEquals("", abmDelegadoForm.getFeDesde());
+        assertEquals("", abmDelegadoForm.getEstado());
+        assertEquals("", abmDelegadoForm.getDelegadoUser());
+        assertEquals("", abmDelegadoForm.getDelegadoSector());
+        assertEquals("", abmDelegadoForm.getDelegadoNombre());
+        assertEquals("", abmDelegadoForm.getDelegadoCentroCostos());
+    }
+
     @Test
     void testConstructor() {
         AbmDelegadoForm actualAbmDelegadoForm = new AbmDelegadoForm();
