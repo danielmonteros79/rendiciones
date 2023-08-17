@@ -103,4 +103,15 @@ class ParametrosMotivoLoadActionTest {
       assertNotNull(actionForwardToAssert);
     }
   }
+
+  @ParameterizedTest
+  @MethodSource("executeActionSource")
+  @DisplayName("Should catch exception")
+  void shouldCatchException(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
+                            ParametrosMotivoFiltroForm parametrosMotivoFiltroForm, Usuario usuario, List<ParametroMotivo> parametroMotivoList) throws Exception {
+    //then
+    ActionForward actionForwardToAssert = parametrosMotivoLoadAction.executeAction(actionMapping, parametrosMotivoFiltroForm, samApplication, samClient, request,
+        httpServletResponse);
+    assertNotNull(actionForwardToAssert);
+  }
 }
