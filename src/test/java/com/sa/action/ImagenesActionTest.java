@@ -6,6 +6,7 @@ import com.sa.entities.Archivo;
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.ImagenesForm;
+import com.sa.form.RendicionAvisoForm;
 import com.sa.manager.ManagerTransaction;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -44,7 +45,7 @@ class ImagenesActionTest {
   @Mock
   ActionMapping actionMappingMocked;
   @Mock
-  ImagenesForm imagenesFormMocked;
+  RendicionAvisoForm imagenesFormMocked;
   @Mock
   SAMWebClient samWebClientMocked;
   @Mock
@@ -65,9 +66,9 @@ class ImagenesActionTest {
     String action = "";
     String accionInicializar = "inicializar";
 
-    ImagenesForm imagenesFormEmptyAccion = new ImagenesForm();
+    RendicionAvisoForm imagenesFormEmptyAccion = new RendicionAvisoForm();
     imagenesFormEmptyAccion.setAction(action);
-    ImagenesForm imagenesFormInicializar = new ImagenesForm();
+    RendicionAvisoForm imagenesFormInicializar = new RendicionAvisoForm();
     imagenesFormInicializar.setAction(accionInicializar);
 
     Archivo archivo = new Archivo();
@@ -102,7 +103,7 @@ class ImagenesActionTest {
   @ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should execute the action")
-  void shouldExecuteTheAction(ImagenesForm imagenesForm, List<Archivo> archivoList) throws Exception {
+  void shouldExecuteTheAction(RendicionAvisoForm imagenesForm, List<Archivo> archivoList) throws Exception {
     //when
     when(httpServletRequestMocked. getSession()).thenReturn(httpSessionMocked);
     when(httpSessionMocked.getServletContext()).thenReturn(servletContextMocked);
