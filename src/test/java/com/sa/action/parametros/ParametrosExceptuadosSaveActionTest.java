@@ -3,6 +3,7 @@ package com.sa.action.parametros;
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 import com.sa.entities.Usuario;
+import com.sa.form.RendicionForm;
 import com.sa.form.parametros.ParametrosExceptuadosForm;
 import com.sa.services.ParametrosService;
 import org.apache.struts.action.ActionForward;
@@ -12,6 +13,7 @@ import org.apache.struts.mock.MockHttpSession;
 import org.apache.struts.mock.MockServletContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,21 +22,39 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ParametrosExceptuadosSaveActionTest {
 
   @Mock
-  HttpServletResponse httpServletResponse;
-
+  ActionForward actionForwardMocked;
+  @Mock
+  Usuario usuarioMocked;
+  @Mock
+  ActionMapping actionMappingMocked;
+  @Mock
+  ParametrosExceptuadosForm parametrosExceptuadosFormMocked;
+  @Mock
+  SAMWebClient samWebClientMocked;
+  @Mock
+  SAMWebApplication samWebApplicationMocked;
+  @Mock
+  HttpServletRequest httpServletRequestMocked;
+  @Mock
+  HttpServletResponse httpServletResponseMocked;
+  @Mock
+  HttpSession httpSessionMocked;
   @InjectMocks
   ParametrosExceptuadosSaveAction parametrosExceptuadosSaveAction;
 
@@ -106,8 +126,23 @@ class ParametrosExceptuadosSaveActionTest {
         })) {
       //then
       ActionForward actionForwardToAssert = parametrosExceptuadosSaveAction.executeAction(actionMapping, parametrosExceptuadosForm, samApplication, samClient, request,
-          httpServletResponse);
+          httpServletResponseMocked);
       assertNotNull(actionForwardToAssert);
     }
+  }
+
+  @Test
+  @DisplayName("Should catch an exception when execute") // Exception message is null
+  void shouldCatchAnExceptionWhenExecute() {
+    //when
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getAttribute("usuario")).thenReturn(usuarioMocked);
+    when(parametrosExceptuadosFormMocked.getAccion()).thenReturn("alta");
+    //then
+    assertThrows(NullPointerException.class, () -> {
+      parametrosExceptuadosSaveAction.executeAction(actionMappingMocked, parametrosExceptuadosFormMocked, samWebApplicationMocked,
+          samWebClientMocked, httpServletRequestMocked,
+          httpServletResponseMocked);
+    }, "Did not throw NullPointerException");
   }
 }
