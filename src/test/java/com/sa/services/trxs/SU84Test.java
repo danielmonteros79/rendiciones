@@ -17,43 +17,44 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SU71Test {
+class SU84Test {
 
     @Test
-    @DisplayName("Testeando constructor")
-    void testConstructor() throws Exception {
-        SU71 actualSu71 = new SU71();
-        actualSu71.hardcodear(new HashMap<>());
-        assertTrue(actualSu71.getDataReturnList().isEmpty());
+    @DisplayName("Testeando Constructor")
+    void testConstructor() {
+        assertTrue((new SU84()).getDataReturnList().isEmpty());
     }
 
     @Test
     @DisplayName("Testeando executeTrx")
-    void testExecuteTrx() throws TransactionException {
-        SU71 su71 = new SU71();
+    void executeTrx() throws TransactionException {
+        SU84 su84 = new SU84();
         SAMWebClient client = new SAMWebClient();
 
         HashMap<String, Object> parametersExecute = new HashMap<>();
         parametersExecute.put((String) "lista", new ArrayList<>());
-        parametersExecute.put((String) "cod_mot_sel", "foo");
-        parametersExecute.put((String) "cod_glg_sel", "foo");
-        assertThrows(TransactionException.class, () -> su71.executeTrx(client, parametersExecute));
+        assertThrows(TransactionException.class, () -> su84.executeTrx(client, parametersExecute));
     }
-
 
     @Test
     @DisplayName("Testeando mapData")
     void mapData() {
-        SU71 su71 = new SU71();
+        SU84 su84 = new SU84();
 
         List<String> datosLista = new ArrayList<>();
-        datosLista.add("01234 8475643092713485764392810457438297 0123456789 012345678987654 A");
+        datosLista.add("0123 descripcionesGasto                                                                                            test                                                                   test");
         HashMap<String, Object> parametersExecute = new HashMap<>();
         parametersExecute.put((String) "lista", datosLista);
-        parametersExecute.put((String) "cod_mot_sel", "foo");
-        parametersExecute.put((String) "cod_glg_sel", "foo");
-        su71.mapData(parametersExecute);
-        assertFalse(su71.getDataReturnList().isEmpty());
+        su84.mapData(parametersExecute);
+        assertFalse(su84.getDataReturnList().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Testeando hardcodear")
+    void hardcodear() throws Exception {
+        SU84 su84 = new SU84();
+        su84.hardcodear(new HashMap<>());
+        assertSame(su84.gastos, su84.getDataReturnList());
     }
 }
 
