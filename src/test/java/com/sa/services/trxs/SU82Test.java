@@ -139,25 +139,9 @@ class SU82Test {
     }
 
 
+
     @Test
-    @Disabled("TODO: Complete this test")
     void testMapData() throws Exception {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException
-        //       at com.sa.services.trxs.SU82.mapDataWithoutCodMotivo(SU82.java:65)
-        //       at com.sa.services.trxs.SU82.mapData(SU82.java:51)
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        SU82 su82 = new SU82();
-        su82.mapData(new HashMap<>());
-    }
-
-
-    @Test
-    void testMapData2() throws Exception {
         SU82 su82 = new SU82();
 
         List lista = new ArrayList<>();
@@ -256,29 +240,9 @@ class SU82Test {
     }
 
 
+
     @Test
-    @Disabled("TODO: Complete this test")
     void testMapData5() throws Exception {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException
-        //       at com.sa.entities.OSCAR.<init>(OSCAR.java:19)
-        //       at com.sa.services.trxs.SU82.mapDataWithCodMotivo(SU82.java:95)
-        //       at com.sa.services.trxs.SU82.mapData(SU82.java:53)
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        SU82 su82 = new SU82();
-
-        HashMap<String, Object> parametersExecute = new HashMap<>();
-        parametersExecute.put("cod_motivo", "42");
-        su82.mapData(parametersExecute);
-    }
-
-
-    @Test
-    void testMapData6() throws Exception {
         SU82 su82 = new SU82();
 
         HashMap<String, Object> parametersExecute = new HashMap<>();
