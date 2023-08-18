@@ -4,18 +4,18 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 import com.sa.entities.Usuario;
 import com.sa.form.CierreFiltroForm;
-import org.apache.struts.action.ActionForm;
+import com.sa.manager.ManagerTransaction;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,30 +27,29 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 class CierreLoadActionTest {
 
     @Mock
-    ActionMapping mapping;
+    ActionMapping actionMappingMocked;
     @Mock
-    ActionForm actionForm;
+    SAMWebApplication samWebApplicationMocked;
     @Mock
-    SAMWebApplication samWebApplication;
+    SAMWebClient samWebClientMocked;
     @Mock
-    SAMWebClient samWebClient;
+    HttpServletRequest httpServletRequestMocked;
     @Mock
-    HttpServletRequest request;
+    HttpServletResponse httpServletResponseMocked;
     @Mock
-    HttpServletResponse response;
+    HttpSession httpSessionMocked;
     @Mock
-    HttpSession session;
-    @Mock
-    CierreFiltroForm form;
-
+    CierreFiltroForm cierreFiltroFormMocked;
     @InjectMocks
-    CierreLoadAction action;
+    CierreLoadAction cierreLoadAction;
 
     public static Stream<Arguments> executeActionSource() {
         List<Usuario> delegados = new ArrayList<Usuario>();
@@ -59,11 +58,11 @@ class CierreLoadActionTest {
         String message ="Mensaje";
         ActionForward ret =new ActionForward("success","path",true);
         return Stream.of(
-                Arguments.of(user1,user2,"",ret),
-                Arguments.of(user1,user2,null,ret),
-                Arguments.of(user1,user2,"ERROR",ret),
-                Arguments.of(user1,user2,message,ret)
-        );
+            Arguments.of(user1,user2,"",ret),
+            Arguments.of(user1,user2,null,ret),
+            Arguments.of(user1,user2,"ERROR",ret),
+            Arguments.of(user1,user2,message,ret)
+                        );
     }
 
     @BeforeEach
@@ -71,18 +70,25 @@ class CierreLoadActionTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("executeActionSource")
     @DisplayName("Testeando executeAction")
     void executeAction(Usuario user1, Usuario user2, String message, ActionForward ret) throws Exception {
-        when(request.getSession()).thenReturn(session);
-        when(session.getAttribute("userWorking")).thenReturn(user1);
-        when(session.getAttribute("usuario")).thenReturn(user2);
-        doNothing().when(form).reset(mapping,request);
-        when(request.getAttribute("message")).thenReturn(message);
-        when(mapping.findForward("success")).thenReturn(ret);
-        ActionForward result = action.executeAction(mapping,form,samWebApplication,samWebClient,request,response);
-        assertNotNull(result);
+        when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+        when(httpSessionMocked.getAttribute("userWorking")).thenReturn(user1);
+        when(httpSessionMocked.getAttribute("usuario")).thenReturn(user2);
+        doNothing().when(cierreFiltroFormMocked).reset(actionMappingMocked, httpServletRequestMocked);
+        when(httpServletRequestMocked.getAttribute("message")).thenReturn(message);
+        when(actionMappingMocked.findForward("success")).thenReturn(ret);
+
+        try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
+            (mockManagerTransaction, context) -> {
+                doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+                when(mockManagerTransaction.getDataReturnList()).thenReturn(new ArrayList<>());
+            })) {
+            ActionForward actionForwardToAssert = cierreLoadAction.executeAction(actionMappingMocked, cierreFiltroFormMocked, samWebApplicationMocked, samWebClientMocked,
+                httpServletRequestMocked, httpServletResponseMocked);
+            assertNotNull(actionForwardToAssert);
+        }
     }
 }

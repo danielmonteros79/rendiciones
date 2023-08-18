@@ -47,36 +47,36 @@ class CuponesSaveActionTest {
         MockitoAnnotations.openMocks(this);
     }
 
-//    @ParameterizedTest
-//    @MethodSource("executeActionSource")
-//    @DisplayName("Testeando execute action")
-//    void executeAction(HttpServletRequest request, CuponesForm form, ActionMapping mapping,String name) throws Exception {
-//        try (MockedConstruction<PagosService> pagosServiceMC = Mockito.mockConstruction(PagosService.class, (mockPagosService, context) -> {
-//            when(mockPagosService.asignarCupon(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(new ArrayList<>());
-//        })) {
-//            ActionForward result = cuponesSaveAction.executeAction(mapping, form, null, null,request, null);
-//            assertAll(
-//                    () -> assertEquals(name,result.getName())
-//            );
-//        }
-//    }
+    @ParameterizedTest
+    @MethodSource("executeActionSource")
+    @DisplayName("Testeando execute action")
+    void executeAction(HttpServletRequest request, CuponesForm form, ActionMapping mapping,String name) throws Exception {
+        try (MockedConstruction<PagosService> pagosServiceMC = Mockito.mockConstruction(PagosService.class, (mockPagosService, context) -> {
+            doNothing().when(mockPagosService).asignarCupon(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+        })) {
+            ActionForward result = cuponesSaveAction.executeAction(mapping, form, null, null,request, null);
+            assertAll(
+                    () -> assertEquals(name,result.getName())
+            );
+        }
+    }
 
 
-//    @ParameterizedTest
-//    @MethodSource("executeActionSourceException")
-//    @DisplayName("Testeando execute action exception")
-//    void executeActionException(HttpServletRequest request, CuponesForm form, ActionMapping mapping,String name) throws Exception {
-//        try (MockedConstruction<PagosService> pagosServiceMC = Mockito.mockConstruction(PagosService.class, (mockPagosService, context) -> {
-//            when(mockPagosService.asignarCupon(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
-//        })) {
-//            ActionForward result = cuponesSaveAction.executeAction(mapping, form, null, null,request, null);
-//            assertAll(
-//                    () -> assertEquals(name,result.getName()),
-//                    () -> assertEquals("ERROR AL GUARDAR CUPONES: TransactionException",request.getAttribute("messageModifTCJP"))
-//            );
-//        }
-//    }
-//    // ------ Sources ------
+    @ParameterizedTest
+    @MethodSource("executeActionSourceException")
+    @DisplayName("Testeando execute action exception")
+    void executeActionException(HttpServletRequest request, CuponesForm form, ActionMapping mapping,String name) throws Exception {
+        try (MockedConstruction<PagosService> pagosServiceMC = Mockito.mockConstruction(PagosService.class, (mockPagosService, context) -> {
+            doThrow(new TransactionException("TransactionException",new Throwable("TransactionException"))).when(mockPagosService).asignarCupon(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+        })) {
+            ActionForward result = cuponesSaveAction.executeAction(mapping, form, null, null,request, null);
+            assertAll(
+                    () -> assertEquals(name,result.getName()),
+                    () -> assertEquals("ERROR AL GUARDAR CUPONES: TransactionException",request.getAttribute("messageModifTCJP"))
+            );
+        }
+    }
+    // ------ Sources ------
 
     private static Stream<Arguments> executeActionSource() {
         CuponesForm form = new CuponesForm();

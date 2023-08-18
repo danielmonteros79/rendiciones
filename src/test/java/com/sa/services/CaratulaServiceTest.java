@@ -49,7 +49,7 @@ class CaratulaServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
+
     @ParameterizedTest
     @MethodSource("generarCaratulaTemplateSource")
     @DisplayName("Testeando generar caratula template")

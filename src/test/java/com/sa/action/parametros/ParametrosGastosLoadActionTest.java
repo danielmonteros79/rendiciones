@@ -3,9 +3,7 @@ package com.sa.action.parametros;
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 import com.sa.entities.Usuario;
-import com.sa.entities.parametros.ParametroExceptuado;
 import com.sa.entities.parametros.ParametroGasto;
-import com.sa.form.parametros.ParametrosExceptuadosFiltroForm;
 import com.sa.form.parametros.ParametrosGastosFiltroForm;
 import com.sa.services.ParametrosService;
 import org.apache.struts.action.ActionForward;
@@ -27,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -109,5 +106,16 @@ class ParametrosGastosLoadActionTest {
           httpServletResponse);
       assertNotNull(actionForwardToAssert);
     }
+  }
+
+  @ParameterizedTest
+  @MethodSource("executeActionSource")
+  @DisplayName("Should catch an exception")
+  void shouldCatchAnException(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
+                              ParametrosGastosFiltroForm parametrosGastosFiltroForm) throws Exception {
+    //then
+    ActionForward actionForwardToAssert = parametrosGastosLoadAction.executeAction(actionMapping, parametrosGastosFiltroForm, samApplication, samClient, request,
+        httpServletResponse);
+    assertNotNull(actionForwardToAssert);
   }
 }

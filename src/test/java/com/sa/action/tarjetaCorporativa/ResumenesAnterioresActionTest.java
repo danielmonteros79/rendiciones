@@ -2,20 +2,25 @@ package com.sa.action.tarjetaCorporativa;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import com.sa.entities.Usuario;
 import com.sa.manager.ManagerTransaction;
+import com.sa.services.ResumenService;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.mock.MockHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,44 +45,62 @@ class ResumenesAnterioresActionTest {
   SAMWebClient samWebClientMocked;
   @Mock
   HttpServletResponse httpServletResponseMocked;
+  @Mock
+  HttpServletRequest httpServletRequestMocked;
   @InjectMocks
   ResumenesAnterioresAction resumenesAnterioresAction;
 
   public static Stream<Arguments> executeActionSource() {
     //given
-    MockHttpServletRequest requestEmptyAction = new MockHttpServletRequest();
-    MockHttpServletRequest requestFiltrar = new MockHttpServletRequest();
-
-    requestFiltrar.addParameter("action", "filtrar");
+    String action = "";
+    String actionFiltrar = "filtrar";
 
     return Stream.of(
-        Arguments.of(requestEmptyAction),
-        Arguments.of(requestFiltrar)  // sessionUserWorking lanza NPE
+        Arguments.of(action),
+        Arguments.of(actionFiltrar)
                     );
   }
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
+    Usuario usuario = new Usuario("", "", "", 0, "", new ArrayList<>());
+    resumenesAnterioresAction.setSessionUserWorking(usuario);
   }
 
   @ParameterizedTest
   @MethodSource("executeActionSource")
-  @DisplayName("Should return forward")
-  void shouldReturnForward(MockHttpServletRequest request) throws Exception {
+  @DisplayName("Should execute action")
+  void shouldExecuteAction(String action) throws Exception {
     //when
+    when(httpServletRequestMocked.getParameter("action")).thenReturn(action);
+
     when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
     when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
-    try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
-        (mockManagerTransaction, context) -> {
-          doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
-          when(mockManagerTransaction.getDataReturnList()).thenReturn(anyList());
+
+    try (MockedConstruction<ResumenService> resumenServiceMC = Mockito.mockConstruction(ResumenService.class,
+        (mockResumenService, context) -> {
+          when(mockResumenService.getConsumos(anyString(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
         })) {
+
       //then
       ActionForward actionForwardToAssert = resumenesAnterioresAction.executeAction(actionMappingMocked, actionFormMocked, samWebApplicationMocked,
-          samWebClientMocked, request, httpServletResponseMocked);
-//      assertNotNull(actionForwardToAssert);  // sessionUserWorking lanza NPE
-      assertNotNull(request);
+          samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+      assertNotNull(actionForwardToAssert);
     }
+  }
+
+  @Test
+  @DisplayName("Should catch exception")
+  void shouldCatchException() throws Exception {
+    //when
+    when(httpServletRequestMocked.getParameter("action")).thenReturn("filtrar");
+
+    when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
+    when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
+    //then
+    ActionForward actionForwardToAssert = resumenesAnterioresAction.executeAction(actionMappingMocked, actionFormMocked, samWebApplicationMocked,
+        samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+    assertNull(actionForwardToAssert);
   }
 }

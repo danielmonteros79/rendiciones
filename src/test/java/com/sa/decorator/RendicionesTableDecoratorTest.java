@@ -46,18 +46,16 @@ class RendicionesTableDecoratorTest {
 
     public static Stream<Arguments> getCuponesLinkSource() {
         Rendicion rendicion = new Rendicion();
-        String resultTest1 = "<img width='25px' src='contextPath/images/iconos/alerta_riesgo_grave.png' alt='Riesgo grave' title='Riesgo grave'/>";
-        String resultTest2 = "<img width='25px' src='contextPath/images/iconos/alerta_riesgo.png' alt='Riesgo' title='Riesgo'/>";
-        String resultTest3 = "<img width='25px' src='contextPath/images/iconos/alerta_incidencia_grave.png' alt='Incidencia grave' title='Incidencia grave'/>";
-        String resultTest4 ="<img width='25px' src='contextPath/images/iconos/alerta_incidente.png' alt='Incidente' title='Incidente'/>";
-        String resultTest5 ="<img width='25px' src='contextPath/images/iconos/alerta_anomalia.png' alt='Anomal&iacute;a' title='Anomal&iacute;a'/>";
+        Rendicion rendicion2 = new Rendicion();
+        String resultTest1 = "";
+        String resultTest2 = "<a href=\"#a\" class=\"text-gray\" onclick=\"obtenerDetalleAlerta(2,123)\"><img width='25px' src='contextPath/images/iconos/alerta_riesgo_grave.png' alt='Riesgo' title='Riesgo' data-toggle='tooltip' title='Riesgo' /></a>";
+
+        rendicion.setAdea("");
+        rendicion2.setAdea("123");
 
         return Stream.of(
                 Arguments.of(rendicion, 1, "1", resultTest1),
-                Arguments.of(rendicion, 2, "2", resultTest2),
-                Arguments.of(rendicion, 3, "3", resultTest3),
-                Arguments.of(rendicion, 4,"4", resultTest4),
-                Arguments.of(rendicion, 5,"5", resultTest5)
+                Arguments.of(rendicion2, 2, "2", resultTest2)
         );
     }
 
@@ -65,17 +63,17 @@ class RendicionesTableDecoratorTest {
 
         Rendicion rendicion = new Rendicion();
 
-        String resultTest1 = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-zero-in-a-circle.png); background-color: yellow;margin-left:7px\"> </div>";
-        String resultTest2 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-one-in-a-circle.png); background-color: lightblue;margin-left:7px\"> </div>";
-        String resultTest3 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-two-in-a-circle.png); background-color: lightblue;margin-left:7px\"> </div>";
-        String resultTest4 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-three-in-a-circle.png); background-color: lightblue;margin-left:7px\"> </div>";
-        String resultTest5 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-four-in-circular-button.png); background-color: lightblue;margin-left:7px\"> </div>";
-        String resultTest6 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-four-in-circular-button.png); background-color: yellow;margin-left:7px\"> </div>";
-        String resultTest7 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: lightblue;margin-left:7px\"> </div>";
-        String resultTest8 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: #5cb85c;margin-left:7px\"> </div>";
-        String resultTest9 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: yellow;margin-left:7px\"> </div>";
-        String resultTest10 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/circular-button.png); background-color: red;margin-left:7px\"> </div>";
-        String resultTest11 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: red;margin-left:7px\"> </div>";
+        String resultTest1 = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-zero-in-a-circle.png); background-color: yellow;\" data-toggle=\"tooltip\" title=\"PENDIENTE\"> </div>";
+        String resultTest2 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-one-in-a-circle.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"ESCANEADA\"> </div>";
+        String resultTest3 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-two-in-a-circle.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"PENDIENTE SUPERVISOR\"> </div>";
+        String resultTest4 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-three-in-a-circle.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"PENDIENTE FIRMA\"> </div>";
+        String resultTest5 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-four-in-circular-button.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"PENDIENTE GLG\"> </div>";
+        String resultTest6 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-four-in-circular-button.png); background-color: yellow;\" data-toggle=\"tooltip\" title=\"OBSERVADA\"> </div>";
+        String resultTest7 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"APROBADA\"> </div>";
+        String resultTest8 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: #5cb85c;\" data-toggle=\"tooltip\" title=\"ORDPG\"></div>";
+        String resultTest9 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: yellow;\" data-toggle=\"tooltip\" title=\"SUSPENDIDA\"> </div>";
+        String resultTest10 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/circular-button.png); background-color: red;\" data-toggle=\"tooltip\" title=\"RECHAZADA\"> </div>";
+        String resultTest11 ="<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: red;\" data-toggle=\"tooltip\" title=\"OTRO\"></div>";
 
         return Stream.of(
                 Arguments.of(rendicion, 1, "PENDI", resultTest1),
@@ -116,7 +114,6 @@ class RendicionesTableDecoratorTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @Test
     @DisplayName("Testeando getVerLink")
     void getVerLink() {
@@ -124,7 +121,7 @@ class RendicionesTableDecoratorTest {
         when(httpServletRequest.getContextPath()).thenReturn("contextPath");
         String result = decorator.getVerLink();
 
-        String resultTest = "<a href=\"contextPath/mostrarDetalleGastos.do?action=mostrarDetalleGastos&codigo=1\"><img src=\"contextPath/images/iconos/ver.png\" alt=\"Ver\" title=\"Ver\" border=\"0\" /></a>";
+        String resultTest = "<a href=\"contextPath/rendicionDetalleGastos.do?codigo=1\"><i class=\"bbva-icon icon-coronita_search\" data-toggle=\"tooltip\" title=\"Ver\"></i></a>";
 
         assertAll(
                 ()->assertNotNull(result),
@@ -142,7 +139,6 @@ class RendicionesTableDecoratorTest {
         );
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @Test
     @DisplayName("Testeando getVerLink")
     void getBorrarLink() {
@@ -150,7 +146,7 @@ class RendicionesTableDecoratorTest {
         when(httpServletRequest.getContextPath()).thenReturn("contextPath");
         String result = decorator.getBorrarLink();
 
-        String resultTest = "<a href=\"contextPath/listaRendiciones.do?action=deleteSector&codigo=1\"><a href=\"#\" onclick=\"eliminarRendicion(1)\"><img src=\"contextPath/images/iconos/borrar.png\" alt=\"Eliminar\" title=\"Eliminar\" border=\"0\" /> </a></a></td>";
+        String resultTest = "<a href=\"#a\" class=\"text-gray\" onclick=\"eliminarRendicion(1)\"><i class=\"bbva-icon icon-coronita_trash\" data-toggle=\"tooltip\" title=\"Eliminar\"></i></a>";
 
         assertAll(
                 ()->assertNotNull(result),
@@ -158,34 +154,20 @@ class RendicionesTableDecoratorTest {
         );
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @Test
     @DisplayName("Testeando getScanLink")
     void getScanLink() {
-        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-        when(httpServletRequest.getContextPath()).thenReturn("contextPath");
         String result = decorator.getScanLink();
-
-        String resultTest = "<a href=\"contextPath/mostrarDetalleScan.do?action=mostrarDetalleScan&codigo=1\"><img src=\"contextPath/images/iconos/scanner.png\" alt=\"Escan\" title=\"Escan\" border=\"0\"width=\"24\" height=\"24\" /></a>";
-
-        assertAll(
-                ()->assertNotNull(result),
-                ()->assertEquals(resultTest, result)
-        );
+        assertNull(result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @Test
     @DisplayName("Testeando getScanLink")
     void getDestinatariosLink() {
-        String resultTest = decorator.getDestinatariosLink();
-        assertAll(
-                ()->assertNotNull(resultTest),
-                ()->assertEquals(resultTest,"")
-        );
+        String result = decorator.getDestinatariosLink();
+        assertNull(result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("getCuponesLinkSource")
     @DisplayName("Testeando getCuponesLink")
@@ -206,7 +188,6 @@ class RendicionesTableDecoratorTest {
         );
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("getStatusColorSource")
     @DisplayName("Testeando getStatusColor")
@@ -227,26 +208,11 @@ class RendicionesTableDecoratorTest {
         );
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("getCaratulaLinkSource")
     @DisplayName("Testeando getCaratulaLink")
     void getCaratulaLink(Rendicion rendicion, Integer id, String estado, String idu, String adea, String resultTest) {
-
-        rendicion.setId(id);
-        rendicion.setEstado(estado);
-        rendicion.setIdu(idu);
-        rendicion.setAdea(adea);
-        currentRowObject = rendicion;
-        MockitoAnnotations.openMocks(this);
-
-        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-        when(httpServletRequest.getContextPath()).thenReturn("contextPath");
         String result = decorator.getCaratulaLink();
-
-        assertAll(
-                ()->assertNotNull(result),
-                ()->assertEquals(resultTest, result)
-        );
+        assertNull(result);
     }
 }
