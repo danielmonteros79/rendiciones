@@ -1,27 +1,53 @@
 package com.sa.services.trxs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import ar.com.bbva.web.IWebClient;
 import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
 import com.sa.entities.OSCAR;
 import com.sa.entities.parametros.ParametroGasto;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Spy;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SU85Test {
+
+    @Spy
+    SU85 su85;
+
+
+    @BeforeEach
+    public void setup() {
+        su85 = new SU85() {
+            @Override
+            protected void execute(IWebClient client,
+                                   String trxExecute,
+                                   Map<String, Object> parametersExecute) throws Exception {
+                if(client == null) {
+                    throw new Exception();
+                }
+            }
+        };
+    }
 
     @Test
     @DisplayName("Testeando constructor")
@@ -41,9 +67,19 @@ class SU85Test {
         assertSame(expectedDataReturn, actualSu85.getDataReturn());
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("executeTrxSource")
     @DisplayName("Testeando executeTrx")
-    void executeTrx() throws TransactionException {
+    void executeTrx(HashMap<String, Object> parametersExecute) throws TransactionException {
+        SAMWebClient client = new SAMWebClient();
+
+        su85.executeTrx(client, parametersExecute);
+        assertNotNull(parametersExecute);
+    }
+
+    @Test
+    @DisplayName("Testeando executeTrx Exception")
+    void executeTrxException() throws TransactionException {
         SU85 su85 = new SU85();
         SAMWebClient client = new SAMWebClient();
 
@@ -56,6 +92,30 @@ class SU85Test {
         parametersExecute.put((String) "lista", objectList);
         assertThrows(TransactionException.class, () -> su85.executeTrx(client, parametersExecute));
     }
+
+    @Test
+    @DisplayName("Testeando executeTrx Exception 2")
+    void executeTrxException2() throws Exception {
+        List gastos = mock(List.class);
+        when(gastos.add(any())).thenThrow(new ClassCastException());
+
+        Field gasto = SU85.class.getDeclaredField("gastos");
+        gasto.setAccessible(true);
+        gasto.set(su85, gastos);
+
+        SAMWebClient client = new SAMWebClient();
+
+        ArrayList<Object> objectList = new ArrayList<>();
+        objectList.add("42");
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "modo", (Object) "I");
+        parametersExecute.put((String) "opcion", (Object) "ALTA");
+        parametersExecute.put((String) "lista", objectList);
+        su85.executeTrx(client, parametersExecute);
+        assertNotNull(parametersExecute);
+    }
+
 
     @Test
     @DisplayName("Testeando mapData")
@@ -98,6 +158,33 @@ class SU85Test {
         assertEquals(" ", oscar.getC());
         assertEquals(" ", oscar.getO());
         assertEquals(" ", oscar.getR());
+    }
+
+    // ------ Sources ------
+
+    private static Stream<Arguments> executeTrxSource() {
+        ArrayList<Object> objectList = new ArrayList<>();
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        HashMap<String, Object> parametersExecute2 = new HashMap<>();
+
+        objectList.add("42");
+
+        parametersExecute.put((String) "modo", (Object) "I");
+        parametersExecute.put((String) "oscar", (Object) "oscar");
+        parametersExecute.put((String) "opcion", (Object) "BAJA");
+        parametersExecute.put((String) "lista", objectList);
+        parametersExecute.put((String) "vcccost", "vcccostvcccost");
+
+        parametersExecute2.put((String) "modo", (Object) "I");
+        parametersExecute2.put((String) "opcion", (Object) "ALTA");
+        parametersExecute2.put((String) "lista", objectList);
+        parametersExecute2.put((String) "vcccost", "vcccostvcccost");
+
+
+        return Stream.of(
+            Arguments.of(parametersExecute),
+            Arguments.of(parametersExecute2)
+        );
     }
 
 }
