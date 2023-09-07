@@ -22,12 +22,31 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.internal.utils.ArrayIterator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Spy;
 
 class SU63Test {
+
+    @Spy
+    SU63 su63;
+
+    @BeforeEach
+    public void setup() {
+        su63 = new SU63() {
+            @Override
+            protected void execute(IWebClient client,
+                                   String trxExecute,
+                                   Map<String, Object> parametersExecute) throws Exception {
+                if(client == null) {
+                    throw new Exception();
+                }
+            }
+        };
+    }
 
     @Test
     @DisplayName("Testeando constructor")
@@ -40,11 +59,36 @@ class SU63Test {
     @Test
     @DisplayName("Testeando executeTrx")
     void executeTrx() throws TransactionException {
+        SAMWebClient client = new SAMWebClient();
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "lista", null);
+        su63.executeTrx(client, parametersExecute);
+
+        assertNotNull(parametersExecute);
+    }
+
+    @Test
+    @DisplayName("Testeando executeTrx Exception")
+    void executeTrxException() throws TransactionException {
         SU63 su63 = new SU63();
         SAMWebClient client = new SAMWebClient();
 
         HashMap<String, Object> parametersExecute = new HashMap<>();
         parametersExecute.put((String) "lista", null);
+        assertThrows(TransactionException.class, () -> su63.executeTrx(client, parametersExecute));
+    }
+
+    @Test
+    @DisplayName("Testeando executeTrx Exception 2")
+    void executeTrxException2() throws TransactionException {
+        SAMWebClient client = new SAMWebClient();
+
+        List<String> contenidoLista = new ArrayList<>();
+        contenidoLista.add("B000AA0000001108A10355A MOTIVO DE 60 CARACTERES                                     NOMBRE DE 60 CARACTERES                                     12345678901234,6712345678901234,67");
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "lista", contenidoLista);
         assertThrows(TransactionException.class, () -> su63.executeTrx(client, parametersExecute));
     }
 
