@@ -1,10 +1,5 @@
 package com.sa.services.trxs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import ar.com.bbva.web.IWebClient;
 import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
@@ -12,12 +7,33 @@ import ar.com.itrsa.sam.TransactionException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Spy;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class SU81Test {
+
+    @Spy
+    SU81 su81;
+
+    @BeforeEach
+    public void setup() {
+        su81 = new SU81() {
+            @Override
+            protected void execute(IWebClient client,
+                                   String trxExecute,
+                                   Map<String, Object> parametersExecute) throws Exception {
+                if(client == null) {
+                    throw new Exception();
+                }
+            }
+        };
+    }
 
     @Test
     @DisplayName("Testeando constructor")
@@ -30,6 +46,21 @@ class SU81Test {
     @Test
     @DisplayName("Testeando executeTrx")
     void executeTrx() throws TransactionException {
+        SAMWebClient client = new SAMWebClient();
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "opcion", (Object) "CONS");
+        parametersExecute.put((String) "id_reemplazo", "1");
+        parametersExecute.put((String) "nombre", "1");
+        parametersExecute.put((String) "centro_costo", "1");
+        parametersExecute.put((String) "sector", "1");
+        su81.executeTrx(client, parametersExecute);
+        assertNotNull(parametersExecute);
+    }
+
+    @Test
+    @DisplayName("Testeando executeTrx Exception")
+    void executeTrxException() throws TransactionException {
         SU81 su81 = new SU81();
         SAMWebClient client = new SAMWebClient();
 

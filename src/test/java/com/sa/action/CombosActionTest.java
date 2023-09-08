@@ -2,7 +2,11 @@ package com.sa.action;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
-import com.sa.entities.*;
+import com.sa.entities.ComboGasto;
+import com.sa.entities.ComboMotivo;
+import com.sa.entities.ComboOpcion;
+import com.sa.entities.ComboOpcion2;
+import com.sa.entities.Usuario;
 import com.sa.manager.ManagerTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -12,7 +16,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,8 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -59,8 +68,8 @@ class CombosActionTest {
     comboGastoList.add(comboGasto);
 
     return Stream.of(
-        Arguments.of(actionGetTiposGasto, comboGastoList, usuario),  // sessionUserWorking lanza NPE
-        Arguments.of(actionGetDelegados, comboGastoList, usuario) // sessionUser lanza NPE
+        Arguments.of(actionGetTiposGasto, comboGastoList, usuario),
+        Arguments.of(actionGetDelegados, comboGastoList, usuario)
                     );
   }
 
@@ -89,7 +98,7 @@ class CombosActionTest {
     List<ComboMotivo> comboMotivosList = new ArrayList<>();
     comboMotivosList.add(comboMotivo);
 
-    return Stream.of(Arguments.of(actionGetMotivos, comboMotivosList, usuario));  // sessionUserWorking lanza NPE
+    return Stream.of(Arguments.of(actionGetMotivos, comboMotivosList, usuario));
   }
 
   public static Stream<Arguments> executeActionComboOpcionSource() {
@@ -101,12 +110,21 @@ class CombosActionTest {
     List<ComboOpcion> comboOpcionList = new ArrayList<>();
     comboOpcionList.add(comboOpcion);
 
-    return Stream.of(Arguments.of(actionGetFechasResumenes, comboOpcionList, usuario));  // sessionUserWorking lanza NPE
+    return Stream.of(Arguments.of(actionGetFechasResumenes, comboOpcionList, usuario));
   }
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
+    Usuario user = new Usuario("", "", "", 1, "", new ArrayList<>());
+    Usuario user2 = new Usuario("1", "", "", 1, "", new ArrayList<>());
+    List<Usuario> usuarioList = new ArrayList<>();
+    usuarioList.add(user);
+    usuarioList.add(user2);
+    Usuario usuario = new Usuario("", "", "", 1, "", new ArrayList<>());
+    usuario.setDelegadosAsignados(usuarioList);
+    combosAction.setSessionUserWorking(usuario);
+    combosAction.setSessionUser(usuario);
   }
 
   @ParameterizedTest

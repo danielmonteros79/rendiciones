@@ -20,12 +20,31 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.internal.utils.ArrayIterator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Spy;
 
 class SU70Test {
+
+    @Spy
+    SU70 su70;
+
+    @BeforeEach
+    public void setup() {
+        su70 = new SU70() {
+            @Override
+            protected void execute(IWebClient client,
+                                   String trxExecute,
+                                   Map<String, Object> parametersExecute) throws Exception {
+                if(client == null) {
+                    throw new Exception();
+                }
+            }
+        };
+    }
 
     @Test
     @DisplayName("Testeando constructor")
@@ -36,7 +55,30 @@ class SU70Test {
     @Test
     @DisplayName("Testeando executeTrx")
     void executeTrx() throws TransactionException {
+        SAMWebClient client = new SAMWebClient();
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("001ESTADO 1                                          A103557 NOMBRE USUARIO PROXIMO        01A103558 NOMBRE USUARIO APROBADOR      2018-05-27");
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "lista", datosLista);
+        su70.executeTrx(client, parametersExecute);
+        assertNotNull(parametersExecute);
+    }
+
+    @Test
+    @DisplayName("Testeando executeTrx Exception")
+    void executeTrxException() throws TransactionException {
         SU70 su70 = new SU70();
+        SAMWebClient client = new SAMWebClient();
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "lista", "42");
+        assertThrows(TransactionException.class, () -> su70.executeTrx(client, parametersExecute));
+    }
+
+    @Test
+    @DisplayName("Testeando executeTrx Exception2")
+    void executeTrxException2() throws TransactionException {
         SAMWebClient client = new SAMWebClient();
 
         HashMap<String, Object> parametersExecute = new HashMap<>();
@@ -51,6 +93,7 @@ class SU70Test {
 
         List<String> datosLista = new ArrayList<>();
         datosLista.add("001ESTADO 1                                          A103557 NOMBRE USUARIO PROXIMO        01A103558 NOMBRE USUARIO APROBADOR      2018-05-27");
+        datosLista.add("001ESTADO 1                            ");
         HashMap<String, Object> parametersExecute = new HashMap<>();
         parametersExecute.put((String) "lista", datosLista);
         su70.mapData(parametersExecute);

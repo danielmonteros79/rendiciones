@@ -10,14 +10,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Spy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class SU84Test {
+
+    @Spy
+    SU84 su84;
+
+    @BeforeEach
+    public void setup() {
+        su84 = new SU84() {
+            @Override
+            protected void execute(IWebClient client,
+                                   String trxExecute,
+                                   Map<String, Object> parametersExecute) throws Exception {
+                if(client == null) {
+                    throw new Exception();
+                }
+            }
+        };
+    }
 
     @Test
     @DisplayName("Testeando Constructor")
@@ -28,11 +47,31 @@ class SU84Test {
     @Test
     @DisplayName("Testeando executeTrx")
     void executeTrx() throws TransactionException {
+        SAMWebClient client = new SAMWebClient();
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "lista", new ArrayList<>());
+        su84.executeTrx(client, parametersExecute);
+    }
+
+    @Test
+    @DisplayName("Testeando executeTrx Exception")
+    void executeTrxException() throws TransactionException {
         SU84 su84 = new SU84();
         SAMWebClient client = new SAMWebClient();
 
         HashMap<String, Object> parametersExecute = new HashMap<>();
         parametersExecute.put((String) "lista", new ArrayList<>());
+        assertThrows(TransactionException.class, () -> su84.executeTrx(client, parametersExecute));
+    }
+
+    @Test
+    @DisplayName("Testeando executeTrx Exception 2")
+    void executeTrxException2() throws TransactionException {
+        SAMWebClient client = new SAMWebClient();
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put((String) "lista", 1);
         assertThrows(TransactionException.class, () -> su84.executeTrx(client, parametersExecute));
     }
 
