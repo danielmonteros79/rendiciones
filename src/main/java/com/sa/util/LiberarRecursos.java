@@ -26,11 +26,13 @@ public class LiberarRecursos
     BbvaSoaMensaje     mens = null;
     Iterator<?>		   iterator = null;
 
+    private Map<Object, Object> paramsLogoff = new HashMap<>();
 	private static final Log log = LogFactory.getLog(LiberarRecursos.class);
 	
 	IServiceAccessManager 	sam = null; 
 	IContext				samContext = null;
-	
+
+
 	public LiberarRecursos(IServiceAccessManager sam, IContext samContext) {
 		super();
 		this.sam = sam;
@@ -39,8 +41,8 @@ public class LiberarRecursos
 	
 	
 	public Map<Object, Object> execute(Map<Object, Object> parameters){
-		Map<Object, Object> paramsLogoff = new HashMap<Object, Object>();
-		
+        //Cambio realizado por AWSoftware para testear esta clase
+        //Map<Object, Object> paramsLogoff = new HashMap<Object, Object>();
         try {
         		
         	if(sam==null)
