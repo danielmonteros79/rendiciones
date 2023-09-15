@@ -18,7 +18,7 @@ class ParametrosMotivoFormTest {
     private ParametrosMotivoForm form;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         MockitoAnnotations.openMocks(this);
         form = new ParametrosMotivoForm();
     }
@@ -49,26 +49,27 @@ class ParametrosMotivoFormTest {
         form.clear();
 
         assertAll(
-                ()->assertEquals(form.getCodigo(),null),
-                ()->assertEquals(form.getDescripcion(),null),
-                ()->assertEquals(form.getIdGlg(),null),
-                ()->assertEquals(form.getIdCentroCostos(),null),
-                ()->assertEquals(form.getEstado(),null),
-                ()->assertEquals(form.getCodSup(),null),
-                ()->assertEquals(form.getCodFirma(),null),
-                ()->assertEquals(form.getCodAprobacionGlg(),null),
-                ()->assertNotEquals(form.getOscar(),oldOscar),
-                ()->assertEquals(form.getFechaDesde(),null),
-                ()->assertEquals(form.getFechaHasta(),null),
-                ()->assertEquals(form.getIdNivCarga(),null),
-                ()->assertEquals(form.getIdNivAutoriz(),null),
-                ()->assertEquals(form.getMaInclExcl(),null),
-                ()->assertEquals(form.getTxAviso(),null),
-                ()->assertEquals(form.getIdOperEspe(),null),
-                ()->assertEquals(form.getMeDiasInterv(),null),
-                ()->assertEquals(form.getCentrosCosto(),new ArrayList<String>())
+                () -> assertEquals(form.getCodigo(), null),
+                () -> assertEquals(form.getDescripcion(), null),
+                () -> assertEquals(form.getIdGlg(), null),
+                () -> assertEquals(form.getIdCentroCostos(), null),
+                () -> assertEquals(form.getEstado(), null),
+                () -> assertEquals(form.getCodSup(), null),
+                () -> assertEquals(form.getCodFirma(), null),
+                () -> assertEquals(form.getCodAprobacionGlg(), null),
+                () -> assertNotEquals(form.getOscar(), oldOscar),
+                () -> assertEquals(form.getFechaDesde(), null),
+                () -> assertEquals(form.getFechaHasta(), null),
+                () -> assertEquals(form.getIdNivCarga(), null),
+                () -> assertEquals(form.getIdNivAutoriz(), null),
+                () -> assertEquals(form.getMaInclExcl(), null),
+                () -> assertEquals(form.getTxAviso(), null),
+                () -> assertEquals(form.getIdOperEspe(), null),
+                () -> assertEquals(form.getMeDiasInterv(), null),
+                () -> assertEquals(form.getCentrosCosto(), new ArrayList<String>())
         );
     }
+
     @Test
     void setCentrosCostoList() {
         List<String> cdCosto = new ArrayList<>();
@@ -76,8 +77,8 @@ class ParametrosMotivoFormTest {
         form.setCentrosCostoList(cdCosto);
         List<String> resultTest = form.getCentrosCosto();
         assertAll(
-                ()->assertNotNull(resultTest),
-                ()->assertEquals(resultTest,cdCosto)
+                () -> assertNotNull(resultTest),
+                () -> assertEquals(resultTest, cdCosto)
         );
     }
 
@@ -85,18 +86,17 @@ class ParametrosMotivoFormTest {
     @DisplayName("Testeando set y get CentrosCostoI")
     @Disabled("No puede probarse debido a que no se puede settear la lista ya que es una variable privada de la clase original")
     void setCentrosCostoI() {
-        form.setCentrosCostoI(1,"");
+        form.setCentrosCostoI(1, "");
         String resultTest = form.getCentrosCostoI(1);
         assertNotNull(resultTest);
     }
-
     @Test
     void setAccion() {
         form.setAccion("");
         String resultTest = form.getAccion();
         assertAll(
-                ()->assertNotNull(resultTest),
-                ()->assertEquals(resultTest,"")
+                () -> assertNotNull(resultTest),
+                () -> assertEquals(resultTest, "")
         );
     }
 }
