@@ -94,10 +94,10 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		if (!extension.contains("pdf") )
 			return writeError(response, frm.getArchivo().getFileName() + ": El archivo no es un PDF v&aacute;lido.");
 		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
+		resp.put(NOMBRE_ARCHIVO, request.getParameter(NOMBRE_ARCHIVO));
 
 		Archivo archivo = new Archivo();
-		archivo.setNomArchivo(request.getParameter("nombreArchivo"));
+		archivo.setNomArchivo(request.getParameter(NOMBRE_ARCHIVO));
 		archivo.setInputStream(frm.getArchivo().getInputStream());
 		archivo.setBase64File(base64Decoded);
 		
