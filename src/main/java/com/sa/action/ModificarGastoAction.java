@@ -11,11 +11,11 @@ import org.apache.struts.action.ActionMapping;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import ar.com.itrsa.sam.TransactionException;
 
 import com.sa.entities.ComboGasto;
 import com.sa.entities.ComboOpcion2;
 import com.sa.entities.Gastos;
-import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.RendicionDetalleForm;
 import com.sa.services.PagosService;
@@ -23,127 +23,185 @@ import com.sa.services.RendicionesService;
 import com.sa.util.ParamsConstants;
 
 public class ModificarGastoAction extends RestriccionTransaccionAction {
+	
+	private static final String COD_MOTIVO = "codMotivo";
+	private static final String CODIGO = "codigo";
+	private static final String LISTADO_APRO = "listadoAprob";
+	
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form,
 			SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		RendicionDetalleForm renForm = (RendicionDetalleForm) form;
-		Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
-		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
-		log.info("Entra al action ModificarGastoAction. Usuario ("+user.getIdUser()+")");
-		renForm.setEstadoRendicion(request.getParameter("estadoRendicion"));
-		request.setAttribute("estadoRend",request.getParameter("estadoRendicion"));
-		PagosService service = new PagosService(samClient);
-		RendicionesService serviceCombos = new RendicionesService(samClient);
-		Integer idRendicion=null;
-		if (request.getParameter("codigo") == null) {
-			
-			idRendicion = (Integer.parseInt((String) request.getAttribute("idRendicion")));
-			// int idr = Integer.parseInt(idRendicion);
-		} else {
-			idRendicion = Integer.valueOf(request.getParameter("codigo"));
-		}
-		 request.setAttribute("idRendicion", idRendicion);
-		 String fechaD=request.getParameter("fechaD");
-		 String fechaH=request.getParameter("fechaH");
-		 request.setAttribute("fechaD", fechaD);
-		 request.setAttribute("fechaH", fechaH);
-		log.info("Se llama al service que realiza la carga de los combos para el alta de gastos");
-		List<ComboOpcion2> moneda = serviceCombos.getComboOpcion2(
-				ParamsConstants.MONEDA_OPCION, ParamsConstants.MONEDA_TABLA
-						+ ParamsConstants.MONEDA_SUBTABLA
-						+ ParamsConstants.MONEDA_CODIGO,
-				ParamsConstants.MONEDA_CANTIDAD, u.getIdUser());
-		request.setAttribute("ComboMoneda", moneda);
+		   RendicionDetalleForm renForm = (RendicionDetalleForm) form;
+		    Usuario u = (Usuario) request.getSession().getAttribute("userWorking");
+		    Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+		    log.info("Entra al action ModificarGastoAction. Usuario (" + user.getIdUser() + ")");
 
-		List<ComboOpcion2> comprobante = serviceCombos.getComboOpcion2(
-				ParamsConstants.COMPROBANTE_OPCION,
-				ParamsConstants.COMPROBANTE_TABLA
-						+ ParamsConstants.COMPROBANTE_SUBTABLA
-						+ ParamsConstants.COMPROBANTE_CODIGO,
-				ParamsConstants.COMPROBANTE_CANTIDAD, u.getIdUser());
-		request.setAttribute("ComboComprobante", comprobante);
+		    cargarEstadoRendicion(request, renForm);
+		    cargarIdRendicion(request, renForm);
+		    cargarFechas(request);
+		    cargarCombos(request, samClient, u.getIdUser());
+		    obtenerDatosGasto(request, samClient, renForm, u.getIdUser());
+		    asignarValores(request, renForm);
 
-		List<ComboGasto> tipoGastos = service
-				.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION,u.getIdUser(),request.getParameter("codMotivo"));
-		request.setAttribute("ComboGastos", tipoGastos);
-		String idGasto = request.getParameter("idGasto");
-		List<Gastos> Gastos = serviceCombos.getGastos(idRendicion.toString(), idGasto, u.getIdUser(), request.getParameter("codMotivo"));
-		renForm.setIdRendicion(request.getParameter("codigo"));
-		renForm.setCodMotivo(request.getParameter("codMotivo"));
-		renForm.setCentroCostos(request.getParameter("cCosto"));
-		Gastos gasto = null;
-		// Recorre la lista de rendiciones
-//		if (idGasto != null
-//				&& !idGasto.equalsIgnoreCase("")) {
-//		idGasto= String.format("%09d", Integer.parseInt(idGasto));
-//		}
-		for (Gastos r : Gastos) {
-			if (r.getIdGasto().equalsIgnoreCase(idGasto)) {
-				gasto = r;
-				break;
-			}
+		    return mapping.findForward("success");
+		}
 
+		private void cargarEstadoRendicion(HttpServletRequest request, RendicionDetalleForm renForm) {
+		    renForm.setEstadoRendicion(request.getParameter("estadoRendicion"));
+		    request.setAttribute("estadoRend", request.getParameter("estadoRendicion"));
 		}
-		ComboGasto comboGastos = null;
-		for (ComboGasto cg : tipoGastos) {
-			
-			if (cg.getDescripcion().trim().equalsIgnoreCase(gasto.getDescGasto())) {
-				comboGastos = cg;
-				break;
-			}
 
-		}
-		ComboOpcion2 comboMoneda = null;
-		for (ComboOpcion2 cm : moneda) {
-			if (cm.getId().trim().equalsIgnoreCase(gasto.getMoneda())) {
-				comboMoneda = cm;
-				break;
-			}
+		private void cargarIdRendicion(HttpServletRequest request, RendicionDetalleForm renForm) {
+		    Integer idRendicion = (request.getParameter(CODIGO) == null) ? Integer.parseInt((String) request.getAttribute("idRendicion"))
+		            : Integer.valueOf(request.getParameter(CODIGO));
 
+		    request.setAttribute("idRendicion", idRendicion);
+		    renForm.setIdRendicion(request.getParameter(CODIGO));
+		    renForm.setCodMotivo(request.getParameter(COD_MOTIVO));
+		    renForm.setCentroCostos(request.getParameter("cCosto"));
 		}
-		ComboOpcion2 comboComprobante = null;
-		for (ComboOpcion2 cf : comprobante) {
-			if (cf.getDescripcion().substring(0,1).equalsIgnoreCase(gasto.getComprobante().substring(0,1))) {
-				comboComprobante = cf;
-				break;
-			}
 
+		private void cargarFechas(HttpServletRequest request ) {
+		    String fechaD = request.getParameter("fechaD");
+		    String fechaH = request.getParameter("fechaH");
+		    request.setAttribute("fechaD", fechaD);
+		    request.setAttribute("fechaH", fechaH);
 		}
-		renForm.setGasto(comboGastos.getId());
-		renForm.setFechaGasto(gasto.getFechagastos());
-		renForm.setMoneda(comboMoneda.getId());
-		renForm.setTipoComprobante(comboComprobante.getId());
-		renForm.setGlg(gasto.getIdGasto());
-		renForm.setMonto(gasto.getMonto());
-		renForm.setMontoMaximo(gasto.getMonto());
-		renForm.setObservacionGasto(gasto.getObservacionGasto());
-//		renForm.setCuit1("");
-//		renForm.setCuit2("");
-//		renForm.setCuit3("");
-		if (request.getParameter("tieneCupon").equalsIgnoreCase("1")){
-			renForm.setImporteCupon(gasto.getMonto().trim());
-			request.setAttribute("conCupon","1");
 
+		private void cargarCombos(HttpServletRequest request, SAMWebClient samClient,
+		        String userId) throws TransactionException {
+		    RendicionesService serviceCombos = new RendicionesService(samClient);
+
+		    List<ComboOpcion2> moneda = serviceCombos.getComboOpcion2(ParamsConstants.MONEDA_OPCION,
+		            ParamsConstants.MONEDA_TABLA + ParamsConstants.MONEDA_SUBTABLA + ParamsConstants.MONEDA_CODIGO,
+		            ParamsConstants.MONEDA_CANTIDAD, userId);
+		    request.setAttribute("ComboMoneda", moneda);
+
+		    List<ComboOpcion2> comprobante = serviceCombos.getComboOpcion2(ParamsConstants.COMPROBANTE_OPCION,
+		            ParamsConstants.COMPROBANTE_TABLA + ParamsConstants.COMPROBANTE_SUBTABLA
+		                    + ParamsConstants.COMPROBANTE_CODIGO,
+		            ParamsConstants.COMPROBANTE_CANTIDAD, userId);
+		    request.setAttribute("ComboComprobante", comprobante);
+
+		    PagosService service = new PagosService(samClient);
+		    List<ComboGasto> tipoGastos = service.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION, userId,
+		            request.getParameter(COD_MOTIVO));
+		    if (tipoGastos != null) {
+		        request.setAttribute("ComboGastos", tipoGastos);
+		    }
 		}
-		else{
-			renForm.setCupCred("");
-			renForm.setCupDeb("");
-			renForm.setCupon("");
-			renForm.setCuponesCheck("");
-			renForm.setDescCupon("");
-			renForm.setImporteCupon("");
-			renForm.setNroTarjeta("");
+
+		private void obtenerDatosGasto(HttpServletRequest request, SAMWebClient samClient, RendicionDetalleForm renForm,
+		        String userId) throws TransactionException {
+		    RendicionesService serviceCombos = new RendicionesService(samClient);
+		    Integer idRendicion = Integer.parseInt(request.getParameter(CODIGO));
+		    String idGasto = request.getParameter("idGasto");
+
+		    List<Gastos> gastos = serviceCombos.getGastos(idRendicion.toString(), idGasto, userId,
+		            request.getParameter(COD_MOTIVO));
+		    renForm.setIdRendicion(request.getParameter(CODIGO));
+		    renForm.setCodMotivo(request.getParameter(COD_MOTIVO));
+		    renForm.setCentroCostos(request.getParameter("cCosto"));
+		    Gastos gasto = obtenerGastoSeleccionado(gastos, idGasto);
+
+		    if (gasto != null) {
+		        ComboGasto comboGastos = obtenerComboGasto(gasto.getDescGasto(),
+		                (List<ComboGasto>) request.getAttribute("ComboGastos"));
+		        ComboOpcion2 comboMoneda = obtenerComboMoneda(gasto.getMoneda(),
+		                (List<ComboOpcion2>) request.getAttribute("ComboMoneda"));
+		        ComboOpcion2 comboComprobante = obtenerComboComprobante(gasto.getComprobante(),
+		                (List<ComboOpcion2>) request.getAttribute("ComboComprobante"));
+
+		        renForm.setGasto(comboGastos != null ? comboGastos.getId() : null);
+		        renForm.setFechaGasto(gasto.getFechagastos());
+		        renForm.setMoneda(comboMoneda != null ? comboMoneda.getId() : null);
+		        renForm.setTipoComprobante(comboComprobante != null ? comboComprobante.getId() : null);
+		        renForm.setGlg(gasto.getIdGasto());
+		        renForm.setMonto(gasto.getMonto());
+		        renForm.setMontoMaximo(gasto.getMonto());
+		        renForm.setObservacionGasto(gasto.getObservacionGasto());
+		    }
+
+		    asignarValoresCupon(request, renForm, gasto);
+		    asignarAtributoListadoAprob(request);
+		    asignarOpcionTitulo(request);
 		}
-		if (request.getParameter("listadoAprob").equalsIgnoreCase("1")) {
-			request.setAttribute("listadoAprob", "1");
+
+		private Gastos obtenerGastoSeleccionado(List<Gastos> gastos, String idGasto) {
+		    return gastos.stream().filter(r -> r.getIdGasto().equalsIgnoreCase(idGasto)).findFirst().orElse(null);
 		}
-		renForm.setUsuarioRend(request.getParameter("user"));
-		renForm.setGlg(request.getParameter("glg"));
-		if (request.getParameter("opcion").equalsIgnoreCase("MODI")){
-			request.setAttribute("opcionTitulo", "1");
+
+		private ComboGasto obtenerComboGasto(String descGasto, List<ComboGasto> tipoGastos) {
+		    return tipoGastos.stream().filter(cg -> cg.getDescripcion().trim().equalsIgnoreCase(descGasto)).findFirst()
+		            .orElse(null);
 		}
-		return mapping.findForward("success");
-}
+
+		private ComboOpcion2 obtenerComboMoneda(String moneda, List<ComboOpcion2> monedaList) {
+		    return monedaList.stream().filter(cm -> cm.getId().trim().equalsIgnoreCase(moneda)).findFirst().orElse(null);
+		}
+
+		private ComboOpcion2 obtenerComboComprobante(String comprobante, List<ComboOpcion2> comprobanteList) {
+		    return comprobanteList.stream()
+		            .filter(cf -> cf.getDescripcion().substring(0, 1).equalsIgnoreCase(comprobante.substring(0, 1)))
+		            .findFirst().orElse(null);
+		}
+
+		private void asignarValores(HttpServletRequest request, RendicionDetalleForm renForm) {
+		    String tieneCupon = request.getParameter("tieneCupon");
+		    String listadoAprob = request.getParameter(LISTADO_APRO);
+		    String opcion = request.getParameter("opcion");
+
+		    renForm.setImporteCupon(tieneCupon.equalsIgnoreCase("1") ? renForm.getMonto().trim() : "");
+		    request.setAttribute("conCupon", tieneCupon);
+
+		    if (listadoAprob.equalsIgnoreCase("1")) {
+		        request.setAttribute(LISTADO_APRO, "1");
+		    }
+
+		    renForm.setUsuarioRend(request.getParameter("user"));
+		    renForm.setGlg(request.getParameter("glg"));
+
+		    if (opcion.equalsIgnoreCase("MODI")) {
+		        request.setAttribute("opcionTitulo", "1");
+		    }
+		}
+
+		private void asignarValoresCupon(HttpServletRequest request, RendicionDetalleForm renForm, Gastos gasto) {
+		    if (request.getParameter("tieneCupon").equalsIgnoreCase("1")) {
+		    	if(gasto != null) {
+		    		 renForm.setImporteCupon(gasto.getMonto().trim());
+		    	}
+		        request.setAttribute("conCupon", "1");
+		    } else {
+		        renForm.setCupCred("");
+		        renForm.setCupDeb("");
+		        renForm.setCupon("");
+		        renForm.setCuponesCheck("");
+		        renForm.setDescCupon("");
+		        renForm.setImporteCupon("");
+		        renForm.setNroTarjeta("");
+		    }
+		}
+
+		private void asignarAtributoListadoAprob(HttpServletRequest request) {
+		    if (request.getParameter(LISTADO_APRO).equalsIgnoreCase("1")) {
+		        request.setAttribute(LISTADO_APRO, "1");
+		    }
+		}
+
+		private void asignarOpcionTitulo(HttpServletRequest request) {
+		    if (request.getParameter("opcion").equalsIgnoreCase("MODI")) {
+		        request.setAttribute("opcionTitulo", "1");
+		    }
+		}
+
+
+
+
+
+
+
 }
