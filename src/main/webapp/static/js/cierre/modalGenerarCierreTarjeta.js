@@ -26,7 +26,7 @@ function modalGenerarCierreTarjetaShow(idConsumos, usuario, totalPesos, totalDol
 }
 
 function modalGenerarCierreTarjetaSetCombos() {
-	setCombo('combos.do?action=getMotivos', '#modalGenerarCierreTarjetaMotivo', { opcion: 4 });
+	setCombo('combos.do?action=getMotivos', '#modalGenerarCierreTarjetaMotivo', { opcion: 4, glg: ""});
 }
 
 function modalGenerarCierreTarjetaSetOnChanges() {

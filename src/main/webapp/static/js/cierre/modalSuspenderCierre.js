@@ -22,7 +22,7 @@ function modalSuspenderCierreShow(idRendiciones) {
 }
 
 function modalSuspenderCierreSetCombos() {
-	setCombo('combos.do?action=getMotivos', '#modalSuspenderCierreMotivo', { opcion: 6 });
+	setCombo('combos.do?action=getMotivos', '#modalSuspenderCierreMotivo', { opcion: 6, glg: ""});
 }
 
 function modalSuspenderCierreSetOnChanges() {
