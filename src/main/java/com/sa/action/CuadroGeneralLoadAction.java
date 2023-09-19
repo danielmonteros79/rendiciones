@@ -30,6 +30,7 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(CuadroGeneralLoadAction.class);
 	private Map<String, List<ComboMotivo>> mapGlgMotivos = new HashMap<String, List<ComboMotivo>>();
 	private List<ComboMotivo> cmbMotivo = new ArrayList<ComboMotivo>();
+	private static final String COD_GLG = "codGlg";
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -79,8 +80,8 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 						List<ComboMotivo> motivosList = new ArrayList<ComboMotivo>();
 						motivosList.add(opcionMotivo);
 						mapGlgMotivos.put(codGlg, motivosList);
-					} else
-						mapGlgMotivos.get(codGlg).add(opcionMotivo);
+					} else {
+						mapGlgMotivos.get(codGlg).add(opcionMotivo);}
 				}
 			}
 			
@@ -108,7 +109,7 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 	@SuppressWarnings("unchecked")
 	private void selectGlg(PrintWriter writer, HttpServletRequest request) {
 		JSONArray jArray = new JSONArray();
-		String codGlg = request.getParameter("codGlg");
+		String codGlg = request.getParameter(COD_GLG);
 		if (codGlg == null || codGlg.trim().equals("")) {
 			for (ComboMotivo motivo : cmbMotivo) {
 				JSONObject jGroup = new JSONObject();
@@ -118,8 +119,8 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 				jArray.add(jGroup);
 			}
 		} else {
-			if (mapGlgMotivos.get(request.getParameter("codGlg")) != null)
-				for (ComboMotivo motivo : mapGlgMotivos.get(request.getParameter("codGlg"))) {
+			if (mapGlgMotivos.get(request.getParameter(COD_GLG)) != null)
+				for (ComboMotivo motivo : mapGlgMotivos.get(request.getParameter(COD_GLG))) {
 					JSONObject jGroup = new JSONObject();
 					jGroup.put("codigo", motivo.getId());
 					jGroup.put("descripcion", motivo.getDescripcion());
