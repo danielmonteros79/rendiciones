@@ -107,7 +107,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 	}
 
 	private void populateRendicionForm(Rendicion rendicion, RendicionForm renForm, String usuarioRend, RendicionesService service, HttpServletRequest request, Usuario u) throws TransactionException {
-	    List<ComboMotivo> motivo = service.getMotivoRendiciones("4", usuarioRend);
+	    List<ComboMotivo> motivo = service.getMotivoRendiciones("4", usuarioRend, "");
 	    renForm.setCostosDestino(getCostosDestino(rendicion.getCodMotivo(), motivo));
 	    request.setAttribute("ComboMotivo", motivo);
 

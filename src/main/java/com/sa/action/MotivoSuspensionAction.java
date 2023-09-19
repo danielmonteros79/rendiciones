@@ -30,7 +30,7 @@ public class MotivoSuspensionAction extends RestriccionTransaccionAction {
 		RendicionesService service = new RendicionesService(samClient);
 		
 		
-		List<ComboMotivo> motivo = service.getMotivoRendiciones("6", u.getIdUser());
+		List<ComboMotivo> motivo = service.getMotivoRendiciones("6", u.getIdUser(),"");
 		request.setAttribute("ComboMotivo", motivo);
 		
 		return mapping.findForward("success");

@@ -52,7 +52,7 @@ class CuadroDetalladoLoadActionTest {
             when(mockRendicionesService.getComboOpcion2(anyString(),anyString(),anyString(),anyString())).thenReturn(estado);
             when(mockRendicionesService.getMsg()).thenReturn("msg");
             when(mockRendicionesService.getGlgsUsuario(any(),any())).thenReturn(opcion);
-            when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenReturn(motivo);
+            when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
         })) {
             ActionForward result = cuadroDetalladoLoadAction.executeAction(mapping, form, null, null, request, null);
             assertAll(
@@ -73,7 +73,7 @@ class CuadroDetalladoLoadActionTest {
             when(mockRendicionesService.getComboOpcion2(anyString(),anyString(),anyString(),anyString())).thenReturn(estado);
             when(mockRendicionesService.getMsg()).thenReturn("msg");
             when(mockRendicionesService.getGlgsUsuario(any(),any())).thenReturn(opcion);
-            when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
+            when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
         })) {
             ActionForward result = cuadroDetalladoLoadAction.executeAction(mapping, form, null, null, request, null);
             assertAll(

@@ -6,8 +6,8 @@ jQuery(document).ready(function() {
 	$('.nav-parametros').addClass('active');
 	setFormValidate();
 	
-	setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: ['1', '2'].indexOf($('#glg').val()) == -1 ? 9 : 8});
-	console.log($("#filtroMotivo").val())
+	setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: ['1', '2'].indexOf($('#glg').val()) == -1 ? 9 : 8, glg:""});
+
 	setCombo('combos.do?action=getTiposGasto', '#filtroGasto', {codMotivo: $('#filtroMotivo').val()});
 	
 	

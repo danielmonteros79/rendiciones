@@ -35,7 +35,7 @@ public class CierreSaveAction extends RestriccionTransaccionAction{
 		CierreService gestionarOrdenService = new CierreService(samClient);
 		@SuppressWarnings("unchecked")
 		Enumeration<String> params = request.getParameterNames();
-		List<Rendicion> rendicionesSeleccionadas = new ArrayList<>();
+		List<Rendicion> rendicionesSeleccionadas = new ArrayList<Rendicion>();
 		cierreForm.setEstado(null);
 		while (params.hasMoreElements()) {
 
@@ -69,7 +69,7 @@ public class CierreSaveAction extends RestriccionTransaccionAction{
 		String gestionarOrden = gestionarOrdenService.crearOrdenDePago(cierreForm.getId().toString(),cierreForm.getEstado(),
 				rendicionesSeleccionadas,u.getIdUser());
 		// Recarga el combo de motivo
-		List<ComboMotivo> motivo = motivoservice.getMotivoRendiciones("3",u.getIdUser());
+		List<ComboMotivo> motivo = motivoservice.getMotivoRendiciones("3",u.getIdUser(), "");
 		request.setAttribute("ComboMotivo", motivo);
 	
 		if(cierreForm.getEstado().equals("ORDPG")){

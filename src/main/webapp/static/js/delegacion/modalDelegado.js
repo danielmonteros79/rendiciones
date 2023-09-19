@@ -67,12 +67,13 @@ function modalDelegadoBuscarUsuario(legajo) {
 	if (legajo) {
 		var params = {
 			action: 'buscarUsuario',
-			legajo: legajo
+			legajo: legajo.toUpperCase()
 		};
-		
 		callAjax('abmDelegado.do', params, 'modalDelegadoBuscarUsuarioSuccess', 'modalDelegadoBuscarUsuarioError', false);
 	}
 }
+
+	
 
 function modalDelegadoBuscarUsuarioSuccess(data) {
 	clearFormError($('#modalDelegadoUsuario').parent());

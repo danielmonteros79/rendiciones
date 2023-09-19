@@ -40,7 +40,7 @@ public class CierreLoadAction extends RestriccionTransaccionAction {
 		request.setAttribute("rendiciones", rendiciones);
 		
 		// Service carga Combo de Motivos
-		List<ComboMotivo> motivo = motivoService.getMotivoRendiciones("4", u.getIdUser());
+		List<ComboMotivo> motivo = motivoService.getMotivoRendiciones("4", u.getIdUser(), "");
 		request.setAttribute("comboMotivo", motivo);
 		formFiltro.setFechaDesde("");
 		formFiltro.setFechaHasta("");

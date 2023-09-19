@@ -109,5 +109,4 @@
 <jsp:include page="../global/modalDatosAdicionales.jsp" />
 <jsp:include page="../global/modalCupones.jsp" />
 <jsp:include page="../global/modalImagenes.jsp" />
-
 <script type="text/javascript" src="static/js/cierre/cierreDetalle.js"></script>

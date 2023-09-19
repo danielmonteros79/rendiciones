@@ -62,16 +62,32 @@ function modalImagenesSeleccionarArchivo() {
 
 function modalImagenesAgregarArchivo() {
 	clearFormErrors('#modalImagenes');
-	
+
 	$($('#modalImagenesArchivo').prop('files')).each(function(i, file) {
 		if (!modalImagenesValidarArchivo(file))
 			return;
+		const reader = new FileReader();	
+		let base64Content = "";
+		reader.onload = function (e){
+			base64Content = e.target.result.split(',')[1];
 		
-		var params = new FormData();
-		params.append('action', 'cargarArchivo');
-		params.append('archivo', file);
+		}
+		reader.readAsDataURL(file)
+		let params = new FormData();
 		
-		callAjax('imagenes.do', params, 'modalImagenesAgregarArchivoSuccess', 'modalImagenesAgregarArchivoError');
+
+		setTimeout(function() {
+			params.append('nombreArchivo', file.name)
+			params.append('tipoArchivo', file.type)
+			params.append('archivo', file)
+			params.append('base64', base64Content)
+			params.append('action', 'cargarArchivo');
+		
+	
+			callAjax('imagenes.do', params, 'modalImagenesAgregarArchivoSuccess', 'modalImagenesAgregarArchivoError');
+		}, 600);
+			
+		
 	});
 	
 	$('#modalImagenesArchivo').val('');

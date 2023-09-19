@@ -102,7 +102,22 @@ public class PuntoEntradaAction extends ISAMWebAction {
 	    }
 
 	    log.info("Se obtuvo el usuario: " + usuario.getIdUser());
-	    return mapping.findForward("success");
+	    String redirect = request.getParameter("redirect");
+		if (redirect != null && !redirect.trim().equals("")) {
+			if (redirect.contains("listadoAprobacion.do?glg=1"))
+				return mapping.findForward("aprob1");
+			else if (redirect.contains("listadoAprobacion.do?glg=2"))
+				return mapping.findForward("aprob2");
+			else if (redirect.contains("listadoAprobacion.do?glg=3"))
+				return mapping.findForward("aprob3");
+			else if (redirect.contains("cierreOrdenDePago.do"))
+				return mapping.findForward("cierre");
+		}
+		
+		if (usuario.getTipoPerfil().toString().equals("VIEW_APROBACION"))
+			return mapping.findForward("aprob1");
+		else
+			return mapping.findForward("success");
 	}
 
 	private void setUsuarioAttributes(HttpServletRequest request, Usuario usuario) {

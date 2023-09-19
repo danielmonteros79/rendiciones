@@ -10,6 +10,7 @@
 	<title><tiles:getAsString name="pageTitle" /></title>
 	<link rel="shortcut icon" href="./images/favicon.ico">
 	
+
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-float-label.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-datepicker.min.css">
@@ -17,6 +18,9 @@
 	<link rel="stylesheet" type="text/css" href="css/style-icons.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 
+	
+	<script type="text/javascript" src="static/js/pdf-lib.min.js"></script>
+	<script type="text/javascript" src="static/js/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="static/js/jquery.js"></script>
 	<script type="text/javascript" src="static/js/jquery.1.12.js"></script>
 	<script type="text/javascript" src="static/js/bootstrap.bundle.min.js"></script>
@@ -40,7 +44,7 @@
 		<logic:present name="errorTimeOut">
 			<script type="text/javascript">
 				window.onload = function () {
-					alert("Finaliz\u00f3 el tiempo de sesi\u00f3n. (TimeOut)");
+					/* alert("Finaliz\u00f3 el tiempo de sesi\u00f3n. (TimeOut)"); */
 					window.location.href = "login.jsp";
 				}
 			</script>

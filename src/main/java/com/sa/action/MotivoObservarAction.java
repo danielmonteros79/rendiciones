@@ -28,7 +28,7 @@ public class MotivoObservarAction extends RestriccionTransaccionAction {
 		frm.setCmboMotivo("");
 		frm.setMotivoRechazo("");
 
-		List<ComboMotivo> motivo = service.getMotivoRendiciones("7", u.getIdUser());
+		List<ComboMotivo> motivo = service.getMotivoRendiciones("7", u.getIdUser(),"");
 		request.setAttribute("ComboMotivo", motivo);
 		frm.setGlg(request.getParameter("glg"));
 

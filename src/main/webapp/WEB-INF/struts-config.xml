@@ -46,6 +46,10 @@
 			name="LoginForm" className="com.sa.core.SecurityActionMapping" input="login.jsp">
 			<set-property value="1" property="applicationZone" />
 			<forward name="success" path="/bienvenida.do" />
+			<forward name="aprob1" path="/listadoAprobacion.do?glg=1" />
+			<forward name="aprob2" path="/listadoAprobacion.do?glg=2" />
+			<forward name="aprob3" path="/listadoAprobacion.do?glg=3" />
+			<forward name="cierre" path="/cierreOrdenDePago.do" />
 			<forward name="failure" path="/error.jsp" />
 		</action>
 		<action path="/logout" type="com.sa.action.LogoutAction"
@@ -164,6 +168,8 @@
 			<forward name="success" path="parametrosMotivo" />
 			<forward name="parametrosMotivoFiltro" path="/pages/parametros/dtMotivos.jsp"/>
 		</action>
+	
+
 		<action path="/parametrosMotivoDetalle"
 			type="com.sa.action.parametros.ParametrosMotivoDetalleLoadAction"
 			name="ParametrosMotivoForm">

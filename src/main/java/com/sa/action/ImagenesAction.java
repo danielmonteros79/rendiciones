@@ -54,7 +54,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			if ("inicializar".equals(frm.getAction()))
 				return this.inicializar(request, response, frm, samClient);
 			else if ("cargarArchivo".equals(frm.getAction()))
-				return this.cargarArchivo(response, frm);
+				return this.cargarArchivo(request, response, frm);
 			else if ("borrarArchivo".equals(frm.getAction()))
 				return this.borrarArchivo(request, response, frm);
 			else if ("generar".equals(frm.getAction()))
@@ -84,20 +84,22 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		return writeJson(response, resp);
 	}
 
-	private ActionForward cargarArchivo(HttpServletResponse response, RendicionAvisoForm frm) throws Exception {
+	private ActionForward cargarArchivo(HttpServletRequest request,HttpServletResponse response, RendicionAvisoForm frm) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
-		String extension = frm.getArchivo().getFileName().substring(frm.getArchivo().getFileName().lastIndexOf("."));
-		String data = new String(frm.getArchivo().getFileData()).substring(0, 5);
-		if (extension.equals(".pdf") && !data.equals("%PDF-"))
+		String extension = request.getParameter("tipoArchivo").toLowerCase();
+		String base64Decoded = request.getParameter("base64");
+	    //byte[] decodedData = DatatypeConverter.parseBase64Binary(base64Decoded);
+     
+		if (!extension.contains("pdf") )
 			return writeError(response, frm.getArchivo().getFileName() + ": El archivo no es un PDF v&aacute;lido.");
 		
-		resp.put(NOMBRE_ARCHIVO, frm.getArchivo().getFileName());
+		resp.put(NOMBRE_ARCHIVO, request.getParameter(NOMBRE_ARCHIVO));
 
 		Archivo archivo = new Archivo();
-		archivo.setNomArchivo(frm.getArchivo().getFileName());
+		archivo.setNomArchivo(request.getParameter(NOMBRE_ARCHIVO));
 		archivo.setInputStream(frm.getArchivo().getInputStream());
-	
+		archivo.setBase64File(base64Decoded);
 		
 		frm.getArchivosASubir().add(archivo);
 

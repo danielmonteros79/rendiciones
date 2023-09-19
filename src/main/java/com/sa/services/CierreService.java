@@ -15,6 +15,7 @@ import ar.com.itrsa.sam.TransactionException;
 import com.sa.entities.CierreTarjeta;
 import com.sa.entities.Rendicion;
 import com.sa.manager.ManagerTransaction;
+import com.sa.services.trxs.SU54;
 import com.sa.services.trxs.SU63;
 import com.sa.services.trxs.SU64;
 import com.sa.services.trxs.SU65;
@@ -111,7 +112,7 @@ public class CierreService {
 		parametersExecute.put("cant_reg_proc", numRegistro);
 		parametersExecute.put("descripcion", descripcion);
 		parametersExecute.put("usr_log", usuario);
-		
+		// parametersExecute.put("term", temminal);
 		manager.executeTrx(this.client, parametersExecute);
 
 		return null;
@@ -161,7 +162,7 @@ public class CierreService {
 		parametersExecute.put("campo4", rendiciones4);
 
 		manager.executeTrx(this.client, parametersExecute);
-		
+		// String idOrden= (String) manager.getDataReturn();
 		return null;
 	}
 	
@@ -244,4 +245,23 @@ public class CierreService {
 	public String getMsg (){
 		return msg;
 	}
+	
+	public String reasignarBandeja(String userOrigen, String userDestino, String tipoBandeja) throws TransactionException {
+		log.info("Comienza llamado a trx para reasignar Bandeja)");
+
+		ManagerTransaction manager = new ManagerTransaction(new SU54());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+		parametersExecute.put("opcion", "TRAS");
+		parametersExecute.put("id_user", userOrigen);
+		parametersExecute.put("usr_log", userDestino);
+		parametersExecute.put("est_rend", tipoBandeja);
+		manager.executeTrx(this.client, parametersExecute);
+
+		msg = (String) manager.getMensajeAviso();
+		
+		return msg;
+	}
+	
+	
+	
 }

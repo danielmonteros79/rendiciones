@@ -127,7 +127,7 @@
 	                </li>
 					<% } %>  --%>
 					
-				<% if (userWorking.getTipoPerfil().getPantalla().contains("Cierre")) { %>
+					<% if (userWorking.getTipoPerfil().getPantalla().contains("Cierre")) { %>
 	                <li class="nav-item dropdown pr-md-2 ">
 	                    <a class="nav-link dropdown-toggle nav-cierre" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>CIERRE</span>
@@ -136,10 +136,14 @@
 							<html:link action="cierreOrdenDePago.do" styleClass="dropdown-item bg-secondary text-white">
 								<span>CIERRE ORDEN DE PAGO</span>
 							</html:link>
+							<html:link action="reasignarBandeja.do" styleClass="dropdown-item bg-secondary text-white">
+								<span>REASIGNACI&Oacute;N DE BANDEJA</span>
+							</html:link>
 							<%-- <html:link action="cierreTarjeta.do" styleClass="dropdown-item bg-secondary text-white">
 								<span>CIERRE TARJETA DE CR&Eacute;DITO</span>
 							</html:link> --%>
 						</div>
+						
 	                </li>
 					<% } %> 
 					

@@ -6,7 +6,7 @@ $(document).ready(function() {
 	showMessage('message', getLocalStorageItem('message'));
 	$('.nav-cierre').addClass('active');
 	dtParams = { action: 'filtrar' };
-	setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: 4});
+	setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: 4, glg: ""});
 	filtrar();
 	
  	$('#filtroMotivo').trigger("chosen:updated");

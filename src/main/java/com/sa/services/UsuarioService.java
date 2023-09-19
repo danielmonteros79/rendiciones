@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.sa.entities.ComboMotivo;
 import com.sa.entities.Usuario;
 import com.sa.manager.ManagerTransaction;
 import com.sa.services.trxs.SU52;
@@ -18,11 +19,9 @@ import ar.com.itrsa.sam.TransactionException;
 public class UsuarioService {
 	protected static final Log log = LogFactory.getLog(UsuarioService.class);
 
-	List<Usuario> usuarios = new ArrayList<>();
+	List<Usuario> usuarios = new ArrayList<Usuario>();
 	private SAMWebClient client;
 	private String msg;
-	// AW Refactorizado para facilitar pruebas con JUnit 5
-	private Usuario user;
 
 	public UsuarioService() {
 	}
@@ -32,7 +31,7 @@ public class UsuarioService {
 	}
 
 	public Usuario obtenerDelegadosUsuario(String usuario) throws TransactionException {
-//		Usuario user = null;
+		Usuario user = null;
 		ManagerTransaction manager = new ManagerTransaction(new SU52());
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		
@@ -44,6 +43,25 @@ public class UsuarioService {
 		msg = (String) manager.getMensajeAviso();
 
 		return user;
+	}
+	
+	public List<Usuario> obtenerSupervisadosUsuario(String usuario, String sector) throws TransactionException {
+		Usuario user = null;
+		
+		ManagerTransaction manager = new ManagerTransaction(new SU52());
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		parameters.put("cod_user", usuario);
+		parameters.put("sector", sector);
+
+		manager.executeTrx(this.client, parameters);
+
+		Usuario userSupe = (Usuario) manager.getDataReturn();
+		List<Usuario> comboSupervisados = userSupe.getDelegadosAsignados();
+		msg = (String) manager.getMensajeAviso();
+		
+		return comboSupervisados;
+
 	}
 
 	public String getMsg() {

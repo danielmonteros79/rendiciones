@@ -71,7 +71,7 @@ public class RendicionSaveAction extends RestriccionTransaccionAction {
 			return mapping.findForward("detalleGastos");
 			
 		} catch (TransactionException e) {
-			List<ComboMotivo> motivo = service.getMotivoRendiciones("4", user.getIdUser());
+			List<ComboMotivo> motivo = service.getMotivoRendiciones("4", user.getIdUser(), "");
 			request.setAttribute("ComboMotivo", motivo);
 			
 			log.error(e);

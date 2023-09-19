@@ -116,6 +116,12 @@
 		<put name="content" value="/pages/cierre/cierreOrdenDePago.jsp" />
 		<put name="accion" value="mostrarPanel" direct="false" />
 	</definition>
+	<definition name="reasignarBandeja" extends="mainLayout">
+		<put name="pageTitle" value="Cierre Orden de Pago" direct="false" />
+		<put name="tituloCuerpo" value="Cierre Orden de Pago" direct="false" />
+		<put name="content" value="/pages/cierre/reasignarBandeja.jsp" />
+		<put name="accion" value="mostrarPanel" direct="false" />
+	</definition>
 	<definition name="cierreDetalle" extends="mainLayout">
 		<put name="pageTitle" value="Cierre - Detalles de Rendición" direct="false" />
 		<put name="tituloCuerpo" value="Cierre - Detalles de Rendición" direct="false" />

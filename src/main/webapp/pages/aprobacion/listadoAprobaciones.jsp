@@ -29,26 +29,26 @@
 				<h5 class="pt-3 pb-5 text-danger" id="filtroMsgValidacion" style="display:none;"></h5>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-lg-3 py-1 py-sm-0 col-sm-6">
+		<div class="row" id="containerFiltrosAprobacion">
+			<div class="col-lg-6 py-1 py-sm-0 col-sm-6" id="containerFiltroId">
 				<span class="has-float-label">
 					<input type="text" class="form-control an-integer-pos" id="filtroId" placeholder="ID"/>
 					<label>ID</label>
 				</span>
 			</div>
-			<div class="col-lg-3 py-1 py-sm-0 col-sm-6">
+			<div class="col-lg-6 py-1 py-sm-0 col-sm-6" id="containerFiltroUsuario">
 				<span class="has-float-label">
 					<input type="text" class="form-control text-uppercase" id="filtroUsuario" placeholder="Usuario" maxlength="8"/>
 					<label>Usuario</label>
 				</span>
 			</div>
-			<div class="col-lg-3 py-1 py-sm-0 col-sm-6 mt-sm-3 mt-lg-0 ">
+			<div class="col-lg-4 py-1 py-sm-0 col-sm-6  " id="containerFiltroMotivo">
 				<div class=" form-group   has-float-label">
 					<select id="filtroMotivo" class="form-control "></select>
 					<label>Motivo</label>
 				</div>
 			</div>
-			<div class="col-lg-3 py-1 py-sm-0 col-sm-6 mt-sm-3 mt-lg-0 ">
+			<div class="col-lg-4 py-1 py-sm-0 col-sm-6 " id="containerFiltroAlerta">
 				<div class=" form-group  has-float-label" >
 					<select id="filtroAlerta" class=" form-control basic-single2 " >
 						<option value="">Seleccione una opci&oacute;n</option>
@@ -56,6 +56,12 @@
 						<option value="1">Riesgo</option>
 					</select>
 					<label for="filtroAlerta">Tipo Alerta</label>
+				</div>
+			</div>
+			<div class="col-lg-4 py-1 py-sm-0 col-sm-12 mt-sm-3 mt-lg-3" id="containerFiltroSupervisado">
+				<div class=" form-group  has-float-label">
+					<select id="filtroSupervisado" class=" form-control "></select>
+					<label for="filtroSupervisado">Supervisados</label>
 				</div>
 			</div>
 			
@@ -76,19 +82,9 @@
 			<small id="aprobacionOculta" class="font-weight-bold d-inline">APROBACI&Oacute;N</small>
 		</div>
 	</div>
-	<div class="row py-3 pb-md-2">
-		<div class="col-sm-12">
-			<h2 class="font-weight-500">Rendiciones pendientes de aprobaci&oacute;n: <bean:write name="cantRendiciones" /></h2>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12 py-3 table-responsive-lg">
-			<a href="#a" class="btn btn-light px-3 mt-1 float-right mb-4" onclick="seleccionarTodo()">
-					Seleccionar todo
-			</a>
-			<div class="dt-container" id="aprobacionesDtContainer" ></div>
-		</div>
-	</div>
+	
+	<div class="dt-container" id="aprobacionesDtContainer" ></div>
+	
 </div>
 
 <div class="bg-light">

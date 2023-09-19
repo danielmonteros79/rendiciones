@@ -2,38 +2,97 @@ let dtLink = 'listadoAprobaciones.do';
 let paramsAprobarRendiciones;
 let selRendiciones = {};
 let check=false;
-
+	let supActual="";
 $(document).ready(function() {
 	
 	$('.nav-aprobacion').addClass('active');
 	dtParams = { action: 'filtrar' };
+	setFiltros();
 	//setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: ['1', '2'].indexOf($('#glg').val()) == -1 ? 9 : 8});
-	setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: 4});
-	filtrar();
-		
 	$('.basic-single2').chosen();
-	$('#filtroMotivo').trigger("chosen:updated");
+	listadoAprobacionesSetCombo()
+	$('#filtroSupervisado').on("change", function(){
+	setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: 4, glg: $('#glg').val(), userActual: $('#filtroSupervisado').val() });
+	setTimeout(() => {
+		$('#filtroMotivo').trigger("chosen:updated");
+	},1200);
+	})
+	filtrar();	
 	setTipoAprobacionOculta()
-	
-	 
-	
+
 });
+
+function setFiltros() {
+    const selectedValue = $('#glg').val();
+    const isValueThreeOrFour = selectedValue === "3" || selectedValue === "4";
+    
+    const supervisadoContainer = $("#containerFiltroSupervisado");
+    const usuarioContainer = $("#containerFiltroUsuario");
+    const motivoContainer = $("#containerFiltroMotivo");
+    const idContainer = $("#containerFiltroId");
+    const alertaContainer = $("#containerFiltroAlerta");
+    
+    if (isValueThreeOrFour) {
+        supervisadoContainer.addClass('d-none');
+        supervisadoContainer.removeClass('col-lg-4').addClass('col-lg-3');
+        usuarioContainer.removeClass('col-lg-6').addClass('col-lg-3');
+        motivoContainer.removeClass('col-lg-4').addClass('col-lg-3');
+        idContainer.removeClass('col-lg-6').addClass('col-lg-3');
+        alertaContainer.removeClass('col-lg-4').addClass('col-lg-3');
+        motivoContainer.removeClass('mt-lg-3');
+        alertaContainer.removeClass('mt-lg-3');
+    } else {
+        supervisadoContainer.removeClass('d-none').removeClass('col-lg-3').addClass('col-lg-4');
+        usuarioContainer.removeClass('col-lg-3').addClass('col-lg-6');
+        motivoContainer.removeClass('col-lg-3 mt-sm-3 mt-lg-3').addClass('col-lg-4 mt-sm-3 mt-lg-3');
+        idContainer.removeClass('col-lg-3').addClass('col-lg-6');
+        alertaContainer.removeClass('col-lg-3 mt-sm-3 mt-lg-3').addClass('col-lg-4 mt-sm-3 mt-lg-3');
+    }
+}
+
+
+
+
+function listadoAprobacionesSetCombo() {
+	if($('#filtroSupervisado').val() === null){
+		supActual = "";
+	}else{
+		supActual = $('#filtroSupervisado').val()
+	}
+	setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: 4, glg: $('#glg').val(), userActual: supActual });
+	setCombo('combos.do?action=getSupervisados','#filtroSupervisado', { sector:"SUPE"} );
+	
+	setTimeout(() => {
+		$('#filtroSupervisado').trigger("chosen:updated");
+			$('#filtroMotivo').trigger("chosen:updated");
+	},1200);
+	
+
+}
 
 
 function filtrar() {
+
 	dtParams.glg = $('#glg').val();
 	dtParams.idRendicion = $('#filtroId').val();
 	dtParams.usuario = $('#filtroUsuario').val();
 	dtParams.motivo = $('#filtroMotivo').val();
-	dtParams.nroAlerta = $("#filtroAlerta").val()
+	dtParams.nroAlerta = $("#filtroAlerta").val();
+	dtParams.supervisado = $('#filtroSupervisado').val();
+	
 	loadAprobacionesTable(true);
+
 }
 
 function loadAprobacionesTable(showMessage) {
 	dtParams.showMessage = showMessage;
 	selRendiciones = {};
 	loadTable('#aprobacionesDtContainer', dtLink, dtParams);
+
+
+
 }
+
 
 function seleccionarTodo(){
 	if(!check){
