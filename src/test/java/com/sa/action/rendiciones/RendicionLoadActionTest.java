@@ -117,7 +117,7 @@ class RendicionLoadActionTest {
 
     try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class,
         (mockRendicionesService, context) -> {
-          when(mockRendicionesService.getMotivoRendiciones(anyString(), anyString())).thenReturn(comboMotivoList);
+          when(mockRendicionesService.getMotivoRendiciones(anyString(), anyString(), anyString())).thenReturn(comboMotivoList);
         })) {
       //then
       ActionForward actionForwardToAssert = rendicionLoadAction.executeAction(actionMappingMocked, rendicionFormMocked, samWebApplicationMocked,

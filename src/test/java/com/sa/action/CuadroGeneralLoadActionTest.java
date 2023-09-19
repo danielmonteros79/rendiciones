@@ -71,7 +71,7 @@ class CuadroGeneralLoadActionTest {
     void executeAction(MockHttpServletRequest request,CuadroFiltroForm form, ActionMapping mapping, List<ComboMotivo> motivo,Map<String, List<ComboMotivo>> mapGlgMotivos,List<ComboOpcion> comboOpcion, PrintWriter writer) throws Exception {
         try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
             when(response.getWriter()).thenReturn(writer);
-            when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenReturn(motivo);
+            when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
             when(mockRendicionesService.getMsg()).thenReturn("msg");
             when(mockRendicionesService.getGlgsUsuario(any(),any())).thenReturn(comboOpcion);
         })) {
@@ -106,7 +106,7 @@ class CuadroGeneralLoadActionTest {
     void executeActionException(MockHttpServletRequest request,CuadroFiltroForm form, ActionMapping mapping, List<ComboMotivo> motivo,Map<String, List<ComboMotivo>> mapGlgMotivos,List<ComboOpcion> comboOpcion, PrintWriter writer) throws Exception {
         try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
             when(response.getWriter()).thenReturn(writer);
-            when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenReturn(motivo);
+            when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
             when(mockRendicionesService.getMsg()).thenReturn("msg");
             when(mockRendicionesService.getGlgsUsuario(any(),any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
         })) {

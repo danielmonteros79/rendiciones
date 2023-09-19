@@ -49,7 +49,7 @@ class MotivoObservarActionTest {
     @DisplayName("Testeando execute action")
     void executeAction(HttpServletRequest request, List<ComboMotivo> motivo, ActionMapping mapping, AprobacionForm form) throws Exception {
         try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockM, context) -> {
-            when(mockM.getMotivoRendiciones(any(),any())).thenReturn(motivo);
+            when(mockM.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
         })) {
             ActionForward result = motivoObservarAction.executeAction(mapping, form, null, null, request, null);
             assertAll(

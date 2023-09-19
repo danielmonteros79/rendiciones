@@ -56,7 +56,7 @@ class FiltrarCierreActionTest {
         })) {
             try(MockedConstruction<RendicionesService> mock2 = mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
                 when(mockRendicionesService.getMsg()).thenReturn("msg");
-                when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenReturn(motivo);
+                when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
             })) {
                 ActionForward result = filtrarCierreAction.executeAction(mapping, renForm, null, null, request, null);
                 assertAll(
@@ -78,7 +78,7 @@ class FiltrarCierreActionTest {
             when(mockCierreService.getDatosRendicion(any(),any(),any(),any(),any(),any())).thenReturn(rendiciones);
         })) {
             try(MockedConstruction<RendicionesService> mock2 = mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
-                when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
+                when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
             })) {
                 ActionForward result = filtrarCierreAction.executeAction(mapping, renForm, null, null, request, null);
                 assertAll(

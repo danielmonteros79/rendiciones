@@ -48,7 +48,7 @@ class MotivoSuspensionActionTest {
     @DisplayName("Testeando execute action")
     void executeAction(HttpServletRequest request, ActionMapping mapping, List<ComboMotivo> motivo) throws Exception {
         try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockM, context) -> {
-            when(mockM.getMotivoRendiciones(any(),any())).thenReturn(motivo);
+            when(mockM.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
         })) {
             ActionForward result = motivoSuspensionAction.executeAction(mapping, null, null, null, request, null);
             assertAll(

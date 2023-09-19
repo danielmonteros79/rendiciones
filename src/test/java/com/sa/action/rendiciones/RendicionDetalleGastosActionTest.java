@@ -181,7 +181,7 @@ class RendicionDetalleGastosActionTest {
           (mockRendicionesService, context) -> {
             when(mockRendicionesService.obtenerListadoRendiciones(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(
                 rendicionList);
-            when(mockRendicionesService.getMotivoRendiciones(anyString(), anyString())).thenReturn(comboMotivoList);
+            when(mockRendicionesService.getMotivoRendiciones(anyString(), anyString(), anyString())).thenReturn(comboMotivoList);
             when(mockRendicionesService.getGastos(anyString(), anyString(), anyString(), anyString())).thenReturn(gastosList);
           })) {
         //then

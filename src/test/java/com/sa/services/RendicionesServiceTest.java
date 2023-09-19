@@ -113,7 +113,7 @@ class RendicionesServiceTest {
         })) {
 
             RendicionesService rendicionesService1 = new RendicionesService(samWebClient);
-            List<ComboMotivo> result = rendicionesService1.getMotivoRendiciones(opcion, user);
+            List<ComboMotivo> result = rendicionesService1.getMotivoRendiciones(opcion, user, "01");
 
             assertAll(
                     () -> assertNotNull(result),

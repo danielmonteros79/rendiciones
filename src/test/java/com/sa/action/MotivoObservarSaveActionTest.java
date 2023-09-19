@@ -54,7 +54,7 @@ class MotivoObservarSaveActionTest {
     @DisplayName("Testeando execute action")
     void executeAction(HttpServletRequest request, List<ComboMotivo> motivo, ActionMapping mapping, ActionForm form) throws Exception {
         try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
-            when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenReturn(motivo);
+            when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
         })) {
             try(MockedConstruction<AprobacionesService> mock2 = mockConstruction(AprobacionesService.class, (mockAprobacionesService, context) -> {
                 when(mockAprobacionesService.cambiarEstadoDeUnaRendicion(any(),anyInt(),any(),any(),any())).thenReturn("");
@@ -74,7 +74,7 @@ class MotivoObservarSaveActionTest {
     @DisplayName("Testeando execute action exception")
     void executeActionException(HttpServletRequest request, List<ComboMotivo> motivo, ActionMapping mapping, ActionForm form) throws Exception {
         try(MockedConstruction<RendicionesService> mock = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
-            when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenReturn(motivo);
+            when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
         })) {
             try(MockedConstruction<AprobacionesService> mock2 = mockConstruction(AprobacionesService.class, (mockAprobacionesService, context) -> {
                 when(mockAprobacionesService.cambiarEstadoDeUnaRendicion(any(),anyInt(),any(),any(),any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));

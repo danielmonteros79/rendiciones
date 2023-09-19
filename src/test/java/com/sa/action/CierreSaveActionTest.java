@@ -97,7 +97,7 @@ class CierreSaveActionTest {
         when(httpSession.getAttribute("usuario")).thenReturn(usuario);
         when(httpServletRequest.getParameter("estado")).thenReturn(estado);
         try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
-            when(mockRendicionesService.getMotivoRendiciones(any(), any())).thenReturn(motivo);
+            when(mockRendicionesService.getMotivoRendiciones(any(), any(), any())).thenReturn(motivo);
         })) {
             try (MockedConstruction<CierreService> mockedService = Mockito.mockConstruction(CierreService.class, (mockM, context) -> {
                 when(httpServletRequest.getParameterNames()).thenReturn(paramNames);

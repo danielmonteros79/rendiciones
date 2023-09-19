@@ -50,7 +50,7 @@ class DistribucionGastosLoadActionTest {
     void executeAction(MockHttpServletRequest request, RendicionForm form, ActionMapping mapping, List<Rendicion> rendiciones, List<ComboMotivo> motivo,List<Gastos> gastos) throws Exception {
         try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
             when(mockRendicionesService.obtenerListadoRendiciones(any(),any(),any(),any(),any())).thenReturn(rendiciones);
-            when(mockRendicionesService.getMotivoRendiciones(any(),any())).thenReturn(motivo);
+            when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
             when(mockRendicionesService.getGastos(any(),any(),any(),any())).thenReturn(gastos);
         })) {
             ActionForward result = distribucionGastosLoadAction.executeAction(mapping,form, null, null, request, null);
