@@ -26,10 +26,11 @@ import net.sf.json.JSONArray;
 
 public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ListadoAprobacionesAction.class);
-	public String  cantRendiciones = "";
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
+			String cantRendiciones = "";
 			String action = request.getParameter("action") == null ? "" : request.getParameter("action");
 
 			if (action.equals("filtrar"))
@@ -52,7 +53,7 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 
 	private ActionForward filtrar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		AprobacionesService service = new AprobacionesService(samClient);
-
+		String cantRendiciones = "";
 		String alerta = request.getParameter("nroAlerta");
 		String supervisado = this.sessionUserWorking.getIdUser();
 		if(request.getParameter("supervisado").length() > 0 ) {
