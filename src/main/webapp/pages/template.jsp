@@ -19,20 +19,20 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 
 	
-	<script type="text/javascript" src="js/pdf-lib.min.js"></script>
-	<script type="text/javascript" src="js/xlsx.full.min.js"></script>
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/jquery.1.12.js"></script>
-	<script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap-datepicker.min.js"></script>
-	<script type="text/javascript" src="js/localization/bootstrap-datepicker.es.min.js"></script>
-	<script type="text/javascript" src="js/fontawesome.min.js"></script>
-	<script type="text/javascript" src="js/autonumeric.min.js"></script>
-	<script type="text/javascript" src="js/autonumeric-options.js"></script>
-	<script type="text/javascript" src="js/jquery.form-validator.js" charset="utf-8"></script>
-	<script type="text/javascript" src="js/jquery.validate.min.js" charset="utf-8"></script>
-	<script type="text/javascript" src="js/jquery.inputmask.bundle.min.js" charset="utf-8"></script>
-	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="static/js/pdf-lib.min.js"></script>
+	<script type="text/javascript" src="static/js/xlsx.full.min.js"></script>
+	<script type="text/javascript" src="static/js/jquery.js"></script>
+	<script type="text/javascript" src="static/js/jquery.1.12.js"></script>
+	<script type="text/javascript" src="static/js/bootstrap.bundle.min.js"></script>
+	<script type="text/javascript" src="static/js/bootstrap-datepicker.min.js"></script>
+	<script type="text/javascript" src="static/js/localization/bootstrap-datepicker.es.min.js"></script>
+	<script type="text/javascript" src="static/js/fontawesome.min.js"></script>
+	<script type="text/javascript" src="static/js/autonumeric.min.js"></script>
+	<script type="text/javascript" src="static/js/autonumeric-options.js"></script>
+	<script type="text/javascript" src="static/js/jquery.form-validator.js" charset="utf-8"></script>
+	<script type="text/javascript" src="static/js/jquery.validate.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="static/js/jquery.inputmask.bundle.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="static/js/main.js"></script>
 	
 	
 	<% 
