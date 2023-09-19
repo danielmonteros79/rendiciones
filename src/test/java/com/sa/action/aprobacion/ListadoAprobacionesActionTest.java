@@ -121,10 +121,11 @@ class ListadoAprobacionesActionTest {
         (mockAprobacionesService, context) -> {
           when(mockAprobacionesService.getCantRendiciones()).thenReturn("1");
         })) {
-      try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
-          (mockManagerTransaction, context) -> {
-            doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
-          })) {
+//      try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
+//          (mockManagerTransaction, context) -> {
+//            doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+//          })) 
+      {
         //then
         ActionForward actionForwardToAssert = listadoAprobacionesAction.executeAction(actionMappingMocked, actionFormMocked, samWebApplicationMocked,
             samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
