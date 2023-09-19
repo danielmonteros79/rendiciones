@@ -29,7 +29,7 @@ public class MotivoObservarSaveAction extends RestriccionTransaccionAction {
 
 		log.info("Entra al action MotivoObservarSaveAction. Usuario (" + u.getIdUser() + ")");
 		
-		List<ComboMotivo> motivo = rendicionesService.getMotivoRendiciones("7", u.getIdUser());
+		List<ComboMotivo> motivo = rendicionesService.getMotivoRendiciones("7", u.getIdUser(),"");
 		request.setAttribute("ComboMotivo", motivo);
 
 		try {

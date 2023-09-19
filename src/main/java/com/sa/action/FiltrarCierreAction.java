@@ -45,7 +45,7 @@ public class FiltrarCierreAction extends RestriccionTransaccionAction {
 			if (cierreService.getMsg() != null)
 				message += cierreService.getMsg() + "<br>";
 			
-			motivo = motivoService.getMotivoRendiciones("4", u.getIdUser());
+			motivo = motivoService.getMotivoRendiciones("4", u.getIdUser(), "");
 			if (motivoService.getMsg() != null)
 				message += motivoService.getMsg();
 			
