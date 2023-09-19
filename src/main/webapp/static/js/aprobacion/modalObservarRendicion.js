@@ -11,7 +11,7 @@ function modalObservarRendicionShow(idRendicion, glg) {
 	
 	if (modalObservarRendicionFirstLoad) {
 		modalObservarRendicionFirstLoad = false;
-		setCombo('combos.do?action=getMotivos', '#modalObservarRendicionMotivo', { opcion: 7});
+		setCombo('combos.do?action=getMotivos', '#modalObservarRendicionMotivo', { opcion: 7, glg: glg});
 	}
 	
 	$('#modalObservarRendicion').modal('show');

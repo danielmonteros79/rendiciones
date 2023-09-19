@@ -11,7 +11,7 @@ function modalRechazarRendicionShow(idRendicion, glg) {
 	
 	if (modalRechazarRendicionFirstLoad) {
 		modalRechazarRendicionFirstLoad = false;
-		setCombo('combos.do?action=getMotivos', '#modalRechazarRendicionMotivo', { opcion: 5});
+		setCombo('combos.do?action=getMotivos', '#modalRechazarRendicionMotivo', { opcion: 5, glg: glg});
 	}
 	
 	$('#modalRechazarRendicion').modal('show');
