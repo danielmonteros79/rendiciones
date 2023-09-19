@@ -32,21 +32,27 @@ public class DistribucionGastosLoadAction extends RestriccionTransaccionAction {
 		Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
 		RendicionesService service = new RendicionesService(samClient);
 		request.getSession().removeAttribute("rendicionSelectDerrame");
-
+		// request.setAttribute("estadoRend",
+		// request.getParameter("estadoRend"));
+		// Get codigo current row
 		Integer idRendicion = null;
 		String usuarioRend = u.getIdUser();
-		
+		// request.setAttribute("reload", request.getParameter("reload"));
 
 		idRendicion = Integer.valueOf(request.getParameter("idRendicion"));
 
+		// request.setAttribute("idRendicion", idRendicion);
+		// if (request.getParameter("usuarioRendicion") != null
+		// && !request.getParameter("usuarioRendicion").equals("")) {
 		usuarioRend = request.getParameter("usuarioRendicion").toString();
-
+		// }
+		// Service carga Listado de Rendiciones
 		log.info("Se llama al service para obtener los datos de la rendicion seleccionada y luego mapear los gastos");
 		List<Rendicion> rendiciones = service.obtenerListadoRendiciones(
 				usuarioRend, idRendicion.toString(), "", "", "");
 		PagosService serv = new PagosService(samClient);
 		Rendicion rendicion = null;
-
+		// Recorre la lista de rendiciones
 		for (Rendicion r : rendiciones) {
 			Integer idR = r.getId();
 			if (idR.compareTo(idRendicion) == 0) {
@@ -58,7 +64,7 @@ public class DistribucionGastosLoadAction extends RestriccionTransaccionAction {
 
 		// Obtiene costosDestino
 		List<ComboMotivo> motivo = service.getMotivoRendiciones("4",
-				u.getIdUser());
+				u.getIdUser(), "");
 		String desMotivo = "";
 		for (ComboMotivo fila : motivo) {
 			if (fila.getId().equals(rendicion.getCodMotivo())) {
@@ -72,7 +78,10 @@ public class DistribucionGastosLoadAction extends RestriccionTransaccionAction {
 		List<Gastos> gastos = service.getGastos(idRendicion.toString(), "",
 				u.getIdUser(), rendicion.getCodMotivo());
 
-
+//		List<ComboGasto> tipoGastos = serv.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION, u.getIdUser(),
+//				rendicion.getCodMotivo());
+//		request.setAttribute("ComboGastos", tipoGastos);
+		
 		request.setAttribute("Gastos", gastos);
 		request.setAttribute("idRendicion", rendicion.getId());
 		request.setAttribute("descripcionMotivo", desMotivo);
