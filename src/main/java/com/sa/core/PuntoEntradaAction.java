@@ -20,94 +20,99 @@ import org.apache.struts.action.ActionMapping;
 
 public class PuntoEntradaAction extends ISAMWebAction {
 	private static final Log log = LogFactory.getLog(PuntoEntradaAction.class);
-	private static final String FAILURE = "failure"; 
-	private static final String ERRORES = "errores"; 
-	
+
 	public ActionForward execute(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
-	        SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
-	    log.info("Ingreso a la aplicación");
-	    System.setProperty("http.proxyHost", "");
-	    System.setProperty("http.proxyPort", "");
+			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		List<String> errorList = new ArrayList();
+		log.info("Ingreso a la aplicacion");
+		System.setProperty("http.proxyHost", "");
+		System.setProperty("http.proxyPort", "");
+		String ivUser = request.getHeader("iv-user") != null
+				? request.getHeader("iv-user")
+				: (String) request.getAttribute("ivUser");
+		log.info("iv-user obtenido: " + ivUser);
+		Usuario usuario = null;
 
-	    String ivUser = request.getHeader("iv-user") != null
-	            ? request.getHeader("iv-user")
-	            : (String) request.getAttribute("ivUser");
-	    log.info("iv-user obtenido: " + ivUser);
+		try {
+			LoginForm loginForm = (LoginForm) form;
+			UsuarioService serviceUsuario;
+			if (ivUser != null && (loginForm.getUsername() == null || loginForm.getUsername().trim().equals(""))) {
+				samClient.setAttribute("userLoggin", ivUser.trim().toUpperCase());
+				serviceUsuario = new UsuarioService(samClient);
+				usuario = serviceUsuario.obtenerDelegadosUsuario(ivUser.trim().toUpperCase());
+			} else {
+				label78 : {
+					samClient.setAttribute("userLoggin", loginForm.getUsername().trim().toUpperCase());
+					if (loginForm.getUsername() != null && !"".equals(loginForm.getUsername().trim())) {
+						if (loginForm.getPassword() != null && !"".equals(loginForm.getPassword().trim())) {
+							serviceUsuario = new UsuarioService(samClient);
+							usuario = serviceUsuario.obtenerDelegadosUsuario(loginForm.getUsername().toUpperCase());
+							if (usuario == null) {
+								errorList.add(new String("Usuario inexistente"));
+								request.setAttribute("errores", errorList);
+								return mapping.findForward("failure");
+							}
+							break label78;
+						}
 
-	    LoginForm loginForm = (LoginForm) form;
-	    List<String> errorList = new ArrayList<>();
+						errorList.add(new String("Por favor, ingresar Contrase�a"));
+						request.setAttribute("errores", errorList);
+						return mapping.findForward("failure");
+					}
 
-	    if (ivUser != null && (loginForm.getUsername() == null || loginForm.getUsername().trim().equals(""))) {
-	        return processUserLogin(ivUser.trim().toUpperCase(), samClient, request, mapping, errorList);
-	    } else {
-	        return processLoginForm(loginForm, samClient, request, mapping, errorList);
-	    }
+					errorList.add(new String("Por favor, ingresar Usuario"));
+					request.setAttribute("errores", errorList);
+					return mapping.findForward("failure");
+				}
+			}
+		} catch (TransactionException var14) {
+			log.error(var14);
+			errorList.add(new String(var14.getCause().getMessage()));
+			request.setAttribute("errores", errorList);
+			request.getSession().invalidate();
+			return mapping.findForward("failure");
+		} catch (Exception var15) {
+			log.error(var15);
+			errorList.add(new String("Error al ingresar"));
+			request.setAttribute("errores", errorList);
+			request.getSession().invalidate();
+			return mapping.findForward("failure");
+		}
+
+		if (usuario.getTipoPerfil().getPantalla().contains("Aprobacion")) {
+			AprobacionesService aprobacionesService = new AprobacionesService(samClient);
+
+			for (int i = 1; i < 5; ++i) {
+				try {
+					aprobacionesService.getAprobacionesPendientes("", "", "", Integer.toString(i), usuario.getIdUser());
+					usuario.getGlgAprobacion().add(i);
+				} catch (Exception var13) {
+					;
+				}
+			}
+		}
+
+		log.info("Se obtuvo el usuario: " + usuario.getIdUser());
+		request.getSession().setAttribute("userWorking", usuario);
+		request.getSession().setAttribute("usuario", usuario);
+		
+		String redirect = request.getParameter("redirect");
+		if (redirect != null && !redirect.trim().equals("")) {
+			if (redirect.contains("listadoAprobacion.do?glg=1"))
+				return mapping.findForward("aprob1");
+			else if (redirect.contains("listadoAprobacion.do?glg=2"))
+				return mapping.findForward("aprob2");
+			else if (redirect.contains("listadoAprobacion.do?glg=3"))
+				return mapping.findForward("aprob3");
+			else if (redirect.contains("cierreOrdenDePago.do"))
+				return mapping.findForward("cierre");
+		}
+		
+		if (usuario.getTipoPerfil().toString().equals("VIEW_APROBACION"))
+			return mapping.findForward("aprob1");
+		else
+			return mapping.findForward("success");
 	}
-
-	private ActionForward processUserLogin(String ivUser, SAMWebClient samClient, HttpServletRequest request,
-	        ActionMapping mapping, List<String> errorList) throws TransactionException {
-	    samClient.setAttribute("userLoggin", ivUser);
-	    UsuarioService serviceUsuario = new UsuarioService(samClient);
-	    Usuario usuario = serviceUsuario.obtenerDelegadosUsuario(ivUser);
-	    if (usuario == null) {
-	        errorList.add("Usuario inexistente");
-	        request.setAttribute(ERRORES, errorList);
-	        return mapping.findForward(FAILURE);
-	    }
-	    setUsuarioAttributes(request, usuario);
-	    return processUserPermissions(usuario, samClient, request, mapping);
-	}
-
-	private ActionForward processLoginForm(LoginForm loginForm, SAMWebClient samClient, HttpServletRequest request,
-	        ActionMapping mapping, List<String> errorList) throws TransactionException {
-	    String username = loginForm.getUsername();
-	    String password = loginForm.getPassword();
-
-	    if (username != null && !"".equals(username.trim())) {
-	        if (password != null && !"".equals(password.trim())) {
-	            samClient.setAttribute("userLoggin", username.trim().toUpperCase());
-	            UsuarioService serviceUsuario = new UsuarioService(samClient);
-	            Usuario usuario = serviceUsuario.obtenerDelegadosUsuario(username.toUpperCase());
-	            if (usuario == null) {
-	                errorList.add("Usuario inexistente");
-	                request.setAttribute(ERRORES, errorList);
-	                return mapping.findForward(FAILURE);
-	            }
-	            setUsuarioAttributes(request, usuario);
-	            return processUserPermissions(usuario, samClient, request, mapping);
-	        } else {
-	            errorList.add("Por favor, ingresar Contraseña");
-	            request.setAttribute(ERRORES, errorList);
-	            return mapping.findForward(FAILURE);
-	        }
-	    } else {
-	        errorList.add("Por favor, ingresar Usuario");
-	        request.setAttribute(ERRORES, errorList);
-	        return mapping.findForward(FAILURE);
-	    }
-	}
-
-	private ActionForward processUserPermissions(Usuario usuario, SAMWebClient samClient, HttpServletRequest request,
-	        ActionMapping mapping) {
-	    if (usuario.getTipoPerfil().getPantalla().contains("Aprobacion")) {
-	        AprobacionesService aprobacionesService = new AprobacionesService(samClient);
-	        for (int i = 1; i < 5; ++i) {
-	            try {
-	                aprobacionesService.getAprobacionesPendientes("", "", "", Integer.toString(i), usuario.getIdUser());
-	                usuario.getGlgAprobacion().add(i);
-	            } catch (Exception var13) {
-	                // Handle exception
-	            }
-	        }
-	    }
-
-	    log.info("Se obtuvo el usuario: " + usuario.getIdUser());
-	    return mapping.findForward("success");
-	}
-
-	private void setUsuarioAttributes(HttpServletRequest request, Usuario usuario) {
-	    request.getSession().setAttribute("userWorking", usuario);
-	    request.getSession().setAttribute("usuario", usuario);
-	}
-
+		
+			
 }
