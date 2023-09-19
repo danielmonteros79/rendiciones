@@ -42,25 +42,25 @@ class ResumenServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-//    @ParameterizedTest
-//    @MethodSource("getConsumosSource")
-//    @DisplayName("Testeando get consumos")
-//    void getConsumos(String user,String msg, List<Resumen> resumen) throws TransactionException {
-//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-//            doNothing().when(mockM).executeTrx(any(), anyMap());
-//            when(mockM.getDataReturnList()).thenReturn(resumen);
-//            when(mockM.getMensajeAviso()).thenReturn(msg);
-//        })) {
-//
-//            ResumenService resumenService1 = new ResumenService(samWebClient);
-//            List<Resumen> result = resumenService1.getConsumos(user);
-//
-//            assertAll(
-//                    () -> assertNotNull(result),
-//                    () -> assertEquals(resumen, result)
-//            );
-//        }
-//    }
+    @ParameterizedTest
+    @MethodSource("getConsumosSource")
+    @DisplayName("Testeando get consumos")
+    void getConsumos(String user,String fechaDesde, String fechaHasta, String codMotivo,String msg, List<Resumen> resumen) throws TransactionException {
+        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
+            doNothing().when(mockM).executeTrx(any(), anyMap());
+            when(mockM.getDataReturnList()).thenReturn(resumen);
+            when(mockM.getMensajeAviso()).thenReturn(msg);
+        })) {
+
+            ResumenService resumenService1 = new ResumenService(samWebClient);
+            List<Resumen> result = resumenService1.getConsumos(user, fechaDesde, fechaHasta, codMotivo);
+
+            assertAll(
+                    () -> assertNotNull(result),
+                    () -> assertEquals(resumen, result)
+            );
+        }
+    }
 
     @ParameterizedTest
     @MethodSource("getFechasResumenesSource")
@@ -112,11 +112,14 @@ class ResumenServiceTest {
 
     private static Stream<Arguments> getConsumosSource() {
         String user = "user";
+        String fechaDesde = "fechaDesde";
+        String fechaHasta = "fechaHasta";
+        String codMotivo = "codMotivo";
         String msg = "msg";
         List<Resumen> resumen = new ArrayList<>();
 
         return Stream.of(
-                Arguments.of(user, msg, resumen)
+                Arguments.of(user,fechaDesde,fechaHasta,codMotivo, msg, resumen)
         );
     }
 

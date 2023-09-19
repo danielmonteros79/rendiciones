@@ -12,6 +12,7 @@ import org.apache.struts.mock.MockHttpSession;
 import org.apache.struts.mock.MockServletContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,11 +39,23 @@ import static org.mockito.Mockito.when;
 class ParametrosAlertasSaveActionTest {
 
   @Mock
-  ActionMapping actionMappingMocked;
-
+  Usuario usuarioMocked;
   @Mock
-  HttpServletResponse httpServletResponse;
-
+  ActionMapping actionMappingMocked;
+  @Mock
+  HttpServletResponse httpServletResponseMocked;
+  @Mock
+  HttpServletRequest httpServletRequestMocked;
+  @Mock
+  ParametrosAlertasForm parametrosAlertasFormMocked;
+  @Mock
+  SAMWebClient samWebClientMocked;
+  @Mock
+  SAMWebApplication samWebApplicationMocked;
+  @Mock
+  ActionForward actionForwardMocked;
+  @Mock
+  HttpSession httpSessionMocked;
   @InjectMocks
   ParametrosAlertasSaveAction parametrosAlertasSaveAction;
 
@@ -116,8 +131,23 @@ class ParametrosAlertasSaveActionTest {
     })) {
       //then
       ActionForward actionForwardToAssert = parametrosAlertasSaveAction.executeAction(actionMapping, parametrosAlertasForm, samApplication, samClient,
-          request, httpServletResponse);
+          request, httpServletResponseMocked);
       assertNotNull(actionForwardToAssert);
     }
+  }
+
+  @Test
+  @DisplayName("Should catch an exception")
+  void shouldCatchAnException() throws Exception {
+    //when
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getAttribute(anyString())).thenReturn(usuarioMocked);
+    when(usuarioMocked.getIdUser()).thenReturn("0");
+    when(parametrosAlertasFormMocked.getAccion()).thenReturn("baja");
+
+    when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
+    //then
+    ActionForward actionForwardToAssert = parametrosAlertasSaveAction.executeAction(actionMappingMocked, parametrosAlertasFormMocked, samWebApplicationMocked,samWebClientMocked,httpServletRequestMocked, httpServletResponseMocked);
+    assertNotNull(actionForwardToAssert);
   }
 }

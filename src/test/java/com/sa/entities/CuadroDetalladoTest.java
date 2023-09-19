@@ -64,15 +64,14 @@ class CuadroDetalladoTest {
         );
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @Test
     @DisplayName("Testeando set y get Descripcion")
     void setDescripcion() {
-        entity.setDescripcion("");
+        entity.setDescripcion(" DESCRIPCION ");
         String resultTest = entity.getDescripcion();
         assertAll(
                 ()->assertNotNull(resultTest),
-                ()->assertEquals("",resultTest)
+                ()->assertEquals("escripcion",resultTest)
         );
     }
 

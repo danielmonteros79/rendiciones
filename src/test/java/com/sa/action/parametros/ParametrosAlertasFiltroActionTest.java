@@ -224,9 +224,9 @@ class ParametrosAlertasFiltroActionTest {
   @MethodSource("executeActionMsgNullSource")
   @DisplayName("Should determine what action execute with msg null")
   void shouldDetermineWhatActionExecuteWithMsgNull(ActionMapping actionMapping,
-                                          ParametrosAlertasFiltroForm parametrosAlertasForm,
-                                        SAMWebApplication samApplication, SAMWebClient samClient,
-                                        MockHttpServletRequest request, List<ParametroAlerta> parametroAlertaList) throws Exception {
+                                                   ParametrosAlertasFiltroForm parametrosAlertasForm,
+                                                   SAMWebApplication samApplication, SAMWebClient samClient,
+                                                   MockHttpServletRequest request, List<ParametroAlerta> parametroAlertaList) throws Exception {
     //when
     try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class, (mockParametrosService, context) -> {
       when(mockParametrosService.getAlertas("CONS", parametrosAlertasForm.getCodMotivo(),
@@ -238,5 +238,17 @@ class ParametrosAlertasFiltroActionTest {
           request, httpServletResponse);
       assertNotNull(actionForward);
     }
+  }
+
+  @ParameterizedTest
+  @MethodSource("executeActionSource")
+  @DisplayName("Should catch an exception")
+  void shouldCatchAnException(ActionMapping actionMapping, ParametrosAlertasFiltroForm parametrosAlertasForm,
+                              SAMWebApplication samApplication, SAMWebClient samClient,
+                              MockHttpServletRequest request, List<ParametroAlerta> parametroAlertaList) throws Exception {
+    //then
+    ActionForward actionForward = parametrosAlertasFiltroAction.executeAction(actionMapping, parametrosAlertasForm, samApplication, samClient,
+        request, httpServletResponse);
+    assertNotNull(actionForward);
   }
 }

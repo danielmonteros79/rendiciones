@@ -1,6 +1,9 @@
 package com.sa.action.delegacion;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
@@ -12,12 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.sa.entities.TipoPerfil;
 import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametriaUsuarioDelegado;
+import com.sa.manager.ManagerTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.mock.MockHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,20 +28,17 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 class AccesoDelegadoActionTest {
 
-  @Mock
-  TipoPerfil tipoPerfilMocked;
-  @Mock
-  Usuario usuarioMocked;
   @Mock
   ActionMapping actionMappingMocked;
   @Mock
@@ -49,6 +49,8 @@ class AccesoDelegadoActionTest {
   SAMWebClient samWebClientMocked;
   @Mock
   HttpServletResponse httpServletResponseMocked;
+  @Mock
+  HttpServletRequest httpServletRequestMocked;
   @Mock
   ActionForward actionForwardMocked;
   @Mock
@@ -62,31 +64,44 @@ class AccesoDelegadoActionTest {
     String actionReemplazar = "reemplazar";
     MockHttpServletRequest requestEmptyAction = new MockHttpServletRequest();
     MockHttpServletRequest requestReemplazar = new MockHttpServletRequest();
+    MockHttpServletRequest requestReemplazar2 = new MockHttpServletRequest();
 
     requestEmptyAction.addParameter("action", "");
     requestReemplazar.addParameter("action", "reemplazar");
+    requestReemplazar.addParameter("delegado", "");
 
-    return Stream.of(
-        Arguments.of(requestEmptyAction, action),
-        Arguments.of(requestReemplazar, actionReemplazar)
-                    );
-  }
+    requestReemplazar2.addParameter("action", "reemplazar");
+    requestReemplazar2.addParameter("delegado", "1");
 
-  public static Stream<Arguments> actualizarTipoPerfilDelegadoSource() {
-    //given
-    Usuario usuario = new Usuario("", "", "", 0, "", new ArrayList<>());
     ParametriaUsuarioDelegado parametriaUsuarioDelegadoA = new ParametriaUsuarioDelegado();
     ParametriaUsuarioDelegado parametriaUsuarioDelegadoI = new ParametriaUsuarioDelegado();
     ParametriaUsuarioDelegado parametriaUsuarioDelegadoT = new ParametriaUsuarioDelegado();
     parametriaUsuarioDelegadoA.setDelegadoAccion("A");
+    parametriaUsuarioDelegadoA.setDelegadoUser("");
     parametriaUsuarioDelegadoI.setDelegadoAccion("I");
+    parametriaUsuarioDelegadoI.setDelegadoUser("");
     parametriaUsuarioDelegadoT.setDelegadoAccion("T");
+    parametriaUsuarioDelegadoT.setDelegadoUser("");
     List<ParametriaUsuarioDelegado> parametriaUsuarioDelegadoList = new ArrayList<>();
     parametriaUsuarioDelegadoList.add(parametriaUsuarioDelegadoA);
     parametriaUsuarioDelegadoList.add(parametriaUsuarioDelegadoI);
     parametriaUsuarioDelegadoList.add(parametriaUsuarioDelegadoT);
 
-    return Stream.of(Arguments.of(parametriaUsuarioDelegadoList, usuario));
+    Usuario user = new Usuario("", "", "", 0, "", new ArrayList<>());
+    Usuario user2 = new Usuario("1", "", "", 0, "", new ArrayList<>());
+    List<Usuario> usuarioArrayList = new ArrayList<>();
+    usuarioArrayList.add(user);
+    usuarioArrayList.add(user2);
+    Usuario usuario = new Usuario("", "", "", 0, "", usuarioArrayList);
+    usuario.setTipoPerfil(TipoPerfil.VIEW_APROBACION.getPantalla());
+    Usuario usuarioEmptyList = new Usuario("", "", "", 0, "", new ArrayList<>());
+
+    return Stream.of(
+        Arguments.of(requestEmptyAction, action, parametriaUsuarioDelegadoList, usuarioEmptyList),
+        Arguments.of(requestReemplazar, actionReemplazar, parametriaUsuarioDelegadoList, usuarioEmptyList),
+        Arguments.of(requestReemplazar, actionReemplazar, parametriaUsuarioDelegadoList, usuario),
+        Arguments.of(requestReemplazar2, actionReemplazar, parametriaUsuarioDelegadoList, usuario)
+                    );
   }
 
   @BeforeEach
@@ -99,61 +114,40 @@ class AccesoDelegadoActionTest {
    */
   @ParameterizedTest
   @MethodSource("executeActionSource")
-  @SuppressWarnings("deprecation")
-  void testExecuteAction(MockHttpServletRequest request, String action) throws Exception {
+  @DisplayName("Should execute action")
+  void shouldExecuteAction(MockHttpServletRequest request, String action, List<ParametriaUsuarioDelegado> parametriaUsuarioDelegadoList, Usuario usuario) throws Exception {
     //given
+    accesoDelegadoAction.setSessionUser(usuario);
+    //when
     when(actionMappingMocked.findForward("success")).thenReturn(actionForwardMocked);
     when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
-    //then
-    ActionForward actionForwardToAssert = accesoDelegadoAction.executeAction(actionMappingMocked, actionFormMocked, samWebApplicationMocked, samWebClientMocked, request, httpServletResponseMocked);
-    if (action.equals("")) {
-      assertNotNull(actionForwardToAssert);
-    } else {
-      assertNull(actionForwardToAssert);
+
+    try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
+        (mockManagerTransaction, context) -> {
+          doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+          when(mockManagerTransaction.getDataReturnList()).thenReturn(parametriaUsuarioDelegadoList);
+          when(mockManagerTransaction.getMensajeAviso()).thenReturn("");
+        })) {
+      //then
+      ActionForward actionForwardToAssert = accesoDelegadoAction.executeAction(actionMappingMocked, actionFormMocked, samWebApplicationMocked,
+          samWebClientMocked, request, httpServletResponseMocked);
+      if (action.equals("")) {
+        assertNotNull(actionForwardToAssert);
+      } else {
+        assertNull(actionForwardToAssert);
+      }
     }
   }
 
-  @Disabled("sessionUser lanza NPE - reveer")
   @Test
-  @DisplayName("Should get user trabajo")
-  void shouldGetUserTrabajo() throws Exception {
-    //then
-    Method obtenerUsuarioTrabajoMocked = AccesoDelegadoAction.class.getDeclaredMethod("obtenerUsuarioTrabajo", String.class);
-    obtenerUsuarioTrabajoMocked.setAccessible(true);
-    Usuario usuarioToAssert = (Usuario) obtenerUsuarioTrabajoMocked.invoke(accesoDelegadoAction, "");
-    assertEquals("", usuarioToAssert.getIdUser());
-  }
-
-  @Disabled("sessionUser lanza NPE - reveer")
-  @ParameterizedTest
-  @MethodSource("actualizarTipoPerfilDelegadoSource")
-  @DisplayName("Should update tipo perfil delegado")
-  void shoulUpdateTipoPerfilDelegado(List<ParametriaUsuarioDelegado> parametriaUsuarioDelegadoList, Usuario usuario) throws Exception {
-    //then
-    Method obtenerUsuarioTrabajoMocked = AccesoDelegadoAction.class.getDeclaredMethod("actualizarTipoPerfilDelegado", List.class, Usuario.class);
-    obtenerUsuarioTrabajoMocked.setAccessible(true);
-    obtenerUsuarioTrabajoMocked.invoke(accesoDelegadoAction, parametriaUsuarioDelegadoList, usuario);
-
-    if (parametriaUsuarioDelegadoList.get(0).getDelegadoAccion().equals("A")) {
-      assertTrue(usuario.getTipoPerfil().equals("DELEG_APROB"));
-    } else if (parametriaUsuarioDelegadoList.get(1).getDelegadoAccion().equals("I")) {
-      assertTrue(usuario.getTipoPerfil().equals("DELEG_REND"));
-    } else if (parametriaUsuarioDelegadoList.get(2).getDelegadoAccion().equals("T")) {
-      assertTrue(usuario.getTipoPerfil().equals("DELEG_REND_APROB"));
-    }
-
-  }
-
-  @Test
-  @DisplayName("Should verify if approved")
-  void shouldVerifyIfApproved() throws Exception {
+  @DisplayName("Should catch exception")
+  void shouldCatchException() throws Exception {
     //when
-    when(usuarioMocked.getTipoPerfil()).thenReturn(TipoPerfil.VIEW_APROBACION);
-    when(tipoPerfilMocked.getPantalla()).thenReturn(String.valueOf(TipoPerfil.VIEW_APROBACION));
+    when(httpServletRequestMocked.getParameter("action")).thenReturn("reemplazar");
+    when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
     //then
-    Method verificarAprobacionesMocked = AccesoDelegadoAction.class.getDeclaredMethod("verificarAprobaciones", Usuario.class, SAMWebClient.class);
-    verificarAprobacionesMocked.setAccessible(true);
-    verificarAprobacionesMocked.invoke(accesoDelegadoAction, usuarioMocked, samWebClientMocked);
-    assertNotNull(usuarioMocked);
+    ActionForward actionForwardToAssert = accesoDelegadoAction.executeAction(actionMappingMocked, actionFormMocked, samWebApplicationMocked,
+        samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+    assertNull(actionForwardToAssert);
   }
 }

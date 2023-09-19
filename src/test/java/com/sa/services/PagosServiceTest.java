@@ -20,8 +20,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class PagosServiceTest {
 
@@ -61,15 +60,12 @@ class PagosServiceTest {
     void altaModifGasto() {
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("getCuponesSource")
     @DisplayName("Testeando get cupones")
     void getCupones(String opcion, String subTrx, String codapli, String user,
-			String fechaDesde, String fechaHasta, String idRendicion, String codMotivo, String montoMin, String moneda) throws TransactionException {
+                    String fechaDesde, String fechaHasta, String idRendicion, String codMotivo, String montoMin,String moneda,String msg, List<Cupones> cupones) throws TransactionException {
 
-        List<Cupones> cupones =  new ArrayList<>();
-      	String msg = "mensaje aviso";
 
         try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
             doNothing().when(mockM).executeTrx(any(),anyMap());
@@ -87,31 +83,25 @@ class PagosServiceTest {
                     () -> assertEquals(cupones,result)
             );
         }
-
     }
 
-//    @ParameterizedTest
-//    @MethodSource("asignarCuponSource")
-//    @DisplayName("Testeando asignar cupon")
-//    void asignarCupon(String opcion, String idRendicion, String idGasto, String user, String impCuponTj, String nroTarjeta,
-//                      String nroCuponTj, String cuponDeb, String cuponCred, String descCupon, String monedaCupon, String fechaPresentacion, List<Gastos> gastosRendicion) throws TransactionException {
-//
-//        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-//            doNothing().when(mockM).executeTrx(any(),anyMap());
-//            when(mockM.getDataReturnList()).thenReturn(gastosRendicion);
-//        })) {
-//
-//            PagosService pagosService = new PagosService(samWebClient);
-//            List<Gastos> result = pagosService.asignarCupon(opcion,idRendicion,idGasto,user,impCuponTj,nroTarjeta,nroCuponTj,cuponDeb,cuponCred,descCupon,monedaCupon,fechaPresentacion);
-//
-//            assertAll(
-//                    () -> assertNotNull(result),
-//                    () -> assertEquals(gastosRendicion,result)
-//            );
-//        }
-//
-//
-//    }
+    @ParameterizedTest
+    @MethodSource("asignarCuponSource")
+    @DisplayName("Testeando asignar cupon")
+    void asignarCupon(String opcion, String idRendicion, String idGasto, String user, String impCuponTj, String nroTarjeta,
+                      String nroCuponTj, String cuponDeb, String cuponCred, String descCupon, String monedaCupon, String fechaPresentacion, List<Gastos> gastosRendicion) throws TransactionException {
+
+        try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
+            doNothing().when(mockM).executeTrx(any(),anyMap());
+            when(mockM.getDataReturnList()).thenReturn(gastosRendicion);
+        })) {
+
+            PagosService pagosService = new PagosService(samWebClient);
+            pagosService.asignarCupon(opcion,idRendicion,idGasto,user,impCuponTj,nroTarjeta,nroCuponTj,cuponDeb,cuponCred,descCupon,monedaCupon,fechaPresentacion);
+
+            assertNotNull(gastosRendicion);
+        }
+    }
 
     @ParameterizedTest
     @MethodSource("addDescripcionObligatoriaSource")
@@ -172,26 +162,26 @@ class PagosServiceTest {
         }
     }
 
-//    @ParameterizedTest
-//    @MethodSource("bajaGastoSource")
-//    @DisplayName("Testeando baja gasto")
-//    void bajaGasto(String opcion, String idGasto, String user, String idRendicion, String codMotivo,String msg,Integer idGastoBorrado) throws TransactionException {
-//
-//            try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
-//                doNothing().when(mockM).executeTrx(any(),anyMap());
-//                when(mockM.getMensajeAviso()).thenReturn(msg);
-//                when(mockM.getDataReturn()).thenReturn(idGastoBorrado);
-//            })) {
-//
-//                PagosService pagosService = new PagosService(samWebClient);
-//                Integer result = pagosService.bajaGasto(opcion,idGasto,user,idRendicion,codMotivo);
-//
-//                assertAll(
-//                        () -> assertNotNull(result),
-//                        () -> assertEquals(idGastoBorrado,result)
-//                );
-//            }
-//    }
+    @ParameterizedTest
+    @MethodSource("bajaGastoSource")
+    @DisplayName("Testeando baja gasto")
+    void bajaGasto(String idGasto, String user, String idRendicion,String msg,Integer idGastoBorrado) throws TransactionException {
+
+            try (MockedConstruction<ManagerTransaction> mock = Mockito.mockConstruction(ManagerTransaction.class, (mockM, context) -> {
+                doNothing().when(mockM).executeTrx(any(),anyMap());
+                when(mockM.getMensajeAviso()).thenReturn(msg);
+                when(mockM.getDataReturn()).thenReturn(idGastoBorrado);
+            })) {
+
+                PagosService pagosService = new PagosService(samWebClient);
+                Integer result = pagosService.bajaGasto(idGasto,user,idRendicion);
+
+                assertAll(
+                        () -> assertNotNull(result),
+                        () -> assertEquals(idGastoBorrado,result)
+                );
+            }
+    }
 
     @ParameterizedTest
     @MethodSource("getCuponUnicoSource")
@@ -270,11 +260,13 @@ class PagosServiceTest {
         String fechaHasta = "fechaHasta";
         String idRendicion = "1";
         String codMotivo = "codMotivo";
+        String montoMin = "montoMin";
+        String moneda = "moneda";
         String msg = "msg";
         List<Cupones> cupones = new ArrayList<>();
 
         return Stream.of(
-                Arguments.of(opcion, subTrx, codapli, user, fechaDesde, fechaHasta, idRendicion, codMotivo, msg, cupones)
+                Arguments.of(opcion, subTrx, codapli, user, fechaDesde, fechaHasta, idRendicion, codMotivo, montoMin,moneda,msg,cupones)
         );
     }
 
@@ -343,16 +335,14 @@ class PagosServiceTest {
     }
 
     private static Stream<Arguments> bajaGastoSource(){
-        String opcion = "opcion";
         String idGasto = "1";
         String user = "user";
         String idRendicion = "1";
-        String codMotivo = "1";
         String msg = "msg";
         Integer idGastoBorrado = 1;
 
         return Stream.of(
-                Arguments.of(opcion, idGasto, user, idRendicion, codMotivo, msg, idGastoBorrado)
+                Arguments.of(idGasto, user, idRendicion, msg, idGastoBorrado)
         );
     }
 

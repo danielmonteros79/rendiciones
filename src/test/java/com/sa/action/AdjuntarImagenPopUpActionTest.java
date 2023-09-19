@@ -2,37 +2,53 @@ package com.sa.action;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
-import com.sa.entities.Archivo;
-import com.sa.entities.Gastos;
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.RendicionAvisoForm;
 import com.sa.manager.ManagerTransaction;
+import com.sa.services.AprobacionesService;
+import com.sa.services.CaratulaService;
+import com.sa.services.RendicionesService;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 class AdjuntarImagenPopUpActionTest {
 
+  @Mock
+  ServletOutputStream servletOutputStreamMocked;
+  @Mock
+  File fileMocked;
+  @Mock
+  List<Rendicion> rendicionListMocked;
+  @Mock
+  Rendicion rendicionMocked;
+  @Mock
+  Usuario usuarioMocked;
+  @Mock
+  RendicionAvisoForm rendicionAvisoFormMocked;
   @Mock
   ActionForward actionForwardMocked;
   @Mock
@@ -52,75 +68,188 @@ class AdjuntarImagenPopUpActionTest {
   @InjectMocks
   AdjuntarImagenPopUpAction adjuntarImagenPopUpAction;
 
-  public static Stream<Arguments> executeActionSource() {
+  public static Stream<Arguments> executeActionCaratulaSource() {
     //given
-    String accion = "caratula";
-    Usuario usuario = new Usuario("", "", "", 0, "", new ArrayList<>());
-    Rendicion rendicion = new Rendicion(1, "", "", new Date(), new Date(), "", new ArrayList<>(),"", "");
-    List<Rendicion> rendicionList = new ArrayList<>();
-    RendicionAvisoForm imagenesFormEmptyAction = new RendicionAvisoForm();
-    RendicionAvisoForm imagenesFormCaratula = new RendicionAvisoForm();
-    Archivo archivo = new Archivo();
-    List<Archivo> archivoList = new ArrayList<>();
-    Gastos gastos = new Gastos();
-    List<Gastos> gastosList = new ArrayList<>();
-    gastosList.add(gastos);
-
-    archivoList.add(archivo);
-
-    rendicion.setUsuarioRendicion("");
-    rendicion.setAdea("");
-    rendicionList.add(rendicion);
-    imagenesFormCaratula.setAccion("caratula");
-    imagenesFormCaratula.setRendicion(rendicion);
-
-    imagenesFormEmptyAction.setAccion("");
-    imagenesFormEmptyAction.setRendicion(rendicion);
-    imagenesFormEmptyAction.setArchivosASubir(archivoList);
+    String caratula = "caratula";
 
     return Stream.of(
-//        Arguments.of(usuario, rendicionList, imagenesFormCaratula, gastosList),  //java.lang.Exception: java.lang.ClassCastException: com.sa.entities.Rendicion cannot be cast to com.sa.entities.Gastos
-        Arguments.of(usuario, rendicionList, imagenesFormEmptyAction, gastosList)
+        Arguments.of("", ""),
+        Arguments.of(caratula, "soy;un;test"),
+        Arguments.of(caratula, null)
                     );
   }
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
+    Usuario usuario = new Usuario("", "", "", 1, "", new ArrayList<>());
+    adjuntarImagenPopUpAction.setSessionUserWorking(usuario);
   }
 
-  @ParameterizedTest
-  @MethodSource("executeActionSource")
-  @DisplayName("Should execute action")
-  void shouldExecuteAction(Usuario usuario, List<Rendicion> rendicionList, RendicionAvisoForm imagenesForm, List<Gastos> gastosList) throws Exception {
+  @Test
+  @DisplayName("Should execute action in happy trail")
+  void shouldExecuteActionInHappyTrail() throws Exception {
+    //given
+    Rendicion rendicion = new Rendicion();
+    List<Rendicion> rendicionList = new ArrayList<>();
+    rendicionList.add(rendicion);
+
     //when
+    when(rendicionAvisoFormMocked.getAccion()).thenReturn("");
+
     when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
-    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuario);
-    when(httpSessionMocked.getAttribute("usuario")).thenReturn(usuario);
     when(httpSessionMocked.getServletContext()).thenReturn(servletContextMocked);
+    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuarioMocked);
     when(servletContextMocked.getAttribute("rendicion.aviso.rename.archivo")).thenReturn("");
-    when(servletContextMocked.getAttribute("rendicion.aviso.path")).thenReturn("");
-    when(actionMappingMocked.findForward("success")).thenReturn(actionForwardMocked);
+
+    when(usuarioMocked.getIdUser()).thenReturn("");
+    when(rendicionAvisoFormMocked.getRendicion()).thenReturn(rendicionMocked);
+    when(rendicionMocked.getId()).thenReturn(0);
+    when(rendicionMocked.getUsuarioRendicion()).thenReturn("");
+
+    when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
 
     try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
         (mockManagerTransaction, context) -> {
           doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
-
-          // En metodo "generar" linea 63 solicita lista de rendiciones y en la linea 71 solicita lista de gastos
-          // Refactorizado es necesario para poder validar su comportamiento
-          //java.lang.Exception: java.lang.ClassCastException: com.sa.entities.Rendicion cannot be cast to com.sa.entities.Gastos
           when(mockManagerTransaction.getDataReturnList()).thenReturn(rendicionList);
-//          when(mockManagerTransaction.getDataReturnList()).thenReturn(gastosList);
-          when(mockManagerTransaction.getDataReturn()).thenReturn("");
         })) {
       //then
-      ActionForward actionForwardToAssert = adjuntarImagenPopUpAction.executeAction(actionMappingMocked, imagenesForm, samWebApplicationMocked,
-          samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
-      if (imagenesForm.getAccion().equals("caratula")) {
-        assertNull(actionForwardToAssert);
-      } else {
-        assertNotNull(actionForwardToAssert);
+      ActionForward actionForwardToAssert = adjuntarImagenPopUpAction.executeAction(actionMappingMocked, rendicionAvisoFormMocked, samWebApplicationMocked,
+          samWebClientMocked,
+          httpServletRequestMocked, httpServletResponseMocked);
+      assertNotNull(actionForwardToAssert);
+    }
+  }
+
+  @Test
+  @DisplayName("Should execute when gastolist is empty")
+  void shouldExecuteActionWhenGastoListIsEmpty() throws Exception {
+    //when
+    when(rendicionAvisoFormMocked.getAccion()).thenReturn("");
+
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getServletContext()).thenReturn(servletContextMocked);
+    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuarioMocked);
+    when(servletContextMocked.getAttribute("rendicion.aviso.rename.archivo")).thenReturn("");
+
+    when(usuarioMocked.getIdUser()).thenReturn("");
+    when(rendicionAvisoFormMocked.getRendicion()).thenReturn(rendicionMocked);
+    when(rendicionMocked.getId()).thenReturn(0);
+    when(rendicionMocked.getUsuarioRendicion()).thenReturn("");
+
+    when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
+
+    try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class,
+        (mockRendicionesService, context) -> {
+          doReturn(rendicionListMocked).when(mockRendicionesService).obtenerListadoRendiciones(anyString(), anyString(), eq(null), eq(null), eq(null));
+          doReturn(rendicionMocked).when(rendicionListMocked).get(0);
+        })) {
+      //then
+      ActionForward actionForwardToAssert = adjuntarImagenPopUpAction.executeAction(actionMappingMocked, rendicionAvisoFormMocked, samWebApplicationMocked,
+          samWebClientMocked,
+          httpServletRequestMocked, httpServletResponseMocked);
+      assertNotNull(actionForwardToAssert);
+    }
+  }
+
+  @ParameterizedTest
+  @MethodSource("executeActionCaratulaSource")
+  @DisplayName("Should execute action caratula")
+  void shouldExecuteActionCaratula(String caratula, String obtenerIdu) throws Exception {
+    //given
+    Rendicion rendicion = new Rendicion();
+    List<Rendicion> rendicionList = new ArrayList<>();
+    rendicionList.add(rendicion);
+    File file = new File("src/test/resources/imagen.jpg");
+
+    //when
+    when(rendicionAvisoFormMocked.getAccion()).thenReturn("caratula");
+    when(rendicionAvisoFormMocked.getRendicion()).thenReturn(rendicionMocked);
+    when(rendicionMocked.getId()).thenReturn(0);
+    when(rendicionMocked.getUsuarioRendicion()).thenReturn("");
+    when(rendicionMocked.getAdea()).thenReturn(caratula);
+    when(rendicionMocked.getIdu()).thenReturn("idu");
+    when(rendicionMocked.getUsuarioRendicion()).thenReturn("");
+
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getServletContext()).thenReturn(servletContextMocked);
+    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuarioMocked);
+    when(servletContextMocked.getAttribute("rendicion.aviso.rename.archivo")).thenReturn("");
+    when(servletContextMocked.getAttribute("rendicion.image.caratula")).thenReturn("src/test/resources/img.png");
+    when(servletContextMocked.getAttribute("rendicion.image.idu")).thenReturn("idu");
+
+    when(usuarioMocked.getIdUser()).thenReturn("");
+    when(httpServletResponseMocked.getOutputStream()).thenReturn(servletOutputStreamMocked);
+    when(fileMocked.delete()).thenReturn(false);
+
+    when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
+
+    try (MockedConstruction<AprobacionesService> aprobacionesServiceMC = Mockito.mockConstruction(AprobacionesService.class,
+        (mockAprobacionesService, context) -> {
+          when(mockAprobacionesService.obtenerIDU(any(), anyString())).thenReturn(obtenerIdu);
+        })) {
+
+      try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
+          (mockManagerTransaction, context) -> {
+            doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+            when(mockManagerTransaction.getDataReturnList()).thenReturn(rendicionList);
+          })) {
+        try (MockedConstruction<CaratulaService> caratulaServiceMC = Mockito.mockConstruction(CaratulaService.class,
+            (mockCaratulaService, context) -> {
+              when(mockCaratulaService.createBarcodeImg(anyString(), anyString())).thenReturn(file);
+              when(mockCaratulaService.generarCaratulaTemplate(any(RendicionAvisoForm.class), any(String[].class), anyList())).thenReturn("image");
+            })) {
+          //then
+          ActionForward actionForwardToAssert = adjuntarImagenPopUpAction.executeAction(actionMappingMocked, rendicionAvisoFormMocked, samWebApplicationMocked,
+              samWebClientMocked,
+              httpServletRequestMocked, httpServletResponseMocked);
+          assertNull(actionForwardToAssert);
+        }
       }
+    }
+  }
+
+  @Test
+  @DisplayName("Should catch exception")
+  void shouldCatchException() throws Exception {
+    //given
+    Rendicion rendicion = new Rendicion();
+    List<Rendicion> rendicionList = new ArrayList<>();
+    rendicionList.add(rendicion);
+
+    //when
+    when(rendicionAvisoFormMocked.getAccion()).thenReturn("caratula");
+    when(rendicionAvisoFormMocked.getRendicion()).thenReturn(rendicionMocked);
+    when(rendicionMocked.getId()).thenReturn(0);
+    when(rendicionMocked.getUsuarioRendicion()).thenReturn("");
+    when(rendicionMocked.getAdea()).thenReturn("");
+    when(rendicionMocked.getIdu()).thenReturn("idu");
+    when(rendicionMocked.getUsuarioRendicion()).thenReturn("");
+
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getServletContext()).thenReturn(servletContextMocked);
+    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuarioMocked);
+    when(servletContextMocked.getAttribute("rendicion.aviso.rename.archivo")).thenReturn("");
+    when(servletContextMocked.getAttribute("rendicion.image.caratula")).thenReturn("src/test/resources/img.png");
+    when(servletContextMocked.getAttribute("rendicion.image.idu")).thenReturn("idu");
+
+    when(usuarioMocked.getIdUser()).thenReturn("");
+    when(httpServletResponseMocked.getOutputStream()).thenReturn(servletOutputStreamMocked);
+    when(fileMocked.delete()).thenReturn(false);
+
+    when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
+
+    try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
+        (mockManagerTransaction, context) -> {
+          doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+          when(mockManagerTransaction.getDataReturnList()).thenReturn(rendicionList);
+        })) {
+      //then
+      assertThrows(Exception.class, () -> {
+        adjuntarImagenPopUpAction.executeAction(actionMappingMocked, rendicionAvisoFormMocked, samWebApplicationMocked,
+            samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+      }, "Did not throw Exception");
     }
   }
 }

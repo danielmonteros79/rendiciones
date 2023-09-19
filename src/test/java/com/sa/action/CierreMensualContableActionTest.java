@@ -3,19 +3,13 @@ package com.sa.action;
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 import com.sa.entities.Usuario;
-import com.sa.services.AprobacionesService;
 import com.sa.services.CierreService;
-import com.sa.services.RendicionesService;
-import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionServlet;
-import org.apache.struts.util.TokenProcessor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -33,12 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 class CierreMensualContableActionTest {
-    @Mock
-    Logger log;
-    @Mock
-    TokenProcessor token;
-    @Mock
-    ActionServlet servlet;
+
     @Mock
     ActionMapping actionMapping;
     @Mock
@@ -55,7 +44,6 @@ class CierreMensualContableActionTest {
     HttpSession httpSession;
     @InjectMocks
     CierreMensualContableAction cierreMensualContableAction;
-
 
     @BeforeEach
     void setUp() {
@@ -80,8 +68,22 @@ class CierreMensualContableActionTest {
                     () -> Assertions.assertEquals(ret, result)
             );
         }
+    }
 
+    @ParameterizedTest
+    @MethodSource("executeActionSource")
+    @DisplayName("Should catch exception")
+    void shouldCatchException(Usuario user, String res, ActionForward ret) throws Exception {
 
+        when(httpServletRequest.getSession()).thenReturn(httpSession);
+        when(httpSession.getAttribute("usuario")).thenReturn(user);
+        when(actionMapping.findForward("success")).thenReturn(ret);
+
+            ActionForward result = cierreMensualContableAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse);
+            assertAll(
+                () -> assertNotNull(result),
+                () -> Assertions.assertEquals(ret, result)
+                     );
     }
 
     // ------ Sources ------

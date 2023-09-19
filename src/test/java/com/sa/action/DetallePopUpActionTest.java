@@ -8,6 +8,8 @@ import com.sa.entities.Usuario;
 import com.sa.form.CuponesForm;
 import com.sa.form.RendicionDetalleForm;
 import com.sa.manager.ManagerTransaction;
+import com.sa.services.PagosService;
+import com.sa.services.RendicionesService;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,16 +66,21 @@ class DetallePopUpActionTest {
     String action = "";
     String actionSelectTipoGasto = "selectTipoGasto";
     String codigo = "1";
+    String costosDestino = "0";
+    String costosDestino2 = "0000";
 
     ComboOpcion2 comboOpcion2 = new ComboOpcion2();
+    comboOpcion2.setId("1");
+
     List<ComboOpcion2> comboOpcion2List = new ArrayList<>();
     comboOpcion2List.add(comboOpcion2);
 
     return Stream.of(
-//        Arguments.of(action, comboOpcion2List, null) //java.lang.ClassCastException: com.sa.entities.ComboOpcion2 cannot be cast to com.sa.entities.ComboGasto
-//        Arguments.of(action, comboOpcion2List, codigo) // java.lang.ClassCastException: com.sa.entities.ComboOpcion2 cannot be cast to com.sa.entities.ComboGasto
-        Arguments.of(actionSelectTipoGasto, comboOpcion2List, codigo)
-                    );
+        Arguments.of(action, comboOpcion2List, null,costosDestino),
+        Arguments.of(action, comboOpcion2List, codigo,costosDestino),
+        Arguments.of(action, comboOpcion2List, codigo,costosDestino2),
+        Arguments.of(actionSelectTipoGasto, comboOpcion2List, codigo,costosDestino)
+    );
   }
 
   @BeforeEach
@@ -84,7 +91,7 @@ class DetallePopUpActionTest {
   @ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should execute the action")
-  void shouldExecuteTheAction(String action, List<ComboOpcion2> comboOpcion2List, String codigo) throws Exception {
+  void shouldExecuteTheAction(String action, List<ComboOpcion2> comboOpcion2List, String codigo,String costosDestino) throws Exception {
     //given
     ComboGasto comboGasto = new ComboGasto();
     List<ComboGasto> comboGastoList = new ArrayList<>();
@@ -95,29 +102,73 @@ class DetallePopUpActionTest {
     when(httpServletRequestMocked.getAttribute("formCupones")).thenReturn(cuponesFormMocked);
     when(httpServletRequestMocked.getParameter("codigo")).thenReturn(codigo);
     when(httpServletRequestMocked.getAttribute("codigo")).thenReturn("1");
-    when(httpServletRequestMocked.getParameter("costosDestino")).thenReturn("0");
+    when(httpServletRequestMocked.getParameter("costosDestino")).thenReturn(costosDestino);
     when(httpServletRequestMocked.getParameter("codTipoGasto")).thenReturn("0");
     when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
     when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuarioMocked);
     when(httpSessionMocked.getAttribute("usuario")).thenReturn(usuarioMocked);
     when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
     when(actionMappingMock.findForward("success")).thenReturn(actionForwardMock);
+    when(cuponesFormMocked.getImporteCupon()).thenReturn("importeCupon");
+    when(cuponesFormMocked.getFechaPresentacion()).thenReturn("2023-01-01");
+    when(rendicionDetalleFormMocked.getMoneda()).thenReturn("1");
 
-    // En metodo "" linea 90 solicita lista de ComboOpcion2 y en la linea 93 solicita lista de ComboGasto
-    // Refactorizado es necesario para poder validar su comportamiento
-    //java.lang.ClassCastException: com.sa.entities.ComboOpcion2 cannot be cast to com.sa.entities.ComboGasto
-    try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
-        (mockManagerTransaction, context) -> {
-          doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
-          when(mockManagerTransaction.getDataReturnList()).thenReturn(comboOpcion2List);
-        })) {
-      //then
-      ActionForward actionForwardToAssert = detallePopUpAction.executeAction(actionMappingMock, rendicionDetalleFormMocked, samWebApplicationMocked,
-          samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
-      if ("selectTipoGasto".equals(action)) {
-        assertNull(actionForwardToAssert);
-      } else {
-        assertNotNull(actionForwardToAssert);
+    try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
+      when(mockRendicionesService.getComboOpcion2(any(),any(),any(),any())).thenReturn(comboOpcion2List);
+      when(mockRendicionesService.getComboOpcion2(any(),any(),any(),any(),any())).thenReturn(comboOpcion2List);
+    })) {
+      try (MockedConstruction<PagosService> pagosServiceMC = Mockito.mockConstruction(PagosService.class, (mockPagosService, context) -> {
+        when(mockPagosService.getComboGasto(any(),any(),any())).thenReturn(comboGastoList);
+      })) {
+        ActionForward actionForwardToAssert = detallePopUpAction.executeAction(actionMappingMock, rendicionDetalleFormMocked, samWebApplicationMocked,
+                samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+        if ("selectTipoGasto".equals(action)) {
+          assertNull(actionForwardToAssert);
+        } else {
+          assertNotNull(actionForwardToAssert);
+        }
+      }
+    }
+  }
+
+
+  @ParameterizedTest
+  @MethodSource("executeActionSource")
+  @DisplayName("Should execute the action")
+  void shouldExecuteTheActionCuponesFormNull(String action, List<ComboOpcion2> comboOpcion2List, String codigo,String costosDestino) throws Exception {
+    //given
+    ComboGasto comboGasto = new ComboGasto();
+    List<ComboGasto> comboGastoList = new ArrayList<>();
+    comboGastoList.add(comboGasto);
+
+    //when
+    when(httpServletRequestMocked.getParameter("accion")).thenReturn(action);
+    when(httpServletRequestMocked.getAttribute("formCupones")).thenReturn(null);
+    when(httpServletRequestMocked.getParameter("codigo")).thenReturn(codigo);
+    when(httpServletRequestMocked.getAttribute("codigo")).thenReturn("1");
+    when(httpServletRequestMocked.getParameter("costosDestino")).thenReturn(costosDestino);
+    when(httpServletRequestMocked.getParameter("codTipoGasto")).thenReturn("0");
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuarioMocked);
+    when(httpSessionMocked.getAttribute("usuario")).thenReturn(usuarioMocked);
+    when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
+    when(actionMappingMock.findForward("success")).thenReturn(actionForwardMock);
+    when(rendicionDetalleFormMocked.getMoneda()).thenReturn("1");
+
+    try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
+      when(mockRendicionesService.getComboOpcion2(any(),any(),any(),any())).thenReturn(comboOpcion2List);
+      when(mockRendicionesService.getComboOpcion2(any(),any(),any(),any(),any())).thenReturn(comboOpcion2List);
+    })) {
+      try (MockedConstruction<PagosService> pagosServiceMC = Mockito.mockConstruction(PagosService.class, (mockPagosService, context) -> {
+        when(mockPagosService.getComboGasto(any(),any(),any())).thenReturn(comboGastoList);
+      })) {
+        ActionForward actionForwardToAssert = detallePopUpAction.executeAction(actionMappingMock, rendicionDetalleFormMocked, samWebApplicationMocked,
+                samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+        if ("selectTipoGasto".equals(action)) {
+          assertNull(actionForwardToAssert);
+        } else {
+          assertNotNull(actionForwardToAssert);
+        }
       }
     }
   }

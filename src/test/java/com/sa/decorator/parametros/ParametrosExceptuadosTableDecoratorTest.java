@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 import javax.swing.table.TableModel;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -53,7 +57,7 @@ class ParametrosExceptuadosTableDecoratorTest {
         assertEquals("", result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
+
     @Test
     @DisplayName("Testeando getEditarLink")
     void getEditarLink() {
@@ -61,7 +65,7 @@ class ParametrosExceptuadosTableDecoratorTest {
         when(httpServletRequest.getContextPath()).thenReturn("contextPath");
         String result = decorator.getEditarLink();
 
-        String resultTest = "<form method='post' id='edit_motivo' action='contextPath/parametrosExceptuadosDetalle.do' style='display:none;'><input type='hidden' name='motivoUsuario' value='motivo'/><input type='hidden' name='marca' value=''/><input type='hidden' name='accion' value='modificacion'/></form><a href='#' onclick='modificarExcepcion(\"motivo\")'><img src='contextPath/images/iconos/editar.png' alt='Modificar' title='Modificar' border='0'/></a>";
+        String resultTest = "<form method='post' id='edit_motivo' action='contextPath/parametrosExceptuadosDetalle.do' style='display:none;'><input type='hidden' name='motivoUsuario' value='motivo'/><input type='hidden' name='marca' value=''/><input type='hidden' name='accion' value='modificacion'/></form><a href='#' onclick='modificarExcepcion(\"motivo\")'><i class='bbva-icon icon-coronita_contract fa-lg text-gray' style='cursor:pointer' /> </i></a>";
 
         assertAll(
                 ()->assertNotNull(result),
@@ -69,19 +73,21 @@ class ParametrosExceptuadosTableDecoratorTest {
         );
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
-    @Test
+
+    @ParameterizedTest
+    @MethodSource("getBorrarLinkSource")
     @DisplayName("Testeando getBorrarLink")
-    void getBorrarLink() {
+    void getBorrarLink(ParametroExceptuado excepcion,String res) {
+        currentRowObject = excepcion;
+        MockitoAnnotations.openMocks(this);
+
         when(pageContext.getRequest()).thenReturn(httpServletRequest);
         when(httpServletRequest.getContextPath()).thenReturn("contextPath");
         String result = decorator.getBorrarLink();
 
-        String resultTest = "<form method='post' id='delete_motivo' action='contextPath/parametrosExceptuadosDetalle.do' style='display:none;'><input type='hidden' name='motivoUsuario' value='motivo'/><input type='hidden' name='marca' value=''/><input type='hidden' name='accion' value='baja'/></form><a href='#' onclick='confirmEliminarExcepcion(\"motivo\")'><img src='contextPath/images/iconos/borrar.png' alt='Eliminar' title='Eliminar' border='0'/></a>";
-
         assertAll(
                 ()->assertNotNull(result),
-                ()->assertEquals(resultTest, result)
+                ()->assertEquals(res, result)
         );
     }
 
@@ -112,4 +118,26 @@ class ParametrosExceptuadosTableDecoratorTest {
         String result = decorator.getCaratulaLink();
         assertEquals("", result);
     }
+
+    // ------ Sources ------
+
+    private static Stream<Arguments> getBorrarLinkSource() {
+        ParametroExceptuado excepcion = new ParametroExceptuado();
+        ParametroExceptuado excepcion2 = new ParametroExceptuado();
+        String res = "";
+        String res2 = "<form method='post' id='delete_motivoUsuario' action='contextPath/parametrosExceptuadosDetalle.do' style='display:none;'><input type='hidden' name='motivoUsuario' value='motivoUsuario'/> <input type='hidden' name='marca' value='tipo'/><input type='hidden' name='accion' value='baja'/></form><a href='#' onclick='confirmEliminarExcepcion(\"motivoUsuario\")'><i class=\"bbva-icon icon-coronita_trash text-gray fa-lg\" alt='Eliminar' style='cursor:pointer'  title='Eliminar' border='0' /> </i></a>";
+
+        excepcion.setTipo("tipo");
+        excepcion.setEstado("C");
+
+        excepcion2.setTipo("tipo");
+        excepcion2.setEstado("A");
+        excepcion2.setMotivoUsuario("motivoUsuario");
+
+        return Stream.of(
+                        Arguments.of(excepcion,res),
+                        Arguments.of(excepcion2,res2)
+        );
+    }
+
 }

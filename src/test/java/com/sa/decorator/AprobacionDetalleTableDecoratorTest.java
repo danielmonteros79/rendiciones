@@ -3,6 +3,7 @@ package com.sa.decorator;
 import com.sa.entities.CuadroDetallado;
 import com.sa.entities.Gastos;
 import com.sa.entities.Rendicion;
+import org.apache.struts.mock.MockHttpServletRequest;
 import org.displaytag.model.TableModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,10 +19,13 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 class AprobacionDetalleTableDecoratorTest {
@@ -54,24 +58,12 @@ class AprobacionDetalleTableDecoratorTest {
         Assertions.assertEquals("", result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @ParameterizedTest
     @MethodSource("getEditarLinkSource")
     @DisplayName("Testeando get editar link")
-    void getEditarLink(String idGasto, String cuponGasto, String contextPath, String codigo, String codMotivo, String estadoRend, String usuarioRendicion, String glg, String resultado) {
-        gastos = new Gastos();
-        gastos.setIdGasto(idGasto);
-        gastos.setCuponGasto(cuponGasto);
+    void getEditarLink(Gastos gastos, String resultado) {
         currentRowObject = gastos;
         MockitoAnnotations.openMocks(this);
-
-        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
-        when(httpServletRequest.getParameter("codigo")).thenReturn(codigo);
-        when(httpServletRequest.getParameter("codMotivo")).thenReturn(codMotivo);
-        when(httpServletRequest.getParameter("estadoRend")).thenReturn(estadoRend);
-        when(httpServletRequest.getParameter("usuarioRendicion")).thenReturn(usuarioRendicion);
-        when(httpServletRequest.getParameter("glg")).thenReturn(glg);
 
         String result = aprobacionDetalleTableDecorator.getEditarLink();
         Assertions.assertEquals(resultado, result);
@@ -84,53 +76,25 @@ class AprobacionDetalleTableDecoratorTest {
         Assertions.assertEquals("", result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
-    @ParameterizedTest
-    @MethodSource("getDestinatariosLinkSource")
+    @Test
     @DisplayName("Testeando get destinatarios link")
-    void getDestinatariosLink(String obsObligatoria, String idGasto, String nroGasto, String obs, String contextPath, Rendicion rendicion, String resultado) {
-        gastos = new Gastos();
-        gastos.setObsObligatoria(obsObligatoria);
-        gastos.setIdGasto(idGasto);
-        gastos.setNroGasto(nroGasto);
-        gastos.setObs(obs);
-        currentRowObject = gastos;
-        MockitoAnnotations.openMocks(this);
-
-        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
-        when(httpServletRequest.getAttribute("Rendicion")).thenReturn(rendicion);
-
+    void getDestinatariosLink() {
         String result = aprobacionDetalleTableDecorator.getDestinatariosLink();
-        Assertions.assertEquals(resultado, result);
+        assertNull(result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
-    @ParameterizedTest
-    @MethodSource("getCuponesLinkSource")
+    @Test
     @DisplayName("Testeando get cupones link")
-    void getCuponesLink(String tarjeta, String idGasto, String cuponGasto, String nroGasto, String contextPath, String resultado) {
-        gastos = new Gastos();
-        gastos.setTarjeta(tarjeta);
-        gastos.setIdGasto(idGasto);
-        gastos.setCuponGasto(cuponGasto);
-        gastos.setNroGasto(nroGasto);
-        currentRowObject = gastos;
-        MockitoAnnotations.openMocks(this);
-
-        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
-
+    void getCuponesLink() {
         String result = aprobacionDetalleTableDecorator.getCuponesLink();
-        Assertions.assertEquals(resultado, result);
+        assertNull(result);
     }
 
-    @Disabled("Desabilitado porque se debe adaptar a la version actual")
     @Test
     @DisplayName("Testeando get scan link")
     void getScanLink() {
         String result = aprobacionDetalleTableDecorator.getScanLink();
-        Assertions.assertNull( result);
+        assertNull(result);
     }
 
     @Test
@@ -140,60 +104,145 @@ class AprobacionDetalleTableDecoratorTest {
         Assertions.assertEquals( null, result);
     }
 
+
+    @ParameterizedTest
+    @MethodSource("getCuponesSource")
+    @DisplayName("Testeando getCupones")
+    void getCupones(Gastos gasto, HttpServletRequest request, String resultado) {
+        aprobacionDetalleTableDecorator.initRow(gasto,0,0);
+        aprobacionDetalleTableDecorator.init(pageContext,null,null);
+
+        when(pageContext.getRequest()).thenReturn(request);
+
+        String result = aprobacionDetalleTableDecorator.getCupones();
+        Assertions.assertEquals(resultado, result);
+    }
+
+    @ParameterizedTest
+    @MethodSource("getComentariosSource")
+    @DisplayName("Testeando getComentarios")
+    void getComentarios(Gastos gasto,HttpServletRequest request, String resultado) {
+        aprobacionDetalleTableDecorator.initRow(gasto,0,0);
+        aprobacionDetalleTableDecorator.init(pageContext,null,null);
+
+        when(pageContext.getRequest()).thenReturn(request);
+
+        String result = aprobacionDetalleTableDecorator.getComentarios();
+        Assertions.assertEquals(resultado, result);
+    }
+
+    @ParameterizedTest
+    @MethodSource("getComprobanteSource")
+    @DisplayName("Testeando getComprobante")
+    void getComprobante(Gastos gasto, String res){
+        aprobacionDetalleTableDecorator.initRow(gasto,0,0);
+
+        String result = aprobacionDetalleTableDecorator.getComprobante();
+        assertEquals(res, result);
+    }
+
     // ------ Sources ------
 
     private static Stream<Arguments> getEditarLinkSource() {
-        String idGasto = "idGasto";
-        String cuponGasto = "cuponGasto";
-        String cuponGasto2 = "";
-        String contextPath = "contextPath";
-        String codigo = "codigo";
-        String codMotivo = "codMotivo";
-        String estadoRend = "estadoRend";
-        String usuarioRendicion = "usuarioRendicion";
-        String glg = "glg";
-        String resultado = "<a href=\"contextPath/editarGasto.do?action=editarGasto.do&idGasto=idGasto&codigo=codigo&codMotivo=codMotivo&estadoRend=estadoRend\"><a href=\"#\" onclick=\"showEditarGastoPopup(idGasto,'estadoRend','1','1','usuarioRendicion','glg')\"><img src=\"contextPath/images/iconos/editar.png\" alt=\"Editar\" title=\"Editar\" border=\"0\" /> </a></a>";
-        String resultado2 = "<a href=\"contextPath/editarGasto.do?action=editarGasto.do&idGasto=idGasto&codigo=codigo&codMotivo=codMotivo&estadoRend=estadoRend\"><a href=\"#\" onclick=\"showEditarGastoPopup(idGasto,'estadoRend','','1','usuarioRendicion','glg')\"><img src=\"contextPath/images/iconos/editar.png\" alt=\"Editar\" title=\"Editar\" border=\"0\" /> </a></a>";
+        Gastos gastos = new Gastos();
+        Gastos gastos2 = new Gastos();
+
+        gastos.setIdGasto("1");
+        gastos.setCodMotivo("1");
+        gastos.setIdRendicion("1");
+        gastos.setCuponGasto("1");
+
+        gastos2.setIdGasto("1");
+        gastos2.setCodMotivo("1");
+        gastos2.setIdRendicion("1");
+        gastos2.setCuponGasto("");
+
+
+        String resultado = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalGastoShow('1', $('#estadoRend').val() ,'1', '1', 1)\"><i class=\"bbva-icon icon-coronita_contract fa-lg\" data-toggle=\"tooltip\" title=\"Editar\"></i></a>";
+        String resultado2 = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalGastoShow('1', $('#estadoRend').val() ,'1', '1', 0)\"><i class=\"bbva-icon icon-coronita_contract fa-lg\" data-toggle=\"tooltip\" title=\"Editar\"></i></a>";
 
         return Stream.of(
-                Arguments.of(idGasto, cuponGasto, contextPath, codigo, codMotivo, estadoRend, usuarioRendicion, glg, resultado),
-                Arguments.of(idGasto, cuponGasto2, contextPath, codigo, codMotivo, estadoRend, usuarioRendicion, glg, resultado2)
+                Arguments.of(gastos,resultado),
+                Arguments.of(gastos2,resultado2)
         );
     }
 
-    private static Stream<Arguments> getDestinatariosLinkSource() {
-        String obsObligatoria = "S";
-        String obsObligatoria2 = "";
-        String obsObligatoria3 = "OTRO";
-        String idGasto = "idGasto";
-        String nroGasto = "nroGasto";
-        String obs = "obs";
-        String contextPath = "contextPath";
+    private static Stream<Arguments> getCuponesSource(){
+        Gastos gasto = new Gastos();
+        Gastos gasto2 = new Gastos();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String res = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalCuponesShow('1', $('#estadoRend').val(), 'codMotivo', null, null, '1', null, null, true)\"><i class=\"bbva-icon icon-coronita_credit-card fa-lg\" data-toggle=\"tooltip\" title=\"Cupones\"></i></a>";
+        String res2 = "";
+
+        gasto.setTarjeta("S");
+        gasto.setIdRendicion("1");
+        gasto.setIdGasto("1");
+
+        request.addParameter("codMotivo","codMotivo");
+
+        gasto2.setTarjeta("A");
+
+        return Stream.of(
+                Arguments.of(gasto,request,res),
+                Arguments.of(gasto2,request,res2)
+        );
+    }
+
+    private static Stream<Arguments> getComentariosSource(){
+        Gastos gasto = new Gastos();
+        Gastos gasto2 = new Gastos();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String res = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalDatosAdicionalesShow('1', 'codMotivoRend', 'idGasto', 'nroGasto', 'obs', true)\"><i class=\"bbva-icon icon-uniE0D2 fa-lg\" data-toggle=\"tooltip\" title=\"Datos adicionales\"></i></a>";
+        String res2 = "";
         Rendicion rendicion = new Rendicion();
-        rendicion.setCodMotivo("codMotivo");
-        String resultado = "";
-        String resultado2 = "<a href=\"#\" onclick=\"showDescripcionObligatoriaPopup(idGasto,nroGasto,'obs',1,'codMotivo','null')\"><img src=\"contextPath/images/iconos/message.png\" alt=\"Descripcion\" title=\"Descripcion\" border=\"0\" /></a>";
+
+        rendicion.setId(1);
+        rendicion.setCodMotivo("codMotivoRend");
+
+        gasto.setObsObligatoria("S");
+        gasto.setIdGasto("idGasto");
+        gasto.setNroGasto("nroGasto");
+        gasto.setObs("obs");
+
+        request.addParameter("codMotivo","codMotivo");
+        request.setAttribute("Rendicion",rendicion);
+
+        gasto2.setObsObligatoria("");
 
         return Stream.of(
-                Arguments.of(obsObligatoria, idGasto, nroGasto, obs, contextPath, rendicion, resultado2),
-                Arguments.of(obsObligatoria2, idGasto, nroGasto, obs, contextPath, rendicion, resultado),
-                Arguments.of(obsObligatoria3, idGasto, nroGasto, obs, contextPath, rendicion, resultado)
+                Arguments.of(gasto,request,res),
+                Arguments.of(gasto2,request,res2)
         );
     }
 
-    private static Stream<Arguments> getCuponesLinkSource(){
-        String tarjeta = "tarjeta";
-        String tarjeta2 = "S";
-        String idGasto = "idGasto";
-        String cuponGasto = "cuponGasto";
-        String nroGasto = "nroGasto";
-        String contextPath = "contextPath";
-        String resultado = "";
-        String resultado2 = "<a href=\"contextPath/cuponesPopup.do?action=cuponesPopup&view=f&gasto=nroGasto\"><a href=\"#\" onclick=\"showCuponesTarjetasPopup(idGasto,'cuponGasto','null','t')\"><img src=\"contextPath/images/iconos/creditcards.png\" alt=\"Cupones\" title=\"Cupones\" border=\"0\" /> </a></a></td>";
+    private static Stream<Arguments> getComprobanteSource(){
+        Gastos gasto = new Gastos();
+        Gastos gasto2 = new Gastos();
+        Gastos gasto3 = new Gastos();
+        Gastos gasto4 = new Gastos();
+        Gastos gasto5 = new Gastos();
+        Gastos gasto6 = new Gastos();
+        String res = "FACTURA";
+        String res2 = "MAIL";
+        String res3 = "SIN COMPROBANTE";
+        String res4 = "TICKET";
+        String res5 = "FACTURA OBLIGATORIA";
+        String res6 = "COMPROBANTE";
+
+        gasto.setComprobante("FACTU");
+        gasto2.setComprobante("MAIL-");
+        gasto3.setComprobante("SCOMP");
+        gasto4.setComprobante("TICK-");
+        gasto5.setComprobante("FOBL");
+        gasto6.setComprobante("COMPROBANTE");
 
         return Stream.of(
-                Arguments.of(tarjeta, idGasto, cuponGasto, nroGasto, contextPath, resultado),
-                Arguments.of(tarjeta2, idGasto, cuponGasto, nroGasto, contextPath, resultado2)
+                Arguments.of(gasto,res),
+                Arguments.of(gasto2,res2),
+                Arguments.of(gasto3,res3),
+                Arguments.of(gasto4,res4),
+                Arguments.of(gasto5,res5),
+                Arguments.of(gasto6,res6)
         );
     }
 
