@@ -2,7 +2,6 @@ package com.sa.action.aprobacion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ import net.sf.json.JSONArray;
 
 public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ListadoAprobacionesAction.class);
-
+	public String  cantRendiciones = "";
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
@@ -40,7 +39,7 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 
 			AprobacionesService service = new AprobacionesService(samClient);
 			service.getAprobacionesPendientes("", "", "", request.getParameter("glg"), this.sessionUserWorking.getIdUser());
-			String cantRendiciones = service.getCantRendiciones();
+			
 			request.setAttribute("cantRendiciones", cantRendiciones.equals("") ? 0 : cantRendiciones);
 			request.setAttribute("glg", request.getParameter("glg"));
 			
@@ -55,12 +54,16 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 		AprobacionesService service = new AprobacionesService(samClient);
 
 		String alerta = request.getParameter("nroAlerta");
+		String supervisado = this.sessionUserWorking.getIdUser();
+		if(request.getParameter("supervisado").length() > 0 ) {
+			supervisado = request.getParameter("supervisado");
+		}
 		List<Rendicion> rendicion = service.getAprobacionesPendientes(request.getParameter("idRendicion"), request.getParameter("usuario").trim().toUpperCase(),
-				request.getParameter("motivo"), request.getParameter("glg"), this.sessionUserWorking.getIdUser());
+				request.getParameter("motivo"), request.getParameter("glg"), supervisado);
 	
+		List<Rendicion> rendicionAlerta = new ArrayList<Rendicion>();
 		
-		List<Rendicion> rendicionesAlerta = new ArrayList<>();
-		
+		List<Rendicion> rendicionesAlerta = new ArrayList<Rendicion>();
 		if(alerta.equals("1")) {
 			for (Rendicion r : rendicion) {
 				if(r.getAdea().substring(0,1).equals("1")) {
@@ -70,14 +73,16 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 			rendicion = rendicionesAlerta;
 		}else if(alerta.equals("0") ) {
 			for (Rendicion r : rendicion) {
-				if(r.getIdu() ==null || !(r.getAdea().substring(0,1).equals("1")) ) {
-					rendicionesAlerta.add(r);
-				}
+			if(r.getAdea().equals("0000000000") || r.getIdu() ==null ) {
+				rendicionesAlerta.add(r);
+			}
 			}	
 			rendicion = rendicionesAlerta;
 		}	
+		
 		request.setAttribute("Rendicion", rendicion);
-
+		cantRendiciones = service.getCantRendiciones();
+		request.setAttribute("cantRendiciones", cantRendiciones.equals("") ? 0 : cantRendiciones);
 		this.message = service.getMsg();
 		
 		return mapping.findForward("aprobaciones");
