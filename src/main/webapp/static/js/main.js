@@ -1,83 +1,100 @@
-let dtParams = {};
-let globalOpcionVacia = '<option value="">Seleccion\u00e1 una opci\u00f3n</option>';
-let globalMsgRequired = 'Campo obligatorio.';
-let globalMsgCuit = 'CUIT incorrecto.';
+var dtParams = {};
+var globalOpcionVacia = '<option value="">Seleccion\u00e1 una opci\u00f3n</option>';
+var globalMsgRequired = 'Campo obligatorio.';
+var globalMsgCuit = 'CUIT incorrecto.';
 function globalMsgLength(length) { return 'El campo debe tener ' + length + ' caracteres.' };
 function globalMsgMaxValue(maxValue) { return 'El valor no puede ser mayor a ' + maxValue + '.' };
 function globalMsgMinDate(minDate) { return 'La fecha no puede ser anterior a ' + minDate + '.' };
 function globalMsgMaxDate(maxDate) { return 'La fecha no puede ser posterior a ' + maxDate + '.' };
 
 $(document).ready(function() {
-  $('.has-float-label label').click(function() {
-    $(this).parent().find('input, select, textarea')[0].focus();
-  });
+	$('.has-float-label label').click(function() {
+		$(this).parent().find('input, select, textarea')[0].focus();
+	});
 
-  $('.modal').on('show.bs.modal', function() {
-    let zIndex = 1040 + (10 * $('.modal:visible').length);
-    $(this).css('z-index', zIndex);
-    setTimeout(function() {
-      $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
-    }, 0);
-  });
+	$('.modal').on('show.bs.modal', function() {
+		var zIndex = 1040 + (10 * $('.modal:visible').length);
+		$(this).css('z-index', zIndex);
+		setTimeout(function() {
+			$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+		}, 0);
+	});
 
-  $('.modal').on('shown.bs.modal', function(event) {
-    $('body').addClass('modal-open');
-  });
+	$('.modal').on('shown.bs.modal', function(event) {
+		$('body').addClass('modal-open');
+	});
 
-  $('.modal').on('hidden.bs.modal', function(event) {
-    if ($('.modal:visible').length > 0)
-      $('body').addClass('modal-open');
-  });
+	$('.modal').on('hidden.bs.modal', function(event) {
+		if ($('.modal:visible').length > 0)
+			$('body').addClass('modal-open');
+	});
 
-  $('.modal').scroll(function() {
-    $('.datepicker').datepicker('place');
-  });
+	$('.modal').scroll(function() {
+		$('.datepicker').datepicker('place');
+	});
 
-  setTooltips();
-  setDatepickerElements();
-  setAutonumericElements();
-	selectScrollIcon();	
+	setTooltips();
+	setDatepickerElements();
+	setAutonumericElements();
+
+	toggleScrollButton();
+	$('#scroll-btn').click(function() {
+		scrollToTop();
+	});
+
+
+
+	$(window).scroll(function() {
+		toggleScrollButton();
+
+
+	});
+
+	$(window).scroll(function() {
+		$('[data-toggle="tooltip"]').tooltip({
+			placement: 'top'
+		})
+	});
+	
+	$('#manualRendiciones').click(function(){
+		let urlPdf = 'ayuda/manual_rendiciones.pdf';
+		window.open(urlPdf, '_blank')
+	})
+
+	setTimeout(function() {
+		if($('#containerImagenesCargadas').find("div").length > 0){
+			$('#abrirTodas').show()
+			$('#containerImagenesCargadas').addClass('flex-wrap')
+			 
+		}else{
+			$('#abrirTodas').hide()
+		}
+	}, 500);
+
 	
 
-  $(window).scroll(function() {
-   selectScrollIcon()
-  });
-
-  $('[data-toggle="tooltip"]').tooltip({
-    placement: 'top'
-  });
-
-  $('#manualRendiciones').click(function() {
-    let urlPdf = 'ayuda/manual_rendiciones.pdf';
-    window.open(urlPdf, '_blank');
-  });
-
-	//seleccionar desplazamiento de btn para scroll
-  $('#scroll-btn').click(function() {
-    let documentHeight = document.documentElement.scrollHeight;
-    if ($('#scroll-btn i').hasClass('fa-arrow-up')) {
-      // Desplazarse hacia la parte superior de la página
-      $('html, body').animate({ scrollTop: 0 }, 'slow');
-    } else if ($('#scroll-btn i').hasClass('fa-arrow-down')) {
-      // Desplazarse hacia el fondo de la página
-      $('html, body').animate({ scrollTop: documentHeight }, 'slow');
-    }
-  });
 });
 
 
-//setear icono en scroll
-function selectScrollIcon(){
-	 let scrollButton = $('#scroll-btn');
-    let arrowIcon = scrollButton.find('i');
-    let windowHeight = $(window).height();
-    let documentHeight = document.documentElement.scrollHeight;
-    let scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+//Comportamiento de icono de scroll
 
-    scrollButton.toggleClass('show', documentHeight > windowHeight);
-    arrowIcon.toggleClass('fa-arrow-up', scrollTop + windowHeight >= documentHeight);
-    arrowIcon.toggleClass('fa-arrow-down', scrollTop + windowHeight < documentHeight);
+function toggleScrollButton() {
+	let scrollButton = $('#scroll-btn');
+	let arrowIcon = scrollButton.find('i');
+	let windowHeight = $(window).height();
+	let documentHeight = document.documentElement.scrollHeight
+	let scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+
+	scrollButton.toggleClass('show', documentHeight > windowHeight);
+	arrowIcon.toggleClass('fa-arrow-up', scrollTop + windowHeight >= documentHeight);
+	arrowIcon.toggleClass('fa-arrow-down', scrollTop + windowHeight < documentHeight);
 }
+
+function scrollToTop() {
+	$('html, body').animate({ scrollTop: 0 }, 'slow');
+
+}
+
 
 
 $(document).ajaxComplete(function() {
@@ -215,12 +232,14 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 					elem.descripcion.trim() +
 					'</option>');
 			});
-
-			$('#filtroMotivo').chosen();
 			$('#delegado').chosen();
 			$('#filtroFecha').chosen();
 			
-	
+		setTimeout(() => {
+  			$('#filtroMotivo').chosen();
+  			$('#filtroSupervisado').chosen();
+		}, 800);
+
 		},
 		error: function(request, status, error) {
 			console.log("error: " + status + " - " + error);
@@ -253,6 +272,8 @@ function setOnlyDataCombo(url, params, callback) {
 
 
 
+
+
 function callAjax(url, params, successCallBack, errorCallBack, async, showLoading = true, successCallBackParams) {
 	if (showLoading)
 		$('#modalLoading').modal('show');
@@ -275,6 +296,7 @@ function callAjax(url, params, successCallBack, errorCallBack, async, showLoadin
 
 			if (successCallBack != null) {
 				data = $.extend({}, data, successCallBackParams);
+				
 				eval(successCallBack + '(data);');
 			}
 		},
@@ -518,3 +540,7 @@ function formatCurrency(amount) {
 	input.inputmask('setvalue', typeof amount == 'string' ? amount.replace(',', '.') : amount);
 	return input.val();
 }
+
+
+
+
