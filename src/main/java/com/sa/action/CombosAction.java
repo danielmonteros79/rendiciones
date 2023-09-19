@@ -31,6 +31,9 @@ import ar.com.bbva.web.impl.SAMWebClient;
 
 public class CombosAction extends RestriccionTransaccionAction {
 	
+	private static final  String COMBO = "combo";
+	private static final  String USER_ACTUAL = "userActual";
+
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -77,7 +80,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		Map<String, Object> resp = new HashMap<String, Object>();
 
 		
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		//response.setHeader("Content-Type", "text/html; charset=UTF-8");
 		
 		writeJson(response, resp);
@@ -100,7 +103,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
@@ -123,7 +126,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
@@ -133,8 +136,8 @@ public class CombosAction extends RestriccionTransaccionAction {
 		List<String> jsonCombo = new ArrayList<String>();
 		RendicionesService service = new RendicionesService(samClient);
 		String userActual = this.sessionUserWorking.getIdUser();
-		if(request.getParameter("userActual") != null && request.getParameter("userActual").length() > 2 ) {
-			userActual = request.getParameter("userActual");
+		if(request.getParameter(USER_ACTUAL) != null && request.getParameter(USER_ACTUAL).length() > 2 ) {
+			userActual = request.getParameter(USER_ACTUAL);
 		}
 
 		List<ComboMotivo> motivos = service.getMotivoRendiciones(request.getParameter("opcion"), userActual, request.getParameter("glg") );
@@ -145,7 +148,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 
 
 		
@@ -166,7 +169,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		resp.put("selected", this.sessionUserWorking.getIdUser());
 		
 		writeJson(response, resp);
@@ -184,7 +187,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 		
 		writeJson(response, resp);
 	}
@@ -201,7 +204,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		jsonCombo.remove(0);
 		Map<String, Object> resp = new HashMap<String, Object>();
 		
-		resp.put("combo", jsonCombo);
+		resp.put(COMBO, jsonCombo);
 
 		writeJson(response, resp);
 	}
