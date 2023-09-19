@@ -7,7 +7,7 @@ $(document).ready(function() {
 	setFormValidate();
 	showMessage('message', getLocalStorageItem('message'));
 	$('.nav-parametros').addClass('active');
-	setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: ['1', '2'].indexOf($('#glg').val()) == -1 ? 9 : 8});
+	setCombo('combos.do?action=getMotivos', '#filtroMotivo', { opcion: ['1', '2'].indexOf($('#glg').val()) == -1 ? 9 : 8, glg: ""});
 	setCombo('combos.do?action=getTiposComprobante', '#filtroComprobante', {tipoGasto: "HOSPEDAJE"});
 });
 
