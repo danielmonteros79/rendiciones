@@ -2,13 +2,14 @@ var modalGastoFirstLoad = true;
 var modalGastoSubmitted = false;
 var modalGastoLoadParams;
 var modalGastoTipoComprobanteSel;
+let centroDeCostos="";
+let cantCupones = 0;
 
-
-function modalGastoShow(idRendicion, estadoRend, idGasto, codMotivo, cupon) {
+function modalGastoShow(idRendicion, estadoRend, idGasto, codMotivo, cupon, costosDestino) {
 	$('#tableMessageContainer').addClass('d-none');
 	modalGastoSubmitted = false;
 	clearFormErrors('#modalGasto');
-	
+	centroDeCostos=costosDestino;
 	if (cupon == '0')
 		$('#modalGastoMessageContainer').addClass('d-none');
 	
@@ -112,7 +113,6 @@ function modalGastoSetOnChanges() {
 
 function modalGastoSetVisibility() {
 	$('#modalGastoConCupon').toggle(modalGastoLoadParams.cupon != "0");
-	
 	if (!modalGastoLoadParams.cupon.esProxCupon) {
 		$('#modalGastoTipoComprobanteDiv').hide();
 		$('.modalGastoFacturaCuitDiv').hide();
@@ -120,10 +120,12 @@ function modalGastoSetVisibility() {
 }
 
 function modalGastoSetValues(data) {
-		
+	let cantCupones = modalCuponesCuponesSel.length +1;
 	if (!modalGastoLoadParams.cupon.esProxCupon) {
 		modalGastoTipoComprobanteSel = null;
 		$('[id^=modalGasto]').val('');
+		$('#modalGastoCuponesCant').addClass("d-none")
+		$('#modalGastoDetalleCuponDesc').addClass("d-none")
 		$('#modalGastoTipoFactura').val('A');
 		$('[id^=modalGasto]').attr('disabled', false);
 		AutoNumeric.getAutoNumericElement('#modalGastoMonto').clear();
@@ -133,9 +135,9 @@ function modalGastoSetValues(data) {
 		$('#modalGastoUsuario').html($('#usuario').html());
 		$('#modalGastoCCostos').html($('#cCostos').html());
 		AutoNumeric.getAutoNumericElement('#modalGastoCCostosDestino').set($('#cCostos').html());
-		
 		$('#modalGastoFechaGasto').datepicker('setStartDate', modalGastoLoadParams.fechaDesde);
 		$('#modalGastoFechaGasto').datepicker('setEndDate', modalGastoLoadParams.fechaHasta);
+		
 	}
 	
 	if (data.gasto) {
@@ -155,6 +157,11 @@ function modalGastoSetValues(data) {
 		$('#modalGastoCuit').val(data.gasto.cuit);
 		$('[id^=modalGasto]').change();
 	} else if (modalGastoLoadParams.cupon) {
+		$('#modalGastocantCupones').html(cantCupones)
+		$('#modalGastoCuponesCant').removeClass("d-none")
+		$('#modalGastocantCupones').addClass('font-weight-bold')
+		$('#modalGastoDetalleCuponDesc').removeClass("d-none")
+		$('#modalGastoDetalleCuponDesc').html(" " + modalGastoLoadParams.cupon.establecimiento )
 		$('#modalGastoMsgCupon').html(' con el cup&oacute;n ' + modalGastoLoadParams.cupon.nroCupon);
 		$('#modalGastoMoneda').val(modalGastoLoadParams.cupon.moneda + " ");
 		$('#modalGastoMoneda').attr('disabled', true);
@@ -162,13 +169,25 @@ function modalGastoSetValues(data) {
 		$('#modalGastoFechaGasto').attr('disabled', !modalGastoLoadParams.cupon.adelanto);
 		$($('#modalGastoFechaGasto').parent().find('button')[0]).attr('disabled', !modalGastoLoadParams.cupon.adelanto);
 		AutoNumeric.getAutoNumericElement('#modalGastoMonto').set(modalGastoLoadParams.cupon.disponible);
+
 	}
+
+	//Habilitar la edición del centro de costos
+	if(centroDeCostos.trim().includes("9999")){
+		$('#modalGastoCCostosDestino').removeAttr("readonly")
+		.removeClass("bg-white")	
+		.addClass("bg-light")	
+	}else if(!centroDeCostos.trim().includes("9999")){
+		$('#modalGastoCCostosDestino').addClass("bg-white")	
+		.removeClass("bg-light")
+		.attr('readonly', 'readonly')
+	}
+
 	
 }
 
 function modalGastoSetValidaciones(data) {
 	$('#modalGastoMonto').removeAttr('data-maxvalue');
-
 	$('#modalGastoFechaGasto').attr('data-mindate', modalGastoLoadParams.fechaDesde);
 	$('#modalGastoFechaGasto').attr('data-maxdate', modalGastoLoadParams.fechaHasta);
 	
@@ -248,8 +267,15 @@ function modalGastoGuardarSuccess(data) {
 }
 
 function modalGastoShowProximoGastoCupon(data) {
-	modalGastoShow(modalCuponesLoadParams.idRendicion, modalCuponesLoadParams.estadoRend, null, modalCuponesLoadParams.codMotivo, modalCuponesCuponesSel[0]);
+	modalGastoTipoComprobanteSel = null;
+	$('#modalGastoTipoComprobanteDiv').fadeOut();
+	$('#modalGastoObservaciones').val("")
+	$('#modalGastoTipoComprobante').val("")
+	$('#modalGastoTipoFactura').val("")
+	$('#modalGastoTipoGasto').val("")
+	modalGastoShow(modalCuponesLoadParams.idRendicion, modalCuponesLoadParams.estadoRend, null, modalCuponesLoadParams.codMotivo, modalCuponesCuponesSel[0],centroDeCostos );
 	modalCuponesCuponesSel.splice(0, 1);
-	showMessage('modalGastoMessage', data.message);
+	//showMessage('modalGastoMessage',data.message);
 	scrollToElem('#modalGastoMessage', false, '#modalGasto', '#modalGastoMessageContainer');
+	cantCupones--
 }
