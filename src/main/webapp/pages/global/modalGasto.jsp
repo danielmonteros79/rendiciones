@@ -13,9 +13,14 @@
 					<div class="col-sm-12">
 						<h1 class="font-weight-300">Detalle de gasto/consumo <span id="modalGastoConCupon"> con cup&oacute;n</span></h1>
 					</div>
-					<div class="col-sm-12 pt-1 pb-5 text-muted">
-						Ingres&aacute; toda la informaci&oacute;n de detalle sobre el gasto o consumo que se realiz&oacute;<span id="modalGastoMsgCupon"></span>.
+					<div class="col-sm-12 pt-1 pb-4 text-muted">
+						Ingres&aacute; toda la informaci&oacute;n de detalle sobre el gasto o consumo que se realiz&oacute;<span id="modalGastoMsgCupon"></span>
 					</div>
+					<div class="col-sm-12 pt-1 pb-4 ">
+						<h5 class="text-warning" id="modalGastoDetalleCupon"><span  id="modalGastoDetalleCuponDesc"></span></h5>
+						<div class="text-warning h5 font-weight-normal" id="modalGastoCuponesCant">Cupones pendientes por completar : <span id="modalGastocantCupones"></span></div>
+					</div>
+														
 				</div>
 				<div class="row px-5 mx-5 pb-3 d-none" id="modalGastoMessageContainer">
 					<div class="col-sm-12">
@@ -40,7 +45,7 @@
 					</div>
 					<div class="col-lg-3 col-sm-12 py-2">
 						<div class="has-float-label">
-							<input type="text" class="form-control bg-light an-integer-pos" id="modalGastoCCostosDestino" placeholder="C. Costos Destino" required/>
+							<input type="text" class="form-control bg-white an-integer-pos" id="modalGastoCCostosDestino" placeholder="C. Costos Destino" readonly required />
 							<label for="modalGastoCCostosDestino">C. Costos Destino</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
@@ -141,5 +146,4 @@
 		</div>
 	</div>
 </div>
-
 <script type="text/javascript" src="static/js/select2.min.js"></script>

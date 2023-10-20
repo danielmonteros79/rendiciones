@@ -2,14 +2,14 @@ var modalCuponesLoadParams;
 var modalCuponesSubmitted;
 var modalCuponesCupones;
 var modalCuponesCuponesSel = [];
+let centroCostos = "";
 
 
 
-
-function modalCuponesShow(idRendicion, estadoRend, codMotivo, fechaDesde, fechaHasta, idGasto, montoMin, moneda, verCupon) {
+function modalCuponesShow(idRendicion, estadoRend, codMotivo, fechaDesde, fechaHasta, idGasto, montoMin, moneda, verCupon, costos) {
 	modalCuponesSubmitted = false;
 	modalCuponesCupones = {};
-	
+	centroCostos=costos;
 	$('#tableMessageContainer').addClass('d-none');
 	
 	$('#modalCuponesTitulo').html(verCupon ? 'Cup&oacute;n asignado al gasto' : idGasto == null ? 'Nuevo gasto con cup&oacute;n' : 'Asignar cup&oacute;n');
@@ -72,7 +72,7 @@ function modalCuponesSetTabla(data) {
 		cols += '<td class="text-right nowrap' + (modalCuponesLoadParams.verCupon ? ' d-none' : '') + '">' + formatCurrency(fila.montoUtilizado) + '</td>';
 		cols += '<td>' + fila.moneda + '</td>';
 		cols += '<td class="' + (modalCuponesLoadParams.verCupon ? 'd-none' : '') + '">' +
-			'<input type="' +  'radio' + '" name="modalCuponesCheckCupon" value="' + i + '"/></td>';
+			'<input type="' +  'checkbox' + '" name="modalCuponesCheckCupon" value="' + i + '"/></td>';
 		
 		$('#modalCuponesTabla tbody').append('<tr>' + cols + '</tr>');
 	});
@@ -102,7 +102,7 @@ function modalCuponesContinuar() {
 	});
 	
 	$('#modalCupones').modal('hide');
-	modalGastoShow(modalCuponesLoadParams.idRendicion, modalCuponesLoadParams.estadoRend, null, modalCuponesLoadParams.codMotivo, modalCuponesCuponesSel[0]);
+	modalGastoShow(modalCuponesLoadParams.idRendicion, modalCuponesLoadParams.estadoRend, null, modalCuponesLoadParams.codMotivo, modalCuponesCuponesSel[0], centroCostos);
 	modalCuponesCuponesSel.splice(0, 1);
 }
 

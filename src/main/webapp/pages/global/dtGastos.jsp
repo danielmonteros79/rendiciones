@@ -4,7 +4,7 @@
 
 <h5 class="pb-3 table-message" id="gastosTableMessage"></h5>
 <display:table uid="row" name="gastos" requestURI="rendicionDetalleGastos.do" id="gastosTable" excludedParams="username password"
-	decorator="com.sa.decorator.GastosTableDecorator" pagesize="5" export="false">
+	decorator="com.sa.decorator.GastosTableDecorator" pagesize="20" export="false">
 	<display:column property="descGasto" title="TIPO DE GASTO" />
     <display:column property="observacionGasto" title="DESCRIPCI&Oacute;N DE GASTO" />
     <display:column property="montoNum" class="nowrap" format="$ {0,number,#,##0.00}" title="MONTO DE GASTO" />
@@ -19,5 +19,4 @@
 	
 	<display:setProperty name="basic.msg.empty_list" value="<h5 class='font-weight-400 dt-empty'>La lista de gastos/consumos est&aacute; vac&iacute;a</h5>" />
 </display:table>
-
 
