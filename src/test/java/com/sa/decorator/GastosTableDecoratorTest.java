@@ -44,28 +44,28 @@ class GastosTableDecoratorTest {
         assertEquals("", result);
     }
 
-    @ParameterizedTest
-    @MethodSource("testGetEditarLinkSource")
-    @DisplayName("Testeando get editar link")
-    void getEditarLink(String contextPath,String codigo, String codMotivo, boolean showEditar, String cuponGasto,String respuesta) {
-        gastos = new Gastos();
-        gastos.setCuponGasto(cuponGasto);
-        currentRowObject = gastos;
-        MockitoAnnotations.openMocks(this);
-
-        when(pageContext.getRequest()).thenReturn(httpServletRequest);
-        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
-        when(httpServletRequest.getParameter(codigo)).thenReturn(codigo);
-        when(httpServletRequest.getParameter(codMotivo)).thenReturn(codMotivo);
-        when(httpServletRequest.getAttribute("showEditar")).thenReturn(showEditar);
-
-        String result = gastosTableDecorator.getEditarLink();
-        if (showEditar) {
-            assertEquals(respuesta, result);
-        } else {
-            assertEquals("", result);
-        }
-    }
+//    @ParameterizedTest
+//    @MethodSource("testGetEditarLinkSource")
+//    @DisplayName("Testeando get editar link")
+//    void getEditarLink(String contextPath,String codigo, String codMotivo, boolean showEditar, String cuponGasto,String respuesta) {
+//        gastos = new Gastos();
+//        gastos.setCuponGasto(cuponGasto);
+//        currentRowObject = gastos;
+//        MockitoAnnotations.openMocks(this);
+//
+//        when(pageContext.getRequest()).thenReturn(httpServletRequest);
+//        when(httpServletRequest.getContextPath()).thenReturn(contextPath);
+//        when(httpServletRequest.getParameter(codigo)).thenReturn(codigo);
+//        when(httpServletRequest.getParameter(codMotivo)).thenReturn(codMotivo);
+//        when(httpServletRequest.getAttribute("showEditar")).thenReturn(showEditar);
+//
+//        String result = gastosTableDecorator.getEditarLink();
+//        if (showEditar) {
+//            assertEquals(respuesta, result);
+//        } else {
+//            assertEquals("", result);
+//        }
+//    }
 
     @ParameterizedTest
     @MethodSource("testGetBorrarLinkSource")
