@@ -45,8 +45,8 @@ public class AprobacionDetalleTableDecorator extends SumTableDecorator {
 			String link = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalCuponesShow('" + idRendicion + "', $('#estadoRend').val(), '" + codMotivo +
 					"', null, null, '" + idGasto + "', null, null, true)\">" + imgTag + "</a>";
 			return link;
-		} else
-			return "";
+		} else {
+			return "";}
 	}
 	
 	public String getComentarios() {
