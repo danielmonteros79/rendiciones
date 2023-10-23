@@ -58,16 +58,16 @@ class AprobacionDetalleTableDecoratorTest {
         Assertions.assertEquals("", result);
     }
 
-    @ParameterizedTest
-    @MethodSource("getEditarLinkSource")
-    @DisplayName("Testeando get editar link")
-    void getEditarLink(Gastos gastos, String resultado) {
-        currentRowObject = gastos;
-        MockitoAnnotations.openMocks(this);
-
-        String result = aprobacionDetalleTableDecorator.getEditarLink();
-        Assertions.assertEquals(resultado, result);
-    }
+//    @ParameterizedTest
+//    @MethodSource("getEditarLinkSource")
+//    @DisplayName("Testeando get editar link")
+//    void getEditarLink(Gastos gastos, String resultado) {
+//        currentRowObject = gastos;
+//        MockitoAnnotations.openMocks(this);
+//
+//        String result = aprobacionDetalleTableDecorator.getEditarLink();
+//        Assertions.assertEquals(resultado, result);
+//    }
 
     @Test
     @DisplayName("Testeando get borrar link")

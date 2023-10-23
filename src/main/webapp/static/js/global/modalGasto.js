@@ -157,10 +157,12 @@ function modalGastoSetValues(data) {
 		$('#modalGastoCuit').val(data.gasto.cuit);
 		$('[id^=modalGasto]').change();
 	} else if (modalGastoLoadParams.cupon) {
-		$('#modalGastocantCupones').html(cantCupones)
-		$('#modalGastoCuponesCant').removeClass("d-none")
-		$('#modalGastocantCupones').addClass('font-weight-bold')
 		$('#modalGastoDetalleCuponDesc').removeClass("d-none")
+		$('#modalGastoCuponesCant').removeClass("d-none")
+		$('#modalGastoCuponesCant').text("Cupones pendientes por completar : ")
+		$('#modalGastoCuponesCant').append("<span id='modalGastocantCupones'</span>")
+		$('#modalGastocantCupones').text(cantCupones)
+		$('#modalGastocantCupones').addClass('font-weight-bold')
 		$('#modalGastoDetalleCuponDesc').html(" " + modalGastoLoadParams.cupon.establecimiento )
 		$('#modalGastoMsgCupon').html(' con el cup&oacute;n ' + modalGastoLoadParams.cupon.nroCupon);
 		$('#modalGastoMoneda').val(modalGastoLoadParams.cupon.moneda + " ");

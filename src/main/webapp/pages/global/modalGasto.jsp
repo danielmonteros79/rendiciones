@@ -18,7 +18,7 @@
 					</div>
 					<div class="col-sm-12 pt-1 pb-4 ">
 						<h5 class="text-warning" id="modalGastoDetalleCupon"><span  id="modalGastoDetalleCuponDesc"></span></h5>
-						<div class="text-warning h5 font-weight-normal" id="modalGastoCuponesCant">Cupones pendientes por completar : <span id="modalGastocantCupones"></span></div>
+						<div class="text-warning h5 font-weight-normal" id="modalGastoCuponesCant"></div>
 					</div>
 														
 				</div>
