@@ -24,9 +24,8 @@ public class GastosTableDecorator extends SumTableDecorator {
 		
 		String imgTag = "<i class=\"bbva-icon icon-coronita_contract fa-lg\" data-toggle=\"tooltip\" title=\"Editar\"></i>";
 		String editarLink = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalGastoShow('" + gasto.getIdRendicion() + "', $('#estadoRend').val(), '" +
-				gasto.getIdGasto() + "', '" + gasto.getCodMotivo() + "', " + (!gasto.getCuponGasto().equalsIgnoreCase("") ? "1" : "0") + ")\">" + 
+				gasto.getIdGasto() + "', '" + gasto.getCodMotivo() + "', '" + (!gasto.getCuponGasto().equalsIgnoreCase("") ? "1" : "0")  + "', '" + gasto.getCentroCostoGasto() + "')\">" + 
 			imgTag + "</a>";
-		
 		return editarLink;
 	}
 
@@ -68,7 +67,6 @@ public class GastosTableDecorator extends SumTableDecorator {
 		return link;
 	}
 
-	@Override
 	public String getCupones() {
 		PageContext pc = this.getPageContext();
 		HttpServletRequest request = (HttpServletRequest) pc.getRequest();

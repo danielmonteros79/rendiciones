@@ -18,11 +18,11 @@ public class AprobacionDetalleTableDecorator extends SumTableDecorator {
 		Gastos gasto = (Gastos) this.getCurrentRowObject();
 		
 		String imgTag = "<i class=\"bbva-icon icon-coronita_contract fa-lg\" data-toggle=\"tooltip\" title=\"Editar\"></i>";
-		String editarLink = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalGastoShow('" + gasto.getIdRendicion() + "', $('#estadoRend').val() ,'" +
-				gasto.getIdGasto() + "', '" + gasto.getCodMotivo() + "', " + (!gasto.getCuponGasto().equalsIgnoreCase("") ? "1" : "0") + ")\">" + 
+		String editarLink = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalGastoShow('" + gasto.getIdRendicion() + "', $('#estadoRend').val(), '" +
+				gasto.getIdGasto() + "', '" + gasto.getCodMotivo() + "', '" + (!gasto.getCuponGasto().equalsIgnoreCase("") ? "1" : "0")  + "', '" + gasto.getCentroCostoGasto() + "')\">" + 
 			imgTag + "</a>";
-
 		return editarLink;
+
 
 	}
 
@@ -45,8 +45,8 @@ public class AprobacionDetalleTableDecorator extends SumTableDecorator {
 			String link = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalCuponesShow('" + idRendicion + "', $('#estadoRend').val(), '" + codMotivo +
 					"', null, null, '" + idGasto + "', null, null, true)\">" + imgTag + "</a>";
 			return link;
-		} else {
-			return "";}
+		} else
+			return "";
 	}
 	
 	public String getComentarios() {
