@@ -105,7 +105,7 @@
 	                </li>
 					<% } %>
 					
-	               <% if (userWorking.getTipoPerfil().getPantalla().contains("Parametros")) { %>
+	              <%-- <% if (userWorking.getTipoPerfil().getPantalla().contains("Parametros")) { %>
 	                <li class="nav-item dropdown pr-md-2 px-xl-3">
 	                    <a class="nav-link dropdown-toggle nav-parametros" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>PAR&Aacute;METROS</span>
@@ -117,31 +117,25 @@
 							<html:link action="parametrosGastos.do" styleClass="dropdown-item bg-secondary text-white">
 								<span>GASTOS</span>
 							</html:link>
-							<%-- <html:link action="parametrosExceptuados.do" styleClass="dropdown-item bg-secondary text-white">
+							<html:link action="parametrosExceptuados.do" styleClass="dropdown-item bg-secondary text-white">
 								<span>EXCEPTUADOS</span>
-							</html:link> --%>
+							</html:link>
 							<html:link action="parametrosAlertas.do" styleClass="dropdown-item bg-secondary text-white">
 								<span>ALERTAS</span>
 							</html:link>
 						</div>
 	                </li>
-					<% } %> 
+					<% } %>  --%>
 					
-				<% if (userWorking.getTipoPerfil().getPantalla().contains("Cierre")) { %>
+					<% if (userWorking.getTipoPerfil().getPantalla().contains("Cierre")) { %>
 	                <li class="nav-item dropdown pr-md-2 ">
 	                    <a class="nav-link dropdown-toggle nav-cierre" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>CIERRE</span>
 						</a>
 						<div class="dropdown-menu bg-secondary" aria-labelledby="navbarDropdown">
 							<html:link action="cierreOrdenDePago.do" styleClass="dropdown-item bg-secondary text-white">
-								<span>ORDEN DE PAGO</span>
+								<span>CIERRE ORDEN DE PAGO</span>
 							</html:link>
-							<!--<html:link action="consumosSinRendir.do" styleClass="dropdown-item bg-secondary text-white">
-								<span>CONSUMOS NO RENDIDOS</span>
-							</html:link>
-							<html:link action="aprobacionesPendientes.do" styleClass="dropdown-item bg-secondary text-white">
-								<span>APROBACIONES PENDIENTES</span>
-							</html:link>-->
 							<html:link action="reasignarBandeja.do" styleClass="dropdown-item bg-secondary text-white">
 								<span>REASIGNACI&Oacute;N DE BANDEJA</span>
 							</html:link>
@@ -190,12 +184,6 @@
 				<div class="nav-item pb-3">
 					<a href="#" id="manualRendiciones"> <i class="fas fa-plus-circle text-center"></i>
 						<b>Manual de rendiciones de gastos</b>
-					</a>
-					<a> <i class="fas fa-plus-circle text-center"></i>
-											
-					</a>
-					<a href="https://bbva-regulacion-interna.appspot.com/ficha?idEdicion=1701" target="_blank"> <i class="fas fa-plus-circle text-center"></i>
-						<b>Norma de Gastos de T&C</b>
 					</a>
 				</div>
 			</div>
