@@ -42,9 +42,6 @@ public class ParametrosService {
 	private SAMWebClient client;
 	private SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyy-MM-dd");
 	private String msgAviso;
-	private static final String COD_USER = "cod_user";
-	private static final String MOTIVO = "motivo";
-	private static final String USUARIO = "usuario";
 
 	public ParametrosService(SAMWebClient samClient) {
 		this.client = samClient;
@@ -56,7 +53,7 @@ public class ParametrosService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		parametersExecute.put("cod_motivo", codMotivo);
-		parametersExecute.put(COD_USER, user);
+		parametersExecute.put("cod_user", user);
 		
 		manager.executeTrx(this.client, parametersExecute);
 		
@@ -182,7 +179,7 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU80());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
-		parametersExecute.put(COD_USER, usuario);
+		parametersExecute.put("cod_user", usuario);
 		manager.executeTrx(this.client, parametersExecute);
 		
 		List<ParametriaUsuarioDelegado> listado = (List<ParametriaUsuarioDelegado>) manager.getDataReturnList();
@@ -195,7 +192,7 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU81());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("opcion", opcion);
-		parametersExecute.put("id_reemplazo", usuario);
+		parametersExecute.put("id_reemplazo", usuario.toUpperCase());
 
 		manager.executeTrx(this.client, parametersExecute);
 		Usuario usuarioCheck = (Usuario) manager.getDataReturn();
@@ -209,7 +206,7 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU81());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("opcion", formulario.getOpcion().trim());
-		parametersExecute.put("id_reemplazo", formulario.getDelegadoUser().trim());
+		parametersExecute.put("id_reemplazo", formulario.getDelegadoUser().toUpperCase().trim());
 		parametersExecute.put("fDesde_old", formulario.getFeDesde());
 		parametersExecute.put("fHasta_old", formulario.getFeHasta());
 
@@ -253,7 +250,7 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU80());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
-		parametersExecute.put(COD_USER, usuario);
+		parametersExecute.put("cod_user", usuario);
 		manager.executeTrx(this.client, parametersExecute);
 		
 		List<ParametriaUsuarioDelegado> listado = (List<ParametriaUsuarioDelegado>) manager.getDataReturnList();
@@ -357,8 +354,8 @@ public class ParametrosService {
 			String imp = decimalFormat.format(value).replace(".", "");
 			importeCant = String.format("%014.0f", Double.parseDouble(imp.replace(",", "")));
 			parametersExecute.put("imp_cant", importeCant);
-		} else {
-			parametersExecute.put("imp_cant", String.format("%016.0f", Double.parseDouble(frm.getImpCant())));}
+		} else
+			parametersExecute.put("imp_cant", String.format("%016.0f", Double.parseDouble(frm.getImpCant())));
 
 		manager.executeTrx(this.client, parametersExecute);
 		String msg = (String) manager.getMensajeAviso();
@@ -391,8 +388,8 @@ public class ParametrosService {
 			String imp = decimalFormat.format(value).replace(".", "");
 			importeCant = String.format("%014.0f", Double.parseDouble(imp.replace(",", "")));
 			parametersExecute.put("imp_cant", importeCant);
-		} else {
-			parametersExecute.put("imp_cant", String.format("%016.0f", Double.parseDouble(frm.getImpCant())));}
+		} else
+			parametersExecute.put("imp_cant", String.format("%016.0f", Double.parseDouble(frm.getImpCant())));
 
 		manager.executeTrx(this.client, parametersExecute);
 		String msg = (String) manager.getMensajeAviso();
@@ -460,9 +457,9 @@ public class ParametrosService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		String mu="";
-		if(MOTIVO.equals(frm.getMotivoUsuario()))
+		if("motivo".equals(frm.getMotivoUsuario()))
 			mu="M";
-		if(USUARIO.equals(frm.getMotivoUsuario()))
+		if("usuario".equals(frm.getMotivoUsuario()))
 			mu="U";
 		parametersExecute.put("opcion", "ALTA");
 		parametersExecute.put("cod_mot_usu",mu );
@@ -484,9 +481,9 @@ public class ParametrosService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		String mu="";
-		if(MOTIVO.equals(frm.getMotivoUsuario()))
+		if("motivo".equals(frm.getMotivoUsuario()))
 			mu="M";
-		if(USUARIO.equals(frm.getMotivoUsuario()))
+		if("usuario".equals(frm.getMotivoUsuario()))
 			mu="U";
 		parametersExecute.put("opcion", "MODI");
 		parametersExecute.put("cod_mot_usu",mu );
@@ -508,9 +505,9 @@ public class ParametrosService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		String mu="";
-		if(MOTIVO.equals(frm.getMotivoUsuario()))
+		if("motivo".equals(frm.getMotivoUsuario()))
 			mu="M";
-		if(USUARIO.equals(frm.getMotivoUsuario()))
+		if("usuario".equals(frm.getMotivoUsuario()))
 			mu="U";
 		parametersExecute.put("opcion", "BAJA");
 		parametersExecute.put("cod_mot_usu", mu );
