@@ -209,7 +209,7 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU81());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("opcion", formulario.getOpcion().trim());
-		parametersExecute.put("id_reemplazo", formulario.getDelegadoUser().toUpperCase().trim();
+		parametersExecute.put("id_reemplazo", formulario.getDelegadoUser().toUpperCase().trim());
 		parametersExecute.put("fDesde_old", formulario.getFeDesde());
 		parametersExecute.put("fHasta_old", formulario.getFeHasta());
 
