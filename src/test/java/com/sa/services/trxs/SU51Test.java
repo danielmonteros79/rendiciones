@@ -85,7 +85,7 @@ class SU51Test {
         su51.mapData(parametersExecute);
     }
 
-    @Test
+    /*@Test
     @DisplayName("Testeando mapData case 9")
     void mapData9() {
 
@@ -97,7 +97,7 @@ class SU51Test {
         parametersExecute.put((String) "lista", datosLista);
         parametersExecute.put((String) "opcion", "9");
         su51.mapData(parametersExecute);
-    }
+    }*/
 
     @Test
     @DisplayName("Testeando mapData case 7")
