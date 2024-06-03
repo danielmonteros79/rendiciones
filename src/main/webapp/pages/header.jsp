@@ -185,6 +185,12 @@
 					<a href="#" id="manualRendiciones"> <i class="fas fa-plus-circle text-center"></i>
 						<b>Manual de rendiciones de gastos</b>
 					</a>
+					<a> <i class="fas fa-plus-circle text-center"></i>
+											
+					</a>
+					<a href="https://bbva-regulacion-interna.appspot.com/ficha?idEdicion=1701" target="_blank"> <i class="fas fa-plus-circle text-center"></i>
+						<b>Norma de Gastos de T&C</b>
+					</a>
 				</div>
 			</div>
         </div>
