@@ -1,9 +1,12 @@
-package com.sa.action.rendiciones;
+package com.sa.action;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +15,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.sa.action.RestriccionTransaccionAction;
 import com.sa.entities.ComboMotivo;
 import com.sa.entities.Usuario;
 import com.sa.form.RendicionForm;
@@ -25,14 +27,25 @@ import ar.com.itrsa.sam.TransactionException;
 public class RendicionSaveAction extends RestriccionTransaccionAction {
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+
 		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
 		log.info("Entra al action RendicionSaveAction. Usuario (" + user.getIdUser() + ")");
 		RendicionForm renForm = (RendicionForm) form;
 		renForm.reset(mapping, request);
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		String tipoClick = request.getParameter("tipoSubmit");
 		RendicionesService service = new RendicionesService(samClient);
-		
+
+		// Date dateD = formatter.parse(renForm.getFechaDesde());
+		// Date dateH = formatter.parse(renForm.getFechaHasta());
+		// ComboMotivo mot = new ComboMotivo();
+		//
+		// for (ComboMotivo m : mot.getMotivoRendiciones()) {
+		// if (m.getId().equals(renForm.getMotivo())) {
+		// renForm.setMotivo(m.getDescripcion());
+		// break;
+		// }
+		// }
 		Date dateD = null;
 		Date dateH = null;
 
@@ -55,21 +68,23 @@ public class RendicionSaveAction extends RestriccionTransaccionAction {
 		log.info("Se llama al service que realiza el alta de la rendicion");
 
 		try {
-			
-			String idRend = service.altaRendicion(renForm.getUser(), renForm.getMotivo(), feD, feH, renForm.getDescripcion());
+			String idRend = service.altaRendicion(renForm.getUser(), renForm.getMotivo(), feD, feH,
+					renForm.getDescripcion());
 			request.setAttribute("codigo", idRend);
 			if (idRend.equalsIgnoreCase("") || idRend.equalsIgnoreCase(null)) {
 				request.setAttribute("validarTrx", 1);
 				return mapping.findForward("failure");
 			}
-			
-			request.setAttribute("codigo", idRend);
-			request.setAttribute("tipoSubmit", 2);
-			request.setAttribute("message", service.getMsg());
+			if (Integer.valueOf(tipoClick) == 1) {
+				request.setAttribute("tipoSubmit", 1);
+				return mapping.findForward("success");
+			} else {
+				request.setAttribute("codigo", idRend);
+				request.setAttribute("tipoSubmit", 2);
+				request.setAttribute("message", service.getMsg());
 
-			
-			return mapping.findForward("detalleGastos");
-			
+				return mapping.findForward("detalleGastos");
+			}
 		} catch (TransactionException e) {
 			List<ComboMotivo> motivo = service.getMotivoRendiciones("4", user.getIdUser(), "");
 			request.setAttribute("ComboMotivo", motivo);
@@ -80,10 +95,9 @@ public class RendicionSaveAction extends RestriccionTransaccionAction {
 		}
 	}
 
-	public ActionForward rendicionDetalleGastos(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+	public ActionForward mostrarDetalleGastos(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) {
-		
-		return mapping.findForward("rendicionDetalleGastos");
+		return mapping.findForward("mostrarDetalleGastos");
 
 	}
 }
