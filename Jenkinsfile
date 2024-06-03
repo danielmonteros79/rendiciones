@@ -3,8 +3,8 @@
 run(){
     architecture = 'spring'
     pipeline = {
-        group = 'publish_vdc'
-        revision = '1.9.0'
+        //group = 'publish_vdc'
+        //revision = '1.9.0'
         vars = [
 			execute: 'true',
 			artifactory_repo_deploy: 'ar-arnd-rendiciones-maven',
