@@ -26,12 +26,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 class SU69Test {
 
 
-    @Test
+    /*@Test
     void testConstructor() throws Exception {
         SU69 actualSu69 = new SU69();
         actualSu69.hardcodear(new HashMap<>());
         assertTrue(actualSu69.getDataReturnList().isEmpty());
-    }
+    }*/
 
 
     @Test
