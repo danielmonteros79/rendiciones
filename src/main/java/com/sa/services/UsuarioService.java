@@ -63,6 +63,26 @@ public class UsuarioService {
 		return comboSupervisados;
 
 	}
+	
+	
+	
+	public Usuario obtenerInvitadoUsuario(String legajo, String sector) throws TransactionException {
+		Usuario user = null;
+		
+		ManagerTransaction manager = new ManagerTransaction(new SU52());
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		parameters.put("cod_user", legajo);
+		parameters.put("sector", sector);
+
+		manager.executeTrx(this.client, parameters);
+
+		user = (Usuario) manager.getDataReturn();
+		msg = (String) manager.getMensajeAviso();
+
+		return user;
+
+	}
 
 	public String getMsg() {
 		return msg;
