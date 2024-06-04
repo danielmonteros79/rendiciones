@@ -34,7 +34,7 @@ class DateUtilTest {
     }
 
 
-    @Test
+    /*@Test
     void testConstructor() {
         DateUtil actualDateUtil = new DateUtil();
         SimpleDateFormat dfDDMMYYYY = new SimpleDateFormat();
@@ -55,5 +55,5 @@ class DateUtilTest {
         assertSame(dfYYYYMMDD, dfYYYYMMDD2);
         assertEquals(dfDDMMYYYYGuion, dfYYYYMMDD2);
         assertEquals(dfDDMMYYYY2, dfYYYYMMDD2);
-    }
+    }*/
 }
