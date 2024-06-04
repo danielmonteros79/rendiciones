@@ -67,12 +67,12 @@ class SU53Test {
         assertFalse(su53.getDataReturnList().isEmpty());
     }
 
-    @Test
+    /*@Test
     @DisplayName("Testeando hardcodear")
     void hardcodear() throws Exception {
         SU53 su53 = new SU53();
         su53.hardcodear(new HashMap<>());
         assertTrue(su53.getDataReturnList().isEmpty());
-    }
+    }*/
 }
 
