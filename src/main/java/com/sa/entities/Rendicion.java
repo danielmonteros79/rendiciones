@@ -35,6 +35,8 @@ public class Rendicion {
 	private String journal;
 	private String costosDestino;
 	private String alerta;
+	private String descripcionCorta;
+	private String exceptuado;
 
 	public Rendicion() {
 	}
@@ -58,6 +60,14 @@ public class Rendicion {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+		public String getExceptuado() {
+		return exceptuado;
+	}
+
+	public void setExceptuado(String exceptuado) {
+		this.exceptuado = exceptuado;
 	}
 
 	public String getMotivo() {
@@ -296,5 +306,20 @@ public class Rendicion {
 		this.alerta = alerta;
 	}
 
+	public String getDescripcionCorta() {
+		this.descripcion = "";
+		if(this.descripcion.length() >= 50) {
+			return this.descripcion.substring(0,25) + "... ";
+		}
+		else {
+			return this.descripcion;
+		}
+		
+	}
 
+	public void setDescripcionCorta(String descripcionCorta) {
+		this.descripcionCorta = descripcionCorta;
+	}
+
+	
 }
