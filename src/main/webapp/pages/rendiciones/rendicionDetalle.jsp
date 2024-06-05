@@ -121,5 +121,5 @@
 		</div>
 	</div>
 </html:form>
-<script type="text/javascript" src="static/js/select2.min.js"></script>
-<script type="text/javascript" src="static/js/rendiciones/rendicionDetalle.js"></script>
+<script type="text/javascript" src="./static/js/select2.min.js"></script>
+<script type="text/javascript" src="./static/js/rendiciones/rendicionDetalle.js"></script>
