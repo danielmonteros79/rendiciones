@@ -23,29 +23,69 @@ import com.sa.services.ParametrosService;
 
 public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosMotivoLoadAction.class);
-	private static final String MSG = "message";
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ParametrosMotivoFiltroForm frm = (ParametrosMotivoFiltroForm) form;
-		ParametrosService service = new ParametrosService (samClient);
-		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
-		log.info("Entra al action ParametrosMotivoLoadAction. Usuario ("+user.getIdUser()+")");
+	
+			try {
+				String action = request.getParameter("action") == null ? "" : request.getParameter("action");
+
+				if (action.equals("filtrar"))
+					return this.filtrar(mapping, samClient, request, response);
+				
+				
+				return mapping.findForward("success");
+			} catch (Exception e) {
+				log.error("", e);
+				return writeError(response, e);
+			}
+	}
+	
+	private ActionForward filtrar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ParametrosService service = new ParametrosService(samClient);
+		System.out.println(request.getParameter("codigo") + " Codigo aaah");
+		String codMotivo = "";
+		int paginado = 0;
+		List<ParametroMotivo> motivosTotales = new ArrayList<ParametroMotivo>();
+		boolean pagina = true;
+		if (request.getParameter("codigo") != null && !request.getParameter("codigo").trim().equals(""))
+			codMotivo = String.format("%04d", Integer.parseInt(request.getParameter("codigo")));
 		
-		frm.clear();
-		
-		List<ParametroMotivo> motivos = new ArrayList<>();
-		try {
-			motivos = service.getMotivos(frm.getCodigo(), user.getIdUser());
-			
-			if (request.getAttribute(MSG) == null)
-				request.setAttribute(MSG, service.getMsgAviso());
-		} catch (Exception e) {
-			request.setAttribute(MSG, "ERROR: " + e.getCause().getMessage());
+		while(pagina){
+		List<ParametroMotivo> motivos = service.getMotivos(codMotivo, this.sessionUserWorking.getIdUser(), "0" + paginado);
+		for (ParametroMotivo parametroMotivo : motivos) {
+			if(parametroMotivo.getCodSup().trim().equalsIgnoreCase("PSUP") || parametroMotivo.getCodSup().equalsIgnoreCase("SUPER")){
+				parametroMotivo.setCodSup("SI");
+			} if (parametroMotivo.getCodAprobacionGlg().equalsIgnoreCase("MONTO") || parametroMotivo.getCodAprobacionGlg().trim().equalsIgnoreCase("PGLG")) {
+				parametroMotivo.setCodAprobacionGlg("SI");
+			} if (parametroMotivo.getCodFirma().equalsIgnoreCase("MONTO") || parametroMotivo.getCodFirma().equalsIgnoreCase("PFIRM")) {
+				parametroMotivo.setCodFirma("SI");
+			} if (parametroMotivo.getEstado().equalsIgnoreCase("A")) {
+				parametroMotivo.setEstado("ACTIVO");
+			} if (parametroMotivo.getEstado().equalsIgnoreCase("I")){
+				parametroMotivo.setEstado("INACTIVO");
+			}
+			//Valida si es el último motivo existente
+			if(motivos.get(motivos.size() - 1) == parametroMotivo){
+				if (parametroMotivo.getLastElement().equalsIgnoreCase("N")){
+					paginado++;
+					motivosTotales.add(parametroMotivo);
+				}
+				else{
+					pagina = false;
+				}
+			}
+			else {
+				motivosTotales.add(parametroMotivo);
+			}
+		}
 		}
 		
-		request.setAttribute("motivos", motivos);
+		request.setAttribute("motivos", motivosTotales);
+		this.message = service.getMsgAviso();
 		
-		return mapping.findForward("success");
+		return mapping.findForward("parametrosMotivoFiltro");
 	}
+	
+	
 }

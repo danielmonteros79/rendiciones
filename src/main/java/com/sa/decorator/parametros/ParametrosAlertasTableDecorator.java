@@ -24,6 +24,7 @@ public class ParametrosAlertasTableDecorator extends SumTableDecorator {
 			+ contextPath + "/parametrosAlertasDetalle.do' style='display:none;'>"
 			+ "<input type='hidden' name='codMotivo' value='" + alerta.getCodMotivo() + "'/>"
 			+ "<input type='hidden' name='codGasto' value='" + alerta.getCodGasto() + "'/>"
+			+ "<input type='hidden' name='codAlerta' value='" + alerta.getId() + "'/>"
 			+ "<input type='hidden' name='timeStamp' value='" + alerta.getTimeStamp() + "'/>"
 			+ "<input type='hidden' name='accion' value='modificacion'/>"
 		+ "</form>";
@@ -46,6 +47,7 @@ public class ParametrosAlertasTableDecorator extends SumTableDecorator {
 			+ contextPath + "/parametrosAlertasDetalle.do' style='display:none;'>"
 			+ "<input type='hidden' name='codMotivo' value='" + alerta.getCodMotivo() + "'/>"
 			+ "<input type='hidden' name='codGasto' value='" + alerta.getCodGasto() + "'/>"
+			+ "<input type='hidden' name='codAlerta' value='" + alerta.getId() + "'/>"
 			+ "<input type='hidden' name='timeStamp' value='" + alerta.getTimeStamp() + "'/>"
 			+ "<input type='hidden' name='accion' value='baja'/>"
 		+ "</form>";

@@ -1,18 +1,28 @@
-var dtLink = 'parametrosGastos.do';
+
+let dtLink = 'parametrosGastos.do'
 
 
 $(document).ready(function() {
 	$('#checkParametros').show();
 	$('.nav-parametros').addClass('active');
-	setCombo('combos.do?action=getMotivos', '#motivo', { opcion: ['1', '2'].indexOf($('#glg').val()) == -1 ? 9 : 8});
+	//dtParams = { action: 'filtrar' };
+	console.log(codigo);
+	dtParams = { action: 'filtrar', motivo: codigo };
 
+	filtrar()
 });
 
+//$(document).ready(function() {
+	//showMessage('message', getLocalStorageItem('message'));
+	//$('.nav-parametros').addClass('active');
+	//dtParams = { action: 'filtrar' };
+	//filtrar();
+//});
 
 function filtrar() {
-	
 	dtParams.gasto = $('#gasto').val();
 	loadGastos();
+	console.log("filtro")
 }
 
 function resetForm() {
@@ -45,5 +55,5 @@ function limpiar() {
 }
 
 function loadGastos() {
-	loadTable('#parametrosdGastosDtContainer', dtLink, dtParams);
+	loadTable('#parametrosGastosDtContainer', dtLink, dtParams);
 }

@@ -1,5 +1,5 @@
 var dtLink = 'ParametrosGastosDetalle.do';
-
+console.log(motivo);
 
 $(document).ready(function() {
 	$('#checkParametros').show();

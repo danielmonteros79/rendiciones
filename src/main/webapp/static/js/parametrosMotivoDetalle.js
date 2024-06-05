@@ -1,7 +1,5 @@
 
 jQuery(document).ready(function() {
-	
-	setFormValidate();
 	$("#txAviso").attr("maxlength", "250");
 	$('#checkParametros').show();
 	
@@ -11,7 +9,7 @@ jQuery(document).ready(function() {
 	$("#imageCal2").click(function() {
 		$("#fechaHasta").datepicker("show");
 	});
-	
+
 	$('input[type=checkbox]').change(function() {
         $('#oscar' + $(this)[0].value).val($(this).is(':checked') ? $(this)[0].value : ' ');
     });
@@ -21,6 +19,7 @@ jQuery(document).ready(function() {
 	
 	$('.nav-parametros').addClass('active');
 	
+	setFormValidate();
 });
 
 function setFormValidate() {
@@ -53,7 +52,7 @@ function setFormValidate() {
 	jQuery.validator.addMethod("dateAfter", function(value, element, fromDate) {
 		try {
 			var startDate = $("#" + fromDate).val();
-            var validacion = jQuery.datepicker.parseDate( 'dd/mm/yy', startDate) <= jQuery.datepicker.parseDate( 'dd/mm/yy', value);
+            var validacion = $("#" + fromDate).val() <=  value;
             
             if (validacion)
             	$("#errorFechas").html("");
@@ -62,6 +61,7 @@ function setFormValidate() {
             
             return validacion;
 		} catch(e) {
+			$("#errorFechas").html("La fecha Hasta debe ser mayor o igual a la fecha Desde");
 			return false;
 		}
     }, "");
@@ -186,5 +186,3 @@ function confirmEliminarMotivo() {
 	if (confirm("\u00bfEst\u00e1 seguro que quiere eliminar el motivo " + $("#codigo").val() + "?"))
 		$("#parametrosMotivoForm").submit();
 }
-
-

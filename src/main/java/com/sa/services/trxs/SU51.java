@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.sa.entities.ComboCoeficienteCombustible;
 import com.sa.entities.ComboComprobante;
 import com.sa.entities.ComboGasto;
 import com.sa.entities.ComboMoneda;

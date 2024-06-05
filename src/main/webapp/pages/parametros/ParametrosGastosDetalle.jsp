@@ -25,6 +25,13 @@ label.error {
 }
 </style>
 </head>
+<script>
+var codigo = "<%=request.getSession().getAttribute("cod_motivo")%>";
+var motivo = "<%=request.getSession().getAttribute("cod_motivo")%>";
+var descMotivo = "<%=request.getSession().getAttribute("descripcion_motivo")%>";
+console.log(motivo);
+console.log(descMotivo);
+</script>
 <body>
 	<html:form action="saveGasto" styleId="parametrosGastosForm">
 		<div class="modal-body px-3 mx-3 px-lg-3 mx-lg-5 mt-5">
@@ -38,23 +45,46 @@ label.error {
 					datos del gasto.</div>
 			</div>
 			<div class="row px-5 mx-5">
-				<div class="col-sm-12 col-lg-12 pt-2 scroll-err">
+				<div class="col-sm-12 col-lg-6 pt-2  has-float-label scroll-err">
 					<div class="has-float-label">
-						<html:text property="codigo" styleId="codigo"
+						<html:text property="motivo" styleId="motivo"
 							styleClass="form-control bg-light text-uppercase" maxlength="4" />
-						<label for="codigo">C&oacute;digo</label>
+						<label for="motivo">C&oacute;digo del motivo</label>
 						<div class="invalid-feedback mb-3"></div>
 					</div>
 				</div>
+				<!--  <div class="col-sm-12 col-lg-6 pt-2  has-float-label scroll-err">
+					<div class="has-float-label form-group ">
+						<select id="filtroMotivo" class="form-control bg-light"></select>
+						<i class="bbva-icon icon-uniE003 text-primary"></i> <label>Motivo</label>
+
+					</div>
+				</div> -->
 				<div class="col-sm-12 col-lg-6 pt-2  has-float-label scroll-err">
+					<div class="has-float-label">
+						<html:text property="descripcionMotivo" styleId="descripcionMotivo"
+							styleClass="form-control bg-light" maxlength="50" />
+						<label for="descripcionGasto">Descripci&oacute;n del motivo</label>
+						<div class="invalid-feedback mb-3"></div>
+					</div>
+				</div>
+				<div class="col-sm-12 col-lg-4 pt-2  scroll-err">
+					<div class="has-float-label">
+						<html:text property="codigo" styleId="codigo"
+							styleClass="form-control bg-light text-uppercase" maxlength="4" />
+						<label for="codigo">C&oacute;digo del gasto</label>
+						<!-- <div class="invalid-feedback mb-3"></div>  -->
+					</div>
+				</div>
+				<div class="col-sm-12 col-lg-4 pt-2  pl-lg-1 scroll-err">
 					<div class="has-float-label">
 						<html:text property="descripcionGasto" styleId="descripcionGasto"
 							styleClass="form-control bg-light" maxlength="50" />
-						<label for="descripcionGasto">Descripci&oacute;n</label>
+						<label for="descripcionGasto">Descripci&oacute;n del gasto</label>
 					</div>
 				</div>
 				<div
-					class="col-sm-12 col-lg-6 pt-2 pl-lg-1 has-float-label scroll-err">
+					class="col-sm-12 col-lg-4 pt-2  pl-lg-1 scroll-err">
 					<div class="has-float-label form-group">
 
 						<html:select property="estado" styleId="estado"
@@ -70,43 +100,37 @@ label.error {
 				</div>
 
 
-				<div class="col-sm-12 col-lg-4 pt-2  has-float-label scroll-err">
-					<div class="has-float-label form-group ">
-						<select id="filtroMotivo" class="form-control bg-light"></select>
-						<i class="bbva-icon icon-uniE003 text-primary"></i> <label>Motivo</label>
+			
 
-					</div>
-				</div>
-
-				<div class="col-sm-12 col-lg-4 pt-2 pl-lg-1  scroll-err">
+				<!-- <div class="col-sm-12 col-lg-4 pt-2 pl-lg-1  scroll-err">
 					<div class="has-float-label form-group">
 						<html:text property="idCentroCostos"
 							styleClass="form-control bg-light text-uppercase" maxlength="4" />
 						<label for="idCentroCostos">C.Costos</label>
 						<div class="invalid-feedback mb-3"></div>
 					</div>
-				</div>
+				</div>  -->
 
 
 
 
-				<div class="col-sm-12 col-lg-4 pt-2  pl-lg-1 scroll-err">
+				<div class="col-sm-12 col-lg-6 pt-2  scroll-err">
 					<div class="has-float-label form-group d-flex align-items-center bg-light">
 
 						<html:select property="bimon" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
-							<html:option value="S">S</html:option>
-							<html:option value="N">N</html:option>
+							<html:option value="S">SI</html:option>
+							<html:option value="N">NO</html:option>
 						</html:select>
 						<div class= "pr-3">
 							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-								for="bimon">Bimon</label>
+								for="bimon">¿Es bimonetario?</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
 					</div>
 				</div>
 
-				<div class="col-sm-12 col-lg-4 pt-2  has-float-label scroll-err">
+				<!-- <div class="col-sm-12 col-lg-4 pt-2  has-float-label scroll-err">
 					<div class="has-float-label form-group ">
 
 						<html:select property="comprob" styleId="filtroComprobante" styleClass="form-control bg-light">
@@ -119,9 +143,9 @@ label.error {
 						<div class="invalid-feedback mb-3"></div>
 
 					</div>
-				</div>
+				</div>  -->
 
-				<div
+				<!--  <div
 					class="col-sm-12 col-lg-4 pt-2 pl-lg-1 has-float-label scroll-err">
 					<div class="has-float-label">
 						<html:text property="antiguedad"
@@ -129,25 +153,32 @@ label.error {
 						<label for="antiguedad">Antigüedad</label>
 						<div class="invalid-feedback mb-3"></div>
 					</div>
-				</div>
+				</div> -->	
 
-				<div class="col-sm-12 col-lg-4 pt-2 pl-lg-1 scroll-err">
+				<!--  <div class="col-sm-12 col-lg-4 pt-2  pl-lg-1 scroll-err">
 					<div class="has-float-label form-group">
 						<html:select property="maInclExcl"
 							styleClass="form-control bg-light">
 							<html:option value=""></html:option>
-							<html:option value="I">Incl</html:option>
-							<html:option value="E">Excl</html:option>
+							<html:option value="I">Incluye</html:option>
+							<html:option value="E">Excluye</html:option>
 						</html:select>
 
 						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="maInclExcl">Incl/Excl</label>
+							for="maInclExcl">Preformato de intervalo de fecha</label>
 						<div class="invalid-feedback mb-3"></div>
 					</div>
-				</div>
+				</div> -->
 
-				<div class="col-sm-12 col-lg-4 pt-2  has-float-label scroll-err">
+				<div class="col-sm-12 col-lg-6 pt-2  pl-lg-1 scroll-err">
 					<div class="has-float-label">
+						<html:text property="idCentroCostos"
+							styleClass="form-control bg-light text-uppercase" maxlength="40" />
+						<label for="idCentroCostos">C&oacute;digo de datos adicionales</label>
+						<div class="invalid-feedback mb-3"></div>
+					</div>
+					
+					<!-- <div class="has-float-label">
 
 						<html:select property="observ" styleClass="form-control bg-light">
 							<html:option value="1"></html:option>
@@ -155,12 +186,12 @@ label.error {
 								labelProperty="descripcion" />
 						</html:select>
 
-						<i class="bbva-icon icon-uniE003 text-primary"></i> <label>Observacion</label>
+						<i class="bbva-icon icon-uniE003 text-primary"></i> <label>C&oacute;digo de datos adicionales</label>
 						<div class="invalid-feedback mb-3"></div>
-					</div>
+					</div> -->
 				</div>
 
-				<div class="col-sm-12 pt-2 col-lg-4 pl-lg-1 scroll-err">
+				<!-- <div class="col-sm-12 pt-2 col-lg-4 pl-lg-1 scroll-err">
 					<div class="has-float-label form-group">
 
 						<html:select property="idNivAutoriz"
@@ -175,10 +206,10 @@ label.error {
 							for="idNivAutoriz">Plazo Ingreso</label>
 						<div class="invalid-feedback mb-3"></div>
 					</div>
-				</div>
+				</div>  -->
 
 
-				<div class="col-sm-12 pt-2 col-lg-4 pl-lg-1 scroll-err">
+				<!-- <div class="col-sm-12 pt-2 col-lg-4 pl-lg-1 scroll-err">
 					<div class="has-float-label form-group d-flex align-items-center bg-light">
 						<html:select property="plazoAprob"
 							styleClass="form-control bg-light">
@@ -194,67 +225,16 @@ label.error {
 							<div class="invalid-feedback mb-3"></div>
 						</div>
 					</div>
-				</div>
-
-
-
-				<div class="col-lg-6 col-sm-12 pt-2 ">
-
-					<div class="btn btn-light px-4 py-1 ">
-						<label><html:checkbox value="O" styleId="oscarO"
-								property="oscar.o" /><span class="d-block">O</span></label>
-					</div>
-					<div class="btn btn-light px-4 py-1 ">
-						<label><html:checkbox value="S" styleId="oscarS"
-								property="oscar.s" /><span class="d-block">S</span></label>
-					</div>
-					<div class="btn btn-light px-4 py-1 ">
-						<label><html:checkbox value="C" styleId="oscarC"
-								property="oscar.c" /><span class="d-block ">C</span></label>
-					</div>
-					<div class="btn btn-light px-4 py-1 ">
-						<label><html:checkbox value="A" styleId="oscarA"
-								property="oscar.a" /><span class="d-block">A</span></label>
-					</div>
-					<div class="btn btn-light px-4 py-1 ">
-						<label><html:checkbox value="R" styleId="oscarR"
-								property="oscar.r" /><span class="d-block">R</span></label>
-					</div>
-
-					<html:hidden styleId="oscarO" property="oscar.o" />
-					<html:hidden styleId="oscarS" property="oscar.s" />
-					<html:hidden styleId="oscarC" property="oscar.c" />
-					<html:hidden styleId="oscarA" property="oscar.a" />
-					<html:hidden styleId="oscarR" property="oscar.r" />
-				</div>
-
-				<div class="col-sm-12 col-lg-6 pt-2 scroll-err">
-					<input type="hidden" name="centrosCosto" /> <label
-						for="meDiasInterv">Centros Costo</label>
-					<logic:iterate name="ParametrosGastosForm" property="centrosCosto"
-						id="centrosCostoI" indexId="i">
-						<%
-						String cc = "centrosCostoI[" + i + "]";
-						%>
-						<%
-						String ccId = "centrosCosto_" + i;
-						%>
-						<html:text styleId="<%=ccId%>" property="<%=cc%>" maxlength="4"
-							style="width:50px;" onkeypress="return numericOnly(event);" />
-						<a href="#" onclick="borrarCentroCosto(<%=i%>);" name="d_<%=cc%>">
-							<i class="bbva-icon icon-coronita_trash fa-md" title="Eliminar"></i>
-						</a>
-					</logic:iterate>
-					<a id="addCC" href="#" onclick="agregarCentroCosto();"> <i
-						class="ml-2 bbva-icon icon-coronita_contract fa-md"
-						title="Agregar"></i>
-					</a>
-
-					<div class="invalid-feedback mb-3"></div>
-				</div>
-
+				</div>  -->
 
 				<div class="col-sm-12 col-lg-12 pt-2  has-float-label scroll-err">
+					<div class="has-float-label">
+						<html:textarea styleId="detalleRistra" property="detalleRistra" styleClass="form-control bg-light"/>
+						<label for="detalleRistra">Detalle de ristra contable</label>
+					</div>
+				</div>
+
+				<!-- <div class="col-sm-12 col-lg-12 pt-2  has-float-label scroll-err">
 					<div class="has-float-label d-flex  bg-light align-items-center">
 						<html:text property="ristra"
 							styleClass="form-control bg-light text-uppercase" maxlength="69"
@@ -270,11 +250,11 @@ label.error {
 							</logic:notEqual>
 						</a>
 						<div class="pr-3">
-							<label for="Ristra">Ristra</label>
+							<label for="Ristra">Detalle de ristra contable</label>
 						</div>
 						<div class="invalid-feedback mb-3"></div>
 					</div>
-				</div>
+				</div>-->
 
 
 
@@ -323,6 +303,11 @@ label.error {
 		<script>
 			$( document ).ready(function() {
 				$('#estado').attr('disabled','disabled');
+				$('#motivo').val(motivo);
+				$('#motivo').attr('readonly', true);
+				$('#descripcionMotivo').val(descMotivo);
+				$('#descripcionMotivo').attr('readonly', true);
+				$('#codigo').attr('readOnly',true);				
 			});
 		</script>
 	</logic:equal>
@@ -345,7 +330,7 @@ label.error {
 		<script>
 			$( document ).ready(function() {
 				$('#codigo').attr('readonly', true);
-				$('#descripcionGasto').attr('readonly', true);
+				$('#descripcionMotivo').attr('readonly', true);
 				$('#motivo').attr('disabled','disabled');
 			});
 		</script>
