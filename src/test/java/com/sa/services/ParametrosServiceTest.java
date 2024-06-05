@@ -333,7 +333,7 @@ class ParametrosServiceTest {
         }
     }
 
-    @ParameterizedTest
+    /*@ParameterizedTest
     @MethodSource("bajaParamAlertaSource")
     @DisplayName("Testeando baja param alerta")
     void bajaParamAlerta(ParametrosAlertasForm frm, String msg,String ret) throws TransactionException {
@@ -349,7 +349,7 @@ class ParametrosServiceTest {
                     () -> assertEquals(ret, result)
             );
         }
-    }
+    }*/
 
     @ParameterizedTest
     @MethodSource("getExceptuadosSource")

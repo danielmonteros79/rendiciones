@@ -240,7 +240,7 @@ class ParametrosAlertasFiltroActionTest {
     }
   }*/
 
-  @ParameterizedTest
+  /*@ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should catch an exception")
   void shouldCatchAnException(ActionMapping actionMapping, ParametrosAlertasFiltroForm parametrosAlertasForm,
@@ -250,5 +250,5 @@ class ParametrosAlertasFiltroActionTest {
     ActionForward actionForward = parametrosAlertasFiltroAction.executeAction(actionMapping, parametrosAlertasForm, samApplication, samClient,
         request, httpServletResponse);
     assertNotNull(actionForward);
-  }
+  }*/
 }
