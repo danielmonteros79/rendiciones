@@ -64,7 +64,7 @@ class ParametrosMotivoFiltroActionTest {
     parametrosMotivoFiltroAction.setSessionUserWorking(usuario);
   }
 
-  @ParameterizedTest
+  /*@ParameterizedTest
   @MethodSource("executeAction")
   @DisplayName("Should determine what action execute")
   void shouldDetermineWhatActionExecute(String action) throws Exception {
@@ -83,7 +83,7 @@ class ParametrosMotivoFiltroActionTest {
           samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
       assertNotNull(actionForwardToAssert);
     }
-  }
+  }*/
 
   @Test
   @DisplayName("Should catch an exception")

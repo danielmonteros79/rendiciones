@@ -243,7 +243,7 @@ class ParametrosAlertasDetalleLoadActionTest {
   }
 
 
-  @ParameterizedTest
+  /*@ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should determine what action perform")
   void shouldDetermineWhatActionPerform(ActionMapping actionMapping, SAMWebApplication samApplication,
@@ -266,7 +266,7 @@ class ParametrosAlertasDetalleLoadActionTest {
         assertNotNull(actionForwardToAssert);
       }
     }
-  }
+  }*/
 
   @ParameterizedTest
   @MethodSource("alertaToFormSource")

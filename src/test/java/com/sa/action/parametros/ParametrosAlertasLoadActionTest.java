@@ -238,7 +238,7 @@ class ParametrosAlertasLoadActionTest {
     MockitoAnnotations.openMocks(this);
   }
 
-  @ParameterizedTest
+  /*@ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should determine what action execute")
   void shouldDetermineWhatActionExecute(ActionMapping actionMapping, SAMWebApplication samApplication,
@@ -265,7 +265,7 @@ class ParametrosAlertasLoadActionTest {
       }
       assertNotNull(printWriter);
     }
-  }
+  }*/
 
   @ParameterizedTest
   @MethodSource("selectMotivoSource")

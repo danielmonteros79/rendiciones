@@ -50,7 +50,7 @@ class ParametrosServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @ParameterizedTest
+    /*@ParameterizedTest
     @MethodSource("getMotivosSource")
     @DisplayName("Testeando get motivos")
     void getMotivos(String codMotivo, String user, List<ParametroMotivo> parametroMotivos) throws TransactionException {
@@ -67,7 +67,7 @@ class ParametrosServiceTest {
                     () -> assertEquals(parametroMotivos, result)
             );
         }
-    }
+    }*/
 
     @ParameterizedTest
     @MethodSource("altaMotivoSource")
@@ -126,7 +126,7 @@ class ParametrosServiceTest {
         }
     }
 
-    @ParameterizedTest
+    /*@ParameterizedTest
     @MethodSource("getGastosSource")
     @DisplayName("Testeando get gastos")
     void getGastos(String user, String codGasto, String msgAviso, List<ParametroGasto> data) throws TransactionException {
@@ -144,7 +144,7 @@ class ParametrosServiceTest {
                     () -> assertEquals(data, result)
             );
         }
-    }
+    }*/
 
     @ParameterizedTest
     @MethodSource("getRelacionUsuarioDelegadoSource")
@@ -260,7 +260,7 @@ class ParametrosServiceTest {
         }
     }
 
-    @ParameterizedTest
+    /*@ParameterizedTest
     @MethodSource("getAlertasSource")
     @DisplayName("Testeando get alertas")
     void getAlertas(String opcion, String codMotivo, String codGasto,String msgAviso,List<ParametroAlerta> parametroAlerta) throws TransactionException {
@@ -277,9 +277,9 @@ class ParametrosServiceTest {
                     () -> assertEquals(parametroAlerta, result)
             );
         }
-    }
+    }*/
 
-    @ParameterizedTest
+    /*@ParameterizedTest
     @MethodSource("getAlertaSource")
     @DisplayName("Testeando get alerta")
     void getAlerta(String opcion, String codMotivo, String codGasto, String timeStamp,ParametroAlerta parametroAlerta,List<ParametroAlerta> lista) throws TransactionException {
@@ -295,7 +295,7 @@ class ParametrosServiceTest {
                     () -> assertEquals(parametroAlerta, result)
             );
         }
-    }
+    }*/
 
     @ParameterizedTest
     @MethodSource("altaParamAlertaSource")

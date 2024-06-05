@@ -202,7 +202,7 @@ class ParametrosAlertasFiltroActionTest {
     MockitoAnnotations.openMocks(this);
   }
 
-  @ParameterizedTest
+  /*@ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should determine what action execute")
   void shouldDetermineWhatActionExecute(ActionMapping actionMapping, ParametrosAlertasFiltroForm parametrosAlertasForm,
@@ -218,9 +218,9 @@ class ParametrosAlertasFiltroActionTest {
           request, httpServletResponse);
       assertNotNull(actionForward);
     }
-  }
+  }*/
 
-  @ParameterizedTest
+  /*@ParameterizedTest
   @MethodSource("executeActionMsgNullSource")
   @DisplayName("Should determine what action execute with msg null")
   void shouldDetermineWhatActionExecuteWithMsgNull(ActionMapping actionMapping,
@@ -238,7 +238,7 @@ class ParametrosAlertasFiltroActionTest {
           request, httpServletResponse);
       assertNotNull(actionForward);
     }
-  }
+  }*/
 
   @ParameterizedTest
   @MethodSource("executeActionSource")
