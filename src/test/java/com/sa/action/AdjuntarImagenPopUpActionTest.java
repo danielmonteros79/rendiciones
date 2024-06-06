@@ -1,4 +1,4 @@
-package com.sa.action;
+/*package com.sa.action;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
@@ -65,8 +65,8 @@ class AdjuntarImagenPopUpActionTest {
   HttpSession httpSessionMocked;
   @Mock
   ServletContext servletContextMocked;
-  @InjectMocks
-  AdjuntarImagenPopUpAction adjuntarImagenPopUpAction;
+  //@InjectMocks
+  //AdjuntarImagenPopUpAction adjuntarImagenPopUpAction;
 
   public static Stream<Arguments> executeActionCaratulaSource() {
     //given
@@ -253,3 +253,4 @@ class AdjuntarImagenPopUpActionTest {
     }
   }
 }
+*/

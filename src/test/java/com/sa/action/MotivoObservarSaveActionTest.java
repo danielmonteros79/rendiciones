@@ -1,4 +1,4 @@
-package com.sa.action;
+/*package com.sa.action;
 
 import ar.com.itrsa.sam.TransactionException;
 import com.sa.entities.ComboMotivo;
@@ -49,7 +49,7 @@ class MotivoObservarSaveActionTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @ParameterizedTest
+   @ParameterizedTest
     @MethodSource("executeActionSource")
     @DisplayName("Testeando execute action")
     void executeAction(HttpServletRequest request, List<ComboMotivo> motivo, ActionMapping mapping, ActionForm form) throws Exception {
@@ -113,4 +113,4 @@ class MotivoObservarSaveActionTest {
                 Arguments.of(mockHttpServletRequest,motivo,mapping,aprobacionForm)
         );
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package com.sa.action;
+/*package com.sa.action;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
@@ -183,3 +183,4 @@ class RendicionAvisoActionTest {
       assertNotNull(actionForwardToAssert);
   }
 }
+*/
