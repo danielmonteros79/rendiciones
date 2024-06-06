@@ -1,4 +1,4 @@
-package com.sa.action;
+/*package com.sa.action;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -280,4 +280,4 @@ public class RendicionAvisoAction extends RestriccionTransaccionAction {
 		writer.flush();
 		writer.close();
 	}
-}
+}*/

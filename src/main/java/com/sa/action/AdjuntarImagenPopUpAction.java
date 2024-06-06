@@ -79,7 +79,7 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 		if (frm.getAccion().equals("caratula"))
 			this.generateCaratula(response, frm, request, samClient, aprobacionesService, gastos);
 		else {
-			String path = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.path");
+			/*String path = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.path");
 			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo, false);
 			
 			if (!errores.isEmpty())
@@ -88,7 +88,7 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 				msg = "OK: La rendici\u00f3n Nro. " + frm.getRendicion().getId() + " se ha generado con \u00e9xito.";
 			
 			request.setAttribute("msg", msg);
-		}
+		*/}
 	}
 	
 	private void generateCaratula(HttpServletResponse response, RendicionAvisoForm frm, HttpServletRequest request,
