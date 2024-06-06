@@ -1,4 +1,4 @@
-package com.sa.action;
+/*package com.sa.action;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -88,7 +88,7 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 				msg = "OK: La rendici\u00f3n Nro. " + frm.getRendicion().getId() + " se ha generado con \u00e9xito.";
 			
 			request.setAttribute("msg", msg);
-		*/}
+		}
 	}
 	
 	private void generateCaratula(HttpServletResponse response, RendicionAvisoForm frm, HttpServletRequest request,
@@ -179,4 +179,4 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 			throw new Exception(e);
 		}
 	}
-}
+}*/

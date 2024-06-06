@@ -1,4 +1,4 @@
-package com.sa.action;
+/*package com.sa.action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,4 +42,4 @@ public class MotivoObservarSaveAction extends RestriccionTransaccionAction {
 		
 		return mapping.findForward("success");
 	}
-}
+}*/
