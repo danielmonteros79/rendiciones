@@ -18,6 +18,7 @@
 	<link rel="stylesheet" type="text/css" href="css/style-icons.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 
+	<script type="text/javascript" src="static/js/pdf-lib.min.js"></script>
 	<script type="text/javascript" src="static/js/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="static/js/jquery.js"></script>
 	<script type="text/javascript" src="static/js/jquery.1.12.js"></script>

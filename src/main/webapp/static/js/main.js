@@ -234,11 +234,18 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 			});
 			$('#delegado').chosen();
 			$('#filtroFecha').chosen();
+			$('#filtroMoneda').chosen();
+			$('.selectGastosCP').chosen();
+			
+					
+		setTimeout(() => {
+  			$('.selectMotivosCP').chosen();
+		}, 1000);
 			
 		setTimeout(() => {
   			$('#filtroMotivo').chosen();
   			$('#filtroSupervisado').chosen();
-		}, 800);
+		}, 1800);
 
 		},
 		error: function(request, status, error) {
@@ -543,4 +550,151 @@ function formatCurrency(amount) {
 
 
 
+let popupWin;
+let popupDocument;
+let combinedPDFUrl;
+let generatedPDFs=[];
+let pdfsCombinados = 0;
+let cantidadPdfs = 0;
+
+
+ function setImagenes(data) {
+  let divImagenesCargadas = $('#containerImagenesCargadas');
+  let spanCantidadImagenes = $('#cantidadImagenes');
+  let i = 0;
+	pdfsCombinados = data.archivos.length;
+  for (let imagen of data.archivos) {
+    divImagenesCargadas.append(`<div class="mr-3">
+      <img onclick="obtenerImagen(${imagen.id})" id="Img-${i}" style="cursor:pointer" alt="Img ${i}" src="./images/iconos/pdf-48.png" class="mt-4 abrir-imagen" data-id="${imagen.id}" data-extension=".pdf"/>
+      <p>${imagen.nomArchivo}</p>
+    </div>`);
+  }
+  if(data.archivos.length > 0){
+	  spanCantidadImagenes.append(`<div class="mr-3">
+		      
+		      <b>Cantidad: ${data.archivos.length}</b>
+		    </div>`);
+  }
+  $('#abrirTodas').on('click', function() {
+	 data.archivos.map(imagen => obtenerImagenes(imagen.id));
+
+  });
+}
+
+
+
+async function loadAndCombinePDFs(pdfDataArray) {
+  const combinedPDF = await PDFLib.PDFDocument.create();
+
+  for (const pdfBytes of pdfDataArray) {
+    const externalPDF = await PDFLib.PDFDocument.load(pdfBytes);
+    const copiedPages = await combinedPDF.copyPages(externalPDF, externalPDF.getPageIndices());
+    copiedPages.forEach((page) => combinedPDF.addPage(page));
+  }
+
+  const combinedPDFBytes = await combinedPDF.save();
+  const combinedPDFBlob = new Blob([combinedPDFBytes], { type: 'application/pdf' });
+  combinedPDFUrl = URL.createObjectURL(combinedPDFBlob);
+ 	abrirVentanaEmergente();
+
+}
+
+function abrirVentanaEmergente() {
+  popupWin = window.open("", "_blank");
+  popupDocument = popupWin.document;
+
+  popupDocument.open();
+  popupDocument.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>PDFs Combinados</title>
+        <style>
+            body, html {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+            object {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <object type="application/pdf" data="${combinedPDFUrl}"></object>
+    </body>
+    </html>
+  `);
+  popupDocument.close();
+  
+  cantidadPdfs=0;
+  generatedPDFs=[];
+}
+
+
+
+function obtenerImagen(idImg) {
+  callAjax('imagenes.do', { action: 'descargarImg', idImagen: idImg }, "descargarImagen");
+
+}
+
+function obtenerImagenes(idImg) {
+  callAjax('imagenes.do', { action: 'descargarImg', idImagen: idImg }, "descargarImagenes", true);
+
+}
+
+function descargarImagenes(data) {
+	$('#modalLoading').addClass('show');
+     generatedPDFs.push(data.archivo[0].base64File);
+     cantidadPdfs++;
+
+   if(pdfsCombinados === cantidadPdfs){
+	    loadAndCombinePDFs(generatedPDFs)
+	}
+
+}
+
+
+
+function descargarImagen(data){
+	// Decodifica el contenido base64 del PDF
+	const decodedPDF = atob(data.archivo[0].base64File);
+	let tipoArchivo = 'image/tiff'
+	let tipoExtension = '.tiff'
+	
+	if(data.archivo[0].tipo.includes("PDF")){
+		tipoArchivo =  'application/pdf'
+		tipoExtension = '.pdf' 
+	} 
+	// Convierte el contenido decodificado en un Uint8Array (arreglo de bytes)
+	const uint8Array = new Uint8Array(decodedPDF.length);
+	for (let i = 0; i < decodedPDF.length; i++) {
+  		uint8Array[i] = decodedPDF.charCodeAt(i);
+	}
+	
+	// Crea un Blob a partir del Uint8Array con el tipo 'application/pdf'
+	
+	const pdfBlob = new Blob([uint8Array], { type: tipoArchivo });
+	// Crea una URL para el Blob
+	
+	const pdfURL = URL.createObjectURL(pdfBlob);
+	// Crea un enlace de descarga
+	const linkDescarga = document.createElement('a');
+	linkDescarga.href = pdfURL;
+	linkDescarga.download = "Archivo" + tipoExtension;
+
+
+  	// Abre una nueva ventana o pestaña con la imagen
+  	const nuevaVentana = window.open(linkDescarga, '_blank');
+
+  	// Limpia la URL creada cuando la ventana se cierre
+ 	 nuevaVentana.addEventListener('DOMContentLoaded', () => {
+   	 URL.revokeObjectURL(imageURL);
+  	});
+
+
+}
 

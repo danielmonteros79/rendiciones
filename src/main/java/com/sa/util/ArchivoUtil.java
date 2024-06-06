@@ -1,7 +1,10 @@
 package com.sa.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,6 +17,7 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.struts.upload.FormFile;
 import org.json.simple.JSONArray;
 
@@ -50,112 +54,27 @@ public class ArchivoUtil {
 		Archivo archivo = new Archivo();
 		archivo.setNomArchivo(formFile.getFileName());
 		archivo.setInputStream(formFile.getInputStream());
-		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("nombreArchivo", formFile.getFileName());
-		System.out.println(resp.get("nombreArchivo"));
-		jsonObject = JSONObject.fromObject(resp);
-		out.print(jsonObject);
 
+		String archivoBase64 = convertInputStreamToBase64(formFile.getInputStream());
+		archivo.setBase64File(archivoBase64);
 		return archivo;
 	}
 
-	public static void borrarArchivo(String json, List<Archivo> archivos) throws Exception {
-		byte[] parameterByte = json.getBytes("ISO-8859-15");
-		String jsonEnc = new String(parameterByte, "UTF-8");
-		GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("dd/MM/yyyy");
-		Gson gson = gsonBuilder.create();
-		String nombreArchivo = gson.fromJson(jsonEnc, String.class);
+	
+	private static String convertInputStreamToBase64(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int bytesRead;
 
-		boolean encontro = false;
-		for (int i = 0; i < archivos.size() && encontro == false; i++) {
-			Archivo archivo = archivos.get(i);
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
 
-			if (archivo.getNomArchivo().equals(nombreArchivo)) {
-				encontro = true;
-				archivos.remove(i);
-			}
-		}
-	}
+        byte[] bytes = outputStream.toByteArray();
+        byte[] base64Bytes = Base64.encodeBase64(bytes);
 
-	public static List<String> grabarArchivos(RendicionAvisoForm form, AprobacionesService aprobacionesService,
-			String path, String nombreNuevo, boolean apr) throws Exception {
-		List<String> errores = new ArrayList<String>();
-		Rendicion rend = new Rendicion();
-		rend = form.getRendicion();
-		String idu = "";
+        return new String(base64Bytes,"UTF-8");
+    }
 
-		idu = aprobacionesService.obtenerIDU(form, WM95.DELIM_04_SIN_ADEA);
-		
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
-		
-		for (Archivo archivo : form.getArchivosASubir()) {
-			String error = "";
-			
-			cal.add(Calendar.SECOND, 1);
-			Date fecha = cal.getTime();
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss");
-			String fechaString = "";
-
-			fechaString = df.format(fecha).trim();
-			String cCostos = "";
-			String idRend = "";
-
-			Integer cc = form.getUsuario().getCcostos();
-			if (cc != 0) {
-				cCostos = String.format("%04d", cc);
-			}
-
-			if (rend.getId() != null) {
-				idRend = String.format("%010d", rend.getId());
-			}
-
-			if (idu.equals(""))
-				error = "Error al obtener IDU del archivo " + archivo.getNomArchivo();
-			else {
-				archivo.setIdu(idu.substring(0, idu.indexOf(";")));
-
-				String ext = archivo.getNomArchivo().substring(archivo.getNomArchivo().lastIndexOf("."));
-
-				error = copyFile(archivo, nombreNuevo + (String) archivo.getIdu() + "_" + form.getUsuario().getIdUser()
-						+ "_" + cCostos + "_" + fechaString + ext, path);
-			}
-			if (!error.equals(""))
-				errores.add(error);
-		}
-		if (errores.size() == 0) {
-			try {
-				if(!apr) {
-				aprobacionesService.cambiarEscanRendicion(String.valueOf(form.getRendicion().getId()),
-						form.getRendicion().getUsuarioRendicion(), idu, null);}
-			} catch (Exception e) {
-				e.printStackTrace();
-				errores.add(e.getCause().getMessage());
-			}
-		}
-		return errores;
-	}
-
-	private static String copyFile(Archivo archivo, String newFileName, String uploadPath) {
-		String error = "";
-
-		File file = new File(uploadPath, newFileName);
-
-		try {
-			FileOutputStream fout = null;
-			fout = new FileOutputStream(file);
-			byte data[] = new byte[1024];
-			int count;
-			while ((count = archivo.getInputStream().read(data, 0, 1024)) != -1) {
-				fout.write(data, 0, count);
-			}
-			fout.close();
-			archivo.getInputStream().close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			error = " Error en la grabacion o lectura del archivo " + archivo.getNomArchivo();
-		}
-
-		return error;
-	}
+	
 }

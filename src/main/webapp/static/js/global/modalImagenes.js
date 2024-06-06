@@ -61,37 +61,36 @@ function modalImagenesSeleccionarArchivo() {
 }
 
 function modalImagenesAgregarArchivo() {
-	clearFormErrors('#modalImagenes');
+    clearFormErrors('#modalImagenes');
 
-	$($('#modalImagenesArchivo').prop('files')).each(function(i, file) {
-		if (!modalImagenesValidarArchivo(file))
-			return;
-		const reader = new FileReader();	
-		let base64Content = "";
-		reader.onload = function (e){
-			base64Content = e.target.result.split(',')[1];
-		
-		}
-		reader.readAsDataURL(file)
-		let params = new FormData();
-		
+    $($('#modalImagenesArchivo').prop('files')).each(function(i, file) {
+        if (!modalImagenesValidarArchivo(file))
+            return;
+        const reader = new FileReader();
+        let base64Content = "";
 
-		setTimeout(function() {
-			params.append('nombreArchivo', file.name)
-			params.append('tipoArchivo', file.type)
-			params.append('archivo', file)
-			params.append('base64', base64Content)
-			params.append('action', 'cargarArchivo');
-		
-	
-			callAjax('imagenes.do', params, 'modalImagenesAgregarArchivoSuccess', 'modalImagenesAgregarArchivoError');
-		}, 600);
-			
-		
-	});
-	
-	$('#modalImagenesArchivo').val('');
+        reader.onload = function (e) {
+            base64Content = e.target.result.split(',')[1];
+
+            // Una vez que la conversión a Base64 se ha completado, se realiza el llamdo para guardar las imagenes
+            let params = new FormData();
+            params.append('nombreArchivo', file.name)
+            params.append('tipoArchivo', file.type)
+            params.append('archivo', file)
+            params.append('base64', base64Content)
+            params.append('action', 'cargarArchivo');
+
+            callAjax('imagenes.do', params, 'modalImagenesAgregarArchivoSuccess', 'modalImagenesAgregarArchivoError');
+        }
+
+        reader.readAsDataURL(file);
+    });
+
+    $('#modalImagenesArchivo').val('');
 }
+
+
+
 
 function modalImagenesValidarArchivo(file) {
 	if (['application/pdf', 'image/tiff'].indexOf(file.type) == -1)
@@ -139,13 +138,17 @@ function modalImagenesBorrarArchivoSuccess(data) {
 function modalImagenesGenerar() {
 	if (!modalImagenesValidarGenerar())
 		return;
+		
+	const queryString = window.location.search;
+	const urlParam = new URLSearchParams(queryString.substring(1));
 	
 	var params = {
 		action: 'generar',
 		esAprobacion: modalImagenesLoadParams.esAprobacion,
 		idRendicion: modalImagenesLoadParams.idRendicion,
-		motivo: modalImagenesLoadParams.motivo,
+		motivo: urlParam.get('codMotivo'),
 	};
+	
 
 	callAjax('imagenes.do', params, 'modalImagenesGenerarSuccess');
 }
