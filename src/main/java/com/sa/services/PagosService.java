@@ -18,7 +18,6 @@ import ar.com.bbva.web.IWebClient;
 import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
 
-import com.sa.entities.ComboCoeficienteCombustible;
 import com.sa.entities.ComboGasto;
 import com.sa.entities.Cupones;
 import com.sa.entities.DatosPantallaDinamica;
