@@ -96,7 +96,7 @@ function modalGastoSetOnChanges() {
 			setCombo('combos.do?action=getTiposComprobante', '#modalGastoTipoComprobante', params, modalGastoTipoComprobanteSel);
 			modalGastoCheckBimon();
 			
-			$('#modalGastoTipoComprobanteDiv').fadeIn('slow');
+			//$('#modalGastoTipoComprobanteDiv').fadeIn('slow');
 		} else
 			$('#modalGastoTipoComprobanteDiv').fadeOut();
 	});
@@ -123,11 +123,14 @@ function modalGastoSetValues(data) {
 	let cantCupones = modalCuponesCuponesSel.length +1;
 	if (!modalGastoLoadParams.cupon.esProxCupon) {
 		modalGastoTipoComprobanteSel = null;
-		$('[id^=modalGasto]').val('');
+		$('[id^=modalGasto]').not($('#modalGastoTipoGasto')).val('');
 		$('#modalGastoCuponesCant').addClass("d-none")
 		$('#modalGastoDetalleCuponDesc').addClass("d-none")
 		$('#modalGastoTipoFactura').val('A');
-		$('[id^=modalGasto]').attr('disabled', false);
+		//$('[id^=modalGasto]').attr('disabled', false);
+		$('#modalGastoMoneda').attr('disabled', false);
+		$('#modalGastoFechaGasto').attr('disabled', false);
+		$($('#modalGastoFechaGasto').parent().find('button')[0]).attr('disabled', false);
 		AutoNumeric.getAutoNumericElement('#modalGastoMonto').clear();
 		
 		$('#modalGastoMsgCupon').html('');
@@ -230,7 +233,7 @@ function modalGastoGuardar() {
 		idGasto: modalGastoLoadParams.idGasto,
 		codMotivo: modalGastoLoadParams.codMotivo,
 		moneda: $('#modalGastoMoneda').val(),
-		tipoComprobante: $('#modalGastoTipoComprobante').val(),
+		tipoComprobante: '0004',
 		tipoFactura: $('#modalGastoTipoFactura').val(),
 		factura: $('#modalGastoFactura').inputmask('unmaskedvalue'),
 		cuit: $('#modalGastoCuit').inputmask('unmaskedvalue'),
@@ -248,20 +251,69 @@ function modalGastoGuardar() {
 	};
 	
 	callAjax('gastos.do', params, 'modalGastoGuardarSuccess');
+	
+	$('#modalGastoFueraDePolitica').modal('hide');
 
+}
+
+function validarGasto(idGasto){
+	//modalGastoSubmitted = true;
+	//$('#modalGastoMessageContainer').addClass('d-none');
+
+	if (!validateForm('modalGasto', true))
+		return;
+	var params = {
+		opcion: 'VALIDAR',
+		idRendicion: modalGastoLoadParams.idRendicion,
+		//idGasto: modalGastoLoadParams.idGasto,
+		idGasto: idGasto
+	};
+
+	callAjax('gastos.do', params, 'evaluarValidacionGasto');
+}
+
+function modalGastoCancelar(){
+	$('#modalGastoFueraDePolitica').modal('hide');
+}
+
+function evaluarValidacionGasto(data){
+	if(!data.textoValidacion.includes('OK')){
+		setTimeout(function(){			
+			setTimeout(function(){
+				if(data.textoValidacion.includes('ALERTA')){ 
+					$('#modalGastoTitle').html("El gasto cargado no cumple con la politica de gastos acordada"); 
+					$('#aceptarGastoBtn').html("Continuar");
+				}
+				else{
+					$('#modalGastoTitle').html("El gasto requiere ser confirmado");
+					$('#aceptarGastoBtn').html("Confirmar");
+				}	 
+				$('#modalGastoValidarMessage').html(data.textoValidacion);
+			},300)
+			$('#modalGastoFueraDePolitica').modal('show');	
+		},200)	
+    }
+	
+//	else{
+//		modalGastoGuardar();
+//	}
 }
 
 function modalGastoGuardarSuccess(data) {
     loadTables();
+    //validarGasto(data.idGasto);
+	if(!data.showModalDatosAdicionales){
+		validarGasto(data.idGasto);
+	}
     if (data.showModalDatosAdicionales && $('#modalGastoTipoGasto').val().substring(54,59) != '00212') {
         $('#modalGasto').modal('hide');
         modalDatosAdicionalesShow(modalGastoLoadParams.idRendicion, modalGastoLoadParams.codMotivo, data.idGasto,
-                $('#modalGastoTipoGasto').val().substring(0, 4), $('#modalGastoTipoGasto').val().substring(55, 59), $('#modalGastoMonto').val().trim() ,false, data.message);
+        $('#modalGastoTipoGasto').val().substring(0, 4), $('#modalGastoTipoGasto').val().substring(55, 59), $('#modalGastoMonto').val().trim() ,false, data.message);
     } else if (modalCuponesCuponesSel.length == 0) {
             $('#modalGasto').modal('hide');
     } else
         modalGastoShowProximoGastoCupon(data);
-        
+       
     setTimeout(function(){
         showMessage('tableMessage', data.message);
     },500)

@@ -12,6 +12,7 @@
     <display:column property="fechagastos" class="text-center" title="FE. GASTO" />
     <display:column property="comprobante" title="TIPO COMPROBANTE" />
     <display:column property="datosAdicionales" class="text-center" title="DATOS ADICIONALES" />
+    <display:column property="alerta" class="text-center" title="ALERTA" />
     <display:column property="cupones" class="text-center" title="CUPONES" />
     <logic:equal name="showOpciones" value="true">
     	<display:column property="opciones" title="OPCIONES" />
@@ -19,4 +20,5 @@
 	
 	<display:setProperty name="basic.msg.empty_list" value="<h5 class='font-weight-400 dt-empty'>La lista de gastos/consumos est&aacute; vac&iacute;a</h5>" />
 </display:table>
+
 

@@ -7,7 +7,7 @@
 				</a>
 			</div>
 			<div class="modal-body px-3 mx-3 px-lg-3 mx-lg-5">
-				<div class="row px-lg-5 px-sm-2 mx-5">
+				<div class="row px-lg-5 px-sm-2 mx-5" id="alertaRiskTitle">
 					<div class="col-sm-12">
 						<h1 class="font-weight-300 text-danger"> Alerta <span id="modalAlertaTitulo" ></span></h1>
 						<hr class="bg-danger" style="height: 0.3rem;">

@@ -121,7 +121,7 @@
 								<i class="bbva-icon icon-coronita_close"></i> Salir
 							</a>
 							<a href="#a" class="btn btn-info px-5 py-3 ml-2" id="modalImagenesBtnGenerar" onclick="modalImagenesGenerar()">
-								Generar
+								Adjuntar Im&aacute;genes
 							</a>
 						</div>
 					</div>
@@ -131,4 +131,4 @@
 	</div>
 </div>
 
-<script type="text/javascript" src="js/global/modalImagenes.js"></script>
+<script type="text/javascript" src="static/js/global/modalImagenes.js"></script>

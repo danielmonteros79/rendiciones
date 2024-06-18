@@ -154,9 +154,13 @@ function modalImagenesGenerar() {
 }
 
 function modalImagenesGenerarSuccess(data) {
+	setLocalStorageItem('message', data.message);
+	location.reload();
+}
+
+function saveReportSuccess(data) {
 	window.location.href = 'listadoRendiciones.do';
 	setLocalStorageItem('message', data.message);
-	//location.reload();
 }
 
 function modalImagenesValidarGenerar() {

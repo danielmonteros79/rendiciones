@@ -75,7 +75,7 @@ public class ConsumosNoRendidosAction extends RestriccionTransaccionAction {
 		String fecha = request.getParameter("fecha");
 		String descripcion = request.getParameter("descripcion");
 		
-		String idRend = service.altaRendicion(usuario, motivo, fecha, fecha, descripcion);
+		String idRend = service.altaRendicion(usuario, motivo, fecha, fecha, descripcion, false);
 		
 		if (idRend.equalsIgnoreCase("") || idRend.equalsIgnoreCase(null)) {
 			request.setAttribute("validarTrx", 1);

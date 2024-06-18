@@ -222,16 +222,30 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 				return showError(data);
 
 			$(comboSelector).empty();
-
+			
+			//Combo Excepcional
+			if(comboSelector == "#modalGastoTipoGasto" & data.combo.length == 1){
+				$(comboSelector).append('<option value="' + data.combo[0].id + '"' + ' selected' + '>' +
+						data.combo[0].descripcion.trim() + '</option>');
+				$(comboSelector).attr("disabled", true);
+			}
+			
+			else {
+				
 			if (showEmpty != false)
 				$(comboSelector).append(globalOpcionVacia);
 
 			selectedOption = selectedOption == undefined ? data.selected : selectedOption;
 			$(data.combo).each(function(i, elem) {
+				console.log("a"+elem.id)
+				console.log("b"+elem.descripcion)
 				$(comboSelector).append('<option value="' + elem.id + '"' + (elem.id == selectedOption ? ' selected' : '') + '>' +
 					elem.descripcion.trim() +
 					'</option>');
 			});
+			
+			}
+			
 			$('#delegado').chosen();
 			$('#filtroFecha').chosen();
 			$('#filtroMoneda').chosen();
@@ -560,7 +574,6 @@ let cantidadPdfs = 0;
 
  function setImagenes(data) {
   let divImagenesCargadas = $('#containerImagenesCargadas');
-  let spanCantidadImagenes = $('#cantidadImagenes');
   let i = 0;
 	pdfsCombinados = data.archivos.length;
   for (let imagen of data.archivos) {
@@ -569,12 +582,7 @@ let cantidadPdfs = 0;
       <p>${imagen.nomArchivo}</p>
     </div>`);
   }
-  if(data.archivos.length > 0){
-	  spanCantidadImagenes.append(`<div class="mr-3">
-		      
-		      <b>Cantidad: ${data.archivos.length}</b>
-		    </div>`);
-  }
+
   $('#abrirTodas').on('click', function() {
 	 data.archivos.map(imagen => obtenerImagenes(imagen.id));
 

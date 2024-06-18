@@ -157,21 +157,21 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		rendicion.setCostosDestino(String.valueOf(this.sessionUserWorking.getCcostos()));
 	
 		
-		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, "", rendicion.getUsuarioRendicion() != null ? rendicion.getUsuarioRendicion() : 
-			this.sessionUserWorking.getIdUser(), rendicion.getCodMotivo());
-		if (gastos.size() == 0)
-			return writeError(response, "La rendici&oacute;n no tiene gastos cargados.");
+//		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, "", rendicion.getUsuarioRendicion() != null ? rendicion.getUsuarioRendicion() : 
+//			this.sessionUserWorking.getIdUser(), rendicion.getCodMotivo());
+//		if (gastos.size() == 0)
+//			return writeError(response, "La rendici&oacute;n no tiene gastos cargados.");
 		
 		List<String> errores = thubanService.publicarDocumentos(thubanClaseDoc, thubanUser, thubanPass, rendicion, frm.getArchivosASubir());
 		
 		if (errores.size() == frm.getArchivosASubir().size())
 			return writeError(response, StringUtils.join(errores.toArray(), "<br><br>"));
-		else if (rendicion.getEstado().equals("PENDI") || rendicion.getEstado().equals("OBSER")) {
-			String idu = aprobacionesService.obtenerIDU(rendicion, this.sessionUserWorking.getIdUser(), WM95.DELIM_04_SIN_ADEA);
-			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()), this.sessionUserWorking.getIdUser(), idu);
-			if (aprobacionesService.getMsg() != null)
-				message += "<br>" + aprobacionesService.getMsg();
-		}
+//		else if (rendicion.getEstado().equals("PENDI") || rendicion.getEstado().equals("OBSER")) {
+//			String idu = aprobacionesService.obtenerIDU(rendicion, this.sessionUserWorking.getIdUser(), WM95.DELIM_04_SIN_ADEA);
+//			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()), this.sessionUserWorking.getIdUser(), idu);
+//			if (aprobacionesService.getMsg() != null)
+//				message += "<br>" + aprobacionesService.getMsg();
+//		}
 		
 		if (errores.size() > 0)
 			message += "<br><br>" + StringUtils.join(errores.toArray(), "<br>");

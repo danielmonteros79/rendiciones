@@ -63,7 +63,7 @@ public class RendicionSaveAction extends RestriccionTransaccionAction {
 
 		try {
 			
-			String idRend = service.altaRendicion(renForm.getUser(), renForm.getMotivo(), feD, feH, renForm.getDescripcion());
+			String idRend = service.altaRendicion(renForm.getUser(), renForm.getMotivo(), feD, feH, renForm.getDescripcion(), false);
 			request.setAttribute("codigo", idRend);
 			if (idRend.equalsIgnoreCase("") || idRend.equalsIgnoreCase(null)) {
 				request.setAttribute("validarTrx", 1);

@@ -7,8 +7,53 @@
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c"%>
 <%@ page import="com.sa.entities.Rendicion"%>
 <%@ page import="java.util.*"%>
-
+<script type="text/javascript">
+$(document).ready(function() {
+	var usuarioAprobador = "<%= request.getAttribute("usuarioAprobador") %>";
+	var estadoRend = "<%= request.getAttribute("estadoRend") %>";
+	var motivoRend = "<%= request.getAttribute("motivoRend") %>";
+	var rendExceptuada = "<%= request.getAttribute("rendExceptuada") %>";
+	
+	//Verifica si existe aprobador o no en esta etapa de la rendicion
+	if(usuarioAprobador != "SI"){
+		$('#aprobador').hide();	
+	}
+	
+	//Verifica el motivo para generar el preformato de fechas
+	if(motivoRend.includes('EVENTO J.A.E.')){
+		$('#fechaDesdeTitle').html("Realizacion del evento:");
+		$('#fechaHastaDiv').html("");
+	}
+// 	else if(motivoRend.includes('GYMPASS')){
+// 		$('#fechaDesdeTitle').html("Mes del gasto:");
+// 		$('#fechaHastaDiv').html("");
+// 	}
+	else if(motivoRend.includes('MOVILIDAD EN HUELGA')){
+		$('#fechaDesdeTitle').html("Fecha de compra aereo:");
+		$('#fechaHastaDiv').html("");
+	}
+	else if(motivoRend.includes('VIAJE GLOMO/FORMACION PDI')){
+		$('#fechaDesdeTitle').html("Inicio del viaje:");
+		$('#fechaHastaTitle').html("Fin del viaje:");
+	}
+	
+	//Verifica si la rendicion esta exceptuada para tildar o no el casillero
+	if(rendExceptuada.includes("true")){
+		$("#exc-check").prop("checked", true);
+	}
+	else{
+		$("#exc-check").prop("checked", false);
+	}
+	
+	//Verifica el estado de la rendicion para saber si debe deshabilitar el casillero
+	if(estadoRend != "PENDI"){
+		$("#exc-check").prop("disabled", true);
+	}
+});
+</script>
 <bean:define id="RendicionForm" name="RendicionForm" scope="session" toScope="request" />
+
+
 
 
 <div class="container py-5">
@@ -71,8 +116,8 @@
 			</div>
 			
 			<div class="col-7 py-3 border d-no-edit">
-				Pr&oacute;ximo Aprobador:
-				<bean:write name="RendicionForm" property="usuarioAprobador" />
+				<span id="aprobador">Pr&oacute;ximo Aprobador:
+				<bean:write name="RendicionForm" property="usuarioAprobador" /></span>
 			</div>
 			
 			<div class="col-sm-5 py-3 border-left d-no-edit motivo-div">
@@ -90,12 +135,12 @@
 			</div>
 			<div class="col-sm-7">
 				<div class="row">
-					<div class="col-12 col-sm-6 py-3 border d-no-edit">
-						Desde:
+					<div class="col-12 col-sm-6 py-3 border d-no-edit" id="fechaDesdeDiv">
+						<span id="fechaDesdeTitle">Desde:</span>
 						<span id="fechaDesde"><bean:write name="RendicionForm" property="fechaDesde" /></span>
 					</div>
-					<div class="col-12 col-sm-6 py-3 border d-no-edit">
-						Hasta:
+					<div class="col-12 col-sm-6 py-3 border d-no-edit" id="fechaHastaDiv">
+						<span id="fechaHastaTitle">Hasta:</span>
 						<span id="fechaHasta"><bean:write name="RendicionForm" property="fechaHasta" /></span>
 					</div>
 					<div class="col-12 col-sm-6 py-3 has-float-label d-none d-edit">
@@ -150,10 +195,15 @@
 					<div class="invalid-feedback mb-3"></div>
 				</div>
 			</div>
+
+			<div class=" bg-light p-3 mt-4 cursor-pointer" id="checkbox-container">
+				<input class="m-2 cursor-pointer" type="checkbox" value=""
+					id="exc-check"  > 
+					<label class="form-check-label cursor-pointer" for="flexCheckChecked">Excepci&oacute;n solicitada a la GLG. Se debe agregar la documentaci&oacute;n respaldatoria de lo consensuado. </label>
+			</div>
 		</div>
 	</div>
 </div>
-
 
 
 	<div class="bg-light d-no-edit" id="divNuevoGasto">
@@ -178,7 +228,7 @@
 
 
 <div class="container py-5 d-no-edit">
-	<div class="row pb-3">
+	<div class="row pb-2">
 		<div class="col-sm-12">
 			<h2 class="font-weight-500">Tu listado de gastos/consumos</h2>
 
@@ -198,14 +248,46 @@
 	</div>
 </div>
 
+	<logic:present name="readonly">
+	<div class="container py-2 text-left d-no-edit  mb-3" >
+		<div class=" d-flex justify-content-between align-items-center flex-row">
+			<div class=" d-flex flex-column ">
+				<h2 id="listadoImagenesText" >Listado de im&aacute;genes</h2>
+			</div>
+		</div>
+		<div class="d-flex justify-content-start align-items-start flex-column"  id="containerImagenes">
+			<div class="mr-3 d-flex " id="containerImagenesCargadas"></div>
+		</div>	
+		<button class="btn btn-light" id="abrirTodas">Ver todas</button>	
+	</div>
+	</logic:present>
+	<logic:notPresent name="readonly">
+		<div class="container py-2 text-left d-no-edit  mb-3" >
+			<div class=" d-flex justify-content-between align-items-center flex-row">
+			
+				<div class=" d-flex flex-column ">
+					<h2 id="listadoImagenesText" >Listado de im&aacute;genes</h2>
+					<p id="mensajeImgRend" class=" border border-top-0 border-left-0 border-right-0 border-warning p-1">Agreg&aacute; las im&aacute;genes correspondientes a la rendici&oacute;n.</p>
+				</div>
+				<div class="text-center bg-warning" id="containerImgBtn">
+					<a href="#a" class="btn btn-primary px-4 py-2 m-2 d-no-edit" id="imagenesBtn"  onclick="openImagenes()" >
+					Adjuntar Im&aacute;genes
+					</a>
+				</div>
+		
+			</div>
+			<div class="  d-flex justify-content-start align-items-start flex-column "  id="containerImagenes">
+				<div class="mr-3 d-flex " id="containerImagenesCargadas"></div>
+			</div>
+			<button class="btn btn-light" id="abrirTodas">Ver todas</button>	
+		</div>
+		<div id="imagenesContainer"></div>
+	</logic:notPresent>
 
 <div class="bg-light" id="divAcciones">
 	<div class="container py-3 text-center">
 		<div class="row">
 			<div class="col-sm-12">
-				<a href="#a" class="btn btn-primary px-5 py-3 m-2 d-no-edit" id="imagenesBtn" onclick="openImagenes()" >
-					Im&aacute;genes
-				</a>
 				<a href="#a" class="btn btn-primary px-5 py-3 m-2 d-none d-no-edit d-est-ESCAN d-est-PSUP d-est-PFIRM d-est-OBSER"
 					onclick="activarRechazarRendicion('rechazar')">
 					Rechazar rendici&oacute;n
@@ -232,31 +314,44 @@
 
 
 
-<div class="container py-5 d-no-edit">
-	<div class="row pb-3">
-		<div class="col-sm-12">
-			<h2 class="font-weight-500">Consumos pendientes</h2>
+<!-- <div class="container py-5 d-no-edit"> -->
+<!-- 	<div class="row pb-3"> -->
+<!-- 		<div class="col-sm-12"> -->
+<!-- 			<h2 class="font-weight-500">Consumos pendientes</h2> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+<!-- 	<div class="row d-none" id="tableConsumosMessageContainer"> -->
+<!-- 		<div class="col-sm-12"> -->
+<!-- 			<h5 class="pb-3" id="tableConsumosMessage"></h5> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+<!-- 	<div class="row"> -->
+<!-- 		<div class="col-md-12 py-3 table-responsive-lg"> -->
+<!-- 			<div class="dt-container" id="consumosPendientesDtContainer"></div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+<!-- </div> -->
+
+<div class="container py-2 text-left d-no-edit  mb-3" >
+			<div class=" d-flex justify-content-between align-items-center flex-row">
+				<div class=" d-flex flex-column "></div>
+				<div class="text-center d-none" id="containerSaveBtn">
+					<a href="#a" class="btn btn-primary px-4 py-2 m-2 d-no-edit" id="saveRenBtn"  onclick="validarRend()" >
+					Generar
+					</a>
+				</div>
+			</div>	
 		</div>
-	</div>
-	<div class="row d-none" id="tableConsumosMessageContainer">
-		<div class="col-sm-12">
-			<h5 class="pb-3" id="tableConsumosMessage"></h5>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-12 py-3 table-responsive-lg">
-			<div class="dt-container" id="consumosPendientesDtContainer"></div>
-		</div>
-	</div>
-</div>
 
 <input type="hidden" id="estadoRend" value="<bean:write name="RendicionForm" property="estadoRend"/>" />
 <input type="hidden" id="codMotivo" value="<bean:write name="RendicionForm" property="codMotivo"/>" />
 <input type="hidden" id="user" value="<bean:write name="RendicionForm" property="user"/>" />
 <input type="hidden" id="urlThuban" value="<bean:write name="RendicionForm" property="linkThuban"/>" />
 <input type="hidden" id="idu" value="<bean:write name="Rendicion" property="idu"/>" />
+<input type="hidden" id="nombreUsuarioRend" value="<bean:write name="RendicionForm" property="nombreUsuario"/>" />
 <input type="hidden" id="gastoFechaMin" value="<bean:write name="RendicionForm" property="gastoFechaMin"/>" />
 <input type="hidden" id="gastoFechaMax" value="<bean:write name="RendicionForm" property="gastoFechaMax"/>" />
+<input type="hidden" id="costosDestino" value="<bean:write name="RendicionForm" property="costosDestino"/>" />
 
 <input type="hidden" id="motivoRechazo" value="<bean:write name="Rendicion" property="motivoRechazo" /> "/>
 
