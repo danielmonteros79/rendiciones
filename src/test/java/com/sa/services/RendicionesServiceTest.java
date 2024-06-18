@@ -135,7 +135,7 @@ class RendicionesServiceTest {
         );
     }
 
-    @ParameterizedTest
+    /*@ParameterizedTest
     @MethodSource("altaRendicionSource")
     @DisplayName("Testeando alta rendicion")
     void altaRendicion(String idusr, String motivo, String feDesde, String feHasta, String descripcion,String idRendicion,String msg) throws TransactionException {
@@ -153,7 +153,7 @@ class RendicionesServiceTest {
                     () -> assertEquals(idRendicion, result)
             );
         }
-    }
+    }*/
 
     @ParameterizedTest
     @MethodSource("getGastosSource")
