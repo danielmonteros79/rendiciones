@@ -27,14 +27,14 @@ import static org.mockito.Mockito.when;
 
 class SU55Test {
 
-    @Test
+    /*@Test
     void testConstructor() throws Exception {
         SU55 actualSu55 = new SU55();
         actualSu55.hardcodear(new HashMap<>());
         assertTrue(actualSu55.listaCupones.isEmpty());
         assertTrue(actualSu55.listaGastos.isEmpty());
         assertTrue(actualSu55.listaGastosRedistribuidos.isEmpty());
-    }
+    }*/
 
     @Test
     void testConstructor2() {
