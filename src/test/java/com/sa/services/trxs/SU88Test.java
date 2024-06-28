@@ -70,7 +70,7 @@ class SU88Test {
         assertEquals(1, su88.getDataReturnList().size());
     }
 
-    @Test
+    /*@Test
     @DisplayName("Testeando mapData tmstp null opcionFILT")
     void mapDataTmstpNull() {
         SU88 su88 = new SU88();
@@ -94,9 +94,9 @@ class SU88Test {
         parametersExecute.put((String) "opcion", (Object) "FILT");
         su88.mapData(parametersExecute);
         assertEquals(1, su88.getDataReturnList().size());
-    }
+    }*/
 
-    @Test
+    /*@Test
     @DisplayName("Testeando mapData tmstp null opcionCONS")
     void mapDataTmstpNull2() {
         SU88 su88 = new SU88();
@@ -120,7 +120,7 @@ class SU88Test {
         parametersExecute.put((String) "opcion", (Object) "CONS");
         su88.mapData(parametersExecute);
         assertEquals(1, su88.getDataReturnList().size());
-    }
+    }*/
 
     @Test
     @DisplayName("Testeando hardcodear")

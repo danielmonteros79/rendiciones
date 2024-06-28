@@ -50,8 +50,8 @@ public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
 			if (service.getMsgAviso() == null || service.getMsgAviso().equals("")) {
 				ret = "success";
 				request.setAttribute("message", "OK: ALTA EFECTUADA");
-			} else {
-				request.setAttribute("message", service.getMsgAviso());}
+			} else
+				request.setAttribute("message", service.getMsgAviso());
 		} catch (TransactionException e) {
 			e.printStackTrace();
 			log.error(e);
@@ -70,8 +70,8 @@ public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
 			if (service.getMsgAviso() == null || service.getMsgAviso().equals("")) {
 				ret = "success";
 				request.setAttribute("message", "OK: BAJA EFECTUADA");
-			} else {
-				request.setAttribute("message", service.getMsgAviso());}
+			} else
+				request.setAttribute("message", service.getMsgAviso());
 		} catch (TransactionException e) {
 			e.printStackTrace();
 			log.error(e);
@@ -90,8 +90,8 @@ public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
 			if (service.getMsgAviso() == null || service.getMsgAviso().equals("")) {
 				ret = "success";
 				request.setAttribute("message", "OK: MODIFICACION EFECTUADA");
-			} else {
-				request.setAttribute("message", service.getMsgAviso());}
+			} else
+				request.setAttribute("message", service.getMsgAviso());
 		} catch (TransactionException e) {
 			e.printStackTrace();
 			log.error(e);

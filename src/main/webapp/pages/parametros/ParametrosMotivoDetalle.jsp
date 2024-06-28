@@ -29,7 +29,7 @@ label.error {
 </style>
 </head>
 <body>
-<div class="mt-5 mb-1 pt-3 container text-center">
+<div class="mt-1 mb-1 pt-3 container text-center">
 	<logic:present name="message">
 		<% String message = (String) request.getAttribute("message");
 		
@@ -51,33 +51,32 @@ label.error {
 </div>
 
 	<html:form action="saveMotivo" styleId="parametrosMotivoForm">
-		<div class="modal-body px-3 mx-3 px-lg-3 mx-lg-5 mt-5">
+		<div class="modal-body px-3 mx-3 px-lg-3 mx-lg-5 ">
 			<div class="row px-5 mx-5">
 				<div class="col-sm-12">
 					<h1 class="font-weight-300">
 						<span id="modalDelegadoNuevoModif"></span> Motivo
 					</h1>
 				</div>
-				<div class="col-sm-12 pt-1 pb-5 text-muted">Ingres&aacute; los
+				<div class="col-sm-12 pt-3 pb-2 text-muted">Ingres&aacute; los
 					datos del motivo.</div>
 			</div>
 			<div class="row px-5 mx-5">
-				<div class="col-sm-12 pt-2 scroll-err">
+				<div class="col-sm-12 col-lg-3 pt-2  scroll-err">
 					<div class="has-float-label">
 						<html:text property="codigo" styleId="codigo" styleClass="form-control bg-light text-uppercase" maxlength="4" onkeypress="return numericOnly(event);"/>
 						 <label for="modalDelegadoUsuario">Motivo</label>
 						 <div class="errorDivCod"></div>
 					</div>
 				</div>
-				<div class="col-sm-12 col-lg-6 pt-2  has-float-label scroll-err">
+				<div class="col-sm-12 col-lg-3 pt-2  pl-lg-1 has-float-label scroll-err">
 					<div class="has-float-label">
-						<html:text property="descripcion" styleClass="form-control bg-light text-uppercase"  maxlength="50"/>
+						<html:text property="descripcion" styleId="descripcion" styleClass="form-control bg-light text-uppercase"  maxlength="50"/>
 						<label for="modalDelegadoCCostos">Descripci&oacute;n</label>
 						<div class="errorDiv"></div>
 					</div>
 				</div>
-				<div
-					class="col-sm-12 col-lg-6 pt-2 pl-lg-1 has-float-label scroll-err">
+				<div class="col-sm-12 col-lg-3 pt-2  pl-lg-1 has-float-label scroll-err">
 					<div class="has-float-label form-group">
 						<html:select property="estado" styleId="estado"  styleClass="form-control bg-light">
 							<html:option value=""></html:option>
@@ -92,16 +91,24 @@ label.error {
 						<div class="errorDiv"></div>
 					</div>
 				</div>
-
+				<div class="col-sm-12 col-lg-3 pt-2  pl-lg-1 has-float-label scroll-err">
+					<div class="has-float-label">
+						<html:text property="idGlg" styleId="idGlg" styleClass="form-control bg-light text-uppercase " maxlength="2" onkeypress="return numericOnly(event);"/>
+						 <label for="modalDelegadoUsuario">GLG</label>
+						 <div class="errorDiv"></div>
+					</div>
+				</div>
+				
 				<div class="col-sm-12 col-lg-4 pt-2  scroll-err">
 					<div class="has-float-label form-group">
 						<html:select property="codSup" styleId="codSup" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
-							<html:option value="PSUP">PSUP</html:option>
+							<html:option value="PSUP">SI</html:option>
+							<html:option value="">NO</html:option>
 						</html:select>
 						
 						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="modalDelegadoInforme">Superior</label>
+							for="modalDelegadoInforme">Requiere Supervisor</label>
 						<div class="invalid-feedback mb-3"></div>
 						
 						<div class="errorDiv"></div>
@@ -111,18 +118,27 @@ label.error {
 					<div class="has-float-label form-group">
 						<html:select property="codFirma" styleId="codFirma" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
-							<html:option value="PFIRM">PFIRM</html:option>
+							<html:option value="PFIRM">SI</html:option>
+							<html:option value="">NO</html:option>
 						</html:select>
 						 <i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="codFirma">Firma</label>
+							for="codFirma">Requiere Firmante</label>
 						 <div class="errorDiv"></div>
 					</div>
 				</div>
 				<div
 					class="col-sm-12 col-lg-4 pt-2  pl-lg-1 has-float-label scroll-err">
 					<div class="has-float-label form-group ">
-						<html:text property="idGlg" styleId="idGlg" styleClass="form-control bg-light text-uppercase " maxlength="2" onkeypress="return numericOnly(event);"/>
-						 <label for="modalDelegadoUsuario">Ctrl. GLG</label>
+						<!-- <html:text property="idGlg" styleId="idGlg" styleClass="form-control bg-light text-uppercase " maxlength="2" onkeypress="return numericOnly(event);"/>
+						 <label for="modalDelegadoUsuario">Requiere Ctrl. GLG</label>
+						 <div class="errorDiv"></div> -->
+						 <html:select property="codAprobacionGlg" styleId="codAprobacionGlg" styleClass="form-control bg-light">
+							<html:option value=""></html:option>
+							<html:option value="PGLG">SI</html:option>
+							<html:option value="">NO</html:option>
+						</html:select>
+						 <i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							for="codFirma">Requiere Ctrl. GLG</label>
 						 <div class="errorDiv"></div>
 					</div>
 				</div>
@@ -145,7 +161,7 @@ label.error {
 						</html:select>
 						<div class= "pr-3">
 						 <i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="modalDelegadoAccion">Nvl. Ingreso</label>
+							for="modalDelegadoAccion">Nivel m&iacute;nimo para rendir el motivo</label>
 						</div>
 					</div>
 					 <div class="errorDiv"></div>
@@ -168,13 +184,22 @@ label.error {
 							<html:option value="10">10</html:option>
 						</html:select>
 						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="idNivAutoriz">Nvl. Firma</label>
+							for="idNivAutoriz">Nivel m&iacute;nimo para aprobacion firmante</label>
+						 <div class="errorDiv"></div>
+					</div>
+				</div>
+				
+				
+				
+				<div class="col-sm-12 col-lg-4 pt-2  pl-lg-1 has-float-label scroll-err">
+					<div class="has-float-label form-group">
+						<html:text property="idCentroCostosFijo" styleId="idCentroCostosFijo" styleClass="form-control bg-light text-uppercase" maxlength="4" onkeypress="return numericOnly(event);"/>
+						<label for="idCentroCostos">Centro destino fijo</label>
 						 <div class="errorDiv"></div>
 					</div>
 				</div>
 
-
-				<div class="col-sm-12 col-lg-4 pt-2 pl-lg-1 scroll-err">
+				<!-- <div class="col-sm-12 col-lg-4 pt-2  scroll-err">
 					<div class="has-float-label form-group  d-flex align-items-center  bg-light">
 						<html:select property="maInclExcl" styleId="maInclExcl" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
@@ -183,22 +208,16 @@ label.error {
 						</html:select>
 						<div class= "pr-3">
 						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="modalDelegadoAccion">Incl/Excl</label>
+							for="modalDelegadoAccion">Incluye o excluye centro de costos</label>
 						</div>
 						 <div class="errorDiv"></div>
 					</div>
-				</div>
+				</div> -->
 
-				<div class="col-sm-12 col-lg-4 pt-2 scroll-err">
-					<div class="has-float-label form-group">
-						<html:text property="idCentroCostos" styleId="idCentroCostos" styleClass="form-control bg-light text-uppercase" maxlength="4" onkeypress="return numericOnly(event);"/>
-						<label for="idCentroCostos">C.Costos</label>
-						 <div class="errorDiv"></div>
-					</div>
-				</div>
+				
 
 
-				<div class="col-sm-12 col-lg-4 pt-2 pl-lg-1 has-float-label scroll-err">
+				<div class="col-sm-12 col-lg-4 pt-2 has-float-label scroll-err">
 					<div class="input-group ">
 						<html:text property="fechaDesde" styleId="fechaDesde" size="8"  styleClass="form-control datepicker bg-light"/>
 						<div class="input-group-append">
@@ -208,7 +227,7 @@ label.error {
 								<i class="bbva-icon icon-coronita_calendar fa-lg"></i>
 							</button>
 						</div>
-						<label for="fechaDesde">Desde</label>
+						<label for="fechaDesde">Desde cuando se puede usar el motivo</label>
 						 <div class="errorDiv"></div>
 					</div>
 				</div>
@@ -223,9 +242,19 @@ label.error {
 								<i class="bbva-icon icon-coronita_calendar fa-lg"></i>
 							</button>
 						</div>
-						<label for="fechaHasta">Hasta</label>
+						<label for="fechaHasta">Hasta cuando se puede usar el motivo</label>
 						 <div class="errorDiv"></div>
 						<div id="errorFechas" style="color: red;"></div>
+					</div>
+				</div>
+				
+				<div class="col-sm-12 col-lg-6 pt-2  scroll-err">
+					<div class="has-float-label">
+						<html:text property="descOscar" styleId="descOscar" styleClass="form-control bg-light text-uppercase" maxlength="4" onkeypress="return numericOnly(event);"/>
+						 <label for="modalDelegadoUsuario" style="white-space: pre-line">Que tipo de centros pueden visualizar el motivo						 
+						 
+						  (O-Sucursal/S-C Mixto/A-Area centrales/R-Ficticios)</label>
+						 <div class="errorDivCod"></div>
 					</div>
 				</div>
 				
@@ -256,6 +285,21 @@ label.error {
 					 <div class="errorDiv"></div>
 				</div>
 				
+				<div class="col-sm-12 col-lg-6 pt-2  scroll-err">
+					<div class="has-float-label form-group  d-flex align-items-center  bg-light">
+						<html:select property="maInclExcl" styleId="maInclExcl" styleClass="form-control bg-light">
+							<html:option value=""></html:option>
+							<html:option value="I">Incluye</html:option>
+							<html:option value="E">Excluye</html:option>
+						</html:select>
+						<div class= "pr-3">
+						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							for="modalDelegadoAccion">Incluye o excluye centro de costos</label>
+						</div>
+						 <div class="errorDiv"></div>
+					</div>
+				</div> 
+				
 				<div class="col-sm-12 col-lg-6 pt-2 scroll-err d-flex align-items-center">
 					<label for="meDiasInterv" class="mr-2">Centros de costos</label>
 					<logic:iterate name="ParametrosMotivoForm"  property="centrosCosto" id="centrosCostoI" indexId="i">
@@ -275,18 +319,33 @@ label.error {
 					<input type="hidden" name="centrosCosto" />
 					<div class="invalid-feedback mb-3"></div>
 				</div>
-				<div class="col-sm-12 col-lg-6 pt-2 scroll-err">
+				<!-- <div class="col-sm-12 col-lg-6 pt-2 scroll-err">
 					<div class="has-float-label form-group">
 						<html:text property="idOperEspe" styleId="oscaidOperEspe" styleClass="form-control bg-light text-uppercase" maxlength="5"/>
-						<label for="idOperEspe">Oper.Especial</label>
+						<label for="idOperEspe">Tipo de fecha</label>
 						 <div class="errorDiv"></div>
 					</div>
-				</div>
+				</div>  -->
+				<div class="col-sm-12 col-lg-6 pt-2  scroll-err">
+					<div class="has-float-label form-group  d-flex align-items-center  bg-light">
+						<html:select property="idOperEspe" styleId="oscaidOperEspe" styleClass="form-control bg-light">
+							<html:option value=""></html:option>
+							<html:option value="event">Fecha del evento</html:option>
+							<html:option value="viaje">Fecha del viaje</html:option>
+							<html:option value="mes">Mes</html:option>
+						</html:select>
+						<div class= "pr-3">
+						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							for="modalDelegadoAccion">Tipo de fecha</label>
+						</div>
+						 <div class="errorDiv"></div>
+					</div>
+				</div> 
 
 				<div class="col-sm-12 col-lg-6 pt-2 pl-lg-1 scroll-err">
 					<div class="has-float-label form-group">
 						<html:text property="meDiasInterv" styleId="meDiasInterv" styleClass="form-control bg-light text-uppercase" maxlength="9" onkeypress="return numericOnly(event);"/>
-						<label for="meDiasInterv">Medida Cant.D&iacute;as</label>
+						<label for="meDiasInterv">Cantidad de d&iacute;as que extienden la busqueda de gastos</label>
 						
 					</div>
 				</div>
@@ -302,10 +361,15 @@ label.error {
 
 				<div class="col-sm-12 mt-4 text-right">
 					<html:form action="saveMotivo" styleId="parametrosMotivoForm">
-						<a href="parametrosMotivoFiltro.do"
+						<a href="javascript:history.back()"
 							class="btn btn-link px-5 py-3 mr-2 font-weight-bold"> Volver
-						</a>
-						
+						</a>																	
+						<a href="parametrosGastos.do" onclick="location.href=this.href+'?cod_motivo='+$('#codigo').val();return false;"
+							class="btn btn-info px-5 py-3 ml-2"> Gasto
+						</a>						
+						<a href="parametrosAlertas.do" onclick="location.href=this.href;return false;"
+							class="btn btn-info px-5 py-3 ml-2"> Alerta
+						</a>						
 						<logic:equal value="alta" name="ParametrosMotivoForm" property="accion">
 							<html:submit styleClass="btn btn-info px-5 py-3 ml-2" value="Guardar"/>
 						</logic:equal>
@@ -315,8 +379,6 @@ label.error {
 						<logic:equal value="baja" name="ParametrosMotivoForm" property="accion">
 							<html:button property="" styleClass="btn btn-info px-5 py-3 ml-2" onclick="confirmEliminarMotivo()" value="Eliminar"/>
 						</logic:equal>
-					
-
 					</html:form>
 
 				</div>
@@ -339,6 +401,7 @@ label.error {
 	<script>
 			$( document ).ready(function() {
 				$('#estado').attr('disabled','disabled');
+				$('#codigo').attr('readonly', true);
 			});
 		</script>
 </logic:equal>

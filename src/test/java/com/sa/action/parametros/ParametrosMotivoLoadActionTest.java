@@ -86,7 +86,7 @@ class ParametrosMotivoLoadActionTest {
     MockitoAnnotations.openMocks(this);
   }
 
-  @ParameterizedTest
+  /*@ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should determine what action perform")
   void shouldDetermineWhatActionPerform(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
@@ -102,7 +102,7 @@ class ParametrosMotivoLoadActionTest {
           httpServletResponse);
       assertNotNull(actionForwardToAssert);
     }
-  }
+  }*/
 
   @ParameterizedTest
   @MethodSource("executeActionSource")

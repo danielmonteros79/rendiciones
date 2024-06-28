@@ -42,21 +42,19 @@ public class ParametrosService {
 	private SAMWebClient client;
 	private SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyy-MM-dd");
 	private String msgAviso;
-	private static final String COD_USER = "cod_user";
-	private static final String MOTIVO = "motivo";
-	private static final String USUARIO = "usuario";
 
 	public ParametrosService(SAMWebClient samClient) {
 		this.client = samClient;
 	}
 
-	public List<ParametroMotivo> getMotivos(String codMotivo, String user) throws TransactionException {
+	public List<ParametroMotivo> getMotivos(String codMotivo, String user, String paginado) throws TransactionException {
 		log.info("Comienza llamado a trx para traer el listado de motivos");
 		ManagerTransaction manager = new ManagerTransaction(new SU82());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
-		
+		System.out.println("nro_pagina: " + paginado);
 		parametersExecute.put("cod_motivo", codMotivo);
-		parametersExecute.put(COD_USER, user);
+		parametersExecute.put("cod_user", user);
+		parametersExecute.put("nro_pagina", paginado);
 		
 		manager.executeTrx(this.client, parametersExecute);
 		
@@ -80,12 +78,16 @@ public class ParametrosService {
 			diasInt = String.format("%09d", Integer.parseInt(motivo.getMeDiasInterv()));
 		
 		parametersExecute.put("opcion", "ALTA");
-		parametersExecute.put("cod_motivo", String.format("%04d", Integer.parseInt(motivo.getCodigo())));
+		parametersExecute.put("cod_motivo", ""/*String.format("%04d", Integer.parseInt(motivo.getCodigo()))*/);
 		parametersExecute.put("est_motivo", motivo.getEstado());
 		parametersExecute.put("desc_motivo", motivo.getDescripcion());
 		parametersExecute.put("id_glg", String.format("%02d", Integer.parseInt(motivo.getIdGlg())));
 		parametersExecute.put("apro_glg", motivo.getCodAprobacionGlg());
-		parametersExecute.put("cent_cos", String.format("%04d", Integer.parseInt(motivo.getIdCentroCostos())));
+		if(motivo.getIdCentroCostos() == null){
+			parametersExecute.put("cent_cos", "0000");
+		} else {
+			parametersExecute.put("cent_cos", String.format("%04d", Integer.parseInt(motivo.getIdCentroCostos())));
+		}
 		parametersExecute.put("inc_excl", motivo.getMaInclExcl());
 		parametersExecute.put("cod_sup", motivo.getCodSup());
 		parametersExecute.put("cfirma", motivo.getCodFirma());
@@ -166,12 +168,13 @@ public class ParametrosService {
 		return msg;
 	}
 	
-	public List<ParametroGasto> getGastos(String user, String codGasto) throws TransactionException {
+	public List<ParametroGasto> getGastos(String user, String codGasto, String codMotivo) throws TransactionException {
 		ManagerTransaction manager = new ManagerTransaction(new SU84());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("cod_usr", user);
 		parametersExecute.put("cod_gasto", codGasto);
-
+		parametersExecute.put("cod_motivo", codMotivo);
+		System.out.println("codMotivo: " + codMotivo);
 		manager.executeTrx(this.client, parametersExecute);
 		msgAviso = (String) manager.getMensajeAviso();
 
@@ -182,7 +185,7 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU80());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
-		parametersExecute.put(COD_USER, usuario);
+		parametersExecute.put("cod_user", usuario);
 		manager.executeTrx(this.client, parametersExecute);
 		
 		List<ParametriaUsuarioDelegado> listado = (List<ParametriaUsuarioDelegado>) manager.getDataReturnList();
@@ -253,7 +256,7 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU80());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
-		parametersExecute.put(COD_USER, usuario);
+		parametersExecute.put("cod_user", usuario);
 		manager.executeTrx(this.client, parametersExecute);
 		
 		List<ParametriaUsuarioDelegado> listado = (List<ParametriaUsuarioDelegado>) manager.getDataReturnList();
@@ -269,7 +272,8 @@ public class ParametrosService {
 		log.info("Comienza llamado a trx para traer el listado de estados para los combos");
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		ManagerTransaction manager = new ManagerTransaction(new SU88());
-		parametersExecute.put("opcion", "FILT");
+		//parametersExecute.put("opcion", "FILT");
+		parametersExecute.put("opcion", "LIST");
 		manager.executeTrx(this.client, parametersExecute);
 		List<String> combos = (List<String>) manager.getDataReturnList();
 		msgAviso = (String) manager.getMensajeAviso();
@@ -300,7 +304,7 @@ public class ParametrosService {
 	}
 
 
-	public List<ParametroAlerta> getAlertas(String opcion, String codMotivo, String codGasto) throws TransactionException {
+	public List<ParametroAlerta> getAlertas(String opcion, String codMotivo, String codGasto, String paginado) throws TransactionException {
 		log.info("Comienza llamado a trx para traer el listado de alerta");
 		ManagerTransaction manager = new ManagerTransaction(new SU88());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
@@ -308,6 +312,10 @@ public class ParametrosService {
 		parametersExecute.put("opcion", opcion);
 		parametersExecute.put("cod_mot", codMotivo);
 		parametersExecute.put("cod_gto", codGasto);
+		//parametersExecute.put("tmstp", "");
+		parametersExecute.put("nro_glg", "");
+		parametersExecute.put("nro_pag", paginado);
+		parametersExecute.put("fin_pag", "");
 
 		manager.executeTrx(this.client, parametersExecute);
 
@@ -317,7 +325,7 @@ public class ParametrosService {
 		return parametroAlerta;
 	}
 
-	public ParametroAlerta getAlerta(String opcion, String codMotivo, String codGasto, String timeStamp) throws TransactionException {
+	public ParametroAlerta getAlerta(String opcion, String codMotivo, String codGasto, String timeStamp, String codAlerta) throws TransactionException {
 		log.info("Comienza llamado a trx para traer el alerta");
 		ManagerTransaction manager = new ManagerTransaction(new SU88());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
@@ -326,6 +334,7 @@ public class ParametrosService {
 		parametersExecute.put("cod_mot", codMotivo);
 		parametersExecute.put("cod_gto", codGasto);
 		parametersExecute.put("tmstp", timeStamp);
+		parametersExecute.put("id_ord", codAlerta);
 
 		manager.executeTrx(this.client, parametersExecute);
 
@@ -339,16 +348,17 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU89());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("opcion", "ALTA");
-		parametersExecute.put("cod_mot", frm.getCodMotivo());
+		parametersExecute.put("id_ord", "");
+		parametersExecute.put("cod_mot", frm.getCodMotivo().split(" - ")[0]);
 		parametersExecute.put("cod_gto", frm.getCodGasto());
-		parametersExecute.put("est_aler", frm.getEstado());
-		parametersExecute.put("mont_cant", frm.getMontCant());
+		parametersExecute.put("cod_mont_cant", frm.getMontCant());
 		parametersExecute.put("cod_rend", frm.getRend());
 		parametersExecute.put("cod_periodo", frm.getPeriodo());
-		parametersExecute.put("cod_crit", frm.getCriticidad());
-		parametersExecute.put("niv_max", frm.getNivMax());
-		parametersExecute.put("niv_min", frm.getNivMin());
-		parametersExecute.put("tx_alerta", frm.getTxAviso());
+		parametersExecute.put("cod_critico", frm.getCriticidad());
+		parametersExecute.put("cod_niv_max", frm.getNivMax());
+		parametersExecute.put("cod_niv_min", frm.getNivMin());
+		parametersExecute.put("tx_aviso", frm.getTxAviso());
+		parametersExecute.put("estado", frm.getEstado());
 		
 		if (frm.getMontCant().equals("M")) {
 			String importeCant = frm.getImpCant();
@@ -356,9 +366,9 @@ public class ParametrosService {
 			DecimalFormat decimalFormat = new DecimalFormat("#.00");
 			String imp = decimalFormat.format(value).replace(".", "");
 			importeCant = String.format("%014.0f", Double.parseDouble(imp.replace(",", "")));
-			parametersExecute.put("imp_cant", importeCant);
-		} else {
-			parametersExecute.put("imp_cant", String.format("%016.0f", Double.parseDouble(frm.getImpCant())));}
+			parametersExecute.put("valor", importeCant);
+		} else
+			parametersExecute.put("valor", String.format("%016.0f", Double.parseDouble(frm.getImpCant())));
 
 		manager.executeTrx(this.client, parametersExecute);
 		String msg = (String) manager.getMensajeAviso();
@@ -372,17 +382,17 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU89());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("opcion", "MODI");
-		parametersExecute.put("cod_mot", frm.getCodMotivo());
+		parametersExecute.put("id_ord", frm.getCodAlerta());
+		parametersExecute.put("cod_mot", frm.getCodMotivo().split(" - ")[0]);
 		parametersExecute.put("cod_gto", frm.getCodGasto());
-		parametersExecute.put("est_aler", frm.getEstado());
-		parametersExecute.put("mont_cant", frm.getMontCant());
+		parametersExecute.put("cod_mont_cant", frm.getMontCant());
 		parametersExecute.put("cod_rend", frm.getRend());
 		parametersExecute.put("cod_periodo", frm.getPeriodo());
-		parametersExecute.put("cod_crit", frm.getCriticidad());
-		parametersExecute.put("niv_max", frm.getNivMax());
-		parametersExecute.put("niv_min", frm.getNivMin());
-		parametersExecute.put("tx_alerta", frm.getTxAviso());
-		parametersExecute.put("timesta", frm.getTimeStamp());
+		parametersExecute.put("cod_critico", frm.getCriticidad());
+		parametersExecute.put("cod_niv_max", frm.getNivMax());
+		parametersExecute.put("cod_niv_min", frm.getNivMin());
+		parametersExecute.put("tx_aviso", frm.getTxAviso());
+		parametersExecute.put("estado", frm.getEstado());
 		
 		if (frm.getMontCant().equals("M")) {
 			String importeCant = frm.getImpCant();
@@ -390,9 +400,9 @@ public class ParametrosService {
 			DecimalFormat decimalFormat = new DecimalFormat("#.00");
 			String imp = decimalFormat.format(value).replace(".", "");
 			importeCant = String.format("%014.0f", Double.parseDouble(imp.replace(",", "")));
-			parametersExecute.put("imp_cant", importeCant);
-		} else {
-			parametersExecute.put("imp_cant", String.format("%016.0f", Double.parseDouble(frm.getImpCant())));}
+			parametersExecute.put("valor", importeCant);
+		} else
+			parametersExecute.put("valor", String.format("%016.0f", Double.parseDouble(frm.getImpCant())));
 
 		manager.executeTrx(this.client, parametersExecute);
 		String msg = (String) manager.getMensajeAviso();
@@ -406,9 +416,27 @@ public class ParametrosService {
 		ManagerTransaction manager = new ManagerTransaction(new SU89());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("opcion", "BAJA");
-		parametersExecute.put("cod_mot", frm.getCodMotivo());
+		parametersExecute.put("id_ord", frm.getCodAlerta());
+		parametersExecute.put("cod_mot", frm.getCodMotivo().split(" - ")[0]);
 		parametersExecute.put("cod_gto", frm.getCodGasto());
-		parametersExecute.put("timesta", frm.getTimeStamp());
+		parametersExecute.put("cod_mont_cant", frm.getMontCant());
+		parametersExecute.put("cod_rend", frm.getRend());
+		parametersExecute.put("cod_periodo", frm.getPeriodo());
+		parametersExecute.put("cod_critico", frm.getCriticidad());
+		parametersExecute.put("cod_niv_max", frm.getNivMax());
+		parametersExecute.put("cod_niv_min", frm.getNivMin());
+		parametersExecute.put("tx_aviso", frm.getTxAviso());
+		parametersExecute.put("estado", "I");
+		
+		if (frm.getMontCant().equals("M")) {
+			String importeCant = frm.getImpCant();
+			double value = Double.parseDouble(importeCant.replace(",", "."));
+			DecimalFormat decimalFormat = new DecimalFormat("#.00");
+			String imp = decimalFormat.format(value).replace(".", "");
+			importeCant = String.format("%014.0f", Double.parseDouble(imp.replace(",", "")));
+			parametersExecute.put("valor", importeCant);
+		} else
+			parametersExecute.put("valor", String.format("%016.0f", Double.parseDouble(frm.getImpCant())));
 
 		manager.executeTrx(this.client, parametersExecute);
 		String msg = (String) manager.getMensajeAviso();
@@ -460,9 +488,9 @@ public class ParametrosService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		String mu="";
-		if(MOTIVO.equals(frm.getMotivoUsuario()))
+		if("motivo".equals(frm.getMotivoUsuario()))
 			mu="M";
-		if(USUARIO.equals(frm.getMotivoUsuario()))
+		if("usuario".equals(frm.getMotivoUsuario()))
 			mu="U";
 		parametersExecute.put("opcion", "ALTA");
 		parametersExecute.put("cod_mot_usu",mu );
@@ -484,9 +512,9 @@ public class ParametrosService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		String mu="";
-		if(MOTIVO.equals(frm.getMotivoUsuario()))
+		if("motivo".equals(frm.getMotivoUsuario()))
 			mu="M";
-		if(USUARIO.equals(frm.getMotivoUsuario()))
+		if("usuario".equals(frm.getMotivoUsuario()))
 			mu="U";
 		parametersExecute.put("opcion", "MODI");
 		parametersExecute.put("cod_mot_usu",mu );
@@ -508,9 +536,9 @@ public class ParametrosService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		String mu="";
-		if(MOTIVO.equals(frm.getMotivoUsuario()))
+		if("motivo".equals(frm.getMotivoUsuario()))
 			mu="M";
-		if(USUARIO.equals(frm.getMotivoUsuario()))
+		if("usuario".equals(frm.getMotivoUsuario()))
 			mu="U";
 		parametersExecute.put("opcion", "BAJA");
 		parametersExecute.put("cod_mot_usu", mu );
@@ -536,21 +564,22 @@ public class ParametrosService {
 		
 		parametersExecute.put("opcion", "ALTA");
 		parametersExecute.put("modo", "C");
-		parametersExecute.put("cod_gasto", String.format("%04d", Integer.parseInt(frm.getCodigo())));
+		parametersExecute.put("cod_gasto", ""/*String.format("%04d", Integer.parseInt(frm.getCodigo()))*/);
 		parametersExecute.put("desc_gasto", frm.getDescripcionGasto());
+		parametersExecute.put("desc_motivo", frm.getDescripcionMotivo());
 		parametersExecute.put("cod_motivo",frm.getMotivo());
 		parametersExecute.put("bimon", frm.getBimon());
-		parametersExecute.put("cent_cos", String.format("%04d", Integer.parseInt(frm.getIdCentroCostos())));
+		//parametersExecute.put("cent_cos", String.format("%04d", Integer.parseInt(frm.getIdCentroCostos())));
 		parametersExecute.put("estado", frm.getEstado());
-		parametersExecute.put("ristra", frm.getRistra().toString());
-		parametersExecute.put("oscar", frm.getOscar().toString());
-		parametersExecute.put("inc_excl", frm.getMaInclExcl());
-		parametersExecute.put("compte", frm.getComprob());
-		parametersExecute.put("antig", frm.getAntiguedad());
-		parametersExecute.put("observ", frm.getObserv());
-		parametersExecute.put("ni_ing", frm.getIdNivAutoriz());
-		parametersExecute.put("plazo_ap", frm.getPlazoAprob());
-		parametersExecute.put("ccosto", String.format("%1$-60s", ccosto));
+		parametersExecute.put("ristra", frm.getDetalleRistra());
+		//parametersExecute.put("oscar", frm.getOscar().toString());
+		parametersExecute.put("inc_excl", "I");//frm.getMaInclExcl());
+		//parametersExecute.put("compte", frm.getComprob());
+		//parametersExecute.put("antig", frm.getAntiguedad());
+		//parametersExecute.put("observ", frm.getObserv());
+		parametersExecute.put("ni_ing", "02");//frm.getIdNivAutoriz());
+		//parametersExecute.put("plazo_ap", frm.getPlazoAprob());
+		//parametersExecute.put("ccosto", String.format("%1$-60s", ccosto));
 
 		manager.executeTrx(this.client, parametersExecute);
 		this.msgAviso = (String) manager.getMensajeAviso();
@@ -561,10 +590,10 @@ public class ParametrosService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		String ccosto = "";
-		for (String cc : frm.getCentrosCosto()) {
-			if (!"".equals(cc) && !"0000".equals(String.format("%04d", Integer.parseInt(cc))))
-				ccosto += String.format("%04d", Integer.parseInt(cc));
-		}
+		//for (String cc : frm.getCentrosCosto()) {
+			//if (!"".equals(cc) && !"0000".equals(String.format("%04d", Integer.parseInt(cc))))
+				//ccosto += String.format("%04d", Integer.parseInt(cc));
+		//}
 		
 		parametersExecute.put("opcion", "MODI");
 		parametersExecute.put("modo", "C");
@@ -572,17 +601,17 @@ public class ParametrosService {
 		parametersExecute.put("desc_gasto", frm.getDescripcionGasto());
 		parametersExecute.put("cod_motivo",frm.getMotivo());
 		parametersExecute.put("bimon", frm.getBimon());
-		parametersExecute.put("cent_cos", String.format("%04d", Integer.parseInt(frm.getIdCentroCostos())));
+		//parametersExecute.put("cent_cos", String.format("%04d", Integer.parseInt(frm.getIdCentroCostos())));
 		parametersExecute.put("estado", frm.getEstado());
-		parametersExecute.put("ristra", frm.getRistra().toString());
-		parametersExecute.put("oscar", frm.getOscar().toString());
-		parametersExecute.put("inc_excl", frm.getMaInclExcl());
-		parametersExecute.put("compte", frm.getComprob());
-		parametersExecute.put("antig", frm.getAntiguedad());
-		parametersExecute.put("observ", frm.getObserv());
-		parametersExecute.put("ni_ing", frm.getIdNivAutoriz());
-		parametersExecute.put("plazo_ap", frm.getPlazoAprob());
-		parametersExecute.put("ccosto", String.format("%1$-60s", ccosto));
+		parametersExecute.put("ristra", frm.getDetalleRistra());
+		//parametersExecute.put("oscar", frm.getOscar().toString());
+		//parametersExecute.put("inc_excl", frm.getMaInclExcl());
+		//parametersExecute.put("compte", frm.getComprob());
+		//parametersExecute.put("antig", frm.getAntiguedad());
+		//parametersExecute.put("observ", frm.getObserv());
+		//parametersExecute.put("ni_ing", frm.getIdNivAutoriz());
+		//parametersExecute.put("plazo_ap", frm.getPlazoAprob());
+		//parametersExecute.put("ccosto", String.format("%1$-60s", ccosto));
 				
 		manager.executeTrx(this.client, parametersExecute);
 		this.msgAviso = (String) manager.getMensajeAviso();
@@ -601,15 +630,29 @@ public class ParametrosService {
 	}
 
 	public ManagerTransaction loadModificacionGasto(String codGasto, String idUser) throws TransactionException {
-		ManagerTransaction manager = new ManagerTransaction(new SU85());
+		ManagerTransaction manager = new ManagerTransaction(new SU84());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
-		parametersExecute.put("opcion", "MODI");
-		parametersExecute.put("modo", "I");
+		//parametersExecute.put("opcion", "MODI");
+		//parametersExecute.put("modo", "I");
 		parametersExecute.put("cod_gasto", codGasto);
 	
 		manager.executeTrx(this.client, parametersExecute);
 		
 		return manager;
+	}
+	
+	public ParametroGasto loadModificacionGastoGaston(String codGasto, String idUser) throws TransactionException {
+		ManagerTransaction manager = new ManagerTransaction(new SU84());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+
+		parametersExecute.put("cod_gasto", codGasto);
+	
+		manager.executeTrx(this.client, parametersExecute);
+
+		ParametroGasto parametroGasto = new ParametroGasto();
+		parametroGasto = (ParametroGasto) manager.getDataReturnList().get(0);
+
+		return parametroGasto;
 	}
 
 	public ManagerTransaction loadBajaGasto(String codGasto, String idUser) throws TransactionException {
@@ -622,6 +665,20 @@ public class ParametrosService {
 		manager.executeTrx(this.client, parametersExecute);
 		
 		return manager;
+	}
+	
+	public ParametroGasto loadBajaGastoGaston(String codGasto, String idUser) throws TransactionException {
+		ManagerTransaction manager = new ManagerTransaction(new SU84());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+
+		parametersExecute.put("cod_gasto", codGasto);
+	
+		manager.executeTrx(this.client, parametersExecute);
+
+		ParametroGasto parametroGasto = new ParametroGasto();
+		parametroGasto = (ParametroGasto) manager.getDataReturnList().get(0);
+
+		return parametroGasto;
 	}
 
 	public String getMsgAviso() {

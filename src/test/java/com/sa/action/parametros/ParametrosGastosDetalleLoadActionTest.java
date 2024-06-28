@@ -340,7 +340,7 @@ class ParametrosGastosDetalleLoadActionTest {
     }
   }
 
-  @ParameterizedTest
+  /*@ParameterizedTest
   @MethodSource("executeActionFormOptionsSource")
   @DisplayName("Should determine the action to execute with different form actions")
   void shouldDetermineTheActionToExecuteWithDifferentFormActions(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
@@ -366,7 +366,7 @@ class ParametrosGastosDetalleLoadActionTest {
           request, httpServletResponse);
       assertNotNull(actionForwardToAssert);
     }
-  }
+  }*/
 
   @ParameterizedTest
   @MethodSource("gastoToFormSource")

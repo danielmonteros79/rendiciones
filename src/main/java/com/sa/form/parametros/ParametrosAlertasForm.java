@@ -11,6 +11,7 @@ import com.sa.entities.ComboOpcion;
 
 public class ParametrosAlertasForm extends ActionForm {
 	private static final long serialVersionUID = 1L;
+	private String codAlerta;
 	private String montCant;
 	private String impCant;
 	private String rend;
@@ -30,6 +31,7 @@ public class ParametrosAlertasForm extends ActionForm {
 	private List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
 
 	public void clear() {
+		this.codAlerta = null;
 		this.codMotivo = null;
 		this.codGasto = null;
 		this.montCant = null;
@@ -53,6 +55,14 @@ public class ParametrosAlertasForm extends ActionForm {
 
 	public void setMontCant(String estado) {
 		this.montCant = estado;
+	}
+	
+	public String getCodAlerta() {
+		return codAlerta;
+	}
+
+	public void setCodAlerta(String codAlerta) {
+		this.codAlerta = codAlerta;
 	}
 
 	public String getRend() {

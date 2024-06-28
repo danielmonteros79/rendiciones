@@ -18,8 +18,6 @@ import com.sa.services.ParametrosService;
 
 public class ParametrosMotivoFiltroAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosMotivoFiltroAction.class);
-	
-	
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -29,7 +27,6 @@ public class ParametrosMotivoFiltroAction extends RestriccionTransaccionAction {
 			if (action.equals("filtrar"))
 				return this.filtrar(mapping, samClient, request, response);
 			
-
 			
 			return mapping.findForward("success");
 		} catch (Exception e) {
@@ -41,12 +38,16 @@ public class ParametrosMotivoFiltroAction extends RestriccionTransaccionAction {
 	private ActionForward filtrar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ParametrosService service = new ParametrosService(samClient);
 
-		List<ParametroMotivo> motivos = service.getMotivos(request.getParameter("codigo"), this.sessionUserWorking.getIdUser());
+		String codMotivo = "";
+		if (request.getParameter("codigo") != null && !request.getParameter("codigo").trim().equals(""))
+			codMotivo = String.format("%04d", Integer.parseInt(request.getParameter("codigo")));
+		
+		List<ParametroMotivo> motivos = service.getMotivos(codMotivo, this.sessionUserWorking.getIdUser(), "");
 		
 		request.setAttribute("motivos", motivos);
 		this.message = service.getMsgAviso();
 		
-		return mapping.findForward("motivos");
+		return mapping.findForward("parametrosMotivoFiltro");
 	}
 	
 	

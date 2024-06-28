@@ -3,9 +3,7 @@ package com.sa.action.rendiciones;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,11 +32,6 @@ public class RendicionSaveAction extends RestriccionTransaccionAction {
 		renForm.reset(mapping, request);
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		RendicionesService service = new RendicionesService(samClient);
-		String action = request.getParameter("action") == null ? "" : request.getParameter("action");
-		
-		if (action.equals("formatear")) {
-			return this.determinarPreFormato(samClient, request, response);
-		}
 		
 		Date dateD = null;
 		Date dateH = null;
@@ -92,33 +85,5 @@ public class RendicionSaveAction extends RestriccionTransaccionAction {
 		
 		return mapping.findForward("rendicionDetalleGastos");
 
-	}
-	
-	public ActionForward determinarPreFormato(SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String, Object> resp = new HashMap<String, Object>();
-		RendicionesService service = new RendicionesService(samClient);
-		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
-		String codMotivo = request.getParameter("codigoMotivo");
-		List<ComboMotivo> motivos = service.getMotivoRendiciones("4", user.getIdUser(), "");
-		ComboMotivo motivoEnviar = buscarMotivo(codMotivo,motivos );
-		
-		resp.put("motivoActual", motivoEnviar.getPreFormato());
-		resp.put("diasExtras", motivoEnviar.getCantDias());
-		resp.put("message", service.getMsg());
-		
-		return writeJson(response, resp);
-	}
-	
-	private ComboMotivo buscarMotivo(String codMotivo, List<ComboMotivo> motivos) {
-		int cont = 0;
-		ComboMotivo motivo = null;
-		while(cont < motivos.size() || motivo == null) {
-			ComboMotivo motivoActual = motivos.get(cont);
-			if(motivoActual.getId().equals(codMotivo)) {
-				motivo = motivoActual;
-			}
-			cont++;
-		}
-		return motivo;
 	}
 }

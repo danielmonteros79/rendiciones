@@ -1,6 +1,7 @@
 package com.sa.entities.parametros;
 
 public class ParametroAlerta {
+	private String id;
 	private String codMotivo;
 	private String codGasto;
 	private String motivo;
@@ -16,8 +17,17 @@ public class ParametroAlerta {
 	private String criticidad;
 	private String txAviso;
 	private String timeStamp;
+	private String lastElement;
 	
 	public ParametroAlerta() {
+	}
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	public String getImpCant() {
@@ -26,6 +36,14 @@ public class ParametroAlerta {
 
 	public void setImpCant(String impCant) {
 		this.impCant = impCant;
+	}
+	
+	public String getLastElement() {
+		return lastElement;
+	}
+
+	public void setLastElement(String isLastElement) {
+		this.lastElement = isLastElement;
 	}
 
 	public String getMotivo() {

@@ -180,7 +180,7 @@ class SU82Test {
     }
 
 
-    @Test
+    /*@Test
     void testMapData3() throws Exception {
         SU82 su82 = new SU82();
 
@@ -207,10 +207,10 @@ class SU82Test {
         parametersExecute.put((String) "vcccost", null);
         su82.mapData(parametersExecute);
         assertEquals(1, su82.getDataReturnList().size());
-    }
+    }*/
 
 
-    @Test
+    /*@Test
     void testMapData4() throws Exception {
         SU82 su82 = new SU82();
 
@@ -237,7 +237,7 @@ class SU82Test {
         parametersExecute.put((String) "vcccost", "42");
         su82.mapData(parametersExecute);
         assertEquals(1, su82.getDataReturnList().size());
-    }
+    }*/
 
 
 

@@ -7,7 +7,8 @@
 <%@page import="com.sa.entities.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-
+<link rel="stylesheet" type="text/css"
+	href="./css/select2Personalized.css">
 
 <%
 Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
@@ -16,7 +17,7 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 %>
 
 
-<html:form action="parametrosMotivoFiltro"
+<html:form action="parametrosMotivo"
 	styleId="parametrosMotivoFiltro">
 	<div class="bg-light" id="divFiltro">
 
@@ -47,7 +48,7 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 			%>
 		</logic:present> --%>
 
-		<div class="container py-5">
+		<div class="container py-2">
 
 
 			<div class="row pb-3 d-none" id="messageContainer">
@@ -56,8 +57,8 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-12 mb-md-4">
-					<span class="font-weight-bold">Filtro Motivos</span>
+				<div class="col-sm-12 mt-2 mb-2">
+					<span class="font-weight-bold">B&uacutesqueda</span>
 				</div>
 			</div>
 			<div class="row">
@@ -69,17 +70,21 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 			<div class="row">
 				<div class="col-12">
 					<div class="has-float-label">
-						<html:text property="codigo" styleId="codigo" styleClass="form-control text-uppercase" maxlength="4" onkeypress="return numericOnly(event);"/>
+						<html:text property="codigo" styleId="codigo"
+							styleClass="form-control text-uppercase" maxlength="4"
+							onkeypress="return numericOnly(event);" />
 						<label>Motivo</label>
-						<div class="invalid-feedback mb-3"></div>
+						<div class="invalid-feedback"></div>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-12 pt-3 pt-md-5 text-center">	
-						<html:submit styleClass="btn btn-primary px-5 py-3 mx-2" style="margin-left:10px;" value="Filtrar" />
-						<html:button property="" value="Limpiar" styleClass="btn btn-primary px-5 py-3 mx-2" onclick="resetForm();" />
-		
+				<div class="col-sm-12  pt-3 pb-2 text-center">
+					<html:button property="" styleClass="btn btn-primary px-4 py-2 mr-3 "
+						style="margin-left:10px;" value="Filtrar" onclick="filtrar();"/>
+					<html:button property="" value="Limpiar"
+						styleClass="btn btn-primary px-4 py-2 " onclick="resetForm();" />
+
 				</div>
 			</div>
 		</div>
@@ -91,11 +96,20 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 <div class="container py-5 div-resultado"
 	id="listadoRendicionesDivResultado">
 	<div class="row">
-		<div class="col-sm-12 mb-md-4">
+		<div class="col-sm-12 mb-2">
 			<i
 				class="bbva-icon icon-coronita_bullet fab fa-rotate-270 text-blue align-middle mx-2"></i>
 			<small class="font-weight-bold">MOTIVOS</small>
 		</div>
+		<div class="col-sm-12 text-right">
+			<html:form action="parametrosMotivoDetalle" styleId="addMotivo">
+				<input type="hidden" name="accion" value="alta" />
+				<a href="#" onclick="agregarMotivo()" title="Alta de motivo"
+					class="btn btn-info px-5 py-3"> Agregar Motivo </a>
+			</html:form>
+
+		</div>
+
 	</div>
 	<div class="row py-3">
 		<div class="col-sm-12">
@@ -103,66 +117,8 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-12 py-3 table-responsive-lg">
+		<div class="col-md-12 py-3 table-responsive-lg" id="paginacion">
 			<div class="dt-container" id="motivosDtContainer"></div>
-		</div>
-	</div>
-</div>
-
-<%-- 
-<logic:equal value="t" name="Tabla">
-	<div id="paginacion" class="text-center pb-5" style="margin-top: 43px;">
-		<display:table uid="row" name="motivos"
-			requestURI="/parametrosMotivoFiltro.do" id="ParametrosMotivoTable"
-			excludedParams="false"
-			decorator="com.sa.decorator.parametros.ParametrosMotivoTableDecorator"
-			pagesize="15" style="margin-left:-0.9%;width:99.7%;" export="true">
-			<display:column media="html csv excel" property="codigo"
-				title="Motivo" style="width:4%" sortable="true"
-				style="text-align:right;" />
-			<display:column media="html csv excel" property="descripcion"
-				title="Descripción" />
-			<display:column media="html csv excel" property="idGlg" title="GLG"
-				style="text-align:right;" />
-			<display:column media="html csv excel" property="idCentroCostos"
-				title="C. Costos" style="text-align:right;" />
-			<display:column media="html csv excel" property="codSup"
-				title="Superior" />
-			<display:column media="html csv excel" property="codFirma"
-				title="Firma" />
-			<display:column media="html csv excel" property="codAprobacionGlg"
-				title="Ctrl. GLG" />
-			<display:column media="html csv excel" property="estado"
-				title="Estado" style="text-align:center;" />
-			<display:column media="html" property="opciones" title="Opciones"
-				style="width:4%" />
-
-			<display:setProperty name="export.csv.filename"
-				value="ListadoParametrosMotivo.csv" />
-			<display:setProperty name="export.excel.filename"
-				value="ListadoParametrosMotivo.xls" />
-		</display:table>
-	</div>
-</logic:equal> --%>
-
-
-<div class="bg-light">
-	<div class="container py-5 text-center">
-		<div class="row">
-			<div class="col-sm-12">
-				<h2 class="font-weight-400">&iquest;Quer&eacute;s dar de alta a
-					un motivo?</h2>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12 pt-3 pt-md-5">
-				<html:form action="parametrosMotivoDetalle" styleId="addMotivo">
-					<input type="hidden" name="accion" value="alta" />
-					<a href="#" onclick="agregarMotivo()" title="Alta de motivo"
-						class="btn btn-info px-5 py-3"> Agregar nuevo motivo </a>
-				</html:form>
-
-			</div>
 
 		</div>
 	</div>
@@ -170,6 +126,8 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 
 
 
+
+<script type="text/javascript" src="js/select2.min.js"></script>
 <script type="text/javascript" src="./static/js/parametrosMotivo.js"></script>
 
 

@@ -109,6 +109,16 @@
 		<action path="/reasignarBandeja" type="com.sa.action.cierre.ReasignarBandejaAction" className="com.sa.core.SecurityActionMapping">
 			<forward name="success" path="reasignarBandeja"></forward>
 		</action>
+		
+		<action path="/consumosSinRendir" type="com.sa.action.cierre.ConsumosNoRendidosAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="consumosSinRendir"></forward>
+			<forward name="consumosSinRendir" path="/pages/cierre/dtConsumosNoRendidos.jsp"/> 
+		</action>
+		<action path="/aprobacionesPendientes" type="com.sa.action.cierre.AprobacionesPendientesAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="aprobacionesPendientes"></forward>
+			<forward name="aprobacionesPendientes" path="/pages/cierre/dtAprobacionesPendientes.jsp"/> 
+		</action>
+		
 		<action path="/cierreDetalle" type="com.sa.action.cierre.CierreDetalleAction" className="com.sa.core.SecurityActionMapping" name="RendicionForm">
 			<forward name="success" path="cierreDetalle"/>
 			<forward name="gastos" path="/pages/global/dtGastos.jsp"/>
@@ -255,12 +265,14 @@
 		<action path="/parametrosAlertas"
 			type="com.sa.action.parametros.ParametrosAlertasLoadAction" name="ParametrosAlertasFiltroForm">
 			<forward name="success" path="parametrosAlertas" />
+			<forward name="parametrosAlertaFiltro" path="/pages/parametros/dtAlertas.jsp"/>
 		</action>
 		
 		<action path="/parametrosAlertasFiltro"
 			type="com.sa.action.parametros.ParametrosAlertasFiltroAction" name="ParametrosAlertasFiltroForm">
 			<forward name="success" path="parametrosAlertas" />
 			<forward name="fail" path="/parametrosAlertas.do" />
+			<forward name="parametrosAlertaFiltro" path="/pages/parametros/dtAlertas.jsp"/>
 		</action>
 		
 		<action path="/parametrosAlertasDetalle"

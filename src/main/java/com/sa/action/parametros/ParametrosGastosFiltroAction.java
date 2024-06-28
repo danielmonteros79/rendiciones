@@ -27,9 +27,9 @@ import com.sa.services.ParametrosService;
 
 public class ParametrosGastosFiltroAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosGastosFiltroAction.class);
-	List<ComboOpcion> cmbObservacion = new ArrayList<>();
-	List<ComboOpcion> cmbMotivo = new ArrayList<>();
-	List<ComboOpcion> cmbComprobante = new ArrayList<>();
+	List<ComboOpcion> cmbObservacion = new ArrayList<ComboOpcion>();
+	List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
+	List<ComboOpcion> cmbComprobante = new ArrayList<ComboOpcion>();
 	
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
@@ -48,17 +48,17 @@ public class ParametrosGastosFiltroAction extends RestriccionTransaccionAction {
 			return this.agregarCentroCosto(frm, response);
 		
 		if (!frm.isBack()) {
-			cmbObservacion = new ArrayList<>();
-			cmbMotivo = new ArrayList<>();
-			cmbComprobante = new ArrayList<>();
+			cmbObservacion = new ArrayList<ComboOpcion>();
+			cmbMotivo = new ArrayList<ComboOpcion>();
+			cmbComprobante = new ArrayList<ComboOpcion>();
 			
 			try {
 				if (frm.getAccion().equals("alta")) {
 					frm.clear();
 					frm.setEstado("A");
 					this.cargarCombos(request, service.getGastosCombos());
-				} else if (frm.getAccion().equals("modificacion")) {
-					this.gastoToForm(frm, request, service.loadModificacionGasto(frm.getCodigo(), user.getIdUser()));}
+				} else if (frm.getAccion().equals("modificacion"))
+					this.gastoToForm(frm, request, service.loadModificacionGasto(frm.getCodigo(), user.getIdUser()));
 				else if (frm.getAccion().equals("baja")) {
 					this.cargarCombos(request, service.getGastosCombos()); //Gracias Amadi
 					this.gastoToForm(frm, request, service.loadBajaGasto(frm.getCodigo(), user.getIdUser()));
@@ -126,8 +126,8 @@ public class ParametrosGastosFiltroAction extends RestriccionTransaccionAction {
 		if (frm.getCentrosCosto().size() < 15) {
 			frm.getCentrosCosto().add("");
 			out.print(frm.getCentrosCosto().size() - 1);
-		} else {
-			out.print(-1);}
+		} else
+			out.print(-1);
 		
 		out.close();
 		return null;
