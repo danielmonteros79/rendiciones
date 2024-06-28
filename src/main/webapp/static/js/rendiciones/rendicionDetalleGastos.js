@@ -1,21 +1,34 @@
-let dtLink = 'rendicionDetalleGastos.do';
-let dtParamsGastos = {};
-let dtParamsConsumosPendientes = {};
-let paramsEliminarGasto;
-let isEditing = false;
-let tableFirstLoad = true;
+var dtLink = 'rendicionDetalleGastos.do';
+var dtParamsGastos = {};
+var dtParamsConsumosPendientes = {};
+var paramsEliminarGasto;
+var isEditing = false;
+var tableFirstLoad = true;
 
 $(document).ready(function() {
+	callAjax('rendicionDetalleGastos.do', 'action=getMessage', 'init');
 	$('.nav-rendiciones').addClass('active');
-			console.log($('#idu').val(), "iduu");
+	
+	// TODO: Hacer si viene desde crear rendicion
+	window.history.pushState("", "", "rendicionDetalleGastos.do" +
+    	"?codigo=" + $('#idRendicion').html() +
+    	"&codMotivo=" + $('#codMotivo').val() +
+    	"&estadoRend=" + $('#estadoRend').val());
+
+
 	//Mensaje de rechazo, aprobación u observacion
 	if($('#motivoRechazo').val().trim().length > 0 ){
 		let tagDesc = $('#descripcionRechazo');
 		let divTagDesc = $('#mostrarMensajeRend');
 		divTagDesc.removeClass('d-none')
-		if($('#estadoRend').val().includes('RECHA')){
 		
-			setDescripcionRechazo(divTagDesc, tagDesc)
+		if($('#estadoRend').val().includes('RECHA')){
+			$('#estadoDiv').addClass('text-danger')
+			divTagDesc.addClass('text-danger border-danger')
+			let descripcionMotivoRechazo = $('#motivoRechazo').val().lastIndexOf('-')
+			let descripcionMotivoRechazoSinTipo = $('#motivoRechazo').val().substring(descripcionMotivoRechazo + 1 );
+			tagDesc.html('Motivo del Rechazo: ' + descripcionMotivoRechazoSinTipo);
+			
 		}else if($('#estadoRend').val().includes('APROB')){
 			divTagDesc.addClass('text-success border border-success')
 			tagDesc.html('Motivo de Aprobaci&oacute;n: ' + $('#motivoRechazo').val());
@@ -29,45 +42,8 @@ $(document).ready(function() {
 	}
 
 
-	callAjax('rendicionDetalleGastos.do', 'action=getMessage', 'init');
-	
-	// si viene desde crear rendicion
-	window.history.pushState("", "", "rendicionDetalleGastos.do" +
-    	"?codigo=" + $('#idRendicion').html() +
-    	"&codMotivo=" + $('#codMotivo').val() +
-    	"&estadoRend=" + $('#estadoRend').val());
-    	
-	callAjax('imagenes.do', { action: 'inicializar', idRend: $('#idRendicion').html()}, 'setImagenes');
 
 });
-
-
-
-function setDescripcionRechazo(divDes, tag) {
-  $('#estadoDiv').addClass('text-danger');
-  divDes.addClass('text-danger border-danger');
-  
-  let descripcionMotivoRechazo = $('#motivoRechazo').val().lastIndexOf('-');
-  let descripcionMotivoRechazoSinTipo = $('#motivoRechazo').val().substring(descripcionMotivoRechazo + 1);
-  let codMotivoRechazo = $('#motivoRechazo').val().substring(0, descripcionMotivoRechazo);
-  
-  setMotivoDescripcionRechazo(codMotivoRechazo, function(descripcionFinal) {
-    tag.html('Motivo del Rechazo: ' +  descripcionFinal.substring(5) + " - " + descripcionMotivoRechazoSinTipo);
-  });
-}
-
-function setMotivoDescripcionRechazo(codigo, callback) {
-  setOnlyDataCombo('combos.do?action=getMotivos', { opcion: '5', glg: "" }, function (comboData) {
-    let descripcionesMotRechazo = [...comboData];
-    let descripcionFinal = descripcionesMotRechazo.filter((d) => d.id.trim() == codigo.trim());
-    descripcionFinal.length > 0 ? callback(descripcionFinal[0].descripcion) : callback("")
-    
-  }, function (error) {
-    console.error('Error al obtener datos del combo:', error);
-  });
-}
-
-
 
 function init(data) {
 	var lsMessage = getLocalStorageItem('message');
@@ -128,46 +104,17 @@ function loadTables() {
 
 function tableLoadAfterFinished() {
 	showMessage('tableMessage', tableFirstLoad ? $('#tableMessage').html() : getLocalStorageItem('tableMessage'));
-	
-	setTimeout(function() {
-		if($('#gastosDtContainer h5').text().includes("lista de gastos/consumo")){
-		$('#imagenesBtn').addClass('d-none')
-		$('#mensajeImgRend').addClass('d-none');
-		$('#containerImgBtn').addClass('bg-warning');
-		$('#mensajeImgRend').addClass('d-none');
-		$('#listadoImagenesText').addClass('d-none')
-		$('#containerImagenesCargadas').addClass('d-none')
-		
-	}else{
-		if($('#containerImagenesCargadas').is(":empty")){
-		$('#imagenesBtn').removeClass('d-none')
-		$('#containerImgBtn').addClass('bg-warning');
-		$('#listadoImagenesText').removeClass('d-none');
-		$('#mensajeImgRend').removeClass('d-none');
-	
-		}else{
-			$('#imagenesBtn').removeClass('d-none')
-			$('#containerImgBtn').removeClass('bg-warning');
-			$('#mensajeImgRend').addClass('d-none');
-			$('#listadoImagenesText').removeClass('d-none');
-			$('#containerImagenesCargadas').removeClass('d-none')
-		}
-	}
-	
-	}, 300);
-
-
+	$('#imagenesBtn').toggleClass('d-none', $('.dt-empty:visible').length == 2);
 	tableFirstLoad = false;
 }
 
 function nuevoGasto(cupon) {
 	$('#tableMessageContainer').addClass('d-none');
-	if (cupon){
+	if (cupon)
 		modalCuponesShow($('#idRendicion').html(), $('#estadoRend').val(), $('#codMotivo').val(), $('#fechaDesde').html(), $('#fechaHasta').html(),
-				null, null, null, false, $('#costosDestino').val());}
-	else{
-		modalGastoShow($('#idRendicion').html(), $('#estadoRend').val(), null, $('#codMotivo').val(), cupon,$('#costosDestino').val());
-		}
+				null, null, null, false);
+	else
+		modalGastoShow($('#idRendicion').html(), $('#estadoRend').val(), null, $('#codMotivo').val(), cupon);
 }
 
 function eliminarGasto(idGasto) {
@@ -221,7 +168,7 @@ function modificarRendicion() {
 	clearFormErrors('#editRendicion');
 
 	if (!$('#gastoFechaMax').val() && $('#editRendicionMotivo > option').length == 0)
-		setCombo('combos.do?action=getMotivos', '#editRendicionMotivo', { opcion: 4, glg: ""}, $('#codMotivo').val());
+		setCombo('combos.do?action=getMotivos', '#editRendicionMotivo', { opcion: 4}, $('#codMotivo').val());
 
 	$('#editRendicionFechaDesde').datepicker('setDate', $('#fechaDesde').html());
 	$('#editRendicionFechaHasta').datepicker('setDate', $('#fechaHasta').html());
@@ -296,7 +243,6 @@ function finalizarObservacionConfirm() {
 		idRendicion: $('#idRendicion').html(),
 		idu: $('#idu').val()
 	};
-	console.log("idu:" + params.idu)
 	callAjax('rendicionDetalleGastos.do', params, 'finalizarObservacionConfirmSuccess');
 }
 
@@ -310,5 +256,3 @@ function openImagenes() {
 	
 	modalImagenesShow($('#idRendicion').html(), false, $('#urlThuban').val() );
 }
-
-console.log(getLocalStorageItem('respuestaCombustible'), 'respuesta combuxtible')
