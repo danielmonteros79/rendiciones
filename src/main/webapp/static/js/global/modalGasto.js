@@ -252,20 +252,20 @@ function modalGastoGuardar() {
 }
 
 function modalGastoGuardarSuccess(data) {
-    loadTables();
-    if (data.showModalDatosAdicionales && $('#modalGastoTipoGasto').val().substring(54,59) != '00212') {
-        $('#modalGasto').modal('hide');
-        modalDatosAdicionalesShow(modalGastoLoadParams.idRendicion, modalGastoLoadParams.codMotivo, data.idGasto,
-                $('#modalGastoTipoGasto').val().substring(0, 4), $('#modalGastoTipoGasto').val().substring(55, 59), $('#modalGastoMonto').val().trim() ,false, data.message);
-    } else if (modalCuponesCuponesSel.length == 0) {
-            $('#modalGasto').modal('hide');
-    } else
-        modalGastoShowProximoGastoCupon(data);
-        
-    setTimeout(function(){
-        showMessage('tableMessage', data.message);
-    },500)
-        
+	loadTables();
+	if (data.showModalDatosAdicionales) {
+		$('#modalGasto').modal('hide');
+		modalDatosAdicionalesShow(modalGastoLoadParams.idRendicion, modalGastoLoadParams.codMotivo, data.idGasto,
+				$('#modalGastoTipoGasto').val().substring(0, 4), $('#modalGastoTipoGasto').val().substring(55, 59), false, data.message);
+	} else if (modalCuponesCuponesSel.length == 0) {
+			$('#modalGasto').modal('hide');
+	} else
+		modalGastoShowProximoGastoCupon(data);
+		
+	setTimeout(function(){
+		showMessage('tableMessage', data.message);
+	},500)
+		
 }
 
 function modalGastoShowProximoGastoCupon(data) {

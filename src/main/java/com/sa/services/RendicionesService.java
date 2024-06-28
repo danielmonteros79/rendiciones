@@ -35,7 +35,16 @@ public class RendicionesService {
 	private static final Log log = LogFactory.getLog(RendicionesService.class);
 	private SAMWebClient client;
 	private String msg;
-
+	private static final String FORMAT = "%016d";
+	private static final String CANT_TABLAS ="cant_tablas";
+	private static final String COD_MOTIVO = "cod_motivo";
+	private static final String COD_USR = "cod_usr";
+	private static final String ID_USER = "id_user";
+	private static final String ID_RENDICION = "id_rendicion";
+	private static final String ID_USR_LOG ="id_usr_log";
+	private static final String OPCION = "opcion";
+	private static final String PERF_USER_LOG = "perf_usr_log";
+	
 	public RendicionesService(SAMWebClient samClient) {
 		this.client = samClient;
 	}
@@ -48,7 +57,7 @@ public class RendicionesService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		if (idRendicion != null && !idRendicion.equalsIgnoreCase(""))
-			idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
+			idRendicion = String.format(FORMAT, Integer.parseInt(idRendicion));
 		
 		parametersExecute.put("codUsuario", idUser);
 		parametersExecute.put("idRendicion", idRendicion != null ? idRendicion : "");
@@ -67,10 +76,10 @@ public class RendicionesService {
 		log.info("Comienza llamado a trx para traer el listado de estados para el combo");
 		ManagerTransaction manager = new ManagerTransaction(new SU51());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
-		parametersExecute.put("opcion", opcion);
+		parametersExecute.put(OPCION, opcion);
 		parametersExecute.put("claves_cons", tabla);
-		parametersExecute.put("cant_tablas", subTabla);
-		parametersExecute.put("cod_usr", user);
+		parametersExecute.put(CANT_TABLAS, subTabla);
+		parametersExecute.put(COD_USR, user);
 
 		manager.executeTrx(this.client, parametersExecute);
 
@@ -84,10 +93,10 @@ public class RendicionesService {
 		log.info("Comienza llamado a trx para traer el listado de estados para el combo");
 		ManagerTransaction manager = new ManagerTransaction(new SU51());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
-		parametersExecute.put("opcion", opcion);
+		parametersExecute.put(OPCION, opcion);
 		parametersExecute.put("claves_cons", tabla);
-		parametersExecute.put("cant_tablas", subTabla);
-		parametersExecute.put("cod_usr", user);
+		parametersExecute.put(CANT_TABLAS, subTabla);
+		parametersExecute.put(COD_USR, user);
 		parametersExecute.put("cod_gasto", codGasto);
 
 		manager.executeTrx(this.client, parametersExecute);
@@ -104,9 +113,9 @@ public class RendicionesService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		String glgActual = glg.equals("") ? "00" : "0" + glg;
-		parametersExecute.put("cant_tablas", glgActual);
-		parametersExecute.put("opcion", opcion);
-		parametersExecute.put("cod_usr", user);
+		parametersExecute.put(CANT_TABLAS, glgActual);
+		parametersExecute.put(OPCION, opcion);
+		parametersExecute.put(COD_USR, user);
 		manager.executeTrx(this.client, parametersExecute);
 
 		List<ComboMotivo> comboMotivo = (List<ComboMotivo>) manager.getDataReturnList();
@@ -128,11 +137,11 @@ public class RendicionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU54());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
-		parametersExecute.put("opcion", "ALTA");
-		parametersExecute.put("id_user", idusr);
+		parametersExecute.put(OPCION, "ALTA");
+		parametersExecute.put(ID_USER, idusr);
 		parametersExecute.put("fecha_desde", feDesde);
 		parametersExecute.put("fecha_hasta", feHasta);
-		parametersExecute.put("cod_motivo", motivo);
+		parametersExecute.put(COD_MOTIVO, motivo);
 		parametersExecute.put("desc_rendicion", descripcion);
 		parametersExecute.put("importe_rend_pesos", "000000000000000");
 		parametersExecute.put("id_gestor_gastos", "000");
@@ -149,12 +158,12 @@ public class RendicionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU54());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
-		parametersExecute.put("opcion", "MODI");
-		parametersExecute.put("id_rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
-		parametersExecute.put("id_user", idUser);
+		parametersExecute.put(OPCION, "MODI");
+		parametersExecute.put(ID_RENDICION, String.format(FORMAT, Integer.parseInt(idRendicion)));
+		parametersExecute.put(ID_USER, idUser);
 		parametersExecute.put("fecha_desde", fechaDesde);
 		parametersExecute.put("fecha_hasta", fechaHasta);
-		parametersExecute.put("cod_motivo", codMotivo);
+		parametersExecute.put(COD_MOTIVO, codMotivo);
 		parametersExecute.put("desc_rendicion", descRendicion);
 		parametersExecute.put("est_rend", estadoRend);
 		
@@ -171,15 +180,15 @@ public class RendicionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU55());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		if (idRendicion != null && !idRendicion.equalsIgnoreCase("")) {
-			idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
+			idRendicion = String.format(FORMAT, Integer.parseInt(idRendicion));
 		}
 		if (idGasto != null && !idGasto.equalsIgnoreCase("")) {
 			idGasto = String.format("%09d", Integer.parseInt(idGasto));
 		}
-		parametersExecute.put("id_rendicion", idRendicion);
+		parametersExecute.put(ID_RENDICION, idRendicion);
 		parametersExecute.put("id_gasto", idGasto);
-		parametersExecute.put("id_user", idUser);
-		parametersExecute.put("cod_motivo", codMotivo);
+		parametersExecute.put(ID_USER, idUser);
+		parametersExecute.put(COD_MOTIVO, codMotivo);
 //		parametersExecute.put("desc_gasto", "test desde eclipse");
 		
 		manager.executeTrx(this.client, parametersExecute);
@@ -194,15 +203,15 @@ public class RendicionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU55());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		if (idRendicion != null && !idRendicion.equalsIgnoreCase("")) {
-			idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
+			idRendicion = String.format(FORMAT, Integer.parseInt(idRendicion));
 		}
 		if (idGasto != null && !idGasto.equalsIgnoreCase("")) {
 			idGasto = String.format("%09d", Integer.parseInt(idGasto));
 		}
-		parametersExecute.put("id_rendicion", idRendicion);
+		parametersExecute.put(ID_RENDICION, idRendicion);
 		parametersExecute.put("id_gasto", idGasto);
-		parametersExecute.put("id_user", idUser);
-		parametersExecute.put("cod_motivo", codMotivo);
+		parametersExecute.put(ID_USER, idUser);
+		parametersExecute.put(COD_MOTIVO, codMotivo);
 		 parametersExecute.put("DERRAME", "S");
 		// parametersExecute.put("desc_gasto", "test desde eclipse");
 		
@@ -217,9 +226,9 @@ public class RendicionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU54());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
-		parametersExecute.put("opcion", "BAJA");
-		parametersExecute.put("id_user", user);
-		parametersExecute.put("id_rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
+		parametersExecute.put(OPCION, "BAJA");
+		parametersExecute.put(ID_USER, user);
+		parametersExecute.put(ID_RENDICION, String.format(FORMAT, Integer.parseInt(idRendicion)));
 		manager.executeTrx(this.client, parametersExecute);
 		
 		String idRendicionBorrada = (String) manager.getDataReturn();
@@ -257,8 +266,8 @@ public class RendicionesService {
 
 
 
-		parametersExecute.put("id_usr_log", idUser);
-		parametersExecute.put("perf_usr_log", codGlg);
+		parametersExecute.put(ID_USR_LOG, idUser);
+		parametersExecute.put(PERF_USER_LOG, codGlg);
 		parametersExecute.put("opcion_cons", opcion);
 		parametersExecute.put("fdesde", fechaDesde);
 		parametersExecute.put("fhasta", fechaHasta);
@@ -307,8 +316,8 @@ public class RendicionesService {
 		parametersExecute.put("monto_hasta", monH);
 		parametersExecute.put("cod_mot_sel", codMotivo);
 		parametersExecute.put("cod_est_sel", codEstado);
-		parametersExecute.put("id_usr_log", idUser);
-		parametersExecute.put("perf_usr_log", codGlg);
+		parametersExecute.put(ID_USR_LOG, idUser);
+		parametersExecute.put(PERF_USER_LOG, codGlg);
 		parametersExecute.put("cod_glg_sel", codGlg);
 		parametersExecute.put("opcion_cons", opcion);
 		parametersExecute.put("fdesde", fechaDesde);
@@ -328,8 +337,8 @@ public class RendicionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU73());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
-		parametersExecute.put("id_usr_log", usuario);
-		parametersExecute.put("perf_usr_log", perfil);
+		parametersExecute.put(ID_USR_LOG, usuario);
+		parametersExecute.put(PERF_USER_LOG, perfil);
 
 		manager.executeTrx(this.client, parametersExecute);
 
@@ -349,8 +358,8 @@ public class RendicionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU66());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
-		parametersExecute.put("id_user", user);
-		parametersExecute.put("rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
+		parametersExecute.put(ID_USER, user);
+		parametersExecute.put("rendicion", String.format(FORMAT, Integer.parseInt(idRendicion)));
 		parametersExecute.put("estado", String.format("%1$-" + 5 + "s", estado));
 		manager.executeTrx(this.client, parametersExecute);
 		

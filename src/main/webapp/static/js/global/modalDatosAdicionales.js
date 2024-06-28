@@ -3,22 +3,13 @@ var modalDatosAdicionalesSubmitted;
 var modalDatosAdicionalesAction;
 var modalDatosAdicionalesCampos;
 var modalDatosAdicionalesParamsEliminar;
-let hayExcel = false;
-let legajosData=[];
-filteredData=[];
-var params = jQuery.extend({}, modalDatosAdicionalesLoadParams);
-let nombreUsuarioRend = $('#nombreUsuarioRend').val();
 
 $('#modalDatosAdicionales').on('hidden.bs.modal', function (event) {
 	if (modalCuponesCuponesSel.length > 0)
 		modalGastoShowProximoGastoCupon({});
 });
 
-function setUsuarioDatoAdicional(nombreUser){
-	nombreUsuarioRend=nombreUser;
-}
-
-function modalDatosAdicionalesShow(idRendicion, codMotivo, idGasto, codGasto, codObserv, gastoMonto ,readOnly, message) {
+function modalDatosAdicionalesShow(idRendicion, codMotivo, idGasto, codGasto, codObserv, readOnly, message) {
 	$('#tableMessageContainer').addClass('d-none');
 	$('#modalDatosAdicionalesActionMessageContainer').addClass('d-none');
 	clearFormErrors('#modalDatosAdicionales');
@@ -30,7 +21,6 @@ function modalDatosAdicionalesShow(idRendicion, codMotivo, idGasto, codGasto, co
 		idGasto: idGasto,
 		codGasto: codGasto,
 		codObserv: codObserv,
-		gastoMonto: gastoMonto,
 		readOnly: readOnly,
 		message: message
 	};
@@ -70,7 +60,6 @@ function modalDatosAdicionalesSetVisibility() {
 
 function modalDatosAdicionalesSetCampos(data) {
 	modalDatosAdicionalesCampos = data;
-	console.log(modalDatosAdicionalesCampos)
 	$('#modalDatosAdicionalesCampos').html('<input type="hidden" id="modalDatosAdicionales_IDOBS"/>');
 	
 	$(data.listCampos).each(function(i, elem) {
@@ -133,82 +122,14 @@ function modalDatosAdicionalesSetCampos(data) {
 				'</div>');
 	});
 	
-	
-	if (modalDatosAdicionalesLoadParams.codObserv.includes("0235") || modalDatosAdicionalesLoadParams.codObserv.includes("9999")){
-        $('#modalDatosAdicionalesCampos').append(
-                '<div class="col-sm-12 pt-2">' +
-                '<label class="pt-2"> Agregue un excel con la lista de invitados ( Debe indicar en una sola columna el legajo de cada invitado ) </label>' + 
-                '<img src="./images/carga_automatica.png" class="img-fluid w-100" style="height:320px" >' + '<br>' +
-                    '<div class="has-float-label">' +
-                        '<input type="file" id="archivoExcel" accept=".xlsx, .xls" onchange="handleFile(this)"/>'
-                    + '</div>' +
-                '</div>');
-    }
-	
 	setAutonumericElementInteger('#modalDatosAdicionalesCampos .an-integer-pos', '999999999');
 	setDatepickerElements();
 }
 
-
-
-function readExcel(inputElement) {
-    return new Promise((resolve, reject) => {
-        let file = inputElement.files[0];
-        if (file) {
-            if (file.type === 'application/vnd.ms-excel' || file.name.endsWith('.xls') || file.name.endsWith('.xlsx')) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let data = e.target.result;
-                    let workbook = XLSX.read(data, { type: 'binary' });
-
-                    // toma la primera hoja
-                    let sheetName = workbook.SheetNames[0];
-                    let sheet = workbook.Sheets[sheetName];
-
-                    // Convierte la hoja en un objeto JSON sin encabezados
-                    let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-                    // Filtra y modifica los datos para tomar solo los campos con valores y asignar códigos numéricos
-                    let legajos = jsonData
-                        .filter(function(row) {
-                            return row[0] // Filtra solo filas con valores en ambas columnas
-                        })
-                        .map(function(row) {
-                            return { 
-                                legajo: row!= undefined ? row[0] : "",
-                            };
-                        });     
-                    resolve(legajos);
-                };  
-                reader.onerror = reject;
-                reader.readAsBinaryString(file);
-                hayExcel=true;
-            } else {
-                reject('Por favor, seleccione un archivo Excel válido con extensión .xls');
-            }
-        } else {
-            reject('No file selected');
-        }
-    });
-}
-
-async function handleFile(inputElement) {
-    try {
-        legajosData = await readExcel(inputElement);
-        		setTimeout(() => {
-				        hayExcel=true;
-			}, 500);
-
-        // Do something with data
-    } catch (error) {
-        alert(error);
-    }
-}
-
-
 function modalDatosAdicionalesSetTabla(data) {
-	console.log(data);
 	$('#modalDatosAdicionalesTabla th, #modalDatosAdicionalesTabla tbody tr').remove();
 	$("#modalDatosAdicionalesTabla thead tr").append("<th>NRO</th>");
+	
 	if (data.filas) {
 		$(data.headers).each(function(i, elem) {
 			$('#modalDatosAdicionalesTabla thead tr').append('<th>' + elem + '</th>');
@@ -235,170 +156,11 @@ function modalDatosAdicionalesSetTabla(data) {
 						'</a>' +
 					'</td>';
 			}
+			
 			$('#modalDatosAdicionalesTabla tbody').append('<tr>' + cols + '</tr>');
 		});
 	}
 }
-
-
-
-
-
-function buscarUsuarioOrigenSuccess(data) {
-	clearFormError($('#legajoDelegadoOrigen').parent());
-	$('#nombreDelegadoOrigen').val(data.delegado.nombre)
-
-	
-}
-
-function buscarUsuarioOrigenError(data) {
-	showFormError('#legajoDelegadoOrigen', data.error);
-	$('#nombreDelegadoOrigen').val("")
-	
-}
-
-function buscarUsuarioDestinoSuccess(data) {
-	clearFormError($('#legajoDelegadoDestino').parent());
-	 $('#nombreDelegadoDestino').val(data.delegado.nombre)
-	
-}
-
-function buscarUsuarioDestinoError(data) {
-	showFormError('#legajoDelegadoDestino', data.error);
-	$('#nombreDelegadoDestino').val("")
-	
-}
-
-//método para obtener los datos de los invitados.
-function obtenerDatosInvitados(){
-	let params = {
-			action: 'buscarInvitado',
-	};
-	if(legajosData.length>0){
-	legajosData.forEach(invitado => {
-		params.legajo = invitado.legajo;
-		callAjax('datosAdicionales.do', params, 'handleDataInvitados', true)
-	});
-	}
-}
-
-//$("#modalDatosAdicionalesBtnSalir").click(function() {
-//	if (modalDatosAdicionalesLoadParams.codObserv == "00210" || modalDatosAdicionalesLoadParams.codObserv == "0210"  ) { 
-//		obtenerDatosCumbustible();}else{
-//			console.log('entra')
-//			console.log(modalDatosAdicionalesLoadParams)
-//		}
-//})
-
-//function obtenerDatosCumbustible(){
-	//console.log("obtenerDatosCombustible");
-	//console.log(modalDatosAdicionalesCampos)
-	//let datosAdicionesCombustible = "";
-	
-	//modalDatosAdicionalesCampos.filas.forEach(function (item, index) {
-	  //console.log(item, index);
-	  //datosAdicionesCombustible += item.toString().trim() + " _ " 
-	  //item.forEach(function (item, index) {
-		  //console.log(item, index);
-		  //miString = item[index]
-	  //});	  
-	//});
-	//console.log(datosAdicionesCombustible);
-	
-	
-	//let params = {
-		//	action: 'calcularCoeficiente',
-			//idRendicion: modalDatosAdicionalesLoadParams.idRendicion,
-			//codMotivo: modalDatosAdicionalesLoadParams.codMotivo,
-			//idGasto: modalDatosAdicionalesLoadParams.idGasto,
-			//codGasto: modalDatosAdicionalesLoadParams.codGasto,
-			//serv: modalDatosAdicionalesLoadParams.codObserv,
-			//gastoMonto: modalDatosAdicionalesLoadParams.gastoMonto,
-			//readOnly: modalDatosAdicionalesLoadParams.readOnly,
-			//message: modalDatosAdicionalesLoadParams.message,
-			//nombreUsuarioRend: nombreUsuarioRend,
-			//datosAdicionesCombustible: datosAdicionesCombustible			
-	//};
-	
-	//callAjax('datosAdicionales.do', params, 'respuestaCalcularCoeficiente');
-	
-//}
-
-//function respuestaCalcularCoeficiente(data){
-	//if(data.massage == 'igual'){
-		//$('#modalDatosAdicionales').modal('hide');
-	//}else{		
-		//showAcept(close, data.message) 
-	//}
-	//}
-
-//function close (){
-	 	
-	//	$('#modalDatosAdicionales').modal('hide');
-		//$('#modalAcept').modal('hide');
-		//loadTables();
-	//}
-		
-
-
-function buscarInvitadoSuccess(data) {
-    return new Promise((resolve, reject) => {
-        let sector = data.invitado.sector
-        let nombre = data.invitado.nombre
-        let nombreExterno = data.invitado.idUser
-        let ccostos = data.invitado.ccostos
-        let userDate = {};
-        let info = [];
-
-        if(sector != "INTE"){
-            userDate = {
-                "elemento": nombreExterno,
-                "codigo" : "0003",
-            }
-            info.push(userDate)
-        }else if(ccostos == $('#cCostos').html()){
-            userDate = {
-                "elemento":nombre,
-                "codigo" : "0001",
-            }
-            info.push(userDate)
-        }else{
-            userDate = {
-                "elemento": nombre,
-                "codigo" : "0002",
-            }
-            info.push(userDate)
-        }
-        resolve(info);
-    });
-}
-
-async function handleDataInvitados(data) {
-    try {
-        filteredData = await buscarInvitadoSuccess(data);
-        filteredData.forEach(e =>{
-			params.COD1 = e.codigo;
-			params.TXT1 = e.elemento
-  			callAjax('datosAdicionales.do', params, 'modalDatosAdicionalesGuardarSuccess', 'modalDatosAdicionalesGuardarError'); 
-		})
-			setTimeout(() => {
-				hayExcel=false;
-				filteredData=[]    	
-			}, 300);
-		
-	
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-
-
-function buscarInvitadoError(data) {
-	console.log("ERROR", data)
-	
-}
-
 
 function modalDatosAdicionalesSetOnChanges() {
 	$('#modalDatosAdicionales input, #modalDatosAdicionales textarea, #modalDatosAdicionales select').change(function() {
@@ -409,23 +171,17 @@ function modalDatosAdicionalesSetOnChanges() {
 
 function modalDatosAdicionalesGuardar() {
 	modalDatosAdicionalesSubmitted = true;
+	
 	if (!validateForm('modalDatosAdicionales', true))
 		return;
 	
-	params = jQuery.extend({}, modalDatosAdicionalesLoadParams);
+	var params = jQuery.extend({}, modalDatosAdicionalesLoadParams);
 	params.action = 'altaModif';
 	$('#modalDatosAdicionales input, #modalDatosAdicionales textarea, #modalDatosAdicionales select').each(function(i, elem) {
 		var id = $(elem).attr('id');
 		params[id.substring(id.lastIndexOf('_') + 1)] = $(elem).val();
 	});
-	
-	if(hayExcel){	
-	obtenerDatosInvitados(); 
-
-	}else{
-		callAjax('datosAdicionales.do', params, 'modalDatosAdicionalesGuardarSuccess', 'modalDatosAdicionalesGuardarError', true); 
-	}
-
+	callAjax('datosAdicionales.do', params, 'modalDatosAdicionalesGuardarSuccess', 'modalDatosAdicionalesGuardarError');
 }
 
 function modalDatosAdicionalesGuardarSuccess(data) {
@@ -499,11 +255,4 @@ function modalDatosAdicionalesEliminarConfirmSuccess(data) {
 	showMessage('modalDatosAdicionalesActionMessage', data.message);
 	$('#modalConfirm').modal('hide');
 	modalDatosAdicionalesLoad();
-}
-
-function showAcept(confirmCallback, message) {
-	$('#modalAceptMsg').html(message);
-	$('#modalAceptAceptar').off('click');
-	$('#modalAceptAceptar').click(eval(confirmCallback));
-	$('#modalAcept').modal('show');
 }
