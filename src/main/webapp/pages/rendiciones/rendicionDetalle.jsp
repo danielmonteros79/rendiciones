@@ -43,7 +43,7 @@
 				<h5 class="font-weight-400">Rendici&oacute;n</h5>
 			</div>
 			<div class="col-12 col-sm-7">
-				<h5 class="font-weight-400 d-inline" id="preFormato">Per&iacute;odo</h5>
+				<h5 class="font-weight-400 d-inline">Per&iacute;odo</h5>
 				<small >( Debe comprender la fecha en la que se hizo el gasto )</small>
 			</div>
 		</div>
@@ -75,7 +75,7 @@
 					<div class="col-12 col-sm-6 has-float-label">
 						<div class="input-group">
 							<input type="text" class="form-control datepicker bg-light" id="rendicionDetalleFechaDesde" name="fechaDesde" placeholder="Desde" required/>
-							<label id="leyendaDesde">Desde</label>
+							<label>Desde</label>
 							<div class="input-group-append">
 								<button class="btn btn-outline-primary bg-light border-white hover-darkblue datepicker-btn" tabindex="-1" type="button">
 									<i class="bbva-icon icon-coronita_calendar fa-lg"></i>
@@ -85,9 +85,9 @@
 						</div>
 					</div>
 					<div class="col-12 col-sm-6 has-float-label">
-						<div class="input-group" id="rendicionDetalleFechaHastaContainer">
+						<div class="input-group">
 							<input type="text" class="form-control datepicker bg-light" id="rendicionDetalleFechaHasta" name="fechaHasta" placeholder="Desde" required/>
-							<label id="leyendaHasta" >Hasta</label>
+							<label>Hasta</label>
 							<div class="input-group-append">
 								<button class="btn btn-outline-primary bg-light border-white hover-darkblue datepicker-btn" tabindex="-1" type="button">
 									<i class="bbva-icon icon-coronita_calendar fa-lg"></i>
@@ -121,5 +121,5 @@
 		</div>
 	</div>
 </html:form>
-<script type="text/javascript" src="./static/js/select2.min.js"></script>
-<script type="text/javascript" src="./static/js/rendiciones/rendicionDetalle.js"></script>
+<script type="text/javascript" src="static/js/select2.min.js"></script>
+<script type="text/javascript" src="static/js/rendiciones/rendicionDetalle.js"></script>
