@@ -22,7 +22,6 @@ import com.sa.util.DateUtil;
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 
-
 public class CuponesAction extends RestriccionTransaccionAction {
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -45,9 +44,7 @@ public class CuponesAction extends RestriccionTransaccionAction {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		List<Cupones> cupones = new ArrayList<Cupones>();
 		PagosService service = new PagosService(samClient);
-		
-		DateUtil dateUtil = new DateUtil();
-		
+
 		String idRendicion = request.getParameter("idRendicion");
 		String idGasto = request.getParameter("idGasto");
 		String codMotivo = request.getParameter("codMotivo");
@@ -55,12 +52,12 @@ public class CuponesAction extends RestriccionTransaccionAction {
 		String moneda = request.getParameter("moneda");
 
 		if (!request.getParameter("fechaDesde").equals("")) {
-			String fechaDesde = dateUtil.getDfYYYYMMDD().format(dateUtil.getDfDDMMYYYY().parse(request.getParameter("fechaDesde")));
-			String fechaHasta = dateUtil.getDfYYYYMMDD().format(dateUtil.getDfDDMMYYYY().parse(request.getParameter("fechaHasta")));
+			String fechaDesde = DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
+			String fechaHasta = DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
 
 			cupones = service.getCupones("USU", "MOP", "SU", this.sessionUserWorking.getIdUser(), fechaDesde, fechaHasta, idRendicion, codMotivo, montoMin, moneda);
-		} else {
-			cupones = service.getCuponUnico(idRendicion, idGasto, this.sessionUserWorking.getIdUser(), codMotivo);}
+		} else
+			cupones = service.getCuponUnico(idRendicion, idGasto, this.sessionUserWorking.getIdUser(), codMotivo);
 
 		resp.put("filas", cupones);
 		resp.put("message", service.getMsg());
