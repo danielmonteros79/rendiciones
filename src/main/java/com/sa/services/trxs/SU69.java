@@ -15,7 +15,6 @@ import com.sa.util.DateUtil;
 
 import ar.com.bbva.web.IWebClient;
 import ar.com.itrsa.sam.TransactionException;
-import ar.org.bbva.util.DateUtils;
 
 public class SU69 extends Transaction  {
 	private static final Log log = LogFactory.getLog(SU69.class);
@@ -45,16 +44,13 @@ public class SU69 extends Transaction  {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) throws Exception {
-		
-		DateUtil dateUtil = new DateUtil();
-		
 		if (parametersExecute.get("lista") != null) {
 			for (Object obj : (List) parametersExecute.get("lista")) {
 				String str = getStrLista(obj);
 				
 				if (((String) parametersExecute.get("subtran")).equals("FEC"))
 					this.dataReturnList.add(new ComboOpcion(str.substring(0, 10), 
-							DateUtils.formatearFecha(str.substring(0, 10), dateUtil.getDfDDMMYYYYGuion(), dateUtil.getDfDDMMYYYY())));
+							DateUtil.formatearFecha(str.substring(0, 10), DateUtil.dfDDMMYYYYGuion, DateUtil.dfDDMMYYYY)));
 				else {
 					Resumen resumenParams = new Resumen();
 					int i = 0;
@@ -84,7 +80,16 @@ public class SU69 extends Transaction  {
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
-	// Metodo que no se utilzia
-
+		List<String> list = new ArrayList<String>();
+		
+		if (((String) parametersExecute.get("subtran")).equals("FEC")) {
+			list.add("26-04-2018                                                                         0,00");
+			list.add("27-03-2018                                                                         0,00");
+			list.add("24-02-2018                                                                         0,00");
+		} else {
+			list.add("2019-03-18123456789012ESTABLECIMIENTO DE 50 CARACTERES                  123456789012345ARSP");
+		}
+		
+		parametersExecute.put("lista", list);
 	}
 }
