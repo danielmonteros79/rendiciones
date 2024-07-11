@@ -217,7 +217,7 @@ public class PagosService {
 		manager.executeTrx(this.samClient, parametersExecute);
 		List<String> textoValidacionArr = (List<String>) manager.getDataReturnList();
 		msg = (String) manager.getMensajeAviso();
-
+System.out.println("PEPE "+textoValidacionArr);
 		return textoValidacionArr.get(0);
 	}
 

@@ -82,7 +82,7 @@ public class AvanzarRendicionAction extends RestriccionTransaccionAction {
 		 
 		PagosService pagosService = new PagosService(samClient);
 		
-		String validacionExc = pagosService.getValidacionRendicion("ALTA", "000000000000" + idRendicion, "000000000");
+		String validacionExc = pagosService.getValidacionRendicion("0001", "000000000000" + idRendicion, "000000001");
 		//String validacionHardcodeada = "NO OKA";
 		
 		resp.put("textoValidacion", validacionExc);//MODIFICAR CUANDO SE TERMINE EL SERVICIO
