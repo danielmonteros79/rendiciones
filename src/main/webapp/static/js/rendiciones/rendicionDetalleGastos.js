@@ -102,15 +102,15 @@ function evaluarValidacion(data){
 		setTimeout(function(){			
 			setTimeout(function(){
 				if(data.textoValidacion.includes('AVISO')){
-					$('#modalRendicionTitle').html("La rendicion requiere ser confirmada");
+					$('#modalRendicionTitle').html("La rendición requiere ser confirmada");
 					$('#aceptarRendicionBtn').html("Confirmar");
 				}
 				else if(data.textoValidacion.includes('ALERTA') && $("#exc-check").is(":checked")){ 
-					$('#modalRendicionTitle').html("La rendicion no cumple con las politicas de gastos");
+					$('#modalRendicionTitle').html("La rendición no cumple con las políticas de gastos");
 					$('#aceptarRendicionBtn').html("Continuar");
 				}
 				else{
-					$('#modalRendicionTitle').html("La rendicion no cumple con las politicas de gastos"); 
+					$('#modalRendicionTitle').html("La rendición no cumple con las políticas de gastos"); 
 					$('#aceptarRendicionBtn').css("display", "none");
 				}
 				$('#modalRendicionValidarMessage').html(data.textoValidacion);

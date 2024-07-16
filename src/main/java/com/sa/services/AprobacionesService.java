@@ -181,7 +181,7 @@ public class AprobacionesService {
 
 		parametersExecute.put("id_rend", String.format("%016d", Integer.parseInt(String.valueOf(idRendicion))));
 		parametersExecute.put("cod_user", user);
-		parametersExecute.put("idu_thuban", idu);
+		parametersExecute.put("idu_thuban", "");
 		
 		manager.executeTrx(client, parametersExecute);
 		msg = (String) manager.getMensajeAviso();

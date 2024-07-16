@@ -277,11 +277,12 @@ function modalGastoCancelar(){
 }
 
 function evaluarValidacionGasto(data){
+	console.log(data)
 	if(!data.textoValidacion.includes('OK')){
 		setTimeout(function(){			
 			setTimeout(function(){
 				if(data.textoValidacion.includes('ALERTA')){ 
-					$('#modalGastoTitle').html("El gasto cargado no cumple con la politica de gastos acordada"); 
+					$('#modalGastoTitle').html("El gasto cargado no cumple con la política de gastos acordada"); 
 					$('#aceptarGastoBtn').html("Continuar");
 				}
 				else{

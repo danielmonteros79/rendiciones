@@ -47,7 +47,7 @@ public class GastosAction extends RestriccionTransaccionAction {
 		 
 		PagosService pagosService = new PagosService(samClient);
 		String rendicion = renForm.getIdRendicion().length() < 5 ? "000000000000" + renForm.getIdRendicion() : renForm.getIdRendicion();
-		String validacionExc = pagosService.getValidacionRendicion("0002", rendicion, renForm.getIdGasto());
+		String validacionExc = pagosService.getValidacionRendicion("0002", rendicion, "00000000" + renForm.getIdGasto());
 		//String validacionHardcodeada = "NO OKA";
 		
 		resp.put("textoValidacion", validacionExc);//MODIFICAR CUANDO SE TERMINE EL SERVICIO

@@ -359,5 +359,8 @@ $(document).ready(function() {
 <jsp:include page="../global/modalDatosAdicionales.jsp" />
 <jsp:include page="../global/modalCupones.jsp" />
 <jsp:include page="../global/modalImagenes.jsp" />
+<jsp:include page="../global/modalGastoFueraDePolitica.jsp" />
+<jsp:include page="../global/modalRendicionFueraDePolitica.jsp" />
+<jsp:include page="../global/modalAlerta.jsp" />
 
 <script type="text/javascript" src="static/js/rendiciones/rendicionDetalleGastos.js"></script>
