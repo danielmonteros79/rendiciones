@@ -105,11 +105,11 @@
 	                </li>
 					<% } %>
 					
-<<<<<<< HEAD
+
 	               <% if (userWorking.getTipoPerfil().getPantalla().contains("Parametros")) { %>
-=======
-	                <% if (userWorking.getTipoPerfil().getPantalla().contains("Parametros")) { %>
->>>>>>> 15efc9317dacf5b755f9c288ca68e75121207b8e
+
+	                
+
 	                <li class="nav-item dropdown pr-md-2 px-xl-3">
 	                    <a class="nav-link dropdown-toggle nav-parametros" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>PAR&Aacute;METROS</span>
