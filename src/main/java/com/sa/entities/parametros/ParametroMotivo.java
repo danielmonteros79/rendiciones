@@ -24,6 +24,7 @@ public class ParametroMotivo {
 	private String txAviso;
 	private String idOperEspe;
 	private String meDiasInterv;
+	private String lastElement;
 	private List<String> centrosCosto;
 
 	public ParametroMotivo() {
@@ -35,6 +36,14 @@ public class ParametroMotivo {
 
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
+	}
+	
+	public String getLastElement() {
+		return lastElement;
+	}
+
+	public void setLastElement(String isLastElement) {
+		this.lastElement = isLastElement;
 	}
 
 	public String getEstado() {

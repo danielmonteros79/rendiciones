@@ -44,18 +44,18 @@ public class SU88 extends Transaction {
 			ParametroAlerta aviso = new ParametroAlerta();
 			aviso.setCodMotivo((String) parametersExecute.get("cod_mot"));
 			aviso.setCodGasto((String) parametersExecute.get("cod_gto"));
-			aviso.setMontCant((String) parametersExecute.get("mont_can"));
-			aviso.setRend((String) parametersExecute.get("cod_rend"));
+			aviso.setMontCant((String) parametersExecute.get("cod_mont_cant"));
+			aviso.setRend((String) parametersExecute.get("cod_rendicion"));
 			
-			String impCant = (String) parametersExecute.get("me_valor");
-			if ("M".equals(aviso.getMontCant()))
-				impCant = impCant.substring(0, impCant.length() - 2) + "." + impCant.substring(impCant.length() - 2);
+			String impCant = (String) parametersExecute.get("valor");
+//			if ("M".equals(aviso.getMontCant()))
+//				impCant = impCant.substring(0, impCant.length() - 2) + "." + impCant.substring(impCant.length() - 2);
 			aviso.setImpCant(impCant);
 			
-			aviso.setPeriodo((String) parametersExecute.get("periodo"));
-			aviso.setCriticidad((String) parametersExecute.get("critico"));
-			aviso.setNivelMin((String) parametersExecute.get("ni_min"));
-			aviso.setNivelMax((String) parametersExecute.get("ni_max"));
+			aviso.setPeriodo((String) parametersExecute.get("cod_periodo"));
+			aviso.setCriticidad((String) parametersExecute.get("cod_critico"));
+			aviso.setNivelMin((String) parametersExecute.get("cod_nivel_min"));
+			aviso.setNivelMax((String) parametersExecute.get("cod_nivel_max"));
 			aviso.setTxAviso((String) parametersExecute.get("tx_aviso"));
 			aviso.setEstado((String) parametersExecute.get("est_aviso"));
 			aviso.setTimeStamp((String) parametersExecute.get("tmstp"));
@@ -65,22 +65,27 @@ public class SU88 extends Transaction {
 			if (parametersExecute.get("lista") != null) {
 				for (Object obj : (List) parametersExecute.get("lista")) {
 					String str = getStrLista(obj);
-					if (parametersExecute.get("opcion").equals("FILT")) {
+					if (parametersExecute.get("opcion").equals("INDI")) {
 						dataReturnList.add(str);
-					} else if (parametersExecute.get("opcion").equals("CONS")) {
+					} else if (parametersExecute.get("opcion").equals("LIST")) {
 						ParametroAlerta aviso = new ParametroAlerta();
 						int i = 0;
+						aviso.setId(str.substring(i, i += 4));
 						aviso.setCodMotivo(str.substring(i, i += 4));
-						aviso.setDesMotivo(str.substring(i, i += 50));
 						aviso.setCodGasto(str.substring(i, i += 4));
-						aviso.setDesGasto(str.substring(i, i += 50));
 						aviso.setMontCant(str.substring(i, i += 1));
 						aviso.setRend(str.substring(i, i += 4));
+						aviso.setImpCant(str.substring(i, i += 16));
 						aviso.setPeriodo(str.substring(i, i += 2));
+						aviso.setCriticidad(str.substring(i, i += 1));
 						aviso.setNivelMin(str.substring(i, i += 2));
 						aviso.setNivelMax(str.substring(i, i += 2));
+						aviso.setTxAviso(str.substring(i, i += 50));
 						aviso.setEstado(str.substring(i, i += 1));
-						aviso.setTimeStamp(str.substring(i, i += 26));
+						aviso.setDesMotivo(str.substring(i, i += 50));
+						aviso.setDesGasto(str.substring(i, i += 50));
+						aviso.setLastElement(str.substring(str.length()-1));
+						aviso.setTimeStamp("");
 						
 						dataReturnList.add(aviso);
 					}
@@ -91,6 +96,5 @@ public class SU88 extends Transaction {
 
 	@Override
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
-		//metodo no utilizado
 	}
 }

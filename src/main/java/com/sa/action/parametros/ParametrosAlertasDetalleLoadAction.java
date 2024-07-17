@@ -34,12 +34,12 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 	Map<String, List<ComboOpcion>> mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
 	List<ComboOpcion> cmbGasto = new ArrayList<ComboOpcion>();
 	private List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
-	private static final String COD_MOTIVO = "codMotivo";
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ParametrosAlertasForm frm = (ParametrosAlertasForm) form;
 		ParametrosService service = new ParametrosService(samClient);
+		request.getSession().setAttribute("cod_gasto", frm.getCodGasto());
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("Entra al action ParametrosNuevaAlertaLoadAction. Usuario (" + user.getIdUser() + ")");
 		String accion = request.getParameter("accion");
@@ -53,6 +53,7 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 			return null;
 		} else if ("selectGasto".equals(accion)) {
 			this.selectGasto(response.getWriter(), request);
+			//response.setHeader("Content-Type", "text/html; charset=UTF-8");
 			response.setContentType("application/json");
 			response.getWriter().flush();
 			response.getWriter().close();
@@ -66,16 +67,16 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 				frm.clear();
 				frm.setEstado("A");
 			} else if (frm.getAccion().equals("modificacion")) {
-				this.alertaToForm(frm, service.getAlerta("CONS", frm.getCodMotivo(), frm.getCodGasto(), frm.getTimeStamp()));
+				this.alertaToForm(frm, service.getAlerta("INDI", frm.getCodMotivo(), frm.getCodGasto(), frm.getTimeStamp(), frm.getCodAlerta()));
 				if (service.getMsgAviso() != null)
 					message = service.getMsgAviso() + "<br>";
 			} else if (frm.getAccion().equals("baja")) {
-				this.alertaToForm(frm, service.getAlerta("CONS", frm.getCodMotivo(), frm.getCodGasto(), frm.getTimeStamp()));
+				this.alertaToForm(frm, service.getAlerta("INDI", frm.getCodMotivo(), frm.getCodGasto(), frm.getTimeStamp(), frm.getCodAlerta()));
 				if (service.getMsgAviso() != null)
 					message = service.getMsgAviso() + "<br>";
 			}
 
-			List<String> combos = service.getAlertaCombos();
+			//List<String> combos = service.getAlertaCombos();
 			if (service.getMsgAviso() != null)
 				message += service.getMsgAviso();
 
@@ -84,31 +85,31 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 			cmbGasto = new ArrayList<ComboOpcion>();
 			cmbMotivo = new ArrayList<ComboOpcion>();
 
-			for (String fila : combos) {
-				String combo = fila.substring(0, 2);
-				String codMotivo = fila.substring(2, 6);
-				if (combo.equals("MO"))
-					cmbMotivo.add(new ComboOpcion(codMotivo, codMotivo + " - " + fila.substring(7).trim()));
-				
-				if (combo.equals("GA")) {
-					String codGasto = fila.substring(6, 10);
-					ComboOpcion opcionGasto = new ComboOpcion(codGasto, codGasto + " - " + fila.substring(10).trim());
-					cmbGasto.add(opcionGasto);
-					mapGastoMotivo.put(codGasto, codMotivo);
-					
-					if (mapMotivoGastos.get(codMotivo) == null) {
-						List<ComboOpcion> gastos = new ArrayList<ComboOpcion>();
-						gastos.add(opcionGasto);
-						mapMotivoGastos.put(codMotivo, gastos);
-					} else {
-						mapMotivoGastos.get(codMotivo).add(opcionGasto);}
-				}
-			}
+//			for (String fila : combos) {
+//				String combo = fila.substring(0, 2);
+//				String codMotivo = fila.substring(2, 6);
+//				if (combo.equals("MO"))
+//					cmbMotivo.add(new ComboOpcion(codMotivo, codMotivo + " - " + fila.substring(7).trim()));
+//				
+//				if (combo.equals("GA")) {
+//					String codGasto = fila.substring(6, 10);
+//					ComboOpcion opcionGasto = new ComboOpcion(codGasto, codGasto + " - " + fila.substring(10).trim());
+//					cmbGasto.add(opcionGasto);
+//					mapGastoMotivo.put(codGasto, codMotivo);
+//					
+//					if (mapMotivoGastos.get(codMotivo) == null) {
+//						List<ComboOpcion> gastos = new ArrayList<ComboOpcion>();
+//						gastos.add(opcionGasto);
+//						mapMotivoGastos.put(codMotivo, gastos);
+//					} else
+//						mapMotivoGastos.get(codMotivo).add(opcionGasto);
+//				}
+//			}
 			
 			if (!message.equals(""))
 				request.setAttribute("message", message);
 		} catch (Exception e) {
-			request.setAttribute("message", "ERROR: " + e.getCause().getMessage());
+			System.out.println("ERROR: " + e.getCause().getMessage());
 		}
 		
 		request.setAttribute("cmbMotivo", cmbMotivo);
@@ -139,7 +140,7 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 	@SuppressWarnings("unchecked")
 	private void selectMotivo(PrintWriter writer, HttpServletRequest request) {
 		JSONArray jArray = new JSONArray();
-		String codMotivo = request.getParameter(COD_MOTIVO);
+		String codMotivo = request.getParameter("codMotivo");
 		if (codMotivo == null || codMotivo.trim().equals("")) {
 			for (ComboOpcion opcion : cmbGasto) {
 				JSONObject jGroup = new JSONObject();
@@ -149,8 +150,8 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 				jArray.add(jGroup);
 			}
 		} else {
-			if (mapMotivoGastos.get(request.getParameter(COD_MOTIVO)) != null)
-				for (ComboOpcion opcion : mapMotivoGastos.get(request.getParameter(COD_MOTIVO))) {
+			if (mapMotivoGastos.get(request.getParameter("codMotivo")) != null)
+				for (ComboOpcion opcion : mapMotivoGastos.get(request.getParameter("codMotivo"))) {
 					JSONObject jGroup = new JSONObject();
 					jGroup.put("codigo", opcion.getId());
 					jGroup.put("descripcion", opcion.getDescripcion());

@@ -1,11 +1,14 @@
+let dtLink = 'parametrosAlertas.do'
+
 $(document).ready(function() {
 	showMessage('message', getLocalStorageItem('message'));
 	$('.nav-parametros').addClass('active');
 	setCombo('combos.do?action=getMotivos', '#motivo', { opcion: ['1', '2'].indexOf($('#glg').val()) == -1 ? 9 : 8, glg: ""});
 	//setCombo('combos.do?action=getTiposGasto', '#filtroGasto', {codMotivo: $("#motivo").val() });
 	console.log($("#motivo").val());
+	dtParams = { accion: 'filtrar', cod_motivo: codigo };
+	filtrarAlertas();
 });
-
 
 
 jQuery(document).ready(function() {
@@ -13,6 +16,14 @@ jQuery(document).ready(function() {
 	selectMotivoLoad();
 	//ayudaMotivo();
 });
+
+function filtrarAlertas() {
+	loadAlertas();
+}
+
+function loadAlertas() {
+	loadTable('#motivoDtContainer', dtLink, dtParams);
+}
 
 function resetForm() {
 	$(".message").html("");

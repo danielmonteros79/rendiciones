@@ -11,9 +11,10 @@
 
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 </head>
-
+<script>
+var codigo = "<%=request.getSession().getAttribute("cod_motivo")%>";
+</script>
 <body>
 
 
@@ -47,15 +48,15 @@
 				</logic:present>
 	
 	
-		<div class="container py-5">
+		<div class="container py-2">
 			<div class="row pb-3 d-none" id="messageContainer">
 				<div class="col-sm-12">
 					<h5 id="message"></h5>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-12 mb-md-4">
-					<span class="font-weight-bold">Filtro Gastos</span>
+				<div class="col-sm-12 my-2">
+					<span class="font-weight-bold">B&uacute;squeda</span>
 				</div>
 			</div>
 			<div class="row">
@@ -65,7 +66,7 @@
 				</div>
 			</div>
 			
-			<html:form action="/parametrosGastosFiltro" styleId="parametrosGastosFiltro">
+			<html:form action="parametrosGastos" styleId="parametrosGastosFiltro">
 				<div class="row">
 					<div class="col-12">
 						<div class="has-float-label">
@@ -76,10 +77,11 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-sm-12 pt-3 pt-md-5 text-center">
+					<div class="col-sm-12 pt-3 pb-2 text-center">
 					
-						<html:submit style="margin-left:10px" styleClass="btn btn-primary px-5 py-3 mx-2" value="Filtrar" />
-						<html:button style="margin-rigth:4.1%" property="" value="Limpiar" styleClass="btn btn-primary px-5 py-3 mx-2" onclick="resetForm();"></html:button>
+						<html:submit styleClass="btn btn-primary px-4 py-2 mr-3 "
+						style="margin-left:10px;" value="Filtrar" />
+						<html:button style="margin-rigth:4.1%" property="" value="Limpiar" styleClass="btn btn-primary px-4 py-2 mx-2" onclick="resetForm();"></html:button>
 						
 					</div>
 				</div>
@@ -97,85 +99,28 @@
 					class="bbva-icon icon-coronita_bullet fab fa-rotate-270 text-blue align-middle mx-2"></i>
 				<small class="font-weight-bold">Gastos</small>
 			</div>
-		</div>
-		<div class="row py-3">
-			<div class="col-sm-12">
-				<h2 class="font-weight-500">Listado de Gastos</h2>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12 py-3 table-responsive-lg">
-				<div class="dt-container" id="gastosDtContainer"></div>
-			</div>
-		</div>
-	</div>
-
-
-
-	<div id="paginacion" class="text-center pb-5" style="margin-top: 43px;">
-		<display:table uid="row" name="gastos"
-			requestURI="parametrosGastosFiltro.do" id="ParametrosGastosTable"
-			excludedParams="false"
-			decorator="com.sa.decorator.parametros.ParametrosGastosTableDecorator"
-			pagesize="15" style="margin-left:-0.9%;width:99.7%;" export="true">
-			<display:column media="html csv excel" property="gasto" title="Gasto"
-				style="text-align:right;" sortable="true" />
-			<display:column media="html csv excel" property="descripcionGasto"
-				title="Descripción de Gasto" />
-			<display:column media="html csv excel" property="motivo"
-				title="Motivo" style="text-align:right;" sortable="true" />
-			<display:column media="html csv excel" property="descripcionMotivo"
-				title="Descripción de Motivo" />
-			<display:column media="html csv excel" property="ristra"
-				title="Ristra" style="text-align:left;" />
-			<display:column media="html csv excel" property="bimon" title="Bimon"
-				style="text-align:center;" />
-			<display:column media="html csv excel" property="comprob"
-				title="Comprob" />
-			<display:column media="html csv excel" property="autoriz"
-				title="Autoriz" />
-			<display:column media="html csv excel" property="observ"
-				title="Observación" />
-			<display:column media="html csv excel" property="estado"
-				title="Estado" style="text-align:center;" />
-			<display:column media="html" property="opciones" title="Opciones"
-				style="width:4%" />
-
-			<display:setProperty name="export.excel.filename"
-				value="ListadoParametrosGastos.xls" />
-			<display:setProperty name="export.csv.filename"
-				value="ListadoParametrosGastos.csv" />
-		</display:table>
-	</div>
-
-
-	<div class="bg-light">
-		<div class="container py-5 text-center">
-			<div class="row">
-				<div class="col-sm-12">
-					<h2 class="font-weight-400">&iquest;Quer&eacute;s dar de alta
-						a un gasto?</h2>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 pt-3 pt-md-5">
+			<div class="col-sm-12 text-right">
 					<html:form action="parametrosGastosDetalle" styleId="addGasto">
 						<input type="hidden" name="accion" value="alta" />
 						<input type="hidden" name="back" value="false" />
 						<a href="#" onclick="agregarGasto()"
 							class="btn btn-info px-5 py-3" title="Alta de motivo">
-							Agregar nuevo gasto </a>
+							Agregar Gasto </a>
 					</html:form>
 
 				</div>
+		</div>
+		<div class="row py-3">
+			<div class="col-sm-12">
+				<h2 class="font-weight-500">Listado de Gastos</h2>
 			</div>
-
-
-
-
+		</div>		
+			<div class="row">
+				<div class="col-md-12 py-3 table-responsive-lg" id="paginacion">
+				<div class="dt-container" id="parametrosGastosDtContainer"></div>
+			</div>
 		</div>
 	</div>
-
 	<script type="text/javascript" src="./static/js/parametrosGastos.js"></script>
 </body>
 </html>

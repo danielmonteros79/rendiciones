@@ -15,6 +15,11 @@
 	<link rel="stylesheet" type="text/css" href="./css/Parametros.css">
 	<style>td {white-space:nowrap;text-align:left;}</style>
 </head>
+<script>
+var motivo = "<%=request.getSession().getAttribute("cod_motivo")%>";
+var descMotivo = "<%=request.getSession().getAttribute("desc_motivo")%>";
+var gasto = "<%=request.getSession().getAttribute("cod_gasto")%>";
+</script>
 <body>	
 	<!-- -------------------------------------- -->
 	<div class="mt-5 mb-1 pt-3 container text-center">
@@ -52,29 +57,48 @@
 					</div>
 				</div>
 				<div class="row px-5 mx-5">
-					<div class="col-sm-12 col-lg-6 pt-2  has-float-label scroll-err">
-
-						<div class="has-float-label form-group ">
-							<select id="filtroMotivo" property="codMotivo"  class="form-control bg-light"></select>
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label>Motivo</label>
-
-						</div>
-
-						
-					</div>
-					
-					<div class="col-sm-12 col-lg-6 pt-2  pl-lg-1  has-float-label scroll-err">
-						<div class="has-float-label form-group d-flex align-items-center  bg-light ">
-						
 				
-							<select id="filtroGasto" property="codGasto"  class="form-control bg-light"></select>
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label>Gasto</label>
+					<div class="col-sm-12 pt-2 col-lg-4  scroll-err">
+						<div class="has-float-label">
+						<html:text property="codAlerta" styleId="codAlerta" styleClass="form-control bg-light text-uppercase" maxlength="4" onkeypress="return numericOnly(event);"/>
+							<label for="codAlerta">Alerta</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+					</div>
 					
+					<div class="col-sm-12 pt-2 col-lg-4  scroll-err">
+
+						<div class="has-float-label form-group scroll-err d-flex align-items-center  bg-light ">
+<!-- 							<select id="filtroMotivo" property="codMotivo"  class="form-control bg-light"></select> -->
+<!-- 							<i class="bbva-icon icon-uniE003 text-primary"></i> <label>Motivo</label> -->
+							
+							<html:select property="codMotivo" styleId="codMotivo" styleClass="form-control bg-light">
+							</html:select>
+							<div class= "pr-3">
+							<i class="bbva-icon icon-uniE003 text-primary"></i>
+							<label for="codMotivo">Motivo</label>
+							</div>
+						</div>
+						
+					</div>
+					
+					<div class="col-sm-12 pt-2 col-lg-4  scroll-err">
+						<div class="has-float-label form-group scroll-err d-flex align-items-center  bg-light ">					
+				
+<!-- 							<select id="filtroGasto" property="codGasto"  class="form-control bg-light"></select> -->
+<!-- 							<i class="bbva-icon icon-uniE003 text-primary"></i> <label>Gasto</label> -->
+								
+								<html:select property="codGasto" styleId="gasto" styleClass="form-control bg-light">
+								</html:select>
+								<div class= "pr-3">
+								<i class="bbva-icon icon-uniE003 text-primary"></i>
+								<label for="codGasto">Gasto</label>
+								</div>
 
 						</div>
 					</div>
 					
-					<div class="col-sm-12 col-lg-4 pt-2  has-float-label">
+					<div class="col-sm-12 col-lg-3 pt-2  has-float-label">
 						<div class="has-float-label form-group scroll-err d-flex align-items-center  bg-light ">
 							<html:select property="rend" styleClass="form-control bg-light">
 								<html:option value=""></html:option>
@@ -89,25 +113,31 @@
 						</div>
 					</div>
 
-					
-					
-					<div class="col-sm-12 col-lg-4 pt-2 pl-lg-1 scroll-err">
-					<div class="has-float-label form-group">
-						
-						<html:select property="estado" styleId="estado" styleClass="form-control bg-light">
+					<div class="col-sm-6 pt-2 col-lg-3 pl-lg-1 scroll-err">
+						<div class="has-float-label form-group d-flex align-items-center  bg-light">
+						<html:select property="montCant" styleId="montCant" styleClass="form-control bg-light" onchange="impCantChange();">
 							<html:option value=""></html:option>
-							<html:option value="I">Inactivo</html:option>
-							<html:option value="A">Activo</html:option>
+							<html:option value="M">Monto</html:option>
+							<html:option value="C">Cantidad</html:option>
 						</html:select>
-						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="estado">Estado</label>
-						<div class="invalid-feedback mb-3"></div>
+						<div class= "pr-3">
+							<i class="bbva-icon icon-uniE003 text-primary"></i>
+							<label for="montCant">Monto/Cantidad</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+						</div>
+						
 					</div>
-				</div>
 					
+					<div class="col-sm-6 col-lg-3 pt-2 pl-lg-1 has-float-label scroll-err">
+						<div class="has-float-label">
+						<html:text property="impCant" styleId="impCant" onkeypress="return numericOnly(event);" styleClass="form-control bg-light" /> 
+							<label for="impCant">Valor</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+					</div>					
 					
-					
-					<div class="col-sm-12 pt-2 col-lg-4 pl-lg-1 scroll-err">
+					<div class="col-sm-12 pt-2 col-lg-3 pl-lg-1 scroll-err">
 						<div class="has-float-label form-group d-flex align-items-center  bg-light">
 						<html:select property="periodo" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
@@ -122,13 +152,11 @@
 						</html:select>
 						<div class= "pr-3">
 							<i class="bbva-icon icon-uniE003 text-primary"></i>
-							<label for="periodo">Perido</label>
+							<label for="periodo">Per&iacute;odo</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
 						</div>
-					</div>
-				
-				
+					</div>				
 					
 					<div class="col-sm-12 pt-2 col-lg-4  scroll-err">
 						<div class="has-float-label form-group d-flex align-items-center bg-light">
@@ -148,31 +176,7 @@
 						</div>
 					</div>
 					
-					<div class="col-sm-6 pt-2 col-lg-4 pl-lg-1 scroll-err">
-						<div class="has-float-label form-group d-flex align-items-center  bg-light">
-						<html:select property="montCant" styleId="montCant" styleClass="form-control bg-light" onchange="impCantChange();">
-							<html:option value=""></html:option>
-							<html:option value="M">Monto</html:option>
-							<html:option value="C">Cantidad</html:option>
-						</html:select>
-						<div class= "pr-3">
-							<i class="bbva-icon icon-uniE003 text-primary"></i>
-							<label for="montCant">Mont/Cant</label>
-							<div class="invalid-feedback mb-3"></div>
-						</div>
-						</div>
-						
-					</div>
-					
-					<div class="col-sm-6 col-lg-4 pt-2 pl-lg-1 has-float-label scroll-err">
-						<div class="has-float-label">
-						<html:text property="impCant" styleId="impCant" onkeypress="return numericOnly(event);" styleClass="form-control bg-light" /> 
-							<label for="impCant">Importe</label>
-							<div class="invalid-feedback mb-3"></div>
-						</div>
-					</div>
-					
-					<div class="col-sm-6 pt-2 col-lg-6  scroll-err">
+					<div class="col-sm-6 pt-2 col-lg-4  scroll-err">
 						<div class="has-float-label form-group d-flex align-items-center  bg-light">
 						<html:select property="nivMax" styleId="nivMax" styleClass="form-control bg-light" >
 							<html:option value=""></html:option>
@@ -190,13 +194,13 @@
 						
 							<div class= "pr-3">
 								<i class="bbva-icon icon-uniE003 text-primary"></i>
-								<label for="nivMax">Nivel M&aacute;x</label>
+								<label for="nivMax">Nivel M&aacute;ximo</label>
 								<div class="invalid-feedback mb-3"></div>
 							</div>
 						</div>
 					</div>
 					
-					<div class="col-sm-6 pt-2 col-lg-6 pl-lg-1 scroll-err">
+					<div class="col-sm-6 pt-2 col-lg-4 pl-lg-1 scroll-err">
 						<div class="has-float-label form-group d-flex align-items-center  bg-light">
 						<html:select property="nivMin" styleId="nivMin" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
@@ -213,7 +217,7 @@
 						</html:select> 
 							<div class= "pr-3">
 								<i class="bbva-icon icon-uniE003 text-primary"></i>
-								<label for="nivMin">Nivel Min</label>
+								<label for="nivMin">Nivel M&iacute;nimo</label>
 								<div class="invalid-feedback mb-3"></div>
 								
 								<div id="errorImpCant" style="color:red;"></div>
@@ -230,10 +234,23 @@
 						</div>
 					</div>
 					
-				
+					<div class="col-sm-12 col-lg-3 pt-2  has-float-label">
+					<div class="has-float-label form-group">
+						
+						<html:select property="estado" styleId="estado" styleClass="form-control bg-light">
+							<html:option value=""></html:option>
+							<html:option value="I">Inactivo</html:option>
+							<html:option value="A">Activo</html:option>
+						</html:select>
+						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
+							for="estado">Estado</label>
+						<div class="invalid-feedback mb-3"></div>
+					</div>
+					</div>
+					
 					<div class="col-sm-12 text-right mt-4 ">
 				
-						<a href="parametrosAlertasFiltro.do" class="btn btn-link px-5 py-3 mr-2 font-weight-bold" >
+						<a href="javascript:history.back()" class="btn btn-link px-5 py-3 mr-2 font-weight-bold" >
 							 Volver
 						</a>
 						
@@ -244,10 +261,7 @@
 							<html:button property="" styleClass="btn btn-info px-5 py-3 ml-2" onclick="confirmarEliminarAlerta()" value="Eliminar"/>
 						</logic:equal>
 						
-					</div>
-				
-					
-					
+					</div>					
 				
 					</div>
 				</div>
@@ -268,7 +282,11 @@
 	<logic:equal value="alta" name="ParametrosAlertasForm" property="accion">
 		<script>
 			$( document ).ready(function() {
+				//NO PUEDO INHABILITAR EL SELECT DE MOTIVO PORQUE AFECTA AL FORMULARIO
+				$('#codAlerta').attr('readonly', true);
 				$('#estado').attr('disabled','disabled');
+				$('#codMotivo').append("<option selected>" + motivo + " - " + descMotivo + "</option>");
+				setCombo('combos.do?action=getTiposGasto', "select[name='codGasto']", {codMotivo: motivo});
 			});
 		</script>
 	</logic:equal>
@@ -278,6 +296,8 @@
 				$('input').attr('readonly', true);
 				$('textarea').attr('readonly', true);
 				$('select').attr('disabled','disabled');
+				$('#codMotivo').append("<option selected>" + motivo + " - " + descMotivo + "</option>");
+				$('#gasto').append("<option selected>" + gasto + "</option>");
 			});
 		</script>
 	</logic:equal>
@@ -285,8 +305,10 @@
 	<logic:equal value="modificacion" name="ParametrosAlertasForm" property="accion">
 		<script>
 			$( document ).ready(function() {
-				$('#motivo').attr('disabled','disabled');
-				$('#gasto').attr('disabled','disabled');
+				$('#codAlerta').attr('readOnly',true);
+				$('#estado').attr('disabled','disabled');
+				$('#codMotivo').append("<option selected>" + motivo + " - " + descMotivo + "</option>");
+				$('#gasto').append("<option selected>" + gasto + "</option>");
 			});
 		</script>
 	</logic:equal>

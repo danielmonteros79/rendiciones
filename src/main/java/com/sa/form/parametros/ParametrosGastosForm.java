@@ -30,6 +30,9 @@ public class ParametrosGastosForm extends ActionForm {
 	private boolean readonly;
 	private boolean back;
 	private List<String> centrosCosto;
+	
+	private String descripcionMotivo;
+	private String detalleRistra;
 
 	public void clear() {
 		this.codigo = null;
@@ -50,6 +53,8 @@ public class ParametrosGastosForm extends ActionForm {
 		this.plazoAprob = null;
 		this.readonly = false;
 		this.centrosCosto = new ArrayList<String>();
+		this.descripcionMotivo = null;
+		this.detalleRistra = null;
 	}
 
 	public String getCodigo() {
@@ -222,4 +227,21 @@ public class ParametrosGastosForm extends ActionForm {
 	public String getCentrosCostoI(int index) {
 	    return this.centrosCosto.get(index);
 	}
+
+	public String getDescripcionMotivo() {
+		return descripcionMotivo;
+	}
+
+	public void setDescripcionMotivo(String descripcionMotivo) {
+		this.descripcionMotivo = descripcionMotivo;
+	}
+
+	public String getDetalleRistra() {
+		return detalleRistra;
+	}
+
+	public void setDetalleRistra(String detalleRistra) {
+		this.detalleRistra = detalleRistra;
+	}
+	
 }

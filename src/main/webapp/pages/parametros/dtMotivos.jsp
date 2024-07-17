@@ -2,26 +2,26 @@
 
 <h5 class="pb-3 table-message" id="motivosTableMessage"></h5>
 <display:table uid="row" name="motivos" requestURI="parametrosMotivo.do"
-	id="ParametrosMotivoTable" excludedParams="false"
+	id="ParametrosMotivoTable" 
 	decorator="com.sa.decorator.parametros.ParametrosMotivoTableDecorator"
-	pagesize="15" style="margin-left:-0.9%;width:99.7%;" export="true">
-	<display:column media="html csv excel" property="codigo" title="Motivo"
-		style="width:4%" sortable="true" style="text-align:right;" />
+	pagesize="30"  export="true">
+	<display:column media="html csv excel" property="codigo" title="MOTIVO"
+		 style=" width:4%" />
 	<display:column media="html csv excel" property="descripcion"
-		title="Descripción" />
+		title="DESCRIPCION" />
 	<display:column media="html csv excel" property="idGlg" title="GLG"
-		style="text-align:right;" />
-	<display:column media="html csv excel" property="idCentroCostos"
-		title="C. Costos" style="text-align:right;" />
+		style="" />
+	<!-- <display:column media="html csv excel" property="idCentroCostos"
+		title="CENTRO COSTOS" style="" /> -->
 	<display:column media="html csv excel" property="codSup"
-		title="Superior" />
+		title="REQUIERE SUPERIOR" />
 	<display:column media="html csv excel" property="codFirma"
-		title="Firma" />
+		title="REQUIERE FIRMANTE" />
 	<display:column media="html csv excel" property="codAprobacionGlg"
-		title="Ctrl. GLG" />
-	<display:column media="html csv excel" property="estado" title="Estado"
-		style="text-align:center;" />
-	<display:column media="html" property="opciones" title="Opciones"
+		title="REQUIERE CTRL.GLG" />
+	<display:column media="html csv excel" property="estado" title="ESTADO"
+		style="" />
+	<display:column media="html" property="opciones" title="OPCIONES"
 		style="width:4%" />
 
 	<display:setProperty name="export.csv.filename"

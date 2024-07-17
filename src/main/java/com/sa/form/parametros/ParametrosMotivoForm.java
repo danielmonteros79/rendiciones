@@ -28,6 +28,8 @@ public class ParametrosMotivoForm extends ActionForm {
 	private String meDiasInterv;
 	private List<String> centrosCosto;
 	private String accion;
+	private String descOscar;
+	private String idCentroCostosFijo;
 
 	public void clear() {
 		this.codigo = null;
@@ -48,6 +50,8 @@ public class ParametrosMotivoForm extends ActionForm {
 		this.idOperEspe = null;
 		this.meDiasInterv = null;
 		this.centrosCosto = new ArrayList<String>();
+		this.descOscar = null;
+		this.idCentroCostosFijo = null;
 	}
 	
 	public String getCodigo() {
@@ -211,5 +215,21 @@ public class ParametrosMotivoForm extends ActionForm {
 
 	public void setAccion(String action) {
 		this.accion = action;
+	}
+	
+	public String getDescOscar() {
+		return descOscar;
+	}
+
+	public void setDescOscar(String descOscar) {
+		this.descOscar = descOscar;
+	}
+	
+	public String getidCentroCostosFijo() {
+		return idCentroCostosFijo;
+	}
+
+	public void setidCentroCostosFijo(String idCentroCostosFijo) {
+		this.idCentroCostosFijo = idCentroCostosFijo;
 	}
 }

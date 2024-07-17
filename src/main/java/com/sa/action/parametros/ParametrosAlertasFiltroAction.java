@@ -22,7 +22,6 @@ import com.sa.services.ParametrosService;
 
 public class ParametrosAlertasFiltroAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosAlertasFiltroAction.class);
-	private static final String MSG = "message";
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -31,24 +30,24 @@ public class ParametrosAlertasFiltroAction extends RestriccionTransaccionAction 
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("Entra al action ParametrosAlertaFiltroAction. Usuario (" + user.getIdUser() + ")");
 		
-		String message = (String) request.getAttribute(MSG);
+		String message = (String) request.getAttribute("message");
 		if(message == null && ((frm.getCodMotivo().equals("") && !frm.getCodGasto().equals("")) || (!frm.getCodMotivo().equals("") && frm.getCodGasto().equals(""))) ){
-			request.setAttribute(MSG,"Debe completar ambos filtros o ninguno");
+			request.setAttribute("message","Debe completar ambos filtros o ninguno");
 			return mapping.findForward("fail");
 		}
 
-		List<ParametroAlerta> alerta = new ArrayList<>();
+		List<ParametroAlerta> alerta = new ArrayList<ParametroAlerta>();
 		try {
-			alerta = service.getAlertas("CONS", frm.getCodMotivo(), frm.getCodGasto());
-			request.setAttribute(MSG, service.getMsgAviso());
+			alerta = service.getAlertas("LIST", frm.getCodMotivo(), frm.getCodGasto(), "");
+			request.setAttribute("message", service.getMsgAviso());
 		} catch (Exception e) {
-			request.setAttribute(MSG, "ERROR: " + e.getCause().getMessage());
+			request.setAttribute("message", "ERROR: " + e.getCause().getMessage());
 		}
 		request.setAttribute("alerta", alerta);
 
 		request.setAttribute("cmbMotivo", frm.getCmbMotivo());
 		request.setAttribute("cmbGasto", frm.getCmbGasto());
 
-		return mapping.findForward("success");
+		return mapping.findForward("parametrosAlertaFiltro");
 	}
 }
