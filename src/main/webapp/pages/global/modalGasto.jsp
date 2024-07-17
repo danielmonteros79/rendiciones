@@ -45,8 +45,10 @@
 					</div>
 					<div class="col-lg-3 col-sm-12 py-2">
 						<div class="has-float-label">
-							<input type="text" class="form-control bg-white an-integer-pos" id="modalGastoCCostosDestino" placeholder="C. Costos Destino" readonly required />
-							<label for="modalGastoCCostosDestino">C. Costos Destino</label>
+							<small class="text-muted">C. Costos Destino</small>
+							<input type="text" class="form-control bg-white an-integer-pos" 
+							id="modalGastoCCostosDestino" placeholder="C. Costos Destino" readonly 
+							required style="padding: 0px !important; height: auto !important;"/>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
 					</div>
