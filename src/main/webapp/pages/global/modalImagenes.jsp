@@ -49,21 +49,18 @@
 										<div class="col-sm-11 pt-2 pr-4 pb-4 pl-0 bg-warning-light">
 											- Se deben informar todos los comprobantes que ayuden a la comprensi&oacute;n del gasto.<br>
 											- No debe superar los 1.2 Mb. en los archivos .TIF.<br>
+											- S&oacute;lo ser&aacute;n tomados los primeros 20 caracteres en el nombre de las im&aacute;genes.<br>
 											- La im&aacute;genes pueden ser .PDF o .TIF (.TIF solo si fue generado por las herramientas de la sucursal).<br>
 											- En el caso que la imagen no sea clara o existan problemas para visualizarla se solicitar&aacute; que env&iacute;e el comprobante 
 											  al sector que lo solicite o directamente se rechazar&aacute; la rendici&oacute;n.<br>
 											- Se deben resguardar los comprobantes hasta que la rendici&oacute;n se encuentre finalizada.<br>
+											- Verifique las im&aacute;genes, ya que, luego de presionar el bot&oacute;n <b> "Generar" </b>, no se podr&aacute;n modificar.
 										</div>
 									</div>
 								</div>
 							</div>
 							<div class="row py-3">
 								<div class="px-3 w-100">
-								<div align="right">
-									<a href="#a" class="text-center btn btn-primary px-4 py-2 mb-3" id="modalImagenesBtnGenerar" onclick="modalImagenesOpenThuban()">
-									Ver im&aacute;genes</a>
-								</div>
-								
 									<div class="btn btn-light w-100 p-0" onclick="modalImagenesSeleccionarArchivo()">
 										<div class="col-sm-12 p-0 has-float-label">
 											<div class="input-group">
@@ -124,7 +121,7 @@
 								<i class="bbva-icon icon-coronita_close"></i> Salir
 							</a>
 							<a href="#a" class="btn btn-info px-5 py-3 ml-2" id="modalImagenesBtnGenerar" onclick="modalImagenesGenerar()">
-								Generar
+								Adjuntar Im&aacute;genes
 							</a>
 						</div>
 					</div>

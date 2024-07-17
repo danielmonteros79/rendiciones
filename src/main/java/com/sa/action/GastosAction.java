@@ -21,8 +21,6 @@ import ar.com.bbva.web.impl.SAMWebClient;
 
 public class GastosAction extends RestriccionTransaccionAction {
 	
-	private static final String UTF8_CHARSET = "text/html; charset=UTF-8";
-	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
@@ -35,6 +33,8 @@ public class GastosAction extends RestriccionTransaccionAction {
 				return baja(response, renForm, samClient);
 			else if (opcion.equals("CONS"))
 				return consulta(response, renForm, samClient);
+			else if (opcion.equals("VALIDAR"))
+				return validarGasto(response, renForm, samClient);
 			return null;
 		} catch (Exception e) {
 			log.error("", e);
@@ -42,10 +42,25 @@ public class GastosAction extends RestriccionTransaccionAction {
 		}
 	}
 	
+	private ActionForward validarGasto(HttpServletResponse response, RendicionDetalleForm renForm, SAMWebClient samClient) throws Exception {
+		Map<String, Object> resp = new HashMap<String, Object>();
+		 
+		PagosService pagosService = new PagosService(samClient);
+		String rendicion = renForm.getIdRendicion().length() < 5 ? "000000000000" + renForm.getIdRendicion() : renForm.getIdRendicion();
+		String validacionExc = pagosService.getValidacionRendicion("0002", rendicion, "00000000" + renForm.getIdGasto());
+		//String validacionHardcodeada = "NO OKA";
+		
+		resp.put("textoValidacion", validacionExc);//MODIFICAR CUANDO SE TERMINE EL SERVICIO
+
+		response.setContentType("text/html; charset=UTF-8");
+		return writeJson(response, resp);
+	}
+	
 	private ActionForward altaModif(HttpServletResponse response, RendicionDetalleForm renForm, SAMWebClient samClient) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		 
 		PagosService pagosService = new PagosService(samClient);
+		
 		Integer idGasto = pagosService.altaModifGasto(renForm.getOpcion(), renForm.getIdGasto(), renForm.getIdRendicion(), renForm.getMoneda(),
 				renForm.getTipoComprobante(), renForm.getTipoFactura(), renForm.getFactura(), renForm.getCuit(), renForm.getGasto(), renForm.getMonto(),
 				renForm.getFechaGasto(), renForm.getCodMotivo(), renForm.getCostosDestino(), renForm.getCupCred(), renForm.getCupDeb(), renForm.getCupon(),
@@ -56,7 +71,7 @@ public class GastosAction extends RestriccionTransaccionAction {
 		resp.put("idGasto", idGasto);
 		resp.put("showModalDatosAdicionales", datosAdicionales.equalsIgnoreCase("S"));
 
-		response.setContentType(UTF8_CHARSET);
+		response.setContentType("text/html; charset=UTF-8");
 		return writeJson(response, resp);
 	}
 	
@@ -66,7 +81,7 @@ public class GastosAction extends RestriccionTransaccionAction {
 		pagosService.bajaGasto(renForm.getIdGasto(), this.sessionUserWorking.getIdUser(), renForm.getIdRendicion());
 		resp.put("message", pagosService.getMsg());
 
-		response.setContentType(UTF8_CHARSET);
+		response.setContentType("text/html; charset=UTF-8");
 		return writeJson(response, resp);
 	}
 	
@@ -74,11 +89,11 @@ public class GastosAction extends RestriccionTransaccionAction {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		RendicionesService serviceCombos = new RendicionesService(samClient);
 		List<Gastos> gastos = serviceCombos.getGastos(renForm.getIdRendicion(), renForm.getIdGasto(), this.sessionUserWorking.getIdUser(), renForm.getCodMotivo());
-		if (gastos.isEmpty())
+		if (gastos.size() == 0)
 			return writeError(response, "Gasto inexistente");
 		resp.put("gasto", gastos.get(0));
 		
-		response.setContentType(UTF8_CHARSET);
+		response.setContentType("text/html; charset=UTF-8");
 		
 		return writeJson(response, resp);
 	}

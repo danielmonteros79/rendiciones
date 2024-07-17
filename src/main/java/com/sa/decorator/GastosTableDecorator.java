@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
 import com.sa.entities.Gastos;
+import com.sa.entities.Rendicion;
 
 public class GastosTableDecorator extends SumTableDecorator {
 	
@@ -59,10 +60,11 @@ public class GastosTableDecorator extends SumTableDecorator {
 		String codGasto = gasto.getNroGasto();
 		String codObs = gasto.getObs();
 		boolean readOnlyDatosAdicionales = (Boolean) request.getAttribute("readOnlyDatosAdicionales");
+		String gastoMonto = gasto.getMonto();
 
 		String imgTag = "<i class=\"bbva-icon icon-uniE0D2 fa-lg\" data-toggle=\"tooltip\" title=\"Datos adicionales\"></i>";
 		String link = "<a href=\"#a\" class=\"text-gray\" onclick=\"modalDatosAdicionalesShow('" + idRendicion + "', '" + codMotivo + "', '" + 
-				idGasto + "', '" + codGasto + "', '" + codObs + "', " + readOnlyDatosAdicionales + ")\">" + imgTag + "</a>";
+				idGasto + "', '" + codGasto + "', '" + codObs + "', '" + gastoMonto + "', " + readOnlyDatosAdicionales + ")\">" + imgTag + "</a>";
 		
 		return link;
 	}
@@ -112,6 +114,27 @@ public class GastosTableDecorator extends SumTableDecorator {
 			return "FACTURA OBLIGATORIA";
 			
 		return comprobante;
+	}
+	
+	public String getAlerta() {
+		Gastos gasto = (Gastos) this.getCurrentRowObject();
+		String img = "";
+		String alerta = ((Gastos) this.getCurrentRowObject()).getAlerta();
+		boolean hayAlerta = false;
+		if(alerta != null){
+			hayAlerta = alerta.equals("ALERTA") ? true : false;
+		}
+		//boolean hayAlerta = true;
+		PageContext pc = this.getPageContext();
+		HttpServletRequest request = (HttpServletRequest) pc.getRequest();
+		String contextPath = request.getContextPath();
+		img = "<img width='25px' src='" + contextPath 
+		+ "/images/iconos/alerta_riesgo_grave.png' alt='Riesgo' title='Riesgo' data-toggle='tooltip' title='Riesgo' />";
+		
+		String link = "<a href=\"#a\" class=\"text-gray\" onclick=\"obtenerDetalleAlertaGasto("
+		+ gasto.getIdGasto() + ")\">" + img + "</a>";
+			
+		return hayAlerta ? link : "";
 	}
 
 	@Override

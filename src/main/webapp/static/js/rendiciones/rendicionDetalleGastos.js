@@ -42,6 +42,33 @@ $(document).ready(function() {
 });
 
 
+function modificarRendExc(){
+	//$("#exc-check").prop("checked", $("#exc-check").is(":checked") ? false : true);
+	let estadoRendExc = new URLSearchParams(location.search).get('estadoRend');
+	let paramsExcRend ={
+	action: "exceptuarRendicion",
+	opcion:"EXEP",
+//	id_user:  $('#user').val(),
+	idRendicion: $('#idRendicion').html(),
+//	codMotivo: $('#codMotivo').val(),
+//	fechaDesde: $('#fechaDesde').html(),
+//	fechaHasta: $('#fechaHasta').html(),
+//	desc_rendicion:$('#descripcion').html(),
+//	est_rend: estadoRendExc,
+	cod_estado_doc: $("#exc-check").is(":checked")? "EXEP": ""
+	}
+	
+	callAjax('rendicionDetalleGastos.do', paramsExcRend, 'finalizarModificacionSuccess');
+}
+
+$('#exc-check').click(function(){
+	modificarRendExc()
+
+})
+
+//$('#checkbox-container').click(function(){
+//	modificarRendExc()
+//})
 
 function setDescripcionRechazo(divDes, tag) {
   $('#estadoDiv').addClass('text-danger');
@@ -56,6 +83,51 @@ function setDescripcionRechazo(divDes, tag) {
   });
 }
 
+function validarRend(){
+	//modalGastoSubmitted = true;
+	//$('#modalGastoMessageContainer').addClass('d-none');
+	
+//	if (!validateForm('modalGasto', true))
+//		return;
+	var params = {
+		action: 'validarRend',
+		idRendicion: $('#idRendicion').html()
+	};
+	
+	callAjax('avanzarRend.do', params, 'evaluarValidacion');
+}
+
+function evaluarValidacion(data){
+	if(!data.textoValidacion.includes('OK')){
+		setTimeout(function(){			
+			setTimeout(function(){
+				if(data.textoValidacion.includes('AVISO')){
+					$('#modalRendicionTitle').html("La rendición requiere ser confirmada");
+					$('#aceptarRendicionBtn').html("Confirmar");
+				}
+				else if(data.textoValidacion.includes('ALERTA') && $("#exc-check").is(":checked")){ 
+					$('#modalRendicionTitle').html("La rendición no cumple con las políticas de gastos");
+					$('#aceptarRendicionBtn').html("Continuar");
+				}
+				else{
+					$('#modalRendicionTitle').html("La rendición no cumple con las políticas de gastos"); 
+					$('#aceptarRendicionBtn').css("display", "none");
+				}
+				$('#modalRendicionValidarMessage').html(data.textoValidacion);
+			},300)
+			$('#modalRendicionFueraDePolitica').modal('show');	
+		},200)
+    }
+	else{
+		saveExpenseReport();
+	}
+}
+
+function obtenerDetalleAlertaGasto(id){
+	var mensaje = ["El gasto no cumple con la politica vigente, modifiquelo para que se vuelva a validar"];
+	modalAlertaLoad("", mensaje, id);
+}
+
 function setMotivoDescripcionRechazo(codigo, callback) {
   setOnlyDataCombo('combos.do?action=getMotivos', { opcion: '5', glg: "" }, function (comboData) {
     let descripcionesMotRechazo = [...comboData];
@@ -67,7 +139,21 @@ function setMotivoDescripcionRechazo(codigo, callback) {
   });
 }
 
+function saveExpenseReport() {
+	
+	const queryString = window.location.search;
+	const urlParam = new URLSearchParams(queryString.substring(1));
+	
+	var params = {
+		action: 'generar',
+		esAprobacion: false,
+		idRendicion: $('#idRendicion').html(),
+		motivo: urlParam.get('codMotivo'),
+	};
+	
 
+	callAjax('avanzarRend.do', params, 'saveReportSuccess');
+}
 
 function init(data) {
 	var lsMessage = getLocalStorageItem('message');
@@ -123,7 +209,7 @@ function setVisibility() {
 
 function loadTables() {
 	loadTable('#gastosDtContainer', dtLink, dtParamsGastos);
-	loadTable('#consumosPendientesDtContainer', dtLink, dtParamsConsumosPendientes);
+	//loadTable('#consumosPendientesDtContainer', dtLink, dtParamsConsumosPendientes);
 }
 
 function tableLoadAfterFinished() {
@@ -151,6 +237,12 @@ function tableLoadAfterFinished() {
 			$('#mensajeImgRend').addClass('d-none');
 			$('#listadoImagenesText').removeClass('d-none');
 			$('#containerImagenesCargadas').removeClass('d-none')
+			if($('#estadoRend').val() == "PENDI"){
+				$('#containerSaveBtn').removeClass('d-none');
+			}
+			else{
+				$('#containerSaveBtn').addClass('d-none');
+			}
 		}
 	}
 	
@@ -310,5 +402,3 @@ function openImagenes() {
 	
 	modalImagenesShow($('#idRendicion').html(), false, $('#urlThuban').val() );
 }
-
-console.log(getLocalStorageItem('respuestaCombustible'), 'respuesta combuxtible')

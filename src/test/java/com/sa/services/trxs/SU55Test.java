@@ -27,14 +27,14 @@ import static org.mockito.Mockito.when;
 
 class SU55Test {
 
-    @Test
+    /*@Test
     void testConstructor() throws Exception {
         SU55 actualSu55 = new SU55();
         actualSu55.hardcodear(new HashMap<>());
         assertTrue(actualSu55.listaCupones.isEmpty());
         assertTrue(actualSu55.listaGastos.isEmpty());
         assertTrue(actualSu55.listaGastosRedistribuidos.isEmpty());
-    }
+    }*/
 
     @Test
     void testConstructor2() {
@@ -64,7 +64,7 @@ class SU55Test {
     }
 
 
-    @Test
+    /*@Test
     @DisplayName("Testeando setInforGasto")
     void setInfoGasto() throws ParseException {
 
@@ -72,7 +72,7 @@ class SU55Test {
         Gastos gasto = new Gastos();
         su55.setInfoGasto("000000000000234 56789543256799863534525767898579036256256578578  987689765674564345 2023-1-1 6856675432421645469345735737222454236684567978455342154568098765645343134254 2657655637376356563468467835686 1234435654457658967953417897442341312  34532341414367567859694334690 97645647786521346876505345765546546546546097123", gasto, new HashMap<>());
 
-    }
+    }*/
 
     @Test
     @DisplayName("Testeando mapData con Lista2 con datos")

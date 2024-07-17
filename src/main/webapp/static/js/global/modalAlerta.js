@@ -103,11 +103,19 @@ function modalAlertaLoadSuccess(alerta, mensaje, id) {
 function modalAlertaSetVisibility(alerta, mensaje, id) {
 	let agregado = document.getElementById('itemsAlerta')
 	  agregado.innerHTML = "";
-	$('#modalAlertaTitulo').html( alerta + " - ID: " + id );
+	
+	if(alerta.length != 0){
+		$('#modalAlertaTitulo').html( alerta + " - ID: " + id );
+	}
+	else{
+		$('#alertaRiskTitle').css('display','none');
+		$('#itemsAlerta').css('list-style','none');
+	}
+	
 	if(mensaje.length == 0) $('#itemsAlerta').html('<p >'+ '</p>')
 	mensaje.forEach(m => {
 		let nuevoLi = document.createElement("li");
-		if(m.includes('por pol')){
+		if(m.includes('por pol') || m.includes('con la pol')){
 			nuevoLi.innerHTML = '<p class="text-dark ">' + m + '  <h6 class="text-dark"> - Ver  <a target="_blank" href="https://drive.google.com/file/d/1jbb0NfnVkOYn8z3IQpsqDVFnw2K1gn18/view">  Politica  </a> y  <a target="_blank"  href="https://drive.google.com/file/d/1qWLOC96Pwzk6BGv9qVVurnDmiz8EphNu/view">  Montos</a>. Por consultas contactarse con  gastoseinversionestyc-arg@bbva.com</h6> </p> '
 		}else{
 			nuevoLi.innerHTML = '<p class="text-dark">'+ m + '</p>'

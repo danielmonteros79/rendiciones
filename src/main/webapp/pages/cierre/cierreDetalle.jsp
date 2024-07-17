@@ -68,17 +68,18 @@
 	</div>
 </div>
 
-<div class="bg-light" id="divAcciones">
-	<div class="container py-5 text-center">
-		<div class="row">
-			<div class="col-sm-12">
-				<a href="#a" class="btn btn-primary px-5 py-3 mx-2" onclick="openImagenes()">
-					Im&aacute;genes
-				</a>
-			</div>
+<div class="container py-2 text-left d-no-edit  mb-3" >
+	<div class=" d-flex justify-content-between align-items-center flex-row">
+		<div class=" d-flex flex-column ">
+			<h2 id="listadoImagenesText" >Listado de im&aacute;genes</h2>
 		</div>
 	</div>
+	<div class="  d-flex justify-content-start align-items-start flex-column "  id="containerImagenes">
+		<div class="mr-3 d-flex " id="containerImagenesCargadas"></div>
+	</div>
+
 </div>
+
 
 <div class="container py-5">
 	<div class="row pb-3 div-resultado" id="rendicionDetalleGastosDivResultado">
@@ -109,4 +110,6 @@
 <jsp:include page="../global/modalDatosAdicionales.jsp" />
 <jsp:include page="../global/modalCupones.jsp" />
 <jsp:include page="../global/modalImagenes.jsp" />
-<script type="text/javascript" src="static/js/cierre/cierreDetalle.js"></script>
+
+
+<script type="text/javascript" src="js/cierre/cierreDetalle.js"></script>

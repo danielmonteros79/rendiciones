@@ -121,12 +121,13 @@ public class RendicionesService {
 
 	}
 
-	public String altaRendicion(String idusr, String motivo, String feDesde, String feHasta, String descripcion)
+	public String altaRendicion(String idusr, String motivo, String feDesde, String feHasta, String descripcion, Boolean excepcion)
 			throws TransactionException {
 		log.info("Comienza llamado a trx para crear nueva rendicion)");
 
 		ManagerTransaction manager = new ManagerTransaction(new SU54());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+		String codEstadoDoc = excepcion ? "EXCP" : "";
 		
 		parametersExecute.put("opcion", "ALTA");
 		parametersExecute.put("id_user", idusr);
@@ -136,6 +137,7 @@ public class RendicionesService {
 		parametersExecute.put("desc_rendicion", descripcion);
 		parametersExecute.put("importe_rend_pesos", "000000000000000");
 		parametersExecute.put("id_gestor_gastos", "000");
+		parametersExecute.put("cod_estado_doc", codEstadoDoc);
 		
 		manager.executeTrx(this.client, parametersExecute);
 		String idRendicion = (String) manager.getDataReturn();
@@ -144,7 +146,7 @@ public class RendicionesService {
 		return idRendicion;
 	}
 
-	public String modificarRendicion(String idRendicion, String idUser, String codMotivo, String fechaDesde, String fechaHasta, String descRendicion, String estadoRend)
+	public String modificarRendicion(String idRendicion, String idUser, String codMotivo, String fechaDesde, String fechaHasta, String descRendicion, String estadoRend, String excepcion)
 			throws TransactionException {
 		ManagerTransaction manager = new ManagerTransaction(new SU54());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
@@ -157,6 +159,23 @@ public class RendicionesService {
 		parametersExecute.put("cod_motivo", codMotivo);
 		parametersExecute.put("desc_rendicion", descRendicion);
 		parametersExecute.put("est_rend", estadoRend);
+		parametersExecute.put("cod_estado_doc", excepcion);
+		
+		manager.executeTrx(this.client, parametersExecute);
+		idRendicion = (String) manager.getDataReturn();
+		this.msg = (String) manager.getMensajeAviso();
+		
+		return idRendicion;
+	}
+	
+	public String exceptuarRendicion(String opcion, String idRendicion, String excepcion)
+			throws TransactionException {
+		ManagerTransaction manager = new ManagerTransaction(new SU54());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+		
+		parametersExecute.put("opcion", opcion);
+		parametersExecute.put("id_rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
+		parametersExecute.put("cod_estado_doc", excepcion);
 		
 		manager.executeTrx(this.client, parametersExecute);
 		idRendicion = (String) manager.getDataReturn();

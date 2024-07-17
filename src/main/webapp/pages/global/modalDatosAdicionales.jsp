@@ -5,7 +5,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<a href="#a" class="float-right" data-dismiss="modal">
-					<i class="bbva-icon icon-coronita_close"></i>
+					<!-- <i class="bbva-icon icon-coronita_close"></i> -->
 				</a>
 			</div>
 			<div class="modal-body px-3 mx-3 px-lg-3 mx-lg-5">

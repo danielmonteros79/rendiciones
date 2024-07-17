@@ -200,6 +200,31 @@
 		<put name="content" value="/pages/CierreMensualContable.jsp" />
 		<put name="accion" value="mostrarPanel" direct="false" />
 	</definition>
+	
+		<definition name="CierreMensualContable" extends="mainLayout">
+		<put name="pageTitle" value="Cierre Mensual Contable"
+			direct="false" />
+		<put name="tituloCuerpo" value="Cierre Mensual Contable" direct="false" />
+		<put name="content" value="/pages/CierreMensualContable.jsp" />
+		<put name="accion" value="mostrarPanel" direct="false" />
+	</definition>
+	
+	<definition name="consumosSinRendir" extends="mainLayout">
+		<put name="pageTitle" value="Consumos No Rendidos"
+			direct="false" />
+		<put name="tituloCuerpo" value="Consumos No Rendidos" direct="false" />
+		<put name="content" value="/pages/cierre/consumosNoRendidos.jsp" />
+		<put name="accion" value="mostrarPanel" direct="false" />
+	</definition>
+	
+	<definition name="aprobacionesPendientes" extends="mainLayout">
+		<put name="pageTitle" value="Aprobaciones Pendientes"
+			direct="false" />
+		<put name="tituloCuerpo" value="aprobaciones Pendientes" direct="false" />
+		<put name="content" value="/pages/cierre/aprobacionesPendientes.jsp" />
+		<put name="accion" value="mostrarPanel" direct="false" />
+	</definition>
+	
     
 <!-- ###################################################################################### Parametros -->
     

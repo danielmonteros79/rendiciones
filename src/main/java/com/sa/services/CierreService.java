@@ -28,7 +28,6 @@ public class CierreService {
 	private String msg;
 	private SimpleDateFormat sdfDMY = new SimpleDateFormat("dd/MM/yyyy");
 	private SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyy-MM-dd");
-	private static final String FORMAT = "%016d";
 
 	public CierreService(SAMWebClient samClient) {
 		this.client = samClient;
@@ -43,7 +42,7 @@ public class CierreService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		parametersExecute.put("id_user", idUser);
-		parametersExecute.put("id_rend", idRend != null && !idRend.trim().equals("") ? String.format(FORMAT, Integer.parseInt(idRend))
+		parametersExecute.put("id_rend", idRend != null && !idRend.trim().equals("") ? String.format("%016d", Integer.parseInt(idRend))
 				: "");
 		parametersExecute.put("cod_motivo", codMotivo);
 		parametersExecute.put("usr_sel", usrSel != null && !usrSel.trim().equals("") ? usrSel : "");
@@ -67,7 +66,7 @@ public class CierreService {
 		String rendiciones4 = "";
 		
 		for (Integer idRendicion : idRendiciones) {
-			String idRend = String.format(FORMAT, idRendicion);
+			String idRend = String.format("%016d", idRendicion);
 			
 			if (rendiciones1.length() <= 480)
 				rendiciones1 += idRend;
@@ -99,7 +98,7 @@ public class CierreService {
 		ManagerTransaction manager = new ManagerTransaction(new SU65());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		if (idProceso != null && !idProceso.equalsIgnoreCase("")) {
-			idProceso = String.format(FORMAT, Integer.parseInt(idProceso));
+			idProceso = String.format("%016d", Integer.parseInt(idProceso));
 		}
 		if (numRegistro != null && !numRegistro.equalsIgnoreCase("")) {
 			numRegistro = String.format("%010d", Integer.parseInt(numRegistro));
@@ -135,20 +134,20 @@ public class CierreService {
 		// Recorre la lista de rendiciones
 		for (Rendicion r : rendicionesSeleccionadas) {
 			if (rendiciones.length() <= 480) {
-				rendiciones += String.format(FORMAT, Integer.parseInt(String
+				rendiciones += String.format("%016d", Integer.parseInt(String
 						.valueOf(r.getId())));
 			} else {
 				if (rendiciones2.length() <= 480) {
-					rendiciones2 += String.format(FORMAT, Integer
+					rendiciones2 += String.format("%016d", Integer
 							.parseInt(String.valueOf(r.getId())));
 
 				} else {
 					if (rendiciones3.length() <= 480) {
-						rendiciones3 += String.format(FORMAT, Integer
+						rendiciones3 += String.format("%016d", Integer
 								.parseInt(String.valueOf(r.getId())));
 
 					} else {
-						rendiciones4 += String.format(FORMAT, Integer
+						rendiciones4 += String.format("%016d", Integer
 								.parseInt(String.valueOf(r.getId())));
 					}
 				}
@@ -205,7 +204,7 @@ public class CierreService {
 		parametersExecute.put("gastos", gastos.substring(0, 4)); 
 		int i = 1;
 		for (Integer id : idConsumos) {
-			parametersExecute.put("idres" + i, String.format(FORMAT, id));
+			parametersExecute.put("idres" + i, String.format("%016d", id));
 			i++;
 		}
 	
@@ -217,6 +216,55 @@ public class CierreService {
 		List<CierreTarjeta> cierreTarjeta = (List<CierreTarjeta>) manager.getDataReturnList();	
 
 		return cierreTarjeta;
+	}
+	
+	
+	public List<CierreTarjeta> obtenerCuponesPendientes(String fechaCierre, String usuario, String montoMin, String montoMax, String moneda) throws TransactionException {
+		log.info("Comienza llamado a trx su65 para generarCierreTarjeta)");
+
+		ManagerTransaction manager = new ManagerTransaction(new SU65());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+		//String totDolString  = String.valueOf(totDol).replace(".", "");
+		//String totPesString  = String.valueOf(totPes).replace(".", "") ;
+		
+		//parametersExecute.put("accion", "G");
+		parametersExecute.put("usuario",usuario);
+		parametersExecute.put("moneda", moneda);
+		parametersExecute.put("montoMin", montoMin);
+		parametersExecute.put("fecha", fechaCierre);
+
+	
+		manager.executeTrx(this.client, parametersExecute);
+		
+		msg = (String) manager.getMensajeAviso();
+		
+		@SuppressWarnings("unchecked")
+		List<CierreTarjeta> cierreTarjeta = (List<CierreTarjeta>) manager.getDataReturnList();	
+
+		return cierreTarjeta;
+	}
+	
+	public List<CierreTarjeta> obtenerAprobacionesPendientes(String fechaCierre, String usuario, String montoMin, String montoMax, String moneda, String glg) throws TransactionException {
+		log.info("Comienza llamado a trx su65 para generarCierreTarjeta)");
+
+		ManagerTransaction manager = new ManagerTransaction(new SU67());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+
+		parametersExecute.put("cod_user",usuario);
+		parametersExecute.put("moneda", moneda);
+		parametersExecute.put("monto_minimo", montoMin);
+		parametersExecute.put("fecha", fechaCierre);
+		parametersExecute.put("glg", glg);
+	
+		manager.executeTrx(this.client, parametersExecute);
+		
+		msg = (String) manager.getMensajeAviso();
+		
+		@SuppressWarnings("unchecked")
+		List<CierreTarjeta> cierreTarjeta = (List<CierreTarjeta>) manager.getDataReturnList();	
+
+		return cierreTarjeta;
+		
 	}
 	
 
@@ -260,6 +308,17 @@ public class CierreService {
 		msg = (String) manager.getMensajeAviso();
 		
 		return msg;
+	}
+	
+	public String obtenerAprobacionesPendientes() throws TransactionException {
+		log.info("Comienza llamado a trx para Obtener la lista de consumos no rendidos)");
+
+		ManagerTransaction manager = new ManagerTransaction(new SU67());
+		Map<String, Object> parametersExecute = new HashMap<String, Object>();
+		parametersExecute.put("", "");
+		manager.executeTrx(this.client, parametersExecute);
+
+		return null;
 	}
 	
 	

@@ -3,11 +3,14 @@ var dtLink = 'aprobacionDetalle.do';
 $(document).ready(function() {
 	callAjax('aprobacionDetalle.do', 'action=getMessage', 'init');
 	$('.nav-aprobacion').addClass('active');
+	callAjax('imagenes.do', { action: 'inicializar', idRend: $('#idRendicion').html()}, 'setImagenes');
+
 });
 
 function init(data) {
 	setVisibility();
 	loadTables();
+	
 }
 
 function setVisibility() {

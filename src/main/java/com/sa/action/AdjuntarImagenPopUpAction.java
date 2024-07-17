@@ -1,4 +1,4 @@
-package com.sa.action;
+/*package com.sa.action;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -79,7 +79,7 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 		if (frm.getAccion().equals("caratula"))
 			this.generateCaratula(response, frm, request, samClient, aprobacionesService, gastos);
 		else {
-			String path = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.path");
+			/*String path = (String) request.getSession().getServletContext().getAttribute("rendicion.aviso.path");
 			List<String> errores = ArchivoUtil.grabarArchivos(frm, aprobacionesService, path, nombreNuevo, false);
 			
 			if (!errores.isEmpty())
@@ -179,4 +179,4 @@ public class AdjuntarImagenPopUpAction extends RestriccionTransaccionAction {
 			throw new Exception(e);
 		}
 	}
-}
+}*/

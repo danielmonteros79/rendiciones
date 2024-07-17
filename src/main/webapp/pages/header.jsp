@@ -47,7 +47,7 @@
             	<html:link action="bienvenida.do" styleClass="navbar-brand d-none d-md-block">
 					<img src="./images/BBVA_WHITE.png" height="83px" alt="" >
                	</html:link>
-            	<ul class="navbar-nav flex-xs-row mb-0 pb-0" style="align-items: flex-end; flex-wrap: wrap;">
+            	<ul class="navbar-nav flex-xs-row mb-0 pb-0" style="align-items: flex-end; flex-wrap: nowrap;">
             		<% if (userWorking.getTipoPerfil().getPantalla().contains("Rendiciones")) { %>
 	                <li class="nav-item pr-md-2 ">
 	                	<html:link action="listadoRendiciones.do" styleClass="nav-link nav-rendiciones">
@@ -105,7 +105,11 @@
 	                </li>
 					<% } %>
 					
+<<<<<<< HEAD
+	               <% if (userWorking.getTipoPerfil().getPantalla().contains("Parametros")) { %>
+=======
 	                <% if (userWorking.getTipoPerfil().getPantalla().contains("Parametros")) { %>
+>>>>>>> 15efc9317dacf5b755f9c288ca68e75121207b8e
 	                <li class="nav-item dropdown pr-md-2 px-xl-3">
 	                    <a class="nav-link dropdown-toggle nav-parametros" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>PAR&Aacute;METROS</span>
@@ -127,15 +131,21 @@
 	                </li>
 					<% } %> 
 					
-					<% if (userWorking.getTipoPerfil().getPantalla().contains("Cierre")) { %>
+				<% if (userWorking.getTipoPerfil().getPantalla().contains("Cierre")) { %>
 	                <li class="nav-item dropdown pr-md-2 ">
 	                    <a class="nav-link dropdown-toggle nav-cierre" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>CIERRE</span>
 						</a>
 						<div class="dropdown-menu bg-secondary" aria-labelledby="navbarDropdown">
 							<html:link action="cierreOrdenDePago.do" styleClass="dropdown-item bg-secondary text-white">
-								<span>CIERRE ORDEN DE PAGO</span>
+								<span>ORDEN DE PAGO</span>
 							</html:link>
+							<!--<html:link action="consumosSinRendir.do" styleClass="dropdown-item bg-secondary text-white">
+								<span>CONSUMOS NO RENDIDOS</span>
+							</html:link>
+							<html:link action="aprobacionesPendientes.do" styleClass="dropdown-item bg-secondary text-white">
+								<span>APROBACIONES PENDIENTES</span>
+							</html:link>-->
 							<html:link action="reasignarBandeja.do" styleClass="dropdown-item bg-secondary text-white">
 								<span>REASIGNACI&Oacute;N DE BANDEJA</span>
 							</html:link>

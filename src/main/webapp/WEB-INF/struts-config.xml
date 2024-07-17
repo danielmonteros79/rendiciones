@@ -80,6 +80,9 @@
 		</action>
 		<action path="/datosAdicionales" type="com.sa.action.DatosAdicionalesAction" className="com.sa.core.SecurityActionMapping"></action>
 		<action path="/gastos" type="com.sa.action.GastosAction" name="RendicionDetalleForm"></action>
+		
+		<action path="/avanzarRend" type="com.sa.action.AvanzarRendicionAction" className="com.sa.core.SecurityActionMapping" name="RendicionForm"></action>
+		
 		<action path="/cuponesPopup" type="com.sa.action.CuponesAction" className="com.sa.core.SecurityActionMapping" name="CuponesForm"></action>
 		<action path="/accesoDelegado" type="com.sa.action.delegacion.AccesoDelegadoAction" className="com.sa.core.SecurityActionMapping">
 			<forward name="success" path="accesoDelegado" />

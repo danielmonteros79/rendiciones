@@ -35,6 +35,7 @@ public class Rendicion {
 	private String journal;
 	private String costosDestino;
 	private String alerta;
+	private String exceptuado;
 
 	public Rendicion() {
 	}
@@ -58,6 +59,14 @@ public class Rendicion {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public String getExceptuado() {
+		return exceptuado;
+	}
+
+	public void setExceptuado(String exceptuado) {
+		this.exceptuado = exceptuado;
 	}
 
 	public String getMotivo() {
