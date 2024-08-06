@@ -1,5 +1,5 @@
 <link rel="stylesheet" type="text/css" href="./css/select2.css">
-<script type="text/javascript" src="static/js/global/modalGasto.js"></script>
+<script type="text/javascript" src="js/global/modalGasto.js"></script>
 <div class="modal fade" id="modalGasto" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
 	<div class="modal-dialog modal-xl" role="document">
 		<div class="modal-content">
@@ -45,10 +45,8 @@
 					</div>
 					<div class="col-lg-3 col-sm-12 py-2">
 						<div class="has-float-label">
-							<small class="text-muted">C. Costos Destino</small>
-							<input type="text" class="form-control bg-white an-integer-pos" 
-							id="modalGastoCCostosDestino" placeholder="C. Costos Destino" readonly 
-							required style="padding: 0px !important; height: auto !important;"/>
+							<input type="text" class="form-control bg-white an-integer-pos" id="modalGastoCCostosDestino" placeholder="C. Costos Destino" readonly required />
+							<label for="modalGastoCCostosDestino">C. Costos Destino</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
 					</div>
@@ -59,6 +57,17 @@
 							<select id="modalGastoTipoGasto" class="form-control bg-light" required></select>
 							<i class="bbva-icon icon-uniE003 text-primary"></i>
 							<label for="modalGastoTipoGasto">Tipo de Gasto</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+					</div>
+					<div class="col-sm-12 pt-2 scroll-err  modalGastoPatagoniaDiv">
+						<div class="has-float-label">
+							<select id="modalGastoPatagonia" class="form-control bg-light" required>
+								<option value="00001">NO</option>
+								<option value="00002">SI</option>
+							</select>
+							<i class="bbva-icon icon-uniE003 text-primary"></i>
+							<label for="modalGastoTipoFactura">Patagonia</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
 					</div>
@@ -148,4 +157,5 @@
 		</div>
 	</div>
 </div>
-<script type="text/javascript" src="static/js/select2.min.js"></script>
+
+<script type="text/javascript" src="js/select2.min.js"></script>
