@@ -167,7 +167,6 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		
 		try {
 			Map<String, Object> resp = new HashMap<String, Object>();
-			RendicionesService service = new RendicionesService(samClient);
 			PagosService service2 = new PagosService(samClient);
 			List<String> codigos= service2.getCodigosPatagonia();
 			
