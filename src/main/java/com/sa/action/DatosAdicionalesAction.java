@@ -172,8 +172,8 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 			
 			resp.put("codigos", codigos);
 			
-			if (service.getMsg() != null)
-				resp.put("message", "OK: " + service.getMsg());
+			if (service2.getMsg() != null)
+				resp.put("message", "OK: " + service2.getMsg());
 			
 			return writeJson(response, resp);
 
