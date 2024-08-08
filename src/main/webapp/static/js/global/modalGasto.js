@@ -4,8 +4,6 @@ var modalGastoLoadParams;
 var modalGastoTipoComprobanteSel;
 let centroDeCostos="";
 let cantCupones = 0;
-let codigo1 = "";
-let codigo2 = "";
 let codigos = []; 
 
 $(document).ready(function() {
@@ -15,14 +13,11 @@ $(document).ready(function() {
 });
 
 function codsSuccess(data) {	
-	codigo1 = data.codigos[0]
-	codigo2 = data.codigos[1]
 	codigos = [...data.codigos] 
 }
 
 function modalGastoShow(idRendicion, estadoRend, idGasto, codMotivo, cupon, costosDestino) {
 	$('#tableMessageContainer').addClass('d-none');
-	getDiasExtras()
 	modalGastoSubmitted = false;
 	clearFormErrors('#modalGasto');
 	centroDeCostos=costosDestino;
@@ -97,7 +92,6 @@ function modalGastoSetCombos() {
 }
 
 function modalGastoSetOnChanges() {
-	
 	$('input[id^=modalGasto],textarea[id^=modalGasto],select[id^=modalGasto]').change(function() {
 		if (modalGastoSubmitted)
 			validateForm('modalGasto', false);
@@ -134,31 +128,6 @@ function modalGastoSetOnChanges() {
 		else
 			$('.modalGastoFacturaCuitDiv').fadeOut();
 	});
-	
-}
-
-function setPatagonia(){
-	params.action = 'altaModif';
-	params.IDOBS = '000000001'
-	params.idRendicion = modalGastoLoadParams.idRendicion //'0000000000001813'
-	params.idGasto = '0000000' + modalGastoLoadParams.idGasto
-	params.codGasto = '8212'
-	params.codObserv = '00212'
-	params.NUM1 = "000000000"
-	params.NUM2 = "000000000"
-
-	params.COD1 = $('#modalGastoPatagonia').val()
-	
-	callAjax('datosAdicionales.do', params, 'modalDatosSuccess', 'modalDatosError', true);
-
-}
-
-function modalDatosSuccess(data){
-	console.log("ok ", data)
-}
-
-function modalDatosError(data){
-	console.log("error", data)
 }
 
 function modalGastoSetVisibility() {
@@ -173,11 +142,14 @@ function modalGastoSetValues(data) {
 	let cantCupones = modalCuponesCuponesSel.length +1;
 	if (!modalGastoLoadParams.cupon.esProxCupon) {
 		modalGastoTipoComprobanteSel = null;
-		$('[id^=modalGasto]').val('');
+		$('[id^=modalGasto]').not($('#modalGastoTipoGasto')).val('');
 		$('#modalGastoCuponesCant').addClass("d-none")
 		$('#modalGastoDetalleCuponDesc').addClass("d-none")
 		$('#modalGastoTipoFactura').val('A');
-		$('[id^=modalGasto]').attr('disabled', false);
+		//$('[id^=modalGasto]').attr('disabled', false);
+		$('#modalGastoMoneda').attr('disabled', false);
+		$('#modalGastoFechaGasto').attr('disabled', false);
+		$($('#modalGastoFechaGasto').parent().find('button')[0]).attr('disabled', false);
 		AutoNumeric.getAutoNumericElement('#modalGastoMonto').clear();
 		
 		$('#modalGastoMsgCupon').html('');
@@ -280,7 +252,7 @@ function modalGastoGuardar() {
 		idGasto: modalGastoLoadParams.idGasto,
 		codMotivo: modalGastoLoadParams.codMotivo,
 		moneda: $('#modalGastoMoneda').val(),
-		tipoComprobante: $('#modalGastoTipoComprobante').val(),
+		tipoComprobante: '0004',
 		tipoFactura: $('#modalGastoTipoFactura').val(),
 		factura: $('#modalGastoFactura').inputmask('unmaskedvalue'),
 		cuit: $('#modalGastoCuit').inputmask('unmaskedvalue'),
@@ -298,28 +270,100 @@ function modalGastoGuardar() {
 	};
 	
 	callAjax('gastos.do', params, 'modalGastoGuardarSuccess');
-	
 	setPatagonia()
-	
+	$('#modalGastoFueraDePolitica').modal('hide');
+
 
 
 }
 
+function validarGasto(idGasto){
+	//modalGastoSubmitted = true;
+	//$('#modalGastoMessageContainer').addClass('d-none');
+
+	if (!validateForm('modalGasto', true))
+		return;
+	var params = {
+		opcion: 'VALIDAR',
+		idRendicion: modalGastoLoadParams.idRendicion,
+		//idGasto: modalGastoLoadParams.idGasto,
+		idGasto: idGasto
+	};
+
+	callAjax('gastos.do', params, 'evaluarValidacionGasto');
+}
+
+function modalGastoCancelar(){
+	$('#modalGastoFueraDePolitica').modal('hide');
+}
+
+function evaluarValidacionGasto(data){
+	console.log(data)
+	if(!data.textoValidacion.includes('OK')){
+		setTimeout(function(){			
+			setTimeout(function(){
+				if(data.textoValidacion.includes('ALERTA')){ 
+					$('#modalGastoTitle').html("El gasto cargado no cumple con la política de gastos acordada"); 
+					$('#aceptarGastoBtn').html("Continuar");
+				}
+				else{
+					$('#modalGastoTitle').html("El gasto requiere ser confirmado");
+					$('#aceptarGastoBtn').html("Confirmar");
+				}	 
+				$('#modalGastoValidarMessage').html(data.textoValidacion);
+			},300)
+			$('#modalGastoFueraDePolitica').modal('show');	
+		},200)	
+    }
+	
+//	else{
+//		modalGastoGuardar();
+//	}
+}
+
 function modalGastoGuardarSuccess(data) {
-	loadTables();
-	if (data.showModalDatosAdicionales && $('#modalGastoTipoGasto').val().substring(54,59) != '00212') {
-		$('#modalGasto').modal('hide');
-		modalDatosAdicionalesShow(modalGastoLoadParams.idRendicion, modalGastoLoadParams.codMotivo, data.idGasto,
-				$('#modalGastoTipoGasto').val().substring(0, 4), $('#modalGastoTipoGasto').val().substring(55, 59), false, data.message);
-	} else if (modalCuponesCuponesSel.length == 0) {
-			$('#modalGasto').modal('hide');
-	} else
-		modalGastoShowProximoGastoCupon(data);
-		
-	setTimeout(function(){
-		showMessage('tableMessage', data.message);
-	},500)
-		
+    loadTables();
+    //validarGasto(data.idGasto);
+	if(!data.showModalDatosAdicionales){
+		validarGasto(data.idGasto);
+	}
+    if (data.showModalDatosAdicionales && $('#modalGastoTipoGasto').val().substring(54,59) != '00212') {
+        $('#modalGasto').modal('hide');
+        modalDatosAdicionalesShow(modalGastoLoadParams.idRendicion, modalGastoLoadParams.codMotivo, data.idGasto,
+        $('#modalGastoTipoGasto').val().substring(0, 4), $('#modalGastoTipoGasto').val().substring(55, 59), $('#modalGastoMonto').val().trim() ,false, data.message);
+    } else if (modalCuponesCuponesSel.length == 0) {
+            $('#modalGasto').modal('hide');
+    } else
+        modalGastoShowProximoGastoCupon(data);
+       
+    setTimeout(function(){
+        showMessage('tableMessage', data.message);
+    },500)
+        
+}
+
+function setPatagonia(){
+	params.action = 'altaModif';
+	params.IDOBS = '000000001'
+	params.idRendicion = modalGastoLoadParams.idRendicion //'0000000000001813'
+	params.idGasto = '0000000' + modalGastoLoadParams.idGasto
+	params.codGasto = '8212'
+	params.codObserv = '00212'
+	params.NUM1 = "000000000"
+	params.NUM2 = "000000000"
+
+	params.COD1 = $('#modalGastoPatagonia').val()
+	
+	callAjax('datosAdicionales.do', params, 'modalDatosSuccess', 'modalDatosError', true);
+
+}
+
+function modalDatosSuccess(data){
+	console.log("ok ", data)
+}
+
+function modalDatosError(data){
+	console.log("error", data)
 }
 
 function modalGastoShowProximoGastoCupon(data) {
@@ -335,43 +379,3 @@ function modalGastoShowProximoGastoCupon(data) {
 	scrollToElem('#modalGastoMessage', false, '#modalGasto', '#modalGastoMessageContainer');
 	cantCupones--
 }
-
-
-
-function getDiasExtras() {
-	dtParams.action = "formatear";
-	let motivo = new URLSearchParams(location.search).get('codMotivo');
-	dtParams.codigoMotivo = motivo;
-	callAjax("saveRendicion.do", dtParams, 'setDiasExtras', 'errorFormto');
-}
-
-function setDiasExtras(data) {
-	let diasExtra = parseInt(data.diasExtras)
-	modalGastoLoadParams.fechaDesde= adjustDate(modalGastoLoadParams.fechaDesde, -diasExtra)
-	modalGastoLoadParams.fechaHasta =  adjustDate(modalGastoLoadParams.fechaHasta, diasExtra)
-	
-}
-
-
-function adjustDate(dateString, days) {
-    // Split the date string into day, month, and year components
-    let [day, month, year] = dateString.split("/");
-
-    // Create a new Date object (note: month is 0-indexed, so subtract 1)
-    let date = new Date(year, month - 1, day);
-
-    // Add the specified number of days
-    date.setDate(date.getDate() + days);
-
-    // Format the new date back into a string in the format "DD/MM/YYYY"
-    let newDay = String(date.getDate()).padStart(2, '0');
-    let newMonth = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-    let newYear = date.getFullYear();
-
-    return `${newDay}/${newMonth}/${newYear}`;
-}
-
-function errorFormto(data) {
-	console.log(data, "Error")
-}
-

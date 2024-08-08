@@ -17,7 +17,6 @@ import org.apache.struts.action.ActionMapping;
 import com.sa.entities.DatosPantallaDinamica;
 import com.sa.entities.Usuario;
 import com.sa.services.PagosService;
-import com.sa.services.RendicionesService;
 import com.sa.services.UsuarioService;
 import com.sa.util.DateUtil;
 
@@ -39,9 +38,8 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 				return this.baja(samClient, request, response);
 			else if (action.equals("obtenerCodigosPatagonia"))
 				return this.obtenerCodigosPatagonia(samClient, request, response);
-			else if(action.equals("buscarInvitado")) {
+			else if(action.equals("buscarInvitado")) 
 				return this.buscarInvitado(samClient, request, response);
-			}
 
 			return null;
 		} catch (Exception e) {
@@ -152,7 +150,7 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 			UsuarioService service = new UsuarioService(samClient);
 			String legajo = request.getParameter("legajo").trim().toUpperCase();
 			Usuario invitado = service.obtenerInvitadoUsuario(legajo, "INVI");
-			resp.put("invitado", invitado);
+			resp.put("invitado", invitado);			
 			
 			if (service.getMsg() != null)
 				resp.put("message", "OK: " + service.getMsg());
@@ -162,12 +160,10 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		} catch (Exception e) {
 			log.error("", e);
 			return writeError(response, e);
-		}
-		
-		
+		}		
 	}
-	
-	private ActionForward obtenerCodigosPatagonia(SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		private ActionForward obtenerCodigosPatagonia(SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		try {
 			Map<String, Object> resp = new HashMap<String, Object>();
@@ -185,12 +181,7 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		} catch (Exception e) {
 			log.error("", e);
 			return writeError(response, e);
-		}
-		
-		
+		}	
 	}
-	
-	
-	
 	
 }
