@@ -362,23 +362,23 @@ public class PagosService {
 		
 		return idGastoBorrado;
 	}
-	
-	public String obtenerCoeficiente(String user) throws TransactionException {
-		log.info("Comienza llamado a trx para obtener coeficiente");
+
+	public List<String> getCodigosPatagonia() throws TransactionException {
+		log.info("Comienza llamado a trx para traer los codigos de Patagonia");
 		ManagerTransaction manager = new ManagerTransaction(new SU51());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
-		
-		parametersExecute.put("opcion", "1");
+		parametersExecute.put("opcion", "2");
 		parametersExecute.put("cant_tablas", "01");
-		parametersExecute.put("claves_cons", "00006000010002");
-		parametersExecute.put("cod_usr", user);
+		parametersExecute.put("claves_cons", "0009800001");
 		
 		manager.executeTrx(this.samClient, parametersExecute);
-		
-		String coeficiente = (String) manager.getDataReturn();
-		msg = (String) manager.getMensajeAviso();
-		
-		return coeficiente;
+		//msg = (String) manager.getMensajeAviso(); modificar esta linea cuando corrijan el servicio desde host
+
+		List<String> codigos = new ArrayList<>();
+		codigos.add("00212");
+		codigos.add("08200");
+				
+		return codigos;
 	}
 
 	public List<Cupones> getCuponUnico(String idRendicion, String idGasto, String idUser, String codMotivo) throws TransactionException {
@@ -471,4 +471,3 @@ public class PagosService {
 		return msg;
 	}
 }
-

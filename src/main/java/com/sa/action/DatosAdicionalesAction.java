@@ -19,7 +19,6 @@ import com.sa.entities.Usuario;
 import com.sa.services.PagosService;
 import com.sa.services.UsuarioService;
 import com.sa.util.DateUtil;
-//import com.sa.util.DatoAdicionalCombustible;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
@@ -37,11 +36,10 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 				return this.altaModif(samClient, request, response);
 			else if (action.equals("baja"))
 				return this.baja(samClient, request, response);
+			else if (action.equals("obtenerCodigosPatagonia"))
+				return this.obtenerCodigosPatagonia(samClient, request, response);
 			else if(action.equals("buscarInvitado")) 
 				return this.buscarInvitado(samClient, request, response);
-			//else if(action.equals("calcularCoeficiente")) {
-				//	return this.calcularCoeficiente(samClient, request, response);	
-			//}
 
 			return null;
 		} catch (Exception e) {
@@ -163,6 +161,26 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 			log.error("", e);
 			return writeError(response, e);
 		}		
+	}
+
+		private ActionForward obtenerCodigosPatagonia(SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		try {
+			Map<String, Object> resp = new HashMap<String, Object>();
+			PagosService service2 = new PagosService(samClient);
+			List<String> codigos= service2.getCodigosPatagonia();
+			
+			resp.put("codigos", codigos);
+			
+			if (service2.getMsg() != null)
+				resp.put("message", "OK: " + service2.getMsg());
+			
+			return writeJson(response, resp);
+
+		} catch (Exception e) {
+			log.error("", e);
+			return writeError(response, e);
+		}	
 	}
 	
 }

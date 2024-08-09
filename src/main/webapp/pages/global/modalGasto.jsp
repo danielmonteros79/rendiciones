@@ -62,6 +62,17 @@
 							<div class="invalid-feedback mb-3"></div>
 						</div>
 					</div>
+					<div class="col-sm-12 pt-2 scroll-err  modalGastoPatagoniaDiv">
+						<div class="has-float-label">
+							<select id="modalGastoPatagonia" class="form-control bg-light" required>
+								<option value="00001">NO</option>
+								<option value="00002">SI</option>
+							</select>
+							<i class="bbva-icon icon-uniE003 text-primary"></i>
+							<label for="modalGastoTipoFactura">Patagonia</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+					</div>
 					<div class="col-sm-12 pt-2 scroll-err">
 						<div class="has-float-label form-group">
 							<select id="modalGastoMoneda" class="form-control bg-light" required></select>

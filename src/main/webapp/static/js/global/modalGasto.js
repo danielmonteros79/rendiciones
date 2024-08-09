@@ -4,6 +4,17 @@ var modalGastoLoadParams;
 var modalGastoTipoComprobanteSel;
 let centroDeCostos="";
 let cantCupones = 0;
+let codigos = []; 
+
+$(document).ready(function() {
+	params.action = 'obtenerCodigosPatagonia'
+	callAjax('datosAdicionales.do', params, 'codsSuccess', 'codsError', true);	
+	console.log("documentReady: " + codigo1)
+});
+
+function codsSuccess(data) {	
+	codigos = [...data.codigos] 
+}
 
 function modalGastoShow(idRendicion, estadoRend, idGasto, codMotivo, cupon, costosDestino) {
 	$('#tableMessageContainer').addClass('d-none');
@@ -85,25 +96,33 @@ function modalGastoSetOnChanges() {
 		if (modalGastoSubmitted)
 			validateForm('modalGasto', false);
 	});
+			$('.modalGastoPatagoniaDiv').hide();
 	
-	$('#modalGastoTipoGasto').change(function() {
-		var selTipoGasto = $(this).val();
-		
+	$('#modalGastoTipoGasto').change(function() {	
+		console.log("modalGastoSetOnChanges: " + codigos)
+		let selTipoGasto = $(this).val();
+		let hayDatoAdicional = false;
+		if(selTipoGasto != null){
+			let isPatagonia = codigos.some(str => str.includes(selTipoGasto.substring(54,59)))
+			hayDatoAdicional = selTipoGasto.substring(60,61) == "S" && isPatagonia
+		}
+		hayDatoAdicional  ? $('.modalGastoPatagoniaDiv').fadeIn('slow') : $('.modalGastoPatagoniaDiv').fadeOut()
 		if (selTipoGasto) {
-			var params = {
+			let params = {
 				tipoGasto: selTipoGasto.substring(0, 4)
 			};
 			setCombo('combos.do?action=getTiposComprobante', '#modalGastoTipoComprobante', params, modalGastoTipoComprobanteSel);
 			modalGastoCheckBimon();
 			
-			//$('#modalGastoTipoComprobanteDiv').fadeIn('slow');
-		} else
-			$('#modalGastoTipoComprobanteDiv').fadeOut();
+			$('#modalGastoTipoComprobanteDiv').fadeIn('slow');
+		} else{
+			$('.modalGastoPatagoniaDiv').hide();
+			$('#modalGastoTipoComprobanteDiv').fadeOut();}
 	});
 
 	$('#modalGastoTipoComprobante').change(function() {
 		modalGastoTipoComprobanteSel = $(this).val();
-		var selTipoComprobanteText = $(this).find('option:selected').text();
+		let selTipoComprobanteText = $(this).find('option:selected').text();
 		if (selTipoComprobanteText == 'FACTURA OBLIGATORIA')
 			$('.modalGastoFacturaCuitDiv').fadeIn('slow');
 		else
@@ -251,8 +270,10 @@ function modalGastoGuardar() {
 	};
 	
 	callAjax('gastos.do', params, 'modalGastoGuardarSuccess');
-	
+	setPatagonia()
 	$('#modalGastoFueraDePolitica').modal('hide');
+
+
 
 }
 
@@ -319,6 +340,30 @@ function modalGastoGuardarSuccess(data) {
         showMessage('tableMessage', data.message);
     },500)
         
+}
+
+function setPatagonia(){
+	params.action = 'altaModif';
+	params.IDOBS = '000000001'
+	params.idRendicion = modalGastoLoadParams.idRendicion //'0000000000001813'
+	params.idGasto = '0000000' + modalGastoLoadParams.idGasto
+	params.codGasto = '8212'
+	params.codObserv = '00212'
+	params.NUM1 = "000000000"
+	params.NUM2 = "000000000"
+
+	params.COD1 = $('#modalGastoPatagonia').val()
+	
+	callAjax('datosAdicionales.do', params, 'modalDatosSuccess', 'modalDatosError', true);
+
+}
+
+function modalDatosSuccess(data){
+	console.log("ok ", data)
+}
+
+function modalDatosError(data){
+	console.log("error", data)
 }
 
 function modalGastoShowProximoGastoCupon(data) {
