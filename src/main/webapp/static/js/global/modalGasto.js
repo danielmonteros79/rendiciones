@@ -8,8 +8,7 @@ let codigos = [];
 
 $(document).ready(function() {
 	params.action = 'obtenerCodigosPatagonia'
-	callAjax('datosAdicionales.do', params, 'codsSuccess', 'codsError', true);	
-	console.log("documentReady: " + codigo1)
+	callAjax('datosAdicionales.do', params, 'codsSuccess', 'codsError', true);
 });
 
 function codsSuccess(data) {	
