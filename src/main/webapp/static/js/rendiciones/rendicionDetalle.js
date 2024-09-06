@@ -10,6 +10,16 @@ $(document).ready(function() {
 	ayudaMotivo();
 	getPreformato()
 	
+	// Escuchar el evento de input en el textarea
+    $('#rendicionDetalleDescripcion').on('input', function() {
+        let originalText = $(this).val();
+        let normalizedText = normalizeText(originalText);
+
+        // Actualizar el valor del textarea si es necesario
+        if (originalText !== normalizedText) {
+            $(this).val(normalizedText);
+        }
+    });
 });
 function setValidaciones() {
 	$('#rendicionDetalleMotivo').attr('required', true);
@@ -149,4 +159,14 @@ function validarContinuar() {
 		valid = false;
 	}
 	return valid;
+}
+
+function normalizeText(text) {
+    // Normalizar los acentos
+    text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    // Eliminar caracteres especiales no permitidos
+    text = text.replace(/[^a-zA-Z0-9\s\/$%*#]/g, "");
+
+    return text;
 }
