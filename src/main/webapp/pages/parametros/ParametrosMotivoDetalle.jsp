@@ -142,10 +142,10 @@ label.error {
 						 <div class="errorDiv"></div>
 					</div>
 				</div>
-
-
+				
 				<div class="col-sm-12 col-lg-4 pt-2 scroll-err">
-					<div class="has-float-label form-group d-flex align-items-center  bg-light">
+					<div class="has-float-label form-group">
+					
 						<html:select property="idNivCarga" styleId="idNivCarga" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
 							<html:option value="01">01</html:option>
@@ -159,12 +159,10 @@ label.error {
 							<html:option value="09">09</html:option>
 							<html:option value="10">10</html:option>
 						</html:select>
-						<div class= "pr-3">
-						 <i class="bbva-icon icon-uniE003 text-primary"></i> <label
+						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
 							for="modalDelegadoAccion">Nivel m&iacute;nimo para rendir el motivo</label>
-						</div>
+						 <div class="errorDiv"></div>
 					</div>
-					 <div class="errorDiv"></div>
 				</div>
 
 				<div class="col-sm-12 col-lg-4 pt-2 pl-lg-1 scroll-err">
@@ -198,24 +196,6 @@ label.error {
 						 <div class="errorDiv"></div>
 					</div>
 				</div>
-
-				<!-- <div class="col-sm-12 col-lg-4 pt-2  scroll-err">
-					<div class="has-float-label form-group  d-flex align-items-center  bg-light">
-						<html:select property="maInclExcl" styleId="maInclExcl" styleClass="form-control bg-light">
-							<html:option value=""></html:option>
-							<html:option value="I">Incl</html:option>
-							<html:option value="E">Excl</html:option>
-						</html:select>
-						<div class= "pr-3">
-						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="modalDelegadoAccion">Incluye o excluye centro de costos</label>
-						</div>
-						 <div class="errorDiv"></div>
-					</div>
-				</div> -->
-
-				
-
 
 				<div class="col-sm-12 col-lg-4 pt-2 has-float-label scroll-err">
 					<div class="input-group ">
@@ -285,20 +265,21 @@ label.error {
 					 <div class="errorDiv"></div>
 				</div>
 				
-				<div class="col-sm-12 col-lg-6 pt-2  scroll-err">
-					<div class="has-float-label form-group  d-flex align-items-center  bg-light">
+				<div class="col-sm-12 col-lg-4 pt-2  scroll-err">
+					<div class="has-float-label form-group">
 						<html:select property="maInclExcl" styleId="maInclExcl" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
 							<html:option value="I">Incluye</html:option>
 							<html:option value="E">Excluye</html:option>
 						</html:select>
-						<div class= "pr-3">
+						
 						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
 							for="modalDelegadoAccion">Incluye o excluye centro de costos</label>
-						</div>
-						 <div class="errorDiv"></div>
+						<div class="invalid-feedback mb-3"></div>
+						
+						<div class="errorDiv"></div>
 					</div>
-				</div> 
+				</div>
 				
 				<div class="col-sm-12 col-lg-6 pt-2 scroll-err d-flex align-items-center">
 					<label for="meDiasInterv" class="mr-2">Centros de costos</label>
@@ -326,21 +307,23 @@ label.error {
 						 <div class="errorDiv"></div>
 					</div>
 				</div>  -->
-				<div class="col-sm-12 col-lg-6 pt-2  scroll-err">
-					<div class="has-float-label form-group  d-flex align-items-center  bg-light">
+				
+				<div class="col-sm-12 col-lg-6 pt-2 scroll-err">
+					<div class="has-float-label form-group">
 						<html:select property="idOperEspe" styleId="oscaidOperEspe" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
 							<html:option value="event">Fecha del evento</html:option>
 							<html:option value="viaje">Fecha del viaje</html:option>
 							<html:option value="mes">Mes</html:option>
 						</html:select>
-						<div class= "pr-3">
+						
 						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
 							for="modalDelegadoAccion">Tipo de fecha</label>
-						</div>
-						 <div class="errorDiv"></div>
+						<div class="invalid-feedback mb-3"></div>
+						
+						<div class="errorDiv"></div>
 					</div>
-				</div> 
+				</div>
 
 				<div class="col-sm-12 col-lg-6 pt-2 pl-lg-1 scroll-err">
 					<div class="has-float-label form-group">
