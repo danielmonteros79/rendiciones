@@ -103,7 +103,7 @@ function setFormValidate() {
 	$("#parametrosMotivoForm").validate({
 	    ignore: "",
 		rules: {
-			codigo: 			{ required : true, number : true },
+			codigo: 			{ required : false, number : true },
 			descripcion: 		{ required : true },
 			idGlg: 				{ required : true, number : true },
 			idNivCarga: 		{ required : true },
