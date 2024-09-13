@@ -74,7 +74,6 @@ public class SU82 extends Transaction {
 //					motivo.setLastElement(str.substring(str.length()-1));
 //				}
 				this.parametroMotivos.add(motivo);
-				
 			}
 		} else {
 			ParametroMotivo motivo = new ParametroMotivo();
@@ -95,6 +94,7 @@ public class SU82 extends Transaction {
 			motivo.setIdOperEspe((String) parametersExecute.get("codigo_operacion"));
 			String dinterv = (String) parametersExecute.get("dias_intervalo");
 			motivo.setMeDiasInterv("000000000".equals(dinterv) ? "" : dinterv);
+			motivo.setLastElement("S");
 			
 			String fechaDesde = (String) parametersExecute.get("fechaDesde");
 			if (!"".equals(fechaDesde))

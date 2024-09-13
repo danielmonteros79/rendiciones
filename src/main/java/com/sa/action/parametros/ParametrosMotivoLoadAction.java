@@ -52,33 +52,31 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 			codMotivo = String.format("%04d", Integer.parseInt(request.getParameter("codigo")));
 		
 		while(pagina){
-		List<ParametroMotivo> motivos = service.getMotivos(codMotivo, this.sessionUserWorking.getIdUser(), "0" + paginado);
-		for (ParametroMotivo parametroMotivo : motivos) {
-			if(parametroMotivo.getCodSup().trim().equalsIgnoreCase("PSUP") || parametroMotivo.getCodSup().equalsIgnoreCase("SUPER")){
-				parametroMotivo.setCodSup("SI");
-			} if (parametroMotivo.getCodAprobacionGlg().equalsIgnoreCase("MONTO") || parametroMotivo.getCodAprobacionGlg().trim().equalsIgnoreCase("PGLG")) {
-				parametroMotivo.setCodAprobacionGlg("SI");
-			} if (parametroMotivo.getCodFirma().equalsIgnoreCase("MONTO") || parametroMotivo.getCodFirma().equalsIgnoreCase("PFIRM")) {
-				parametroMotivo.setCodFirma("SI");
-			} if (parametroMotivo.getEstado().equalsIgnoreCase("A")) {
-				parametroMotivo.setEstado("ACTIVO");
-			} if (parametroMotivo.getEstado().equalsIgnoreCase("I")){
-				parametroMotivo.setEstado("INACTIVO");
-			}
-			//Valida si es el último motivo existente
-			if(motivos.get(motivos.size() - 1) == parametroMotivo){
-				if (parametroMotivo.getLastElement().equalsIgnoreCase("N")){
-					paginado++;
-					motivosTotales.add(parametroMotivo);
+			List<ParametroMotivo> motivos = service.getMotivos(codMotivo, this.sessionUserWorking.getIdUser(), "0" + paginado);
+			for (ParametroMotivo parametroMotivo : motivos) {
+				if(parametroMotivo.getCodSup().trim().equalsIgnoreCase("PSUP") || parametroMotivo.getCodSup().equalsIgnoreCase("SUPER")){
+					parametroMotivo.setCodSup("SI");
+				} if (parametroMotivo.getCodAprobacionGlg().equalsIgnoreCase("MONTO") || parametroMotivo.getCodAprobacionGlg().trim().equalsIgnoreCase("PGLG")) {
+					parametroMotivo.setCodAprobacionGlg("SI");
+				} if (parametroMotivo.getCodFirma().equalsIgnoreCase("MONTO") || parametroMotivo.getCodFirma().equalsIgnoreCase("PFIRM")) {
+					parametroMotivo.setCodFirma("SI");
+				} if (parametroMotivo.getEstado().equalsIgnoreCase("A")) {
+					parametroMotivo.setEstado("ACTIVO");
+				} if (parametroMotivo.getEstado().equalsIgnoreCase("I")){
+					parametroMotivo.setEstado("INACTIVO");
 				}
-				else{
-					pagina = false;
+				//Valida si es el último motivo existente
+				if(!motivos.isEmpty() && motivos.get(motivos.size() - 1).equals(parametroMotivo)){
+					System.out.println("Último motivo encontrado");
+					if (parametroMotivo.getLastElement().equalsIgnoreCase("N")){
+						paginado++;
+					}
+					else{
+						pagina = false;
+					}
 				}
-			}
-			else {
 				motivosTotales.add(parametroMotivo);
 			}
-		}
 		}
 		
 		request.setAttribute("motivos", motivosTotales);
