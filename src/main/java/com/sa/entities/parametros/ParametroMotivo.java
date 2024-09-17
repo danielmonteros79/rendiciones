@@ -189,4 +189,15 @@ public class ParametroMotivo {
 	public void setCentrosCosto(List<String> centrosCosto) {
 		this.centrosCosto = centrosCosto;
 	}
+
+	@Override
+	public String toString() {
+		return "ParametroMotivo [codigo=" + codigo + ", estado=" + estado + ", descripcion=" + descripcion + ", idGlg="
+				+ idGlg + ", codAprobacionGlg=" + codAprobacionGlg + ", idCentroCostos=" + idCentroCostos
+				+ ", maInclExcl=" + maInclExcl + ", codSup=" + codSup + ", codFirma=" + codFirma + ", meAviso="
+				+ meAviso + ", fechaDesde=" + fechaDesde + ", fechaHasta=" + fechaHasta + ", oscar=" + oscar
+				+ ", idNivCarga=" + idNivCarga + ", idNivAutoriz=" + idNivAutoriz + ", txAviso=" + txAviso
+				+ ", idOperEspe=" + idOperEspe + ", meDiasInterv=" + meDiasInterv + ", lastElement=" + lastElement
+				+ ", centrosCosto=" + centrosCosto + "]";
+	}
 }
