@@ -61,12 +61,8 @@ function setFormValidate() {
 	            $("#errorFechas").html("Formato de fecha no válido");
 	            return false;
         	}
-            
-			console.log("START: " + start);
-			console.log("END: " + end);
 			
 			var validacion = start <= end;
-			console.log("VALIDACION: " + validacion);
 
             if (validacion) {
 	            $("#errorFechas").html(""); // Limpiar mensaje de error si es válido
