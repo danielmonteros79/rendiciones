@@ -52,12 +52,27 @@ function setFormValidate() {
 	jQuery.validator.addMethod("dateAfter", function(value, element, fromDate) {
 		try {
 			var startDate = $("#" + fromDate).val();
-            var validacion = $("#" + fromDate).val() <=  value;
             
-            if (validacion)
-            	$("#errorFechas").html("");
-            else
-            	$("#errorFechas").html("La fecha Hasta debe ser mayor o igual a la fecha Desde");
+
+			var start = parseDate(startDate);
+			var end = parseDate(value);
+			
+			if (isNaN(start) || isNaN(end)) {
+	            $("#errorFechas").html("Formato de fecha no válido");
+	            return false;
+        	}
+            
+			console.log("START: " + start);
+			console.log("END: " + end);
+			
+			var validacion = start <= end;
+			console.log("VALIDACION: " + validacion);
+
+            if (validacion) {
+	            $("#errorFechas").html(""); // Limpiar mensaje de error si es válido
+	        } else {
+	            $("#errorFechas").html("La fecha Hasta debe ser mayor o igual a la fecha Desde");
+	        }
             
             return validacion;
 		} catch(e) {
@@ -186,3 +201,13 @@ function confirmEliminarMotivo() {
 	if (confirm("\u00bfEst\u00e1 seguro que quiere eliminar el motivo " + $("#codigo").val() + "?"))
 		$("#parametrosMotivoForm").submit();
 }
+
+function parseDate(dateStr) {
+            var parts = dateStr.split("/");
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            } else {
+                return new Date(dateStr);
+            }
+        }
+
