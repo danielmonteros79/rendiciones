@@ -174,6 +174,8 @@ public class ParametrosService {
 		parametersExecute.put("cod_usr", user);
 		parametersExecute.put("cod_gasto", codGasto);
 		parametersExecute.put("cod_motivo", codMotivo);
+		System.out.println("cod_usr: " + user);
+		System.out.println("cod_gasto: " + codGasto);
 		System.out.println("codMotivo: " + codMotivo);
 		manager.executeTrx(this.client, parametersExecute);
 		msgAviso = (String) manager.getMensajeAviso();
@@ -564,7 +566,7 @@ public class ParametrosService {
 		
 		parametersExecute.put("opcion", "ALTA");
 		parametersExecute.put("modo", "C");
-		parametersExecute.put("cod_gasto", ""/*String.format("%04d", Integer.parseInt(frm.getCodigo()))*/);
+		parametersExecute.put("cod_gasto", String.format("%04d", Integer.parseInt(frm.getCodigo())));
 		parametersExecute.put("desc_gasto", frm.getDescripcionGasto());
 		parametersExecute.put("desc_motivo", frm.getDescripcionMotivo());
 		parametersExecute.put("cod_motivo",frm.getMotivo());

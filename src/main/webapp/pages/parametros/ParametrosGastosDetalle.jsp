@@ -307,7 +307,7 @@ console.log(descMotivo);
 				$('#motivo').attr('readonly', true);
 				$('#descripcionMotivo').val(descMotivo);
 				$('#descripcionMotivo').attr('readonly', true);
-				$('#codigo').attr('readOnly',true);				
+				$('#codigo').attr('readOnly',false);				
 			});
 		</script>
 	</logic:equal>
