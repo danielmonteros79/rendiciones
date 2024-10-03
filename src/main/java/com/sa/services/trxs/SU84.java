@@ -25,39 +25,50 @@ public class SU84 extends Transaction {
 
 	@Override
 	public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
-		try {
-			execute(client, this.PARAMETER_TRX, parametersExecute);
-			try {
-				mapData(parametersExecute);
-			} catch (Exception e) {
-				log.error("", e);
-				throw new TransactionException("Error de mapeo " + this.CURRENT_TRX);
-			}
- 		} catch (Exception e) {
-			log.error("", e);
-			throw new TransactionException(e);
-		}
+	    try {
+	        execute(client, this.PARAMETER_TRX, parametersExecute);
+	        
+	        mapData(parametersExecute);
+	    } catch (Exception e) {
+	        log.error("Error al ejecutar la transacción", e);
+	        throw new TransactionException(e);
+	    }
 	}
 
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) {
-		for (Object obj : (List) parametersExecute.get("lista")) {
-			String str = getStrLista(obj);
-			ParametroGasto gasto = new ParametroGasto();
-			int i = 0;
-			gasto.setGasto(str.substring(i, i += 4));
-			gasto.setDescripcionGasto(str.substring(i, i += 50));
-			gasto.setMotivo(str.substring(i, i += 4));
-			gasto.setDescripcionMotivo(str.substring(i, i += 50));
-			gasto.setRistra(str.substring(i, i += 69));
-			gasto.setBimon(str.substring(i, i += 1));
-			gasto.setComprob(str.substring(i, i += 4));
-			gasto.setAutoriz(str.substring(i, i += 2));
-			gasto.setObserv(str.substring(i, i += 4));
-			gasto.setEstado(str.substring(i, i += 1));
-			
-			this.gastos.add(gasto);
-		}
+	    Object listaObj = parametersExecute.get("lista");
+	    
+	    if (listaObj == null || !(listaObj instanceof List<?>)) {
+	        //throw new IllegalArgumentException("El parámetro 'lista' no es una lista válida o es null");
+	    	return;
+	    }
+	    
+	    List<?> lista = (List<?>) listaObj;
+
+	    for (Object obj : lista) {
+	        String str = getStrLista(obj);
+	        
+	        if (str == null || str.length() < 189) {
+	            throw new IllegalArgumentException("Cadena 'str' no tiene la longitud mínima requerida");
+	        }
+
+	        ParametroGasto gasto = new ParametroGasto();
+	        int i = 0;
+	        
+	        gasto.setGasto(str.substring(i, i += 4));
+	        gasto.setDescripcionGasto(str.substring(i, i += 50));
+	        gasto.setMotivo(str.substring(i, i += 4));
+	        gasto.setDescripcionMotivo(str.substring(i, i += 50));
+	        gasto.setRistra(str.substring(i, i += 69));
+	        gasto.setBimon(str.substring(i, i += 1));
+	        gasto.setComprob(str.substring(i, i += 4));
+	        gasto.setAutoriz(str.substring(i, i += 2));
+	        gasto.setObserv(str.substring(i, i += 4));
+	        gasto.setEstado(str.substring(i, i += 1));
+	        
+	        this.gastos.add(gasto);
+	    }
 	}
 
 	@Override

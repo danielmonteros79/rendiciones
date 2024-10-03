@@ -54,16 +54,21 @@ public class ParametrosGastosLoadAction extends RestriccionTransaccionAction {
 		
 		List<ParametroGasto> gastos = service.getGastos(this.sessionUserWorking.getIdUser(),codGasto, codMotivo);
 		
-		for (ParametroGasto parametroGasto : gastos) {
-			if (parametroGasto.getEstado().equalsIgnoreCase("A")) {
-				parametroGasto.setEstado("ACTIVO");
-			} if (parametroGasto.getEstado().equalsIgnoreCase("I")){
-				parametroGasto.setEstado("INACTIVO");
+		//System.out.println("Gastos vacìo: " + gastos.isEmpty());
+		//System.out.println("Gasos: " + gastos.toString());
+		
+		if(!gastos.isEmpty()) {
+			for (ParametroGasto parametroGasto : gastos) {
+				if (parametroGasto.getEstado().equalsIgnoreCase("A")) {
+					parametroGasto.setEstado("ACTIVO");
+				} if (parametroGasto.getEstado().equalsIgnoreCase("I")){
+					parametroGasto.setEstado("INACTIVO");
+				}
+				
 			}
-			
+		
+			request.setAttribute("gastos", gastos);
 		}
-	
-		request.setAttribute("gastos", gastos);
 		this.message = service.getMsgAviso();
 		
 		return mapping.findForward("parametrosGastoFiltro");
