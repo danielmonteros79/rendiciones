@@ -1,5 +1,6 @@
 package com.sa.action.parametros;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +53,12 @@ public class ParametrosGastosLoadAction extends RestriccionTransaccionAction {
 		if (request.getParameter("gasto") != null && !request.getParameter("gasto").trim().equals(""))
 			codGasto = String.format("%04d", Integer.parseInt(request.getParameter("gasto")));
 		
-		List<ParametroGasto> gastos = service.getGastos(this.sessionUserWorking.getIdUser(),codGasto, codMotivo);
+		List<ParametroGasto> gastos = new ArrayList<ParametroGasto>();
+		try {
+			gastos = service.getGastos(this.sessionUserWorking.getIdUser(),codGasto, codMotivo);
+		}catch(Exception e) {
+			System.out.println("PASOPORACA: " + e.getMessage());
+		}
 		
 		//System.out.println("Gastos vacìo: " + gastos.isEmpty());
 		//System.out.println("Gasos: " + gastos.toString());

@@ -40,8 +40,7 @@ public class SU84 extends Transaction {
 	    Object listaObj = parametersExecute.get("lista");
 	    
 	    if (listaObj == null || !(listaObj instanceof List<?>)) {
-	        //throw new IllegalArgumentException("El parámetro 'lista' no es una lista válida o es null");
-	    	return;
+	        throw new IllegalArgumentException("El parámetro 'lista' no es una lista válida o es null");
 	    }
 	    
 	    List<?> lista = (List<?>) listaObj;
