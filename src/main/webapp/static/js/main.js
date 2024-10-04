@@ -246,19 +246,32 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 			
 			}
 			
-			$('#delegado').chosen();
-			$('#filtroFecha').chosen();
-			$('#filtroMoneda').chosen();
-			$('.selectGastosCP').chosen();
-			
+			if ($('#delegado') && $('#delegado').length) { 
+    			$('#delegado').chosen(); 
+			}
+			if ($('#filtroFecha') && $('#filtroFecha').length) { 
+				$('#filtroFecha').chosen();
+			}
+			if ($('#filtroMoneda') && $('#filtroMoneda').length) { 
+				$('#filtroMoneda').chosen();
+			}
+			if ($('#selectGastosCP') && $('#selectGastosCP').length) { 
+				$('.selectGastosCP').chosen();
+			}
 					
 		setTimeout(() => {
-  			$('.selectMotivosCP').chosen();
+			if ($('#selectMotivosCP') && $('#selectMotivosCP').length) { 
+  				$('.selectMotivosCP').chosen();
+			}
 		}, 1000);
 			
 		setTimeout(() => {
-  			$('#filtroMotivo').chosen();
-  			$('#filtroSupervisado').chosen();
+			if ($('#filtroMotivo') && $('#filtroMotivo').length) { 
+  				$('#filtroMotivo').chosen();
+			}
+			if ($('#filtroSupervisado') && $('#filtroSupervisado').length) { 
+  				$('#filtroSupervisado').chosen();
+			}
 		}, 1800);
 
 		},

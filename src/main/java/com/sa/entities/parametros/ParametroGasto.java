@@ -270,4 +270,17 @@ public class ParametroGasto {
 	public void setCentrosCosto(List<String> centrosCosto) {
 		this.centrosCosto = centrosCosto;
 	}
+
+	@Override
+	public String toString() {
+		return "ParametroGasto [gasto=" + gasto + ", descripcionGasto=" + descripcionGasto + ", motivo=" + motivo
+				+ ", descripcionMotivo=" + descripcionMotivo + ", ristra=" + ristra + ", bimon=" + bimon + ", comprob="
+				+ comprob + ", autoriz=" + autoriz + ", observ=" + observ + ", estado=" + estado + ", ccostos="
+				+ ccostos + ", comboCCostos=" + comboCCostos + ", maInclExcl=" + maInclExcl + ", maMonto=" + maMonto
+				+ ", impAviso=" + impAviso + ", oscar=" + oscar + ", maCtrlImp=" + maCtrlImp + ", idAntg=" + idAntg
+				+ ", plazoAprob=" + plazoAprob + ", feAlta=" + feAlta + ", usrAlta=" + usrAlta + ", feUltMod="
+				+ feUltMod + ", usrUltMod=" + usrUltMod + ", feBaja=" + feBaja + ", usrBaja=" + usrBaja + ", nroTerm="
+				+ nroTerm + ", antiguedad=" + antiguedad + ", nivelIngreso=" + nivelIngreso + ", centrosCosto="
+				+ centrosCosto + "]";
+	}
 }
