@@ -566,7 +566,7 @@ public class ParametrosService {
 		
 		parametersExecute.put("opcion", "ALTA");
 		parametersExecute.put("modo", "C");
-		parametersExecute.put("cod_gasto", String.format("%04d", Integer.parseInt(frm.getCodigo())));
+		parametersExecute.put("cod_gasto", "");//String.format("%04d", Integer.parseInt(frm.getCodigo())));
 		parametersExecute.put("desc_gasto", frm.getDescripcionGasto());
 		parametersExecute.put("desc_motivo", frm.getDescripcionMotivo());
 		parametersExecute.put("cod_motivo",frm.getMotivo());
