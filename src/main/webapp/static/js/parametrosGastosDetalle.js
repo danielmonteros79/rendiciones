@@ -120,7 +120,7 @@ function setFormValidate() {
 	$("#parametrosGastosForm").validate({
 	    ignore: "",
 		rules: {
-			codigo: 			{ required : true, number : true },
+			codigo: 			{ required : false, number : true },
 			descripcionGasto: 	{ required : true },
 			motivo: 			{ required : true },
 			estado: 			{ required : true },
