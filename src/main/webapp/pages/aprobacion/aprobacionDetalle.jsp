@@ -137,4 +137,4 @@
 <jsp:include page="../aprobacion/modalRechazarRendicion.jsp" />
 <jsp:include page="../aprobacion/modalObservarRendicion.jsp" />
 
-<script type="text/javascript" src="js/aprobacion/aprobacionDetalle.js"></script>
+<script type="text/javascript" src="./static/js/aprobacion/aprobacionDetalle.js"></script>
