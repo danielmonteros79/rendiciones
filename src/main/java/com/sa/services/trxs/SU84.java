@@ -28,6 +28,8 @@ public class SU84 extends Transaction {
 	    try {
 	        execute(client, this.PARAMETER_TRX, parametersExecute);
 	        
+	        System.out.println("EJECUTAR TRX SU84: " + parametersExecute);
+	        
 	        mapData(parametersExecute);
 	    } catch (Exception e) {
 	        log.error("Error al ejecutar la transacción", e);
@@ -37,38 +39,87 @@ public class SU84 extends Transaction {
 
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) {
-	    Object listaObj = parametersExecute.get("lista");
-	    
-	    if (listaObj == null || !(listaObj instanceof List<?>)) {
-	        throw new IllegalArgumentException("El parámetro 'lista' no es una lista válida o es null");
-	    }
-	    
-	    List<?> lista = (List<?>) listaObj;
 
-	    for (Object obj : lista) {
-	        String str = getStrLista(obj);
-	        
-	        if (str == null || str.length() < 189) {
-	            throw new IllegalArgumentException("Cadena 'str' no tiene la longitud mínima requerida");
+	    if (parametersExecute.get("cod_gasto").equals("") || parametersExecute.get("cod_gasto").equals(" ")) {
+	        Object listaObj = parametersExecute.get("lista");
+	        System.out.println("LISTAOBJ: " + parametersExecute.get("lista"));
+
+	        if (listaObj == null || !(listaObj instanceof List<?>)) {
+	            throw new IllegalArgumentException("El parámetro 'lista' no es una lista válida o es null");
+	        }
+
+	        List<?> lista = (List<?>) listaObj;
+
+	        for (Object obj : lista) {
+	            String str = getStrLista(obj);
+	            System.out.println("STR: " + str);
+
+	            if (str == null || str.length() < 189) {
+	                throw new IllegalArgumentException("Cadena 'str' no tiene la longitud mínima requerida");
+	            }
+
+	            ParametroGasto gasto = new ParametroGasto();
+	            int i = 0;
+
+	            gasto.setGasto(str.substring(i, i += 4));
+	            gasto.setDescripcionGasto(str.substring(i, i += 50));
+	            gasto.setMotivo(str.substring(i, i += 4));
+	            gasto.setDescripcionMotivo(str.substring(i, i += 50));
+	            gasto.setRistra(str.substring(i, i += 69));
+	            gasto.setBimon(str.substring(i, i += 1));
+	            gasto.setComprob(str.substring(i, i += 4));
+	            gasto.setAutoriz(str.substring(i, i += 2));
+	            gasto.setObserv(str.substring(i, i += 4));
+	            gasto.setEstado(str.substring(i, i += 1));
+
+	            this.gastos.add(gasto);
+	        }
+	    } else {
+	        String codMotivo = (String) parametersExecute.get("cod_motivo");
+
+	        if (codMotivo == null || codMotivo.isEmpty()) {
+	            throw new IllegalArgumentException("El parámetro 'cod_motivo' no puede ser nulo o vacío");
 	        }
 
 	        ParametroGasto gasto = new ParametroGasto();
-	        int i = 0;
+	        gasto.setMotivo(codMotivo);
+
+	        String descripcionMotivo = (String) parametersExecute.get("desc_motivo");
+	        if (descripcionMotivo != null && !descripcionMotivo.isEmpty()) {
+	            gasto.setDescripcionMotivo(descripcionMotivo);
+	        } else {
+	            throw new IllegalArgumentException("El parámetro 'desc_motivo' no puede ser nulo o vacío");
+	        }
+
+	        String codGasto = (String) parametersExecute.get("cod_gasto");
+	        if (codGasto != null && !codGasto.isEmpty()) {
+	            gasto.setGasto(codGasto);
+	        }
+
+	        String descripcionGasto = (String) parametersExecute.get("desc_gto");
+	        if (descripcionGasto != null) {
+	            gasto.setDescripcionGasto(descripcionGasto);
+	        }
+
+	        String estado = (String) parametersExecute.get("estado");
+	        if (estado != null) {
+	            gasto.setEstado(estado);
+	        }
 	        
-	        gasto.setGasto(str.substring(i, i += 4));
-	        gasto.setDescripcionGasto(str.substring(i, i += 50));
-	        gasto.setMotivo(str.substring(i, i += 4));
-	        gasto.setDescripcionMotivo(str.substring(i, i += 50));
-	        gasto.setRistra(str.substring(i, i += 69));
-	        gasto.setBimon(str.substring(i, i += 1));
-	        gasto.setComprob(str.substring(i, i += 4));
-	        gasto.setAutoriz(str.substring(i, i += 2));
-	        gasto.setObserv(str.substring(i, i += 4));
-	        gasto.setEstado(str.substring(i, i += 1));
+	        String bimon = (String) parametersExecute.get("bimon");
+	        if(bimon != null) {
+	        	gasto.setBimon(bimon);
+	        }
 	        
+	        String ristra = (String) parametersExecute.get("ristra");
+	        if(ristra != null) {
+	        	gasto.setRistra(ristra);
+	        }
+
 	        this.gastos.add(gasto);
 	    }
 	}
+
 
 	@Override
 	public List getDataReturnList() {
