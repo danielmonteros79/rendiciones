@@ -91,12 +91,29 @@ label.error {
 						<div class="errorDiv"></div>
 					</div>
 				</div>
-				<div class="col-sm-12 col-lg-3 pt-2  pl-lg-1 has-float-label scroll-err">
-					<div class="has-float-label">
-						<html:text property="idGlg" styleId="idGlg" styleClass="form-control bg-light text-uppercase " maxlength="2" onkeypress="return numericOnly(event);"/>
-						 <label for="modalDelegadoUsuario">GLG</label>
-						 <div class="errorDiv"></div>
-					</div>
+				
+				<div class="col-sm-12 col-lg-3 pt-2 pl-lg-1 has-float-label scroll-err">
+				    <div class="has-float-label">
+				        <select id="idGlg" class="form-control bg-light text-uppercase">
+				            <option value="" disabled selected hidden>Seleccione una opci&oacute;n</option>
+				            <option value="01">GLG01 - GABINETE DIRECTORES</option>
+				            <option value="04">GLG04 - RRHH</option>
+				            <option value="05">GLG05 - MEDIOS</option>
+				            <option value="13">GLG13 - PUBLICIDAD</option>
+				            <option value="14">GLG14 - RR LABORALES (RRHH)</option>
+				            <option value="15">GLG15 - JURID&iacute;COS</option>
+				            <option value="17">GLG17 - MATERIAS Y SPELIO (RRHH)</option>
+				            <option value="25">GLG25 - INSTITUCIONALES</option>
+				            <option value="41">GLG41 - DPTO MEDICO (RRHH)</option>
+				            <option value="50">GLG50 - NINJA (MEDIOS)</option>
+				            <option value="62">GLG62 - OTROS (VALUES DAY/DIVERSITY/TORNEOS) (RRHH)</option>
+				            <option value="69">GLG69 - FORMACI&oacute;N (RRHH)</option>
+				            <option value="71">GLG71 - AGILE</option>
+				            <option value="90">GLG90 - CUENTAS A PAGAR (TARJETA CORPO)</option>
+				        </select>
+				        <label for="idGlg">GLG</label>
+				        <div class="errorDiv"></div>
+				    </div>
 				</div>
 				
 				<div class="col-sm-12 col-lg-4 pt-2  scroll-err">
