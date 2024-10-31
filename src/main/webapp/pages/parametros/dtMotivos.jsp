@@ -11,8 +11,6 @@
 		title="DESCRIPCION" />
 	<display:column media="html csv excel" property="idGlg" title="GLG"
 		style="" />
-	<!-- <display:column media="html csv excel" property="idCentroCostos"
-		title="CENTRO COSTOS" style="" /> -->
 	<display:column media="html csv excel" property="codSup"
 		title="REQUIERE SUPERIOR" />
 	<display:column media="html csv excel" property="codFirma"
