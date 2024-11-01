@@ -28,8 +28,6 @@ public class SU84 extends Transaction {
 	    try {
 	        execute(client, this.PARAMETER_TRX, parametersExecute);
 	        
-	        System.out.println("EJECUTAR TRX SU84: " + parametersExecute);
-	        
 	        mapData(parametersExecute);
 	    } catch (Exception e) {
 	        log.error("Error al ejecutar la transacción", e);
