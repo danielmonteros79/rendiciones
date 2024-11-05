@@ -260,8 +260,9 @@ console.log(descMotivo);
 
 
 				<div class="col-sm-12 text-right mt-5">
-					<a href="parametrosGastosFiltro.do"
-						class="btn btn-link px-5 py-3 mr-2 font-weight-bold"> Volver </a>
+					<a href="parametrosGastos.do?cod_motivo=<%= request.getSession().getAttribute("cod_motivo") %>"
+   						class="btn btn-link px-5 py-3 mr-2 font-weight-bold"> Volver </a>
+
 
 
 					<logic:equal value="modificacion" name="ParametrosGastosForm"

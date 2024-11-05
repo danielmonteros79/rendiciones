@@ -360,32 +360,33 @@ label.error {
 				</div>
 
 				<div class="col-sm-12 mt-4 text-right">
-					<html:form action="saveMotivo" styleId="parametrosMotivoForm">
-						<a href="javascript:history.back()"
-							class="btn btn-link px-5 py-3 mr-2 font-weight-bold"> Volver
-						</a>																	
-						<a href="parametrosGastos.do" onclick="location.href=this.href+'?cod_motivo='+$('#codigo').val();return false;"
-							class="btn btn-info px-5 py-3 ml-2"> Gasto
-						</a>						
-						<a href="parametrosAlertas.do" onclick="location.href=this.href;return false;"
-							class="btn btn-info px-5 py-3 ml-2"> Alerta
-						</a>						
-						<logic:equal value="alta" name="ParametrosMotivoForm" property="accion">
-							<html:submit styleClass="btn btn-info px-5 py-3 ml-2" value="Guardar"/>
-						</logic:equal>
-						<logic:equal value="modificacion" name="ParametrosMotivoForm" property="accion">
-							<html:submit styleClass="btn btn-info px-5 py-3 ml-2" value="Guardar"/>
-						</logic:equal>
-						<logic:equal value="baja" name="ParametrosMotivoForm" property="accion">
-							<html:button property="" styleClass="btn btn-info px-5 py-3 ml-2" onclick="confirmEliminarMotivo()" value="Eliminar"/>
-						</logic:equal>
-					</html:form>
+				    <html:form action="saveMotivo" styleId="parametrosMotivoForm">
 
+				        <a href="javascript:history.back()"
+				            class="btn btn-link px-5 py-3 mr-2 font-weight-bold"> Volver
+				        </a>
+				
+				        <logic:equal value="modificacion" name="ParametrosMotivoForm" property="accion">
+				            <a href="parametrosGastos.do" onclick="location.href=this.href+'?cod_motivo='+$('#codigo').val();return false;"
+				                class="btn btn-info px-5 py-3 ml-2"> Gasto
+				            </a>
+				            <a href="parametrosAlertas.do" onclick="location.href=this.href;return false;"
+				                class="btn btn-info px-5 py-3 ml-2"> Alerta
+				            </a>
+				        </logic:equal>
+				
+				        <logic:equal value="alta" name="ParametrosMotivoForm" property="accion">
+				            <html:submit styleClass="btn btn-info px-5 py-3 ml-2" value="Guardar"/>
+				        </logic:equal>
+				        <logic:equal value="modificacion" name="ParametrosMotivoForm" property="accion">
+				            <html:submit styleClass="btn btn-info px-5 py-3 ml-2" value="Guardar"/>
+				        </logic:equal>
+				
+				        <logic:equal value="baja" name="ParametrosMotivoForm" property="accion">
+				            <html:button property="" styleClass="btn btn-info px-5 py-3 ml-2" onclick="confirmEliminarMotivo()" value="Eliminar"/>
+				        </logic:equal>
+				    </html:form>
 				</div>
-
-
-
-
 			</div>
 		</div>
 	</html:form>
@@ -398,21 +399,20 @@ label.error {
 </body>
 
 <logic:equal value="alta" name="ParametrosMotivoForm" property="accion">
-	<script>
-			$( document ).ready(function() {
-				$('#estado').attr('disabled','disabled');
-				$('#codigo').attr('readonly', true);
-			});
-		</script>
+    <script>
+        $(document).ready(function() {
+            $('#estado').attr('disabled', 'disabled');
+            $('#codigo').attr('readonly', true);
+        });
+    </script>
 </logic:equal>
 
-<logic:equal value="modificacion" name="ParametrosMotivoForm"
-	property="accion">
-	<script>
-			$( document ).ready(function() {
-				$('#codigo').attr('readonly', true);
-			});
-		</script>
+<logic:equal value="modificacion" name="ParametrosMotivoForm" property="accion">
+    <script>
+        $(document).ready(function() {
+            $('#codigo').attr('readonly', true);
+        });
+    </script>
 </logic:equal>
 
 <logic:equal value="baja" name="ParametrosMotivoForm" property="accion">
