@@ -93,12 +93,12 @@ label.error {
 				</div>
 				
 				<div class="col-sm-12 col-lg-3 pt-2 pl-lg-1 has-float-label scroll-err">
-				    <div class="has-float-label">
+				    <div class="has-float-label form-group">
 				        <html:select property="idGlg" styleId="idGlg" styleClass="form-control bg-light text-uppercase">
 				        	<option value="" disabled selected>Seleccione una opci&oacute;n</option>
-				            <html:option value="01">GLG01 - GABINETE DIRECTORES</html:option>
-				            <html:option value="04">GLG04 - RRHH</html:option>
-				            <html:option value="05">GLG05 - MEDIOS</html:option>
+				            <html:option value="1">GLG01 - GABINETE DIRECTORES</html:option>
+				            <html:option value="4">GLG04 - RRHH</html:option>
+				            <html:option value="5">GLG05 - MEDIOS</html:option>
 				            <html:option value="13">GLG13 - PUBLICIDAD</html:option>
 				            <html:option value="14">GLG14 - RR LABORALES (RRHH)</html:option>
 				            <html:option value="15">GLG15 - JURID&iacute;COS</html:option>
