@@ -407,6 +407,7 @@ label.error {
         $(document).ready(function() {
             $('#estado').attr('disabled', 'disabled');
             $('#codigo').attr('readonly', true);
+            $('#descOscar').attr('readonly', true);
         });
     </script>
 </logic:equal>
@@ -415,6 +416,7 @@ label.error {
     <script>
         $(document).ready(function() {
             $('#codigo').attr('readonly', true);
+            $('#descOscar').attr('readonly', true);
         });
     </script>
 </logic:equal>
