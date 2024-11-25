@@ -11,7 +11,7 @@
 <%
 Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
 if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
-		|| userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL_LESS_PARAMS) {
+		|| userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL_LESS_CIERRE) {
 %>
 
 

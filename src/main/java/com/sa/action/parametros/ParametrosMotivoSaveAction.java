@@ -1,5 +1,6 @@
 package com.sa.action.parametros;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -33,6 +34,8 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("Entra al action ParametrosMotivoSaveAction. Usuario (" + user.getIdUser() + ")");
 		
+		System.out.println("FORM SAVE ACTION: " + form.toString());
+		
 		String forward = "failure";
 		
 		if (frm.getAccion().equals("alta"))
@@ -47,9 +50,9 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 
 	private String alta(HttpServletRequest request, ParametrosMotivoForm frm, ParametrosService service) throws ParseException {
 		String ret = "errorAlta";
-		ParametroMotivo motivo = formToMotivo(frm);
 		
 		try {
+			ParametroMotivo motivo = formToMotivo(frm);
 			String msg = service.altaMotivo(motivo);
 			request.setAttribute("message", "OK: " + msg);
 			ret = "success";
@@ -57,6 +60,12 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
+		} catch (UnsupportedEncodingException e) {
+		    log.error("Error de codificación al procesar los datos: ", e);
+		    request.setAttribute("message", "Error de codificación al procesar los datos. Intente nuevamente.");
+		} catch (Exception e) {
+		    log.error("Error inesperado: ", e);
+		    request.setAttribute("message", "Ocurrió un error inesperado.");
 		}
 		
 		return ret;
@@ -80,9 +89,9 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 
 	private String modificacion(HttpServletRequest request, ParametrosMotivoForm frm, ParametrosService service) throws ParseException {
 		String ret = "errorModificacion";
-		ParametroMotivo motivo = formToMotivo(frm);
 		
 		try {
+			ParametroMotivo motivo = formToMotivo(frm);
 			String msg = service.modificacionMotivo(motivo);
 			request.setAttribute("message", "OK: " + msg);
 			ret = "success";
@@ -90,16 +99,22 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
+		} catch (UnsupportedEncodingException e) {
+		    log.error("Error de codificación al procesar los datos: ", e);
+		    request.setAttribute("message", "Error de codificación al procesar los datos. Intente nuevamente.");
+		} catch (Exception e) {
+		    log.error("Error inesperado: ", e);
+		    request.setAttribute("message", "Ocurrió un error inesperado.");
 		}
 		
 		return ret;
 	}
 	
-	private ParametroMotivo formToMotivo(ParametrosMotivoForm frm) throws ParseException {
+	private ParametroMotivo formToMotivo(ParametrosMotivoForm frm) throws ParseException, UnsupportedEncodingException {
 		ParametroMotivo motivo = new ParametroMotivo();
 		
 		motivo.setCodigo(frm.getCodigo());
-		motivo.setDescripcion(frm.getDescripcion());
+		motivo.setDescripcion(new String(frm.getDescripcion().getBytes("ISO-8859-1"), "UTF-8").toUpperCase());
 		motivo.setEstado(frm.getEstado());
 		motivo.setIdGlg(frm.getIdGlg());
 		motivo.setCodAprobacionGlg(frm.getCodAprobacionGlg());
@@ -111,7 +126,7 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 		motivo.setOscar(frm.getOscar());
 		motivo.setIdNivCarga(frm.getIdNivCarga());
 		motivo.setIdNivAutoriz(frm.getIdNivAutoriz());
-		motivo.setTxAviso(frm.getTxAviso());
+		motivo.setTxAviso(new String(frm.getTxAviso().getBytes("ISO-8859-1"), "UTF-8"));
 		motivo.setIdOperEspe(frm.getIdOperEspe());
 		motivo.setMeDiasInterv(frm.getMeDiasInterv());
 		motivo.setCentrosCosto(frm.getCentrosCosto());

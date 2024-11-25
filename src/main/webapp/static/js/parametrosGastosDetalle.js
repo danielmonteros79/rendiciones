@@ -127,6 +127,7 @@ function setFormValidate() {
 			bimon: 				{ required : true },
 			plazoAprob: 		{ required : true },
 			idCentroCostos: 	{ required : true, number : true },
+			detalleRistra: 		{ required : true },
 			centrosCosto: 		{ centrosCosto : true }
 		},
 		messages: {
@@ -136,6 +137,7 @@ function setFormValidate() {
 			estado: globalMsgRequired,
 			bimon: globalMsgRequired,
 			plazoAprob: globalMsgRequired,
+			detalleRistra: globalMsgRequired,
 			idCentroCostos: { required : globalMsgRequired, number : "Campo solo numerico" }
 		},
 		errorElement: "p",

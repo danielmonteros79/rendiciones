@@ -47,7 +47,6 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 		else if ("agregarCentroCosto".equals(accionJson))
 			return this.agregarCentroCosto(frm, response);
 		
-		log.info("HOLAAA ESTOY VIENDO SI ENTRA EN EL ACTION");
 		if (!frm.isBack()) {
 			cmbObservacion = new ArrayList<ComboOpcion>();
 			cmbMotivo = new ArrayList<ComboOpcion>();

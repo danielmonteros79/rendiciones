@@ -53,18 +53,11 @@ console.log(descMotivo);
 						<div class="invalid-feedback mb-3"></div>
 					</div>
 				</div>
-				<!--  <div class="col-sm-12 col-lg-6 pt-2  has-float-label scroll-err">
-					<div class="has-float-label form-group ">
-						<select id="filtroMotivo" class="form-control bg-light"></select>
-						<i class="bbva-icon icon-uniE003 text-primary"></i> <label>Motivo</label>
-
-					</div>
-				</div> -->
 				<div class="col-sm-12 col-lg-6 pt-2  has-float-label scroll-err">
 					<div class="has-float-label">
 						<html:text property="descripcionMotivo" styleId="descripcionMotivo"
 							styleClass="form-control bg-light" maxlength="50" />
-						<label for="descripcionGasto">Descripci&oacute;n del motivo</label>
+						<label for="descripcionMotivo">Descripci&oacute;n del motivo</label>
 						<div class="invalid-feedback mb-3"></div>
 					</div>
 				</div>
@@ -99,21 +92,6 @@ console.log(descMotivo);
 					</div>
 				</div>
 
-
-			
-
-				<!-- <div class="col-sm-12 col-lg-4 pt-2 pl-lg-1  scroll-err">
-					<div class="has-float-label form-group">
-						<html:text property="idCentroCostos"
-							styleClass="form-control bg-light text-uppercase" maxlength="4" />
-						<label for="idCentroCostos">C.Costos</label>
-						<div class="invalid-feedback mb-3"></div>
-					</div>
-				</div>  -->
-
-
-
-
 				<div class="col-sm-12 col-lg-6 pt-2  scroll-err">
 					<div class="has-float-label form-group d-flex align-items-center bg-light">
 
@@ -130,46 +108,6 @@ console.log(descMotivo);
 					</div>
 				</div>
 
-				<!-- <div class="col-sm-12 col-lg-4 pt-2  has-float-label scroll-err">
-					<div class="has-float-label form-group ">
-
-						<html:select property="comprob" styleId="filtroComprobante" styleClass="form-control bg-light">
-							<html:option value=""></html:option>
-							<html:options collection="cmbComprobante" property="id"
-								labelProperty="descripcion" />
-						</html:select>
-						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="modalGastoTipoComprobante">Tipo de comprobante</label>
-						<div class="invalid-feedback mb-3"></div>
-
-					</div>
-				</div>  -->
-
-				<!--  <div
-					class="col-sm-12 col-lg-4 pt-2 pl-lg-1 has-float-label scroll-err">
-					<div class="has-float-label">
-						<html:text property="antiguedad"
-							styleClass="form-control bg-light text-uppercase" maxlength="4" />
-						<label for="antiguedad">Antigüedad</label>
-						<div class="invalid-feedback mb-3"></div>
-					</div>
-				</div> -->	
-
-				<!--  <div class="col-sm-12 col-lg-4 pt-2  pl-lg-1 scroll-err">
-					<div class="has-float-label form-group">
-						<html:select property="maInclExcl"
-							styleClass="form-control bg-light">
-							<html:option value=""></html:option>
-							<html:option value="I">Incluye</html:option>
-							<html:option value="E">Excluye</html:option>
-						</html:select>
-
-						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="maInclExcl">Preformato de intervalo de fecha</label>
-						<div class="invalid-feedback mb-3"></div>
-					</div>
-				</div> -->
-
 				<div class="col-sm-12 col-lg-6 pt-2  pl-lg-1 scroll-err">
 					<div class="has-float-label">
 						<html:text property="idCentroCostos"
@@ -177,55 +115,7 @@ console.log(descMotivo);
 						<label for="idCentroCostos">C&oacute;digo de datos adicionales</label>
 						<div class="invalid-feedback mb-3"></div>
 					</div>
-					
-					<!-- <div class="has-float-label">
-
-						<html:select property="observ" styleClass="form-control bg-light">
-							<html:option value="1"></html:option>
-							<html:options collection="cmbObservacion" property="id"
-								labelProperty="descripcion" />
-						</html:select>
-
-						<i class="bbva-icon icon-uniE003 text-primary"></i> <label>C&oacute;digo de datos adicionales</label>
-						<div class="invalid-feedback mb-3"></div>
-					</div> -->
 				</div>
-
-				<!-- <div class="col-sm-12 pt-2 col-lg-4 pl-lg-1 scroll-err">
-					<div class="has-float-label form-group">
-
-						<html:select property="idNivAutoriz"
-							styleClass="form-control bg-light">
-							<html:option value=""></html:option>
-							<html:option value="1">1</html:option>
-							<html:option value="2">2</html:option>
-							<html:option value="3">3</html:option>
-							<html:option value="4">4</html:option>
-						</html:select>
-						<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-							for="idNivAutoriz">Plazo Ingreso</label>
-						<div class="invalid-feedback mb-3"></div>
-					</div>
-				</div>  -->
-
-
-				<!-- <div class="col-sm-12 pt-2 col-lg-4 pl-lg-1 scroll-err">
-					<div class="has-float-label form-group d-flex align-items-center bg-light">
-						<html:select property="plazoAprob"
-							styleClass="form-control bg-light">
-							<html:option value=""></html:option>
-							<html:option value="DIA">DIA</html:option>
-							<html:option value="SEM">SEM</html:option>
-							<html:option value="QUIN">QUIN</html:option>
-							<html:option value="MES">MES</html:option>
-						</html:select>
-						<div class= "pr-3">
-							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
-								for="plazoAprob">Plazo Aprob</label>
-							<div class="invalid-feedback mb-3"></div>
-						</div>
-					</div>
-				</div>  -->
 
 				<div class="col-sm-12 col-lg-12 pt-2  has-float-label scroll-err">
 					<div class="has-float-label">
@@ -233,31 +123,6 @@ console.log(descMotivo);
 						<label for="detalleRistra">Detalle de ristra contable</label>
 					</div>
 				</div>
-
-				<!-- <div class="col-sm-12 col-lg-12 pt-2  has-float-label scroll-err">
-					<div class="has-float-label d-flex  bg-light align-items-center">
-						<html:text property="ristra"
-							styleClass="form-control bg-light text-uppercase" maxlength="69"
-							readonly="true" />
-						<a href="#" onclick="nuevaRistra()"> <logic:equal value="baja"
-								name="ParametrosGastosForm" property="accion">
-								<img src="images/iconos/ver.png" alt="Ver" title="Ver"
-									border="0">
-							</logic:equal> <logic:notEqual value="baja" name="ParametrosGastosForm"
-								property="accion">
-								<i class="ml-2 bbva-icon icon-coronita_contract fa-md"
-									title="Agregar"></i>
-							</logic:notEqual>
-						</a>
-						<div class="pr-3">
-							<label for="Ristra">Detalle de ristra contable</label>
-						</div>
-						<div class="invalid-feedback mb-3"></div>
-					</div>
-				</div>-->
-
-
-
 
 				<div class="col-sm-12 text-right mt-5">
 					<a href="parametrosGastos.do?cod_motivo=<%= request.getSession().getAttribute("cod_motivo") %>"
@@ -281,24 +146,13 @@ console.log(descMotivo);
 							onclick="confirmEliminarGasto()" value="Eliminar" />
 					</logic:equal>
 
-
-
 				</div>
-
-
-
-
 
 				<html:hidden property="accion" styleId="accion" />
 				<html:hidden property="back" styleId="back" value="true" />
 			</div>
 		</div>
 	</html:form>
-
-
-
-
-
 
 	<logic:equal value="alta" name="ParametrosGastosForm" property="accion">
 		<script>
@@ -340,6 +194,5 @@ console.log(descMotivo);
 
 	<jsp:include page="modalRistra.jsp" />
 	<script type="text/javascript" src="./static/js/parametrosGastosDetalle.js"></script>
-	<!-- <script type="text/javascript" src="js/rendiciones/modalGasto.js"></script> -->
 </body>
 </html>
