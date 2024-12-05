@@ -89,9 +89,9 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 
 	private String modificacion(HttpServletRequest request, ParametrosMotivoForm frm, ParametrosService service) throws ParseException {
 		String ret = "errorModificacion";
+		ParametroMotivo motivo = formToMotivo(frm);
 		
 		try {
-			ParametroMotivo motivo = formToMotivo(frm);
 			String msg = service.modificacionMotivo(motivo);
 			request.setAttribute("message", "OK: " + msg);
 			ret = "success";
@@ -99,22 +99,16 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
-		} catch (UnsupportedEncodingException e) {
-		    log.error("Error de codificación al procesar los datos: ", e);
-		    request.setAttribute("message", "Error de codificación al procesar los datos. Intente nuevamente.");
-		} catch (Exception e) {
-		    log.error("Error inesperado: ", e);
-		    request.setAttribute("message", "Ocurrió un error inesperado.");
 		}
 		
 		return ret;
 	}
 	
-	private ParametroMotivo formToMotivo(ParametrosMotivoForm frm) throws ParseException, UnsupportedEncodingException {
+	private ParametroMotivo formToMotivo(ParametrosMotivoForm frm) throws ParseException {
 		ParametroMotivo motivo = new ParametroMotivo();
 		
 		motivo.setCodigo(frm.getCodigo());
-		motivo.setDescripcion(new String(frm.getDescripcion().getBytes("ISO-8859-1"), "UTF-8").toUpperCase());
+		motivo.setDescripcion(frm.getDescripcion());
 		motivo.setEstado(frm.getEstado());
 		motivo.setIdGlg(frm.getIdGlg());
 		motivo.setCodAprobacionGlg(frm.getCodAprobacionGlg());
@@ -126,7 +120,7 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 		motivo.setOscar(frm.getOscar());
 		motivo.setIdNivCarga(frm.getIdNivCarga());
 		motivo.setIdNivAutoriz(frm.getIdNivAutoriz());
-		motivo.setTxAviso(new String(frm.getTxAviso().getBytes("ISO-8859-1"), "UTF-8"));
+		motivo.setTxAviso(frm.getTxAviso());
 		motivo.setIdOperEspe(frm.getIdOperEspe());
 		motivo.setMeDiasInterv(frm.getMeDiasInterv());
 		motivo.setCentrosCosto(frm.getCentrosCosto());
