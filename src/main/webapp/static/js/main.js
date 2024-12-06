@@ -223,28 +223,36 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 
 			$(comboSelector).empty();
 			
-			//Combo Excepcional
-			if(comboSelector == "#modalGastoTipoGasto" & data.combo.length == 1){
-				$(comboSelector).append('<option value="' + data.combo[0].id + '"' + ' selected' + '>' +
-						data.combo[0].descripcion.trim() + '</option>');
-				$(comboSelector).attr("disabled", true);
-			}
+			// Combo Excepcional
+			if (
+			    comboSelector == "#modalGastoTipoGasto" &&
+			    data.combo &&
+			    Array.isArray(data.combo) &&
+			    data.combo.length == 1
+			) {
+			    $(comboSelector).append('<option value="' + data.combo[0].id + '"' + ' selected' + '>' +
+			        data.combo[0].descripcion.trim() + '</option>');
+			    $(comboSelector).attr("disabled", true);
+			} else {
+			    if (showEmpty !== false) {
+			        $(comboSelector).append(globalOpcionVacia);
+			    }
 			
-			else {
-				
-			if (showEmpty != false)
-				$(comboSelector).append(globalOpcionVacia);
+			    selectedOption = selectedOption === undefined ? data.selected : selectedOption;
+			
+			    if (data.combo && Array.isArray(data.combo)) {
+			        $(data.combo).each(function(i, elem) {
+			            console.log("a" + elem.id);
+			            console.log("b" + elem.descripcion);
+			            $(comboSelector).append('<option value="' + elem.id + '"' + (elem.id == selectedOption ? ' selected' : '') + '>' +
+			                elem.descripcion.trim() +
+			                '</option>');
+			        });
+			    } else {
+			        console.error("data.combo no está definido o no es un array.");
+			    }
+			}
 
-			selectedOption = selectedOption == undefined ? data.selected : selectedOption;
-			$(data.combo).each(function(i, elem) {
-				console.log("a"+elem.id)
-				console.log("b"+elem.descripcion)
-				$(comboSelector).append('<option value="' + elem.id + '"' + (elem.id == selectedOption ? ' selected' : '') + '>' +
-					elem.descripcion.trim() +
-					'</option>');
-			});
-			
-			}
 			
 			if ($('#delegado') && $('#delegado').length) { 
     			$('#delegado').chosen(); 
