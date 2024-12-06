@@ -1,6 +1,5 @@
 package com.sa.action.parametros;
 
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -34,8 +33,6 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("Entra al action ParametrosMotivoSaveAction. Usuario (" + user.getIdUser() + ")");
 		
-		System.out.println("FORM SAVE ACTION: " + form.toString());
-		
 		String forward = "failure";
 		
 		if (frm.getAccion().equals("alta"))
@@ -60,12 +57,6 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
-		} catch (UnsupportedEncodingException e) {
-		    log.error("Error de codificación al procesar los datos: ", e);
-		    request.setAttribute("message", "Error de codificación al procesar los datos. Intente nuevamente.");
-		} catch (Exception e) {
-		    log.error("Error inesperado: ", e);
-		    request.setAttribute("message", "Ocurrió un error inesperado.");
 		}
 		
 		return ret;
