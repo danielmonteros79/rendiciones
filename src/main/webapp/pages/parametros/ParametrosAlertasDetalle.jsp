@@ -83,48 +83,41 @@ var gasto = "<%=request.getSession().getAttribute("cod_gasto")%>";
 					</div>
 					
 					<div class="col-sm-12 pt-2 col-lg-4  scroll-err">
-						<div class="has-float-label form-group scroll-err d-flex align-items-center  bg-light ">					
+						<div class="has-float-label form-group scroll-err">					
 				
 <!-- 							<select id="filtroGasto" property="codGasto"  class="form-control bg-light"></select> -->
 <!-- 							<i class="bbva-icon icon-uniE003 text-primary"></i> <label>Gasto</label> -->
 								
 								<html:select property="codGasto" styleId="gasto" styleClass="form-control bg-light">
 								</html:select>
-								<div class= "pr-3">
 								<i class="bbva-icon icon-uniE003 text-primary"></i>
 								<label for="codGasto">Gasto</label>
-								</div>
 
 						</div>
 					</div>
 					
 					<div class="col-sm-12 col-lg-3 pt-2  has-float-label">
-						<div class="has-float-label form-group scroll-err d-flex align-items-center  bg-light ">
+						<div class="has-float-label form-group scroll-err">
 							<html:select property="rend" styleClass="form-control bg-light">
 								<html:option value=""></html:option>
 								<html:option value="REND">Rendici&oacute;n</html:option>
 								<html:option value="PROM">Promedio</html:option>
 							</html:select>
-							<div class= "pr-3">
 							<i class="bbva-icon icon-uniE003 text-primary"></i>
 							<label for="rend">Rendici&oacute;n</label>
-							</div>
-							
 						</div>
 					</div>
 
 					<div class="col-sm-6 pt-2 col-lg-3 pl-lg-1 scroll-err">
-						<div class="has-float-label form-group d-flex align-items-center  bg-light">
+						<div class="has-float-label form-group">
 						<html:select property="montCant" styleId="montCant" styleClass="form-control bg-light" onchange="impCantChange();">
 							<html:option value=""></html:option>
 							<html:option value="M">Monto</html:option>
 							<html:option value="C">Cantidad</html:option>
 						</html:select>
-						<div class= "pr-3">
 							<i class="bbva-icon icon-uniE003 text-primary"></i>
 							<label for="montCant">Monto/Cantidad</label>
 							<div class="invalid-feedback mb-3"></div>
-						</div>
 						</div>
 						
 					</div>
@@ -138,7 +131,7 @@ var gasto = "<%=request.getSession().getAttribute("cod_gasto")%>";
 					</div>					
 					
 					<div class="col-sm-12 pt-2 col-lg-3 pl-lg-1 scroll-err">
-						<div class="has-float-label form-group d-flex align-items-center  bg-light">
+						<div class="has-float-label form-group">
 						<html:select property="periodo" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
 							<html:option value="DI">Diario</html:option>
@@ -150,16 +143,14 @@ var gasto = "<%=request.getSession().getAttribute("cod_gasto")%>";
 							<html:option value="SM">Semestral</html:option>
 							<html:option value="AN">Anual</html:option>
 						</html:select>
-						<div class= "pr-3">
 							<i class="bbva-icon icon-uniE003 text-primary"></i>
 							<label for="periodo">Per&iacute;odo</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
-						</div>
 					</div>				
 					
 					<div class="col-sm-12 pt-2 col-lg-4  scroll-err">
-						<div class="has-float-label form-group d-flex align-items-center bg-light">
+						<div class="has-float-label form-group">
 						<html:select property="criticidad" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
 							<html:option value="1">Riesgo Grave</html:option>
@@ -168,16 +159,14 @@ var gasto = "<%=request.getSession().getAttribute("cod_gasto")%>";
 							<html:option value="4">Incidencia</html:option>
 							<html:option value="5">Anomal&iacute;a</html:option>
 						</html:select> 
-						<div class= "pr-3">
 							<i class="bbva-icon icon-uniE003 text-primary"></i>
 							<label for="criticidad">Criticidad</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
-						</div>
 					</div>
 					
 					<div class="col-sm-6 pt-2 col-lg-4  scroll-err">
-						<div class="has-float-label form-group d-flex align-items-center  bg-light">
+						<div class="has-float-label form-group">
 						<html:select property="nivMax" styleId="nivMax" styleClass="form-control bg-light" >
 							<html:option value=""></html:option>
 							<html:option value="0">0</html:option>
@@ -192,16 +181,14 @@ var gasto = "<%=request.getSession().getAttribute("cod_gasto")%>";
 							<html:option value="9">9</html:option>
 						</html:select>
 						
-							<div class= "pr-3">
 								<i class="bbva-icon icon-uniE003 text-primary"></i>
 								<label for="nivMax">Nivel M&aacute;ximo</label>
 								<div class="invalid-feedback mb-3"></div>
-							</div>
 						</div>
 					</div>
 					
 					<div class="col-sm-6 pt-2 col-lg-4 pl-lg-1 scroll-err">
-						<div class="has-float-label form-group d-flex align-items-center  bg-light">
+						<div class="has-float-label form-group">
 						<html:select property="nivMin" styleId="nivMin" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
 							<html:option value="0">0</html:option>
@@ -215,14 +202,12 @@ var gasto = "<%=request.getSession().getAttribute("cod_gasto")%>";
 							<html:option value="8">8</html:option>
 							<html:option value="9">9</html:option>
 						</html:select> 
-							<div class= "pr-3">
 								<i class="bbva-icon icon-uniE003 text-primary"></i>
 								<label for="nivMin">Nivel M&iacute;nimo</label>
 								<div class="invalid-feedback mb-3"></div>
 								
 								<div id="errorImpCant" style="color:red;"></div>
 								<div id="errorNiveles" style="color:red;"></div>
-							</div>
 						</div>
 					</div>
 					

@@ -93,18 +93,16 @@ console.log(descMotivo);
 				</div>
 
 				<div class="col-sm-12 col-lg-6 pt-2  scroll-err">
-					<div class="has-float-label form-group d-flex align-items-center bg-light">
+					<div class="has-float-label form-group">
 
 						<html:select property="bimon" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
 							<html:option value="S">SI</html:option>
 							<html:option value="N">NO</html:option>
 						</html:select>
-						<div class= "pr-3">
 							<i class="bbva-icon icon-uniE003 text-primary"></i> <label
 								for="bimon">¿Es bimonetario?</label>
 							<div class="invalid-feedback mb-3"></div>
-						</div>
 					</div>
 				</div>
 

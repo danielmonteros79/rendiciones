@@ -19,6 +19,15 @@ jQuery(document).ready(function() {
 	
 	$('.nav-parametros').addClass('active');
 	
+	$('#descripcion, txAviso').on('input', function() {
+        let originalText = $(this).val();
+        let normalizedText = normalizeText(originalText);
+
+        if (originalText !== normalizedText) {
+            $(this).val(normalizedText);
+        }
+    });
+	
 	setFormValidate();
 });
 
@@ -137,8 +146,8 @@ function setFormValidate() {
 			meDiasInterv: { number : globalMsgRequired }
 		},
 		errorElement: "p",
-		rrorPlacement: function(error, element) {      
-        error.insertAfter(element);
+		errorPlacement: function(error, element) {      
+        //error.insertAfter(element);
     }
 
 		
@@ -206,4 +215,13 @@ function parseDate(dateStr) {
                 return new Date(dateStr);
             }
         }
+
+function normalizeText(text) {
+    text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    text = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#]/g, "");
+
+    return text;
+}
+
 
