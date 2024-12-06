@@ -146,8 +146,8 @@ function setFormValidate() {
 			meDiasInterv: { number : globalMsgRequired }
 		},
 		errorElement: "p",
-		rrorPlacement: function(error, element) {      
-        error.insertAfter(element);
+		errorPlacement: function(error, element) {      
+        //error.insertAfter(element);
     }
 
 		

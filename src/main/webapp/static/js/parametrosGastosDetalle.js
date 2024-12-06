@@ -142,7 +142,7 @@ function setFormValidate() {
 		},
 		errorElement: "p",
 		errorPlacement: function(error, element) {      
-        error.insertAfter(element);
+        	//error.insertAfter(element);
         }
 	});
 }
