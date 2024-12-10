@@ -19,14 +19,22 @@ jQuery(document).ready(function() {
 	
 	$('.nav-parametros').addClass('active');
 	
-	$('#descripcion, txAviso').on('input', function() {
-        let originalText = $(this).val();
-        let normalizedText = normalizeText(originalText);
+	$('#descripcion').on('input', function() {
+	    procesarEntrada($(this));
+	});
+	
+	$('#txAviso').on('input', function() {
+	    procesarEntrada($(this));
+	});
 
-        if (originalText !== normalizedText) {
-            $(this).val(normalizedText);
-        }
-    });
+	function procesarEntrada($elemento) {
+	    let originalText = $elemento.val();
+	    let normalizedText = normalizeText(originalText);
+	
+	    if (originalText !== normalizedText) {
+	        $elemento.val(normalizedText);
+	    }
+	}
 	
 	setFormValidate();
 });
@@ -217,11 +225,8 @@ function parseDate(dateStr) {
         }
 
 function normalizeText(text) {
-    text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-    text = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#]/g, "");
-
-    return text;
+    return text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#]/g, "");
 }
+
 
 

@@ -1,8 +1,24 @@
 var dtLink = 'ParametrosGastosDetalle.do';
-console.log(motivo);
 
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	$('#checkParametros').show();
+	
+   	$('#detalleRistra').on('input', function() {
+	    procesarEntrada($(this));
+	});
+	
+	$('#descripcionGasto').on('input', function() {
+	    procesarEntrada($(this));
+	});
+
+	function procesarEntrada($elemento) {
+	    let originalText = $elemento.val();
+	    let normalizedText = normalizeText(originalText);
+	
+	    if (originalText !== normalizedText) {
+	        $elemento.val(normalizedText);
+	    }
+	}
 	
 	setFormValidate();
 	showMessage('message', getLocalStorageItem('message'));
@@ -145,4 +161,8 @@ function setFormValidate() {
         	//error.insertAfter(element);
         }
 	});
+}
+
+function normalizeText(text) {
+    	return text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#]/g, "");
 }

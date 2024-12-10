@@ -16,6 +16,19 @@ jQuery(document).ready(function() {
     });
     $('#impCant').attr("autocomplete", "off");
     $('#impCant').val($('#impCant').val().replace(/^0+/, ''));
+
+	$('#txAviso').on('input', function() {
+	    procesarEntrada($(this));
+	});
+
+	function procesarEntrada($elemento) {
+	    let originalText = $elemento.val();
+	    let normalizedText = normalizeText(originalText);
+	
+	    if (originalText !== normalizedText) {
+	        $elemento.val(normalizedText);
+	    }
+	}
 });
 
 function confirmarEliminarAlerta() {
@@ -169,4 +182,8 @@ function impCantChange() {
 		$('#impCant').attr('maxlength', '17');
 	else
 		$('#impCant').attr('maxlength', '16');
+}
+
+function normalizeText(text) {
+    return text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#]/g, "");
 }
