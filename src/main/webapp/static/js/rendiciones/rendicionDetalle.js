@@ -162,11 +162,5 @@ function validarContinuar() {
 }
 
 function normalizeText(text) {
-    // Normalizar los acentos
-    text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-    // Eliminar caracteres especiales no permitidos
-    text = text.replace(/[^a-zA-Z0-9\s\/$%*#]/g, "");
-
-    return text;
+    return text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#-]/g, "");
 }
