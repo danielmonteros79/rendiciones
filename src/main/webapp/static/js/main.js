@@ -7,6 +7,18 @@ function globalMsgMaxValue(maxValue) { return 'El valor no puede ser mayor a ' +
 function globalMsgMinDate(minDate) { return 'La fecha no puede ser anterior a ' + minDate + '.' };
 function globalMsgMaxDate(maxDate) { return 'La fecha no puede ser posterior a ' + maxDate + '.' };
 
+function escapeHtml(text) {
+    return text.replace(/[&<>"']/g, function(m) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        }[m];
+    });
+}
+
 $(document).ready(function() {
 	$('.has-float-label label').click(function() {
 		$(this).parent().find('input, select, textarea')[0].focus();
@@ -244,9 +256,9 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 			        $(data.combo).each(function(i, elem) {
 			            console.log("a" + elem.id);
 			            console.log("b" + elem.descripcion);
-			            $(comboSelector).append('<option value="' + elem.id + '"' + (elem.id == selectedOption ? ' selected' : '') + '>' +
-			                elem.descripcion.trim() +
-			                '</option>');
+			            $(comboSelector).append('<option value="' + escapeHtml(elem.id) + '"' +
+                            (elem.id == selectedOption ? ' selected' : '') + '>' +
+                            escapeHtml(elem.descripcion.trim()) + '</option>');
 			        });
 			    } else {
 			        console.error("data.combo no está definido o no es un array.");
