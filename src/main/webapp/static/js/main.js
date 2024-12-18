@@ -230,8 +230,8 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 			    Array.isArray(data.combo) &&
 			    data.combo.length == 1
 			) {
-			    $(comboSelector).append('<option value="' + data.combo[0].id + '"' + ' selected' + '>' +
-			        data.combo[0].descripcion.trim() + '</option>');
+					$(comboSelector).append('<option value="' + escapeHtml(elem.id) + '"' + (elem.id == selectedOption ? ' selected' : '') + '>' +
+					    escapeHtml(elem.descripcion.trim()) + '</option>');
 			    $(comboSelector).attr("disabled", true);
 			} else {
 			    if (showEmpty !== false) {
@@ -412,7 +412,7 @@ function tableLoadFinishedSuccess(data) {
 }
 
 function showMessage(id, message, type) {
-	$('#' + id).html(message);
+	$('#' + id).html(escapeHtml(message));
 	$('#' + id).removeClass('text-success text-warning text-danger');
 	$('#' + id + 'Container').toggleClass('d-none', !message);
 
@@ -599,9 +599,9 @@ let cantidadPdfs = 0;
 	pdfsCombinados = data.archivos.length;
   for (let imagen of data.archivos) {
     divImagenesCargadas.append(`<div class="mr-3">
-      <img onclick="obtenerImagen(${imagen.id})" id="Img-${i}" style="cursor:pointer" alt="Img ${i}" src="./images/iconos/pdf-48.png" class="mt-4 abrir-imagen" data-id="${imagen.id}" data-extension=".pdf"/>
-      <p>${imagen.nomArchivo}</p>
-    </div>`);
+    <img onclick="obtenerImagen(${escapeHtml(imagen.id)})" id="Img-${i}" style="cursor:pointer" alt="Img ${i}" src="./images/iconos/pdf-48.png" class="mt-4 abrir-imagen" data-id="${escapeHtml(imagen.id)}" data-extension=".pdf"/>
+    <p>${escapeHtml(imagen.nomArchivo)}</p>
+	</div>`);
   }
 
   $('#abrirTodas').on('click', function() {
@@ -686,6 +686,14 @@ function descargarImagenes(data) {
 
 }
 
+function escapeHtml(str) {
+    var element = document.createElement('div');
+    if (str) {
+        element.innerText = str;
+        element.textContent = str;
+    }
+    return element.innerHTML;
+}
 
 
 function descargarImagen(data){

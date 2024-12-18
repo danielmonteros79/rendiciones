@@ -52,7 +52,7 @@ function recuperarForm() {
 		type : "POST",
 	    dataType: "json",
 		success : function (data) {
-			$('input:radio[name="accion"][value="' + data.accion + '"]').prop('checked', true);
+			$('input:radio[name="accion"][value="' + escapeHtml(data.accion) + '"]').prop('checked', true);
 
 			getArchivosASubir();
 			
@@ -75,7 +75,7 @@ function getArchivosASubir() {
 	    dataType: "json",
 		success : function (data) {
 			$.each(data, function(index) {
-				agregarASubir(data[index].nombre);
+				agregarASubir(escapeHtml(data[index].nombre));
 	        });
 			
 			checkUnsaved();
@@ -115,8 +115,8 @@ function cargar() {
 				  dataType : "json",
 				  data: myFormData,
 					success : function(data) {
-						var idArchivo = data.nombreArchivo.split(".").slice(0, -1).join('')
-						agregarASubir(data.nombreArchivo);
+						var idArchivo = escapeHtml(data.nombreArchivo.split(".").slice(0, -1).join(''));
+						agregarASubir(escapeHtml(data.nombreArchivo));
 						$("#archivo").val(null);
 					    $('#errores').hide();
 						checkUnsaved();
@@ -152,9 +152,9 @@ function validarExtension(fileName, fileTypes) {
 function agregarASubir(nombreArchivo) {
 	$("#archivosASubirTable").append(
 		"<tr id='archivo_" + idArchivo +"'>" +
-			"<td>" + nombreArchivo + "</td>" +
+			"<td>" + escapeHtml(nombreArchivo) + "</td>" +
 			"<td>" +
-				"<a class='borrar' href='#' onclick='borrarArchivo(\"archivo_" + idArchivo + "\",\"" + nombreArchivo + "\")'>" +
+				"<a class='borrar' href='#' onclick='borrarArchivo(\"archivo_" + idArchivo + "\",\"" + escapeHtml(nombreArchivo) + "\")'>" +
 					"<img src='./images/iconos/borrar.png' alt='Borrar' title='Borrar'>" +
 				"</a>" +
 			"</td>" +
@@ -189,3 +189,12 @@ $("form input:radio").change(function () {
     $('#errores').hide();
     $('#submitDiv').show();
 });
+
+function escapeHtml(text) {
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}

@@ -2,53 +2,38 @@ var cambiarFondoId = "";
 var identifNuevoGasto = 1;
 var gastoIdSeleccionado = 0;
 var maximoPermitido = 15;
-$(document)
-		.ready(
-				function() {
-					$('#datosGastoSelected').hide();
-					$('#distribucionTable').hide();
-					$('#gastosDistribuidosTable').hide();
-					$('#msgEspera').hide();
-					// gastoIdSeleccionado = 0;
-					$(".distribucionTableClass").find('tbody tr').remove();
-					$('.buttonSave').attr('disabled', false);
-					$('.distribucionTableClass').attr('disabled', false);
-					$('#checkAprobacion').show();
 
-					$
-							.ajax({
-								url : "checkGastosMotivoDistribucion.do?codMotivo="
-										+ $('#motivoRendicion').val(),
-								type : "POST",
-								dataType : "json",
-								success : function(data) {
-									$
-											.each(
-													data,
-													function(index) {
-														for (var i = 0; i < data[index].gastos.length; i++) {
-															$('#comboGasto')
-																	.append(
-																			"<option value='"
-																					+ data[index].gastos[i].id
-																							.substring(
-																									0,
-																									4)
-																					+ "'>"
-																					+ data[index].gastos[i].descripcion
-																							.trim()
-																					+ "</option>");
-														}
-														//							
-													})
+$(document).ready(function() {
+    $('#datosGastoSelected').hide();
+    $('#distribucionTable').hide();
+    $('#gastosDistribuidosTable').hide();
+    $('#msgEspera').hide();
 
-								},
-								error : function() {
-									alert("Ocurrió un error general al intentar obtener los codigos de gastos");
-								}
-							});
-					// $('#checkCierre').show();
-				});
+    $(".distribucionTableClass").find('tbody tr').remove();
+    $('.buttonSave').attr('disabled', false);
+    $('.distribucionTableClass').attr('disabled', false);
+    $('#checkAprobacion').show();
+
+    $.ajax({
+        url: "checkGastosMotivoDistribucion.do?codMotivo=" + escapeHtml($('#motivoRendicion').val()),
+        type: "POST",
+        dataType: "json",
+        success: function(data) { 
+            $.each(data, function(index) {
+                for (var i = 0; i < data[index].gastos.length; i++) {
+                    var gastoId = escapeHtml(data[index].gastos[i].id).substring(0, 4);
+                    var gastoDescripcion = escapeHtml(data[index].gastos[i].descripcion.trim());
+                    $('#comboGasto').append(
+                        $("<option>").val(gastoId).text(gastoDescripcion)
+                    );
+                }
+            });
+        },
+        error: function() {
+            alert("Ocurrió un error general al intentar obtener los codigos de gastos");
+        }
+    });
+});
 
 $(".CambioFondo tbody tr")
 		.click(
@@ -70,18 +55,12 @@ $(".CambioFondo tbody tr")
 						var value = $(this).find('td:first').html();
 						cambiarFondoId = $(this).closest("tr").attr('id');
 
-						$('#descripcionSelected').val(
-								$(this).find('td:eq(2)').text().trim());
-						$('#montoModificado').val(
-								$(this).find('td:eq(4)').text().trim());
-						$('#montoOriginal').val(
-								$(this).find('td:eq(4)').text().trim());
-						$('#idGastoOriginal').val(
-								$(this).find('td:eq(0)').text().trim());
-						$('#centroCostoOriginal').val(
-								$(this).find('td:eq(3)').text().trim());
-						$('#centroCostoModificado').val(
-								$(this).find('td:eq(3)').text().trim());
+						$('#descripcionSelected').val(escapeHtml($(this).find('td:eq(2)').text().trim()));
+				        $('#montoModificado').val(escapeHtml($(this).find('td:eq(4)').text().trim()));
+				        $('#montoOriginal').val(escapeHtml($(this).find('td:eq(4)').text().trim()));
+				        $('#idGastoOriginal').val(escapeHtml($(this).find('td:eq(0)').text().trim()));
+				        $('#centroCostoOriginal').val(escapeHtml($(this).find('td:eq(3)').text().trim()));
+				        $('#centroCostoModificado').val(escapeHtml($(this).find('td:eq(3)').text().trim()));
 
 						$("#montoModificado").val(
 								$("#montoModificado").val().replace(",", "."));
@@ -95,81 +74,43 @@ $(".CambioFondo tbody tr")
 
 						$(".distribucionTableClass").find('tbody tr').remove();
 						$(".gastosDistribuidosClass").find('tbody tr').remove();
-						$('#comboGasto').val(
-								($(this).find('td:eq(1)').text().trim()));
+						$('#comboGasto').val(escapeHtml($(this).find('td:eq(1)').text().trim()));
 						$('#gastosDistribuidosTable').hide();
-						obtenerGastosDistribuidos($(this).find('td:eq(0)')
-								.text().trim());
+						obtenerGastosDistribuidos(escapeHtml($(this).find('td:eq(0)').text().trim()));
 					}
 				});
 
+
 function guardarModifGasto() {
-	if ($('#montoModificado').val() == "") {
-		alert("Debe ingresar un Monto para poder guardar");
-		return;
-	} else if ($('#centroCostoModificado').val() == "") {
-		alert("Debe ingresar un Centro Costo para poder guardar");
-		return
-		
+    if ($('#montoModificado').val() == "") {
+        alert("Debe ingresar un Monto para poder guardar");
+        return;
+    }
 
-	}
-	var montoModif = parseFloat($('#montoModificado').val());
-	var montoOrig = parseFloat($('#montoOriginal').val());
-	var saldoPendiente = parseFloat($('#saldoPendiente').val());
-	var ccosto = parseFloat($('#centroCostoModificado').val());
-	var ccostoOrig = parseFloat($('#centroCostoOriginal').val());
+    var montoModif = parseFloat($('#montoModificado').val());
+    var montoOrig = parseFloat($('#montoOriginal').val());
 
-	if (montoModif == 0) {
-		alert("El Monto ingresado debe ser MAYOR a 0 (cero)");
-	} else if (ccosto == 0) {
-		alert("El Centro Costo ingresado debe ser MAYOR a 0 (cero)");
-	} else if (montoModif > montoOrig) {
-		alert("El monto ingresado no debe superar el importe: " + montoOrig);
-	} else if (montoModif == montoOrig && ccosto == ccostoOrig) {
-		alert("El monto y el Centro Costo no tiene modificaciones al gasto seleccionado");
-	} else if (saldoPendiente < montoModif) {
-		alert("El monto ingresado supera el saldo pendiente");
-	} else if (identifNuevoGasto > maximoPermitido) {
-		alert("El permite cargar s\u00F3lo hasta " + maximoPermitido
-				+ " registros");
-	} else {
+    if (montoModif == 0) {
+        alert("El Monto ingresado debe ser MAYOR a 0 (cero)");
+    } else if (montoModif > montoOrig) {
+        alert("El monto ingresado no debe superar el importe: " + montoOrig);
+    } else {
+        var gastoCod = $('#comboGasto option:selected').val();
+        var markup = $("<tr>", { id: "nuevoGasto" + identifNuevoGasto })
+            .append($("<td>", { style: 'display:none;', text: gastoCod }))
+            .append($("<td>", { align: 'center', text: $('#comboGasto option:selected').text() }))
+            .append($("<td>", { align: 'center', text: montoModif }))
+            .append($("<td>", { align: 'center', text: $('#centroCostoModificado').val() }))
+            .append($("<td>", { align: 'center' }).append(
+                $("<img>", { src: './images/clearButton.png', click: function() { deleteNuevoGasto('nuevoGasto' + identifNuevoGasto); } })
+            ));
 
-		// Se identifica la fila seleccionada para colocarle el Saldo.
-		var value = $(".CambioFondo tbody tr .selected").find('td:first')
-				.html();
-		gastoIdSeleccionado = $(".selected").find('td:eq(0)').text().trim();
-		var idTD = "#saldoTable" + gastoIdSeleccionado;
-
-		var saldo = saldoPendiente - montoModif;
-		$(idTD).val(saldo);
-		// $('#montoOriginal').val(saldo);
-		$('#saldoPendiente').val(saldo);
-
-		// alert($(".distribucionTableClass").find('tbody tr'));
-		var gastoCod = $('#comboGasto option:selected').val();
-
-		var markup = "<tr id='nuevoGasto"
-				+ identifNuevoGasto
-				+ "'>"
-				+ "<td style='display:none;'>"
-				+ gastoCod
-				+ "</td>"
-				+ "<td align='center'>"
-				+ $('#comboGasto option:selected').text()
-				+ "</td>"
-				+ "<td align='center'>"
-				+ montoModif
-				+ "</td> "
-				+ "<td align='center'>"
-				+ ccosto
-				+ "</td> "
-				+ "<td align='center'> <img src='./images/clearButton.png' onclick=\"deleteNuevoGasto('nuevoGasto"
-				+ identifNuevoGasto + "');\"/></td> " + "</tr>"
-		$(".distribucionTableClass").append(markup);
-		identifNuevoGasto++;
-		$('#distribucionTable').show();
-	}
+        $(".distribucionTableClass").append(markup);
+        identifNuevoGasto++;
+        $('#distribucionTable').show();
+    }
 }
+
 function deleteNuevoGasto(dat) {
 	var conf = confirm("\u00bfDesea elimnar el registro?")
 	if (conf) {
@@ -368,4 +309,13 @@ function volver() {
 	window.location.href = "aprobacionDetalle.do?action=aprobacionDetalle&codigo="
 			+ $('#idRendicion').val() + "&usuarioRendicion="+
 	$('#usuarioRendicion').val().trim()+"&glg=3&estadoRend=PGLG";
+}
+
+function escapeHtml(text) {
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }

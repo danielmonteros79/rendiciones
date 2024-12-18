@@ -58,22 +58,24 @@ function checkBimon() {
 }
 
 function selectTipoGasto() {
-	$.ajax( {
-		url : "NuevoGastoPopUp.do?accion=selectTipoGasto",
-		type : "POST",
-		data : "codTipoGasto=" + $("#comboTipoGasto").val().substring(0, 4),
-		dataType: "json",
-		success : function (data) {
-			$("#comboComprobante").empty();
-			$.each(data, function(index) {
-				$("#comboComprobante").append("<option value=" + data[index].codigo + ">" + data[index].descripcion + "</option>");
-	       });
-		   check();
-		},
-		error: function (data) {
-			console.log(data);
-		}
-	});
+    $.ajax({
+        url: "NuevoGastoPopUp.do?accion=selectTipoGasto",
+        type: "POST",
+        data: "codTipoGasto=" + encodeURIComponent($("#comboTipoGasto").val().substring(0, 4)),
+        dataType: "json",
+        success: function (data) {
+            $("#comboComprobante").empty();
+            $.each(data, function (index) {
+                let codigo = encodeHTML(data[index].codigo);
+                let descripcion = encodeHTML(data[index].descripcion);
+                $("#comboComprobante").append(`<option value="${codigo}">${descripcion}</option>`);
+            });
+            check();
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
 }
 
 function numericOnly(e){
@@ -84,4 +86,12 @@ function numericOnly(e){
     	return;
     if (!(code >= 48 && code <= 57))
         return false;
+}
+
+function encodeHTML(str) {
+    return String(str).replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
 }

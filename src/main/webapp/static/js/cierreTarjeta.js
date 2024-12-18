@@ -116,27 +116,36 @@ function checkRendiciones(check) {
 }
 
 function selectMotivo() {
-	$.ajax({
-		url : "ShowCierreTarj.do?accion=selectMotivo",
-		type : "POST",
-		data : "codMotivo=" + $("#motivo").val(),
-		dataType : "json",
-		success : function(data) {
-			$("#gasto").empty().append("<option value=''></option>");
-			$.each(data, function(index) {
-				$("#gasto").append(
-						"<option value=" + data[index].id + ">"
-								+ data[index].descripcion + "</option>");
-			});
-			// $("#gasto").append("<option value='9999'>" + "9999 - TODOS LOS
-			// GASTOS" + "</option>");
-		},
-		error : function(data) {
-			console.log(data);
-		}
-	});
+    $.ajax({
+        url: "ShowCierreTarj.do?accion=selectMotivo",
+        type: "POST",
+        data: "codMotivo=" + encodeURIComponent($("#motivo").val()),
+        dataType: "json",
+        success: function (data) {
+            $("#gasto").empty().append("<option value=''></option>");
+
+            $.each(data, function (index) {
+                let id = encodeHTML(data[index].id);
+                let descripcion = encodeHTML(data[index].descripcion);
+                $("#gasto").append(`<option value="${id}">${descripcion}</option>`);
+            });
+            // $("#gasto").append("<option value='9999'>9999 - TODOS LOS GASTOS</option>");
+        },
+        error: function (data) {
+            console.log(data);
+        }
+    });
 }
 
 function showThuban(Link, rend) {
 	window.open(Link + rend);
+}
+
+function encodeHTML(str) {
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
