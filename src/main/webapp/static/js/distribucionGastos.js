@@ -15,7 +15,7 @@ $(document).ready(function() {
     $('#checkAprobacion').show();
 
     $.ajax({
-        url: "checkGastosMotivoDistribucion.do?codMotivo=" + escapeHtml($('#motivoRendicion').val()),
+        url: "checkGastosMotivoDistribucion.do?codMotivo=" + encodeURIComponent($('#motivoRendicion').val()),
         type: "POST",
         dataType: "json",
         success: function(data) { 
@@ -95,12 +95,12 @@ function guardarModifGasto() {
     } else if (montoModif > montoOrig) {
         alert("El monto ingresado no debe superar el importe: " + montoOrig);
     } else {
-        var gastoCod = $('#comboGasto option:selected').val();
+        var gastoCod = escapeHtml($('#comboGasto option:selected').val());
         var markup = $("<tr>", { id: "nuevoGasto" + identifNuevoGasto })
             .append($("<td>", { style: 'display:none;', text: gastoCod }))
-            .append($("<td>", { align: 'center', text: $('#comboGasto option:selected').text() }))
+            .append($("<td>", { align: 'center', text: escapeHtml($('#comboGasto option:selected').text()) }))
             .append($("<td>", { align: 'center', text: montoModif }))
-            .append($("<td>", { align: 'center', text: $('#centroCostoModificado').val() }))
+            .append($("<td>", { align: 'center', text: escapeHtml($('#centroCostoModificado').val()) }))
             .append($("<td>", { align: 'center' }).append(
                 $("<img>", { src: './images/clearButton.png', click: function() { deleteNuevoGasto('nuevoGasto' + identifNuevoGasto); } })
             ));
@@ -115,8 +115,7 @@ function deleteNuevoGasto(dat) {
 	var conf = confirm("\u00bfDesea elimnar el registro?")
 	if (conf) {
 		// alert(dat);
-		var montoEliminar = parseFloat($('#' + dat).find('td:eq(2)').text()
-				.trim());
+		var montoEliminar = parseFloat(escapeHtml($('#' + dat).find('td:eq(2)').text().trim()));
 		// alert(montoEliminar);
 		var montoModif = parseFloat($('#montoModificado').val());
 		var montoOrig = parseFloat($('#montoOriginal').val());
@@ -124,7 +123,7 @@ function deleteNuevoGasto(dat) {
 
 		var value = $(".CambioFondo tbody tr .selected").find('td:first')
 				.html();
-		var gastoId = $(".selected").find('td:eq(0)').text().trim();
+		var gastoId = escapeHtml($(".selected").find('td:eq(0)').text().trim());
 		// alert(gastoId);
 		var idTD = "#saldoTable" + gastoId;
 
@@ -138,7 +137,7 @@ function deleteNuevoGasto(dat) {
 
 function confirmarNuevosGastos() {
 	if (confirm("\u00bfConfirma la redistribuci\u00F3n del Gasto: "
-			+ gastoIdSeleccionado + "?")) {
+			+ escapeHtml(gastoIdSeleccionado) + "?")) {
 		$('#msgEspera').show();
 		$('.buttonSave').attr('disabled', true);
 		$('.distribucionTableClass').attr('disabled', true);
@@ -148,9 +147,9 @@ function confirmarNuevosGastos() {
 		var index = 1;
 		$(".distribucionTableClass").find('tbody tr').each(function() {
 			$this = $(this);
-			codGastoAgrupado += $this.find("td:eq(0)").html() + ";";
-			montoAgrupado += $this.find("td:eq(2)").html() + ";";
-			ccostoAgrupado += $this.find("td:eq(3)").html() + ";";
+			codGastoAgrupado += escapeHtml($this.find("td:eq(0)").html()) + ";";
+			montoAgrupado += escapeHtml($this.find("td:eq(2)").html()) + ";";
+			ccostoAgrupado += escapeHtml($this.find("td:eq(3)").html()) + ";";
 			// alert("cod: "+$this.find("td:eq(0)").html())
 		});
 		var query = "accion=IMP&idRendicion=" + $('#idRendicion').val();
@@ -166,7 +165,7 @@ function confirmarNuevosGastos() {
 
 function anularGastos() {
 	if (confirm("Se anular\u00e1n todos los Gastos agrupados al Gasto Original:"
-			+ $('#idGastoOriginal').val() + "\n \u00bfDesea continuar?")) {
+			+ escapeHtml($('#idGastoOriginal').val()) + "\n \u00bfDesea continuar?")) {
 		$('#msgEspera').show();
 		var query = "accion=ANU&idRendicion=" + $('#idRendicion').val();
 		query += "&gastoRedistribucion=" + gastoIdSeleccionado;
@@ -186,10 +185,10 @@ function executePeticion(query) {
 				success : function(data) {
 					if (data.msg != "") {
 						$("#saldoTable" + gastoIdSeleccionado).val("");
-						alert(data.msg);
+						alert(escapeHtml(data.msg));
 						window.location.reload();
 					} else {
-						alert("ERROR: " + data.error);
+						alert("ERROR: " + escapeHtml(data.error));
 						$('#msgEspera').hide();
 						$('.buttonSave').attr('disabled', false);
 						$('.distribucionTableClass').attr('disabled', false);
@@ -204,8 +203,7 @@ function executePeticion(query) {
 function obtenerGastosDistribuidos(gastoSeleccionado) {
 	$
 			.ajax({
-				url : "obtenerDistribucionGasto.do?gastoSeleccionado="
-						+ gastoSeleccionado,
+				url : "obtenerDistribucionGasto.do?gastoSeleccionado=" + encodeURIComponent(gastoSeleccionado),
 				type : "POST",
 				dataType : "json",
 				success : function(data) {
@@ -215,26 +213,17 @@ function obtenerGastosDistribuidos(gastoSeleccionado) {
 									function(index) {
 										var totalDist = 0;
 										for (var i = 0; i < data[index].gastos.length; i++) {
-											var montoRedistribucion = data[index].gastos[i].monto
-													.trim().replace(",", ".");
+											var montoRedistribucion = escapeHtml(data[index].gastos[i].monto.trim().replace(",", "."));
 											// alert(monto);
 											var totalDist = totalDist
 													+ parseFloat(montoRedistribucion);
-											var markup = "<tr>"
-													+ "<td align='center'>"
-													+ data[index].gastos[i].idGasto
-													+ "</td>"
-													+ "<td align='center'>"
-													+ data[index].gastos[i].descGasto
-													+ "</td>"
-													+ "<td align='center'>"
-													+ data[index].gastos[i].centroCostoGasto
-													+ "</td> "
-													+ "<td align='center'>"
-													+ data[index].gastos[i].monto
-													+ "</td> " + "</tr>";
-											$(".gastosDistribuidosClass")
-													.append(markup);
+											var markup = "<tr>" +
+						                        "<td align='center'>" + escapeHtml(data[index].gastos[i].idGasto) + "</td>" +
+						                        "<td align='center'>" + escapeHtml(data[index].gastos[i].descGasto) + "</td>" +
+						                        "<td align='center'>" + escapeHtml(data[index].gastos[i].centroCostoGasto) + "</td>" +
+						                        "<td align='center'>" + escapeHtml(data[index].gastos[i].monto) + "</td>" +
+					                        "</tr>";
+					                    	$(".gastosDistribuidosClass").append(markup);
 											identifNuevoGasto++;
 											$('#gastosDistribuidosTable')
 													.show();
@@ -242,15 +231,10 @@ function obtenerGastosDistribuidos(gastoSeleccionado) {
 										}
 										// Se identifica la fila seleccionada
 										// para colocarle el Saldo.
-										var montoOrig = parseFloat($(
-												'#montoOriginal').val());
-										var value = $(
-												".CambioFondo tbody tr .selected")
-												.find('td:first').html();
-										gastoIdSeleccionado = $(".selected")
-												.find('td:eq(0)').text().trim();
-										var idTD = "#saldoTable"
-												+ gastoIdSeleccionado;
+										var montoOrig = parseFloat($('#montoOriginal').val());
+										var value = $(".CambioFondo tbody tr .selected").find('td:first').html();
+										var gastoId = escapeHtml($(".selected").find('td:eq(0)').text().trim());
+										var idTD = "#saldoTable" + gastoId;
 
 										var saldo = montoOrig - totalDist;
 										$(idTD).val(saldo);
@@ -305,17 +289,12 @@ function keyPressNumber(e) {
 
 }
 function volver() {
-
-	window.location.href = "aprobacionDetalle.do?action=aprobacionDetalle&codigo="
-			+ $('#idRendicion').val() + "&usuarioRendicion="+
-	$('#usuarioRendicion').val().trim()+"&glg=3&estadoRend=PGLG";
+	window.location.href = "aprobacionDetalle.do?action=aprobacionDetalle&codigo=" +
+        encodeURIComponent($('#idRendicion').val()) +
+        "&usuarioRendicion=" + encodeURIComponent($('#usuarioRendicion').val().trim()) +
+        "&glg=3&estadoRend=PGLG";
 }
 
 function escapeHtml(text) {
-    return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    return DOMPurify.sanitize(text);
 }
