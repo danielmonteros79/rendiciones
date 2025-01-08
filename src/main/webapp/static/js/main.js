@@ -8,15 +8,7 @@ function globalMsgMinDate(minDate) { return 'La fecha no puede ser anterior a ' 
 function globalMsgMaxDate(maxDate) { return 'La fecha no puede ser posterior a ' + maxDate + '.' };
 
 function escapeHtml(text) {
-    return text.replace(/[&<>"']/g, function(m) {
-        return {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        }[m];
-    });
+    return DOMPurify.sanitize(text);
 }
 
 $(document).ready(function() {
