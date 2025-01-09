@@ -31,6 +31,7 @@
 	<script type="text/javascript" src="static/js/jquery.form-validator.js" charset="utf-8"></script>
 	<script type="text/javascript" src="static/js/jquery.validate.min.js" charset="utf-8"></script>
 	<script type="text/javascript" src="static/js/jquery.inputmask.bundle.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="./static/js/js/DOMPurify-main/DOMPurify-main/dist/purify.js"></script>
 	<script type="text/javascript" src="static/js/main.js"></script>
 	
 	

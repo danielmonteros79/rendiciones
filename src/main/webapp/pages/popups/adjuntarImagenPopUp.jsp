@@ -22,6 +22,7 @@
 	<link rel="stylesheet" type="text/css" href="./css/validation.css">
 	<link rel="stylesheet" type="text/css" href="./css/main.css">
 	
+	<script type="text/javascript" src="./static/js/js/DOMPurify-main/DOMPurify-main/dist/purify.js"></script>
 	<script type="text/javascript" src="static/js/main.js"></script>
 	<script type="text/javascript" src="static/js/jquery.js"></script>
 	<script type="text/javascript" src="static/js/jquery-ajax-native.js"></script>
