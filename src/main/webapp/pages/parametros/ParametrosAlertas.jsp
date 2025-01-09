@@ -140,8 +140,7 @@ var codigo = "<%=request.getSession().getAttribute("cod_motivo")%>";
 
 
 	
-
-
+	<script type="text/javascript" src="./static/js/js/DOMPurify-main/DOMPurify-main/dist/purify.js"></script>
 	<script type="text/javascript" src="./static/js/parametrosAlertas.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@ $(document).ready(function() {
 	setCombo('combos.do?action=getMotivos', '#motivo', { opcion: ['1', '2'].indexOf($('#glg').val()) == -1 ? 9 : 8, glg: ""});
 	//setCombo('combos.do?action=getTiposGasto', '#filtroGasto', {codMotivo: $("#motivo").val() });
 	console.log($("#motivo").val());
-	dtParams = { accion: 'filtrar', cod_motivo: codigo };
+	dtParams = { accion: 'filtrar', cod_motivo: escapeHTML($("#motivo").val()) };
 	filtrarAlertas();
 });
 
@@ -37,7 +37,7 @@ function agregarAlerta() {
 }
 
 function modificarAlerta(codAlerta) {
-	$("#edit_" + codAlerta).submit();
+	 $("#edit_" + escapeHTML(codAlerta)).submit();
 }
 
 function filtrar() {
@@ -45,7 +45,7 @@ function filtrar() {
 }
 
 function eliminarAlerta(codAlerta) {
-	$("#delete_" + codAlerta).submit();
+	$("#delete_" + escapeHTML(codAlerta)).submit();
 }
 
 function selectMotivoLoad() {
@@ -63,7 +63,7 @@ function selectMotivoLoad() {
             });
             $("#gasto").append("<option value='9999'>" + "9999 - TODOS LOS GASTOS" + "</option>");
             if ($("#codGasto").val())
-                $("#gasto").val($("#codGasto").val());
+                $("#gasto").val(escapeHTML($("#codGasto").val()));
         },
         error: function (data) {
             console.log(data);
@@ -73,7 +73,7 @@ function selectMotivoLoad() {
 
 function selectMotivo() {
     if ($("#motivo").val()) {
-        setCombo('combos.do?action=getTiposGasto', '#gasto', { codMotivo: $("#motivo").val() });
+        setCombo('combos.do?action=getTiposGasto', '#gasto', { codMotivo: escapeHTML($("#motivo").val()) });
     }
     $.ajax({
         url: "parametrosAlertas.do?accion=selectMotivo",
@@ -100,10 +100,10 @@ function selectGasto() {
 		$.ajax( {
 			url : "parametrosAlertas.do?accion=selectGasto",
 			type : "POST",
-			data : "codGasto=" + $("#gasto").val(),
+			data : "codGasto=" + encodeURIComponent($("#gasto").val()),
 			dataType: "json",
 			success : function (data) {
-				$("#motivo").val(data.codGasto);
+				$("#motivo").val(escapeHTML(data.codGasto));
 			},
 			error: function (data) {
 				console.log(data);
@@ -122,10 +122,6 @@ function limpiar() {
 	scrollToElem('#divFiltro', false);
 }
 
-function encodeHTML(str) {
-    return String(str).replace(/&/g, "&amp;")
-                      .replace(/</g, "&lt;")
-                      .replace(/>/g, "&gt;")
-                      .replace(/"/g, "&quot;")
-                      .replace(/'/g, "&#039;");
+function escapeHTML(str) {
+    return DOMPurify.sanitize(str);
 }
