@@ -52,45 +52,90 @@ function selectMotivoLoad() {
     $.ajax({
         url: "parametrosAlertas.do?accion=selectMotivo",
         type: "POST",
-        data: "codMotivo=" + encodeURIComponent($("#motivo").val()),
+        data: { codMotivo: encodeURIComponent($("#motivo").val()) },
         dataType: "json",
         success: function (data) {
-            $("#gasto").empty().append("<option value=''></option>");
-            $.each(data, function (index) {
-                let codigo = encodeHTML(data[index].codigo);
-                let descripcion = encodeHTML(data[index].descripcion);
-                $("#gasto").append(`<option value="${codigo}">${descripcion}</option>`);
-            });
-            $("#gasto").append("<option value='9999'>" + "9999 - TODOS LOS GASTOS" + "</option>");
-            if ($("#codGasto").val())
-                $("#gasto").val(escapeHTML($("#codGasto").val()));
+            try {
+                if (Array.isArray(data)) {
+                    $("#gasto").empty().append("<option value=''></option>");
+
+                    $.each(data, function (index, item) {
+                        const codigo = encodeHTML(item.codigo);
+                        const descripcion = encodeHTML(item.descripcion);
+
+                        $("#gasto").append(`<option value="${codigo}">${descripcion}</option>`);
+                    });
+
+                    $("#gasto").append("<option value='9999'>9999 - TODOS LOS GASTOS</option>");
+
+                    if ($("#codGasto").val()) {
+                        $("#gasto").val(escapeHTML($("#codGasto").val()));
+                    }
+                } else {
+                    console.error('Respuesta no válida del servidor:', data);
+                    showError({ message: 'Formato de respuesta inválido' });
+                }
+            } catch (err) {
+                console.error('Error procesando la respuesta:', err);
+                showError({ message: 'Error al procesar la respuesta del servidor', error: err });
+            }
         },
         error: function (data) {
-            console.log(data);
+            console.error('Error en la petición AJAX:', data);
+            showError({ message: 'Error en la comunicación con el servidor' });
         }
     });
 }
 
+function encodeHTML(str) {
+    const div = document.createElement('div');
+    div.innerText = str || '';
+    return div.innerHTML;
+}
+
+function showError(errorData) {
+    const errorMessage = typeof errorData === 'string' ? encodeHTML(errorData) : encodeHTML(errorData.message || 'Error desconocido');
+    console.error('Error:', errorMessage);
+    alert(`Error: ${errorMessage}`);
+}
+
 function selectMotivo() {
-    if ($("#motivo").val()) {
-        setCombo('combos.do?action=getTiposGasto', '#gasto', { codMotivo: escapeHTML($("#motivo").val()) });
+    const motivoVal = $("#motivo").val();
+
+    if (motivoVal) {
+        setCombo('combos.do?action=getTiposGasto', '#gasto', { codMotivo: encodeURIComponent(motivoVal) });
     }
+
     $.ajax({
         url: "parametrosAlertas.do?accion=selectMotivo",
         type: "POST",
-        data: "codMotivo=" + encodeURIComponent($("#motivo").val()),
+        data: { codMotivo: encodeURIComponent(motivoVal) },
         dataType: "json",
         success: function (data) {
-            $("#gasto").empty().append("<option value=''></option>");
-            $.each(data, function (index) {
-                let codigo = encodeHTML(data[index].codigo);
-                let descripcion = encodeHTML(data[index].descripcion);
-                $("#gasto").append(`<option value="${codigo}">${descripcion}</option>`);
-            });
-            $("#gasto").append("<option value='9999'>" + "9999 - TODOS LOS GASTOS" + "</option>");
+            try {
+                if (Array.isArray(data)) {
+                    $("#gasto").empty().append("<option value=''></option>");
+
+                    $.each(data, function (index, item) {
+                        const codigo = encodeHTML(item.codigo);
+                        const descripcion = encodeHTML(item.descripcion);
+
+                        $("#gasto").append(`<option value="${codigo}">${descripcion}</option>`);
+                    });
+
+                    $("#gasto").append("<option value='9999'>9999 - TODOS LOS GASTOS</option>");
+                } else {
+                    console.error('Respuesta no válida del servidor:', data);
+                    showError({ message: 'Formato de respuesta inválido' });
+                }
+            } catch (err) {
+                console.error('Error procesando la respuesta:', err);
+                showError({ message: 'Error al procesar la respuesta del servidor', error: err });
+            }
         },
         error: function (data) {
-            console.log(data);
+            console.error('Error en la petición AJAX:', data);
+            showError({ message: 'Error en la comunicación con el servidor' });
         }
     });
 }
