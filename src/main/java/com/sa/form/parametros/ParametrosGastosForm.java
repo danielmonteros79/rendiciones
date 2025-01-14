@@ -7,6 +7,7 @@ import org.apache.struts.action.ActionForm;
 
 import com.sa.entities.OSCAR;
 import com.sa.entities.Ristra;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ParametrosGastosForm extends ActionForm {
 	private static final long serialVersionUID = 1L;
@@ -229,11 +230,11 @@ public class ParametrosGastosForm extends ActionForm {
 	}
 
 	public String getDescripcionMotivo() {
-		return descripcionMotivo;
+	    return (descripcionMotivo != null) ? StringEscapeUtils.escapeHtml4(descripcionMotivo) : "";
 	}
 
 	public void setDescripcionMotivo(String descripcionMotivo) {
-		this.descripcionMotivo = descripcionMotivo;
+	    this.descripcionMotivo = (descripcionMotivo != null) ? StringEscapeUtils.escapeHtml4(descripcionMotivo) : "";
 	}
 
 	public String getDetalleRistra() {
