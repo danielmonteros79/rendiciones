@@ -1,4 +1,5 @@
 <%@page import="org.apache.struts.action.ActionForm"%>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
