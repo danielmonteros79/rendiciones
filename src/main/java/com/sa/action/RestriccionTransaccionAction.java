@@ -23,6 +23,7 @@ import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.bbva.web.struts.sam.ISAMWebAction;
 import ar.com.itrsa.sam.TransactionException;
 import net.sf.json.JSONObject;
+import org.apache.commons.text.StringEscapeUtils;
 
 public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
@@ -130,40 +131,39 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	}
 
 	protected ActionForward writeError(HttpServletResponse response, Exception e) throws Exception {
-		PrintWriter writer = response.getWriter();
+	    response.setContentType("application/json; charset=UTF-8");
+	    PrintWriter writer = response.getWriter();
 
-		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put(STATUS, ERROR);
+	    Map<String, Object> resp = new HashMap<>();
+	    resp.put(STATUS, ERROR);
 
-		if (e instanceof TransactionException)
-			resp.put(ERROR, e.getCause().getMessage());
-		else {
-			resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
-			resp.put("stacktrace", ExceptionUtils.getStackTrace(e));
-		}
+	    if (e instanceof TransactionException) {
+	        String safeMessage = StringEscapeUtils.escapeHtml4(e.getCause().getMessage());
+	        resp.put(ERROR, safeMessage);
+	    } else {
+	        resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+	    }
+	    this.message = "ERROR: " + resp.get(ERROR);
 
-		this.message = "ERROR: " + (String) resp.get(ERROR);
+	    writer.print(JSONObject.fromObject(resp));
+	    writer.flush();
+	    writer.close();
 
-		writer.print(JSONObject.fromObject(resp));
-		writer.flush();
-		writer.close();
-
-		return null;
+	    return null;
 	}
+
 
 	protected ActionForward writeError(HttpServletResponse response, String message) throws Exception {
-		PrintWriter writer = response.getWriter();
-
-		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put(STATUS, ERROR);
-		resp.put(ERROR, message);
-
-		writer.print(JSONObject.fromObject(resp));
-		writer.flush();
-		writer.close();
-
-		return null;
+	    PrintWriter writer = response.getWriter();
+	    Map<String, Object> resp = new HashMap<>();
+	    resp.put(STATUS, ERROR);
+	    resp.put(ERROR, StringEscapeUtils.escapeJson(message));
+	    writer.print(JSONObject.fromObject(resp));
+	    writer.flush();
+	    writer.close();
+	    return null;
 	}
+
 
 	protected void setErrorMessage(Exception e) throws Exception {
 		this.message = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() :

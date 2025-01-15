@@ -23,6 +23,7 @@ import java.util.Map;
 import com.sa.entities.Archivo;
 import com.sa.entities.Rendicion;
 import com.sa.services.ThubanService;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ImagenesAction extends RestriccionTransaccionAction {
 
@@ -94,8 +95,10 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		String base64Decoded = request.getParameter("base64");
 	    //byte[] decodedData = DatatypeConverter.parseBase64Binary(base64Decoded);
      
-		if (!extension.contains("pdf") )
-			return writeError(response, frm.getArchivo().getFileName() + ": El archivo no es un PDF v&aacute;lido.");
+		if (!extension.contains("pdf")) {
+		    String safeFileName = StringEscapeUtils.escapeHtml4(frm.getArchivo().getFileName());
+		    return writeError(response, safeFileName + ": El archivo no es un PDF válido.");
+		}
 		
 		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
 
