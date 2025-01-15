@@ -119,16 +119,30 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	}
 
 	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws Exception {
-		PrintWriter writer = response.getWriter();
+	    response.setContentType("application/json; charset=UTF-8");
+	    PrintWriter writer = response.getWriter();
 
-		resp.put(STATUS, "OK");
+	    Map<String, Object> safeResp = new HashMap<>();
+	    for (Map.Entry<String, Object> entry : resp.entrySet()) {
+	        String key = entry.getKey();
+	        Object value = entry.getValue();
 
-		writer.print(JSONObject.fromObject(resp));
-		writer.flush();
-		writer.close();
+	        if (value instanceof String) {
+	            safeResp.put(key, StringEscapeUtils.escapeJson((String) value));
+	        } else {
+	            safeResp.put(key, value);
+	        }
+	    }
 
-		return null;
+	    safeResp.put(STATUS, "OK");
+
+	    writer.print(JSONObject.fromObject(safeResp));
+	    writer.flush();
+	    writer.close();
+
+	    return null;
 	}
+
 
 	protected ActionForward writeError(HttpServletResponse response, Exception e) throws Exception {
 	    response.setContentType("application/json; charset=UTF-8");

@@ -100,7 +100,15 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		    return writeError(response, safeFileName + ": El archivo no es un PDF válido.");
 		}
 		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
+		String nombreArchivo = request.getParameter("nombreArchivo");
+
+		if (nombreArchivo != null && !nombreArchivo.matches("^[a-zA-Z0-9._-]+$")) {
+		    throw new IllegalArgumentException("Nombre de archivo inválido.");
+		}
+
+		nombreArchivo = StringEscapeUtils.escapeHtml4(nombreArchivo);
+
+		resp.put("nombreArchivo", nombreArchivo);
 
 		Archivo archivo = new Archivo();
 		archivo.setNomArchivo(request.getParameter("nombreArchivo"));
@@ -115,22 +123,29 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 
 
 	private ActionForward borrarArchivo(HttpServletRequest request, HttpServletResponse response, RendicionAvisoForm frm) throws Exception {
-		Map<String, Object> resp = new HashMap<String, Object>();
-		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
-		
-		boolean encontro = false;
-		for (int i = 0; i < frm.getArchivosASubir().size() && !encontro; i++) {
-			Archivo archivo = frm.getArchivosASubir().get(i);
+	    Map<String, Object> resp = new HashMap<>();
+	    
+	    String nombreArchivo = request.getParameter("nombreArchivo");
+	    if (nombreArchivo == null || !nombreArchivo.matches("^[a-zA-Z0-9._-]+$")) {
+	        throw new IllegalArgumentException("Nombre de archivo inválido.");
+	    }
 
-			if (archivo.getNomArchivo().equals(request.getParameter("nombreArchivo"))) {
-				encontro = true;
-				frm.getArchivosASubir().remove(i);
-			}
-		}
+	    String safeNombreArchivo = StringEscapeUtils.escapeHtml4(nombreArchivo);
+	    resp.put("nombreArchivo", safeNombreArchivo);
 
-		return writeJson(response, resp);
+	    boolean encontro = false;
+	    for (int i = 0; i < frm.getArchivosASubir().size() && !encontro; i++) {
+	        Archivo archivo = frm.getArchivosASubir().get(i);
+
+	        if (archivo.getNomArchivo().equals(nombreArchivo)) {
+	            encontro = true;
+	            frm.getArchivosASubir().remove(i);
+	        }
+	    }
+
+	    return writeJson(response, resp);
 	}
+
 
 	private ActionForward generar(RendicionAvisoForm frm, ActionMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			SAMWebClient samClient) throws Exception {
