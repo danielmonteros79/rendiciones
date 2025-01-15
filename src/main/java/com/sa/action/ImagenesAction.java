@@ -24,6 +24,7 @@ import com.sa.entities.Archivo;
 import com.sa.entities.Rendicion;
 import com.sa.services.ThubanService;
 import org.apache.commons.text.StringEscapeUtils;
+import java.util.stream.Collectors;
 
 public class ImagenesAction extends RestriccionTransaccionAction {
 
@@ -182,8 +183,12 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		
 		List<String> errores = thubanService.publicarDocumentos(thubanClaseDoc, thubanUser, thubanPass, rendicion, frm.getArchivosASubir());
 		
-		if (errores.size() == frm.getArchivosASubir().size())
-			return writeError(response, StringUtils.join(errores.toArray(), "<br><br>"));
+		if (errores.size() == frm.getArchivosASubir().size()) {
+		    String errorMessage = errores.stream()
+		        .map(StringEscapeUtils::escapeHtml4)
+		        .collect(Collectors.joining("<br><br>"));
+		    return writeError(response, errorMessage);
+		}
 //		else if (rendicion.getEstado().equals("PENDI") || rendicion.getEstado().equals("OBSER")) {
 //			String idu = aprobacionesService.obtenerIDU(rendicion, this.sessionUserWorking.getIdUser(), WM95.DELIM_04_SIN_ADEA);
 //			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()), this.sessionUserWorking.getIdUser(), idu);
