@@ -15,6 +15,7 @@ import com.sa.services.trxs.SU52;
 
 import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class UsuarioService {
 	protected static final Log log = LogFactory.getLog(UsuarioService.class);
@@ -31,18 +32,18 @@ public class UsuarioService {
 	}
 
 	public Usuario obtenerDelegadosUsuario(String usuario) throws TransactionException {
-		Usuario user = null;
-		ManagerTransaction manager = new ManagerTransaction(new SU52());
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		
-		parameters.put("cod_user", usuario);
+	    Usuario user = null;
+	    ManagerTransaction manager = new ManagerTransaction(new SU52());
+	    Map<String, Object> parameters = new HashMap<>();
 
-		manager.executeTrx(this.client, parameters);
+	    parameters.put("cod_user", StringEscapeUtils.escapeHtml4(usuario));
 
-		user = (Usuario) manager.getDataReturn();
-		msg = (String) manager.getMensajeAviso();
+	    manager.executeTrx(this.client, parameters);
 
-		return user;
+	    user = (Usuario) manager.getDataReturn();
+	    msg = (String) manager.getMensajeAviso();
+
+	    return user;
 	}
 	
 	public List<Usuario> obtenerSupervisadosUsuario(String usuario, String sector) throws TransactionException {
