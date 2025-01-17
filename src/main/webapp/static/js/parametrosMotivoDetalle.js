@@ -19,14 +19,22 @@ jQuery(document).ready(function() {
 	
 	$('.nav-parametros').addClass('active');
 	
-	$('#descripcion, txAviso').on('input', function() {
-        let originalText = $(this).val();
-        let normalizedText = normalizeText(originalText);
+	$('#descripcion').on('input', function() {
+	    procesarEntrada($(this));
+	});
+	
+	$('#txAviso').on('input', function() {
+	    procesarEntrada($(this));
+	});
 
-        if (originalText !== normalizedText) {
-            $(this).val(normalizedText);
-        }
-    });
+	function procesarEntrada($elemento) {
+	    let originalText = $elemento.val();
+	    let normalizedText = normalizeText(originalText);
+	
+	    if (originalText !== normalizedText) {
+	        $elemento.val(normalizedText);
+	    }
+	}
 	
 	setFormValidate();
 });
@@ -183,23 +191,44 @@ function borrarCentroCosto(index) {
 }
 
 function agregarCentroCosto() {
-	$("#errorCentrosCosto").html("");
-	$.ajax( {
-		url : "parametrosMotivoDetalle.do?accionJson=agregarCentroCosto",
-		type : "POST",
-		success : function (data) {
-			if (data == "14")
-				$("#addCC").hide();
-			if (data != "-1")
-				$("#addCC").before(
-					"<input type='text' name='centrosCostoI[" + data + "]' maxlength='4' style='width:50px;' " + 
-						"onkeypress='return numericOnly(event);'>" +
-					"<a href='#' onclick='borrarCentroCosto(" + data + ");' name='d_centrosCostoI[" + data + "]' style='margin:0 3px;'>" +
-						"<img src='./images/iconos/borrar.png' alt='Borrar' title='Borrar' style='width:10px;'/>" +
-					"</a>"
-				);
-		}
-	});
+    $("#errorCentrosCosto").html("");
+    $.ajax({
+        url: "parametrosMotivoDetalle.do?accionJson=agregarCentroCosto",
+        type: "POST",
+        success: function (data) {
+            let safeData = encodeHTML(data);
+
+            if (safeData === "14") {
+                $("#addCC").hide();
+            }
+            if (safeData !== "-1") {
+                let input = document.createElement('input');
+                input.type = 'text';
+                input.name = `centrosCostoI[${safeData}]`;
+                input.maxLength = 4;
+                input.style.width = '50px';
+                input.onkeypress = numericOnly;
+
+                let link = document.createElement('a');
+                link.href = '#';
+                link.setAttribute('name', `d_centrosCostoI[${safeData}]`);
+                link.style.margin = '0 3px';
+                link.onclick = function () {
+                    borrarCentroCosto(safeData);
+                };
+
+                let img = document.createElement('img');
+                img.src = './images/iconos/borrar.png';
+                img.alt = 'Borrar';
+                img.title = 'Borrar';
+                img.style.width = '10px';
+
+                link.appendChild(img);
+
+                $("#addCC").before(input, link);
+            }
+        }
+    });
 }
 
 function confirmEliminarMotivo() {
@@ -217,11 +246,14 @@ function parseDate(dateStr) {
         }
 
 function normalizeText(text) {
-    text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-    text = text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#]/g, "");
-
-    return text;
+    return text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#]/g, "");
 }
 
+function encodeHTML(str) {
+    return str.replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+}
 

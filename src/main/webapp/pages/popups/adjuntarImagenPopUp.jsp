@@ -6,11 +6,23 @@
 <%@page import="java.util.*"%>
 <%@page import="com.sa.entities.*"%>
 
+<%! 
+    public String escapeHtml(String text) {
+        if (text == null) return "";
+        return text.replace("&", "&amp;")
+                   .replace("<", "&lt;")
+                   .replace(">", "&gt;")
+                   .replace("\"", "&quot;")
+                   .replace("'", "&#039;");
+    }
+%>
+
 <head>
 	<link rel="stylesheet" type="text/css" href="./css/buttons.css">
 	<link rel="stylesheet" type="text/css" href="./css/validation.css">
 	<link rel="stylesheet" type="text/css" href="./css/main.css">
 	
+	<script type="text/javascript" src="./static/js/js/DOMPurify-main/DOMPurify-main/dist/purify.js"></script>
 	<script type="text/javascript" src="static/js/main.js"></script>
 	<script type="text/javascript" src="static/js/jquery.js"></script>
 	<script type="text/javascript" src="static/js/jquery-ajax-native.js"></script>
@@ -50,6 +62,16 @@
 	</div>
 	
 	<script>
+	
+	function escapeHtml(text) {
+        return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+	
 		$(function() {
 		    $("#rendicionAvisoForm").submit(function(e) {
 		    	LoadModalDiv();
@@ -65,16 +87,17 @@
                     	responseType: 'blob'
                   	},
 	                success: function(blob) {
+	                	const sanitizedId = escapeHtml($("#idRendicion").val());
 	    				window.opener.location.href = "listadoRendiciones.do";
 	    				
 	                	var link = window.opener.document.createElement('a');
 	                    link.href = window.opener.URL.createObjectURL(blob);
-	                    link.download = "caratulaRendicion_" + $("#idRendicion").val() + ".pdf";
+	                    link.download = "caratulaRendicion_" + sanitizedId + ".pdf";
 	                    window.opener.document.body.appendChild(link);
 	                    link.click();
 	                    salir();
 	                }, error: function(XMLHttpRequest, textStatus, errorThrown) {
-	                    console.log("Error: " + errorThrown);
+	                	console.log("Error: " + escapeHtml(errorThrown));
 	    				HideModalDiv();
 	                }
 		        });

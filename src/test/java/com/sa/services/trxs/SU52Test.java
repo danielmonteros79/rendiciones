@@ -63,10 +63,10 @@ class SU52Test {
         Object dataReturn = su52.getDataReturn();
         assertTrue(dataReturn instanceof Usuario);
         Object expectedSector = parametersExecute.get("ctro_costos");
-        assertSame(expectedSector, ((Usuario) dataReturn).getSector());
+        assertEquals(expectedSector, ((Usuario) dataReturn).getSector());
         Object getResult = parametersExecute.get("nombre_apellido");
-        assertSame(getResult, ((Usuario) dataReturn).getNombre());
-        assertSame(getResult, ((Usuario) dataReturn).getIdUser());
+        assertEquals(getResult, ((Usuario) dataReturn).getNombre());
+        assertEquals(getResult, ((Usuario) dataReturn).getIdUser());
         assertTrue(((Usuario) dataReturn).getGlgAprobacion().isEmpty());
         assertEquals("N", ((Usuario) dataReturn).getFacultades());
         assertEquals(0, ((Usuario) dataReturn).getCcostos());

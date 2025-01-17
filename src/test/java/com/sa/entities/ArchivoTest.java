@@ -29,11 +29,11 @@ class ArchivoTest {
     @Test
     @DisplayName("Testeando set y get NomArchivo")
     void getNomArchivo() {
-        entity.setNomArchivo("");
+        entity.setNomArchivo("NomArchivo.pdf");
         String resultTest = entity.getNomArchivo();
         assertAll(
                 ()->assertNotNull(resultTest),
-                ()->assertEquals("",resultTest)
+                ()->assertEquals("NomArchivo.pdf",resultTest)
         );
 
     }

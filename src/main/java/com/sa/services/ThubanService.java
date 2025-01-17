@@ -18,6 +18,7 @@ import com.sa.services.trxs.ThBusqueda;
 import com.sa.services.trxs.ThDescargaDoc;
 import com.sa.services.trxs.ThObtenerDocs;
 import com.sa.services.trxs.ThPublicarDoc;
+import org.apache.commons.text.StringEscapeUtils;
 
 import ar.com.bbva.web.impl.SAMWebClient;
 
@@ -62,7 +63,7 @@ public class ThubanService {
 				this.publicarDoc(parametersExecute);
 			} catch (Exception e) {
 				log.error("", e);
-				errores.add("<b>" + file.getNomArchivo() + ":</b><br>" + e.toString());
+				errores.add("<b>" + StringEscapeUtils.escapeHtml4(file.getNomArchivo()) + ":</b><br>" + StringEscapeUtils.escapeHtml4(e.toString()));
 			}
 		}
 

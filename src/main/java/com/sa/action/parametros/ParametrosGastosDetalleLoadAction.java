@@ -22,9 +22,9 @@ import com.sa.entities.ComboOpcion;
 import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametroGasto;
 import com.sa.form.parametros.ParametrosGastosForm;
-import com.sa.form.parametros.ParametrosMotivoForm;
 import com.sa.manager.ManagerTransaction;
 import com.sa.services.ParametrosService;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosGastosDetalleLoadAction.class);
@@ -36,8 +36,9 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ParametrosGastosForm frm = (ParametrosGastosForm) form;
 		ParametrosService service = new ParametrosService(samClient);
-		//request.getSession().setAttribute("cod_motivo", frm.getMotivo());
-		request.getSession().setAttribute("desc_motivo", frm.getDescripcionMotivo());
+		String descripcionMotivo = frm.getDescripcionMotivo();
+		String sanitizedDescripcionMotivo = (descripcionMotivo != null) ? StringEscapeUtils.escapeHtml4(descripcionMotivo) : "";
+		request.getSession().setAttribute("desc_motivo", sanitizedDescripcionMotivo);
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("Entra al action ParametrosNuevoGastoLoadAction. Usuario (" + user.getIdUser() + ")");
 

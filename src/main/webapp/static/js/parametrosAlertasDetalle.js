@@ -16,6 +16,19 @@ jQuery(document).ready(function() {
     });
     $('#impCant').attr("autocomplete", "off");
     $('#impCant').val($('#impCant').val().replace(/^0+/, ''));
+
+	$('#txAviso').on('input', function() {
+	    procesarEntrada($(this));
+	});
+
+	function procesarEntrada($elemento) {
+	    let originalText = $elemento.val();
+	    let normalizedText = normalizeText(originalText);
+	
+	    if (originalText !== normalizedText) {
+	        $elemento.val(normalizedText);
+	    }
+	}
 });
 
 function confirmarEliminarAlerta() {
@@ -95,22 +108,33 @@ function setFormValidate() {
 }
 
 function selectMotivo() {
-	$.ajax( {
-		url : "parametrosAlertasDetalle.do?accion=selectMotivo",
-		type : "POST",
-		data : "codMotivo=" + $("#motivo").val(),
-		dataType: "json",
-		success : function (data) {
-			$("#gasto").empty().append("<option value=''></option>");
-			$.each(data, function(index) {
-				$("#gasto").append("<option value=" + data[index].codigo + ">" + data[index].descripcion + "</option>");
-	       });
-			$("#gasto").append("<option value='9999'>" + "9999 - TODOS LOS GASTOS" + "</option>");
-		},
-		error: function (data) {
-			console.log(data);
-		}
-	});
+    $.ajax({
+        url: "parametrosAlertasDetalle.do?accion=selectMotivo",
+        type: "POST",
+        data: "codMotivo=" + encodeURIComponent($("#motivo").val()),
+        dataType: "json",
+        success: function (data) {
+            $("#gasto").empty().append($("<option>", { value: "", text: "" }));
+
+            $.each(data, function (index) {
+                let codigo = encodeHTML(data[index].codigo);
+                let descripcion = encodeHTML(data[index].descripcion);
+
+                $("#gasto").append($("<option>", {
+                    value: codigo,
+                    text: descripcion
+                }));
+            });
+
+            $("#gasto").append($("<option>", {
+                value: "9999",
+                text: "9999 - TODOS LOS GASTOS"
+            }));
+        },
+        error: function (data) {
+            console.error("Error al obtener los datos:", data);
+        }
+    });
 }
 
 function selectGasto() {
@@ -169,4 +193,20 @@ function impCantChange() {
 		$('#impCant').attr('maxlength', '17');
 	else
 		$('#impCant').attr('maxlength', '16');
+}
+
+function normalizeText(text) {
+    return text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#]/g, "");
+}
+
+function encodeHTML(str) {
+    if (typeof str !== "string") {
+        return "";
+    }
+
+    return String(str).replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
 }

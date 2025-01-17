@@ -52,7 +52,7 @@ function recuperarForm() {
 		type : "POST",
 	    dataType: "json",
 		success : function (data) {
-			$('input:radio[name="accion"][value="' + data.accion + '"]').prop('checked', true);
+			$('input:radio[name="accion"][value="' + escapeHtml(data.accion) + '"]').prop('checked', true);
 
 			getArchivosASubir();
 			
@@ -69,18 +69,22 @@ function recuperarForm() {
 }
 
 function getArchivosASubir() {
-	$.ajax( {
-		url : "rendicionAviso.do?action=getArchivosASubir",
-		type : "POST",
-	    dataType: "json",
-		success : function (data) {
-			$.each(data, function(index) {
-				agregarASubir(data[index].nombre);
-	        });
-			
-			checkUnsaved();
-		}
-	});
+    $.ajax({
+        url: "rendicionAviso.do?action=getArchivosASubir",
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            $.each(data, function (index) {
+                let nombreArchivo = escapeHtml(data[index]?.nombre || "");
+                agregarASubir(nombreArchivo);
+            });
+
+            checkUnsaved();
+        },
+        error: function (error) {
+            console.error("Error al obtener archivos a subir:", error);
+        }
+    });
 }
 
 function checkUnsaved() {
@@ -94,42 +98,52 @@ function checkUnsaved() {
 }
 
 function cargar() {
-	var fileName = $("#archivo").val();
-	if (fileName == null || fileName == "")
-		$("#validacionArchivo").html("");
-	else {
-		if (validarExtension(fileName, ['.pdf', '.tif'])) {
-			if ($('#archivo')[0].files[0].size > (1.2 * 1024 * 1024) && ($('#archivo')[0].files[0].name.toLowerCase().indexOf('.tif') != -1))
-				$("#validacionArchivo").html("El tama\u00D1o del archivo '.tif' no debe superar los 1.2 MB.");
-			else if (existe($('#archivo')[0].files[0].name))
-				$("#validacionArchivo").html("Ya existe un archivo con ese nombre.");
-			else {
-				$("#validacionArchivo").html("");
-				var myFormData = new FormData();
-				myFormData.append("archivo", $("#archivo").prop('files')[0]);
-				$.ajax({
-				  url: "rendicionAviso.do?action=cargarArchivo",
-				  type: "POST",
-				  processData: false,
-				  contentType: false,
-				  dataType : "json",
-				  data: myFormData,
-					success : function(data) {
-						var idArchivo = data.nombreArchivo.split(".").slice(0, -1).join('')
-						agregarASubir(data.nombreArchivo);
-						$("#archivo").val(null);
-					    $('#errores').hide();
-						checkUnsaved();
-					},
-					error : function() {
-						alert("Error al agregar archivo a subir.");
-					}
-				});
-			}
-		} else {
-			$("#validacionArchivo").html("Solo puede cargar archivos de tipo PDF o TIF.");
-		}
-	}
+    var fileName = $("#archivo").val();
+
+    if (fileName == null || fileName === "") {
+        $("#validacionArchivo").html("");
+    } else {
+        if (validarExtension(fileName, ['.pdf', '.tif'])) {
+            let file = $('#archivo')[0].files[0];
+            let fileSize = file?.size || 0;
+            let fileNameLowerCase = file?.name?.toLowerCase() || "";
+
+            if (fileSize > (1.2 * 1024 * 1024) && fileNameLowerCase.indexOf('.tif') !== -1) {
+                $("#validacionArchivo").text("El tamaño del archivo '.tif' no debe superar los 1.2 MB.");
+            } else if (existe(fileName)) {
+                $("#validacionArchivo").text("Ya existe un archivo con ese nombre.");
+            } else {
+                $("#validacionArchivo").text("");
+
+                var myFormData = new FormData();
+                myFormData.append("archivo", file);
+
+                $.ajax({
+                    url: "rendicionAviso.do?action=cargarArchivo",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    data: myFormData,
+                    success: function (data) {
+                        let nombreArchivo = escapeHtml(data?.nombreArchivo || "");
+
+                        agregarASubir(nombreArchivo);
+
+                        $("#archivo").val(null);
+
+                        $('#errores').hide();
+                        checkUnsaved();
+                    },
+                    error: function () {
+                        alert("Error al agregar archivo a subir.");
+                    }
+                });
+            }
+        } else {
+            $("#validacionArchivo").text("Solo puede cargar archivos de tipo PDF o TIF.");
+        }
+    }
 }
 
 function existe(fileName) {
@@ -150,18 +164,30 @@ function validarExtension(fileName, fileTypes) {
 }
 
 function agregarASubir(nombreArchivo) {
-	$("#archivosASubirTable").append(
-		"<tr id='archivo_" + idArchivo +"'>" +
-			"<td>" + nombreArchivo + "</td>" +
-			"<td>" +
-				"<a class='borrar' href='#' onclick='borrarArchivo(\"archivo_" + idArchivo + "\",\"" + nombreArchivo + "\")'>" +
-					"<img src='./images/iconos/borrar.png' alt='Borrar' title='Borrar'>" +
-				"</a>" +
-			"</td>" +
-		"</tr>"
-	);
-	
-	idArchivo ++;
+    let idArchivo = escapeHtml(nombreArchivo.split(".").slice(0, -1).join(''));
+
+	let sanitizedFileName = sanitize(nombreArchivo);
+	let sanitizedIdArchivo = sanitize(idArchivo);
+
+    let row = $("<tr>", { id: "archivo_" + sanitizedIdArchivo });
+    let tdName = $("<td>").text(sanitizedFileName);
+    let tdAction = $("<td>");
+    let deleteLink = $("<a>", {
+        class: "borrar",
+        href: "#",
+        onclick: `borrarArchivo('archivo_${sanitizedIdArchivo}', '${escapeHtml(sanitizedFileName)}')`
+    });
+    let deleteImg = $("<img>", {
+        src: "./images/iconos/borrar.png",
+        alt: "Borrar",
+        title: "Borrar"
+    });
+
+    deleteLink.append(deleteImg);
+    tdAction.append(deleteLink);
+    row.append(tdName, tdAction);
+
+    $("#archivosASubirTable").append(row);
 }
 
 function borrarArchivo(id, nombreArchivo) {
@@ -189,3 +215,7 @@ $("form input:radio").change(function () {
     $('#errores').hide();
     $('#submitDiv').show();
 });
+
+function escapeHtml(str) {
+    return DOMPurify.sanitize(text);
+}

@@ -7,6 +7,10 @@ function globalMsgMaxValue(maxValue) { return 'El valor no puede ser mayor a ' +
 function globalMsgMinDate(minDate) { return 'La fecha no puede ser anterior a ' + minDate + '.' };
 function globalMsgMaxDate(maxDate) { return 'La fecha no puede ser posterior a ' + maxDate + '.' };
 
+function escapeHtml(text) {
+    return DOMPurify.sanitize(text);
+}
+
 $(document).ready(function() {
 	$('.has-float-label label').click(function() {
 		$(this).parent().find('input, select, textarea')[0].focus();
@@ -230,8 +234,8 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 			    Array.isArray(data.combo) &&
 			    data.combo.length == 1
 			) {
-			    $(comboSelector).append('<option value="' + data.combo[0].id + '"' + ' selected' + '>' +
-			        data.combo[0].descripcion.trim() + '</option>');
+					$(comboSelector).append('<option value="' + escapeHtml(elem.id) + '"' + (elem.id == selectedOption ? ' selected' : '') + '>' +
+					    escapeHtml(elem.descripcion.trim()) + '</option>');
 			    $(comboSelector).attr("disabled", true);
 			} else {
 			    if (showEmpty !== false) {
@@ -244,9 +248,9 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 			        $(data.combo).each(function(i, elem) {
 			            console.log("a" + elem.id);
 			            console.log("b" + elem.descripcion);
-			            $(comboSelector).append('<option value="' + elem.id + '"' + (elem.id == selectedOption ? ' selected' : '') + '>' +
-			                elem.descripcion.trim() +
-			                '</option>');
+			            $(comboSelector).append('<option value="' + escapeHtml(elem.id) + '"' +
+                            (elem.id == selectedOption ? ' selected' : '') + '>' +
+                            escapeHtml(elem.descripcion.trim()) + '</option>');
 			        });
 			    } else {
 			        console.error("data.combo no está definido o no es un array.");
@@ -316,39 +320,75 @@ function setOnlyDataCombo(url, params, callback) {
 
 
 
-function callAjax(url, params, successCallBack, errorCallBack, async, showLoading = true, successCallBackParams) {
-	if (showLoading)
-		$('#modalLoading').modal('show');
+function callAjax(url, params, successCallBack, errorCallBack, async = true, showLoading = true, successCallBackParams = {}) {
+    if (showLoading) $('#modalLoading').modal('show');
 
-	$.ajax({
-		url: url,
-		type: 'POST',
-		data: params,
-		async: async == null ? true : async,
-		processData: !(params instanceof FormData),
-		contentType: params instanceof FormData ? false : 'application/x-www-form-urlencoded; charset=UTF-8',
-		success: function(response) {
-			let data = transformResponse(response)
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: params,
+        async: async,
+        processData: !(params instanceof FormData),
+        contentType: params instanceof FormData ? false : 'application/x-www-form-urlencoded; charset=UTF-8',
+        success: function(response) {
+            try {
+                let data = transformResponse(response);
 
-			if (data.status == 'ERROR')
-				if (errorCallBack != null)
-					return eval(errorCallBack + '(data);');
-				else
-					return showError(data);
+                if (data.status === 'ERROR') {
+                    if (typeof errorCallBack === 'function') {
+                        return errorCallBack(data);
+                    } else {
+                        return showError(data);
+                    }
+                }
 
-			if (successCallBack != null) {
-				data = $.extend({}, data, successCallBackParams);
-				
-				eval(successCallBack + '(data);');
-			}
-		},
-		error: function(request, status, error) {
-			if (errorCallBack != null)
-				eval(errorCallBack + '(request);');
-			else
-				showError(request)
-		}
-	});
+                if (typeof successCallBack === 'function') {
+                    data = $.extend({}, data, successCallBackParams);
+                    successCallBack(data);
+                }
+            } catch (err) {
+                console.error('Error procesando la respuesta:', err);
+                if (typeof errorCallBack === 'function') {
+                    errorCallBack({ message: 'Error procesando la respuesta', error: err });
+                } else {
+                    showError({ message: 'Error procesando la respuesta', error: err });
+                }
+            }
+        },
+        error: function(request, status, error) {
+            try {
+                const errorMessage = {
+                    status: status,
+                    error: error,
+                    responseText: request.responseText ? sanitize(request.responseText) : 'Sin respuesta del servidor'
+                };
+
+                if (typeof errorCallBack === 'function') {
+                    errorCallBack(errorMessage);
+                } else {
+                    showError(errorMessage);
+                }
+            } catch (err) {
+                console.error('Error en manejo del error:', err);
+                showError({ message: 'Error interno', error: err });
+            }
+        },
+        complete: function() {
+            if (showLoading) $('#modalLoading').modal('hide');
+        }
+    });
+}
+
+function sanitize(input) {
+    const div = document.createElement('div');
+    div.innerText = input;
+    return div.innerHTML;
+}
+
+function showError(errorData) {
+    const errorMessage = typeof errorData === 'string' ? sanitize(errorData) : sanitize(errorData.message || 'Error desconocido');
+    console.error('Error:', errorMessage);
+    alert(`Error: ${errorMessage}`);
 }
 
 
@@ -412,7 +452,7 @@ function tableLoadFinishedSuccess(data) {
 }
 
 function showMessage(id, message, type) {
-	$('#' + id).html(message);
+	$('#' + id).html(escapeHtml(message));
 	$('#' + id).removeClass('text-success text-warning text-danger');
 	$('#' + id + 'Container').toggleClass('d-none', !message);
 
@@ -599,9 +639,9 @@ let cantidadPdfs = 0;
 	pdfsCombinados = data.archivos.length;
   for (let imagen of data.archivos) {
     divImagenesCargadas.append(`<div class="mr-3">
-      <img onclick="obtenerImagen(${imagen.id})" id="Img-${i}" style="cursor:pointer" alt="Img ${i}" src="./images/iconos/pdf-48.png" class="mt-4 abrir-imagen" data-id="${imagen.id}" data-extension=".pdf"/>
-      <p>${imagen.nomArchivo}</p>
-    </div>`);
+    <img onclick="obtenerImagen(${escapeHtml(imagen.id)})" id="Img-${i}" style="cursor:pointer" alt="Img ${i}" src="./images/iconos/pdf-48.png" class="mt-4 abrir-imagen" data-id="${escapeHtml(imagen.id)}" data-extension=".pdf"/>
+    <p>${escapeHtml(imagen.nomArchivo)}</p>
+	</div>`);
   }
 
   $('#abrirTodas').on('click', function() {
@@ -686,6 +726,14 @@ function descargarImagenes(data) {
 
 }
 
+function escapeHtml(str) {
+    var element = document.createElement('div');
+    if (str) {
+        element.innerText = str;
+        element.textContent = str;
+    }
+    return element.innerHTML;
+}
 
 
 function descargarImagen(data){

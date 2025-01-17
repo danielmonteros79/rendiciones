@@ -11,7 +11,10 @@ public class Archivo {
 	private InputStream inputStream;
 
 	public String getNomArchivo() {
-		return nomArchivo;
+	    if (nomArchivo == null || !nomArchivo.matches("^[a-zA-Z0-9._-]+$")) {
+	        throw new IllegalArgumentException("Nombre de archivo inválido.");
+	    }
+	    return nomArchivo;
 	}
 
 	public void setNomArchivo(String nomArchivo) {

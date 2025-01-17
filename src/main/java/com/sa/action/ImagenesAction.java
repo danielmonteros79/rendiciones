@@ -23,6 +23,8 @@ import java.util.Map;
 import com.sa.entities.Archivo;
 import com.sa.entities.Rendicion;
 import com.sa.services.ThubanService;
+import org.apache.commons.text.StringEscapeUtils;
+import java.util.stream.Collectors;
 
 public class ImagenesAction extends RestriccionTransaccionAction {
 
@@ -94,10 +96,20 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		String base64Decoded = request.getParameter("base64");
 	    //byte[] decodedData = DatatypeConverter.parseBase64Binary(base64Decoded);
      
-		if (!extension.contains("pdf") )
-			return writeError(response, frm.getArchivo().getFileName() + ": El archivo no es un PDF v&aacute;lido.");
+		if (!extension.contains("pdf")) {
+		    String safeFileName = StringEscapeUtils.escapeHtml4(frm.getArchivo().getFileName());
+		    return writeError(response, safeFileName + ": El archivo no es un PDF válido.");
+		}
 		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
+		String nombreArchivo = request.getParameter("nombreArchivo");
+
+		if (nombreArchivo != null && !nombreArchivo.matches("^[a-zA-Z0-9._-]+$")) {
+		    throw new IllegalArgumentException("Nombre de archivo inválido.");
+		}
+
+		nombreArchivo = StringEscapeUtils.escapeHtml4(nombreArchivo);
+
+		resp.put("nombreArchivo", nombreArchivo);
 
 		Archivo archivo = new Archivo();
 		archivo.setNomArchivo(request.getParameter("nombreArchivo"));
@@ -112,22 +124,29 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 
 
 	private ActionForward borrarArchivo(HttpServletRequest request, HttpServletResponse response, RendicionAvisoForm frm) throws Exception {
-		Map<String, Object> resp = new HashMap<String, Object>();
-		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
-		
-		boolean encontro = false;
-		for (int i = 0; i < frm.getArchivosASubir().size() && !encontro; i++) {
-			Archivo archivo = frm.getArchivosASubir().get(i);
+	    Map<String, Object> resp = new HashMap<>();
+	    
+	    String nombreArchivo = request.getParameter("nombreArchivo");
+	    if (nombreArchivo == null || !nombreArchivo.matches("^[a-zA-Z0-9._-]+$")) {
+	        throw new IllegalArgumentException("Nombre de archivo inválido.");
+	    }
 
-			if (archivo.getNomArchivo().equals(request.getParameter("nombreArchivo"))) {
-				encontro = true;
-				frm.getArchivosASubir().remove(i);
-			}
-		}
+	    String safeNombreArchivo = StringEscapeUtils.escapeHtml4(nombreArchivo);
+	    resp.put("nombreArchivo", safeNombreArchivo);
 
-		return writeJson(response, resp);
+	    boolean encontro = false;
+	    for (int i = 0; i < frm.getArchivosASubir().size() && !encontro; i++) {
+	        Archivo archivo = frm.getArchivosASubir().get(i);
+
+	        if (archivo.getNomArchivo().equals(nombreArchivo)) {
+	            encontro = true;
+	            frm.getArchivosASubir().remove(i);
+	        }
+	    }
+
+	    return writeJson(response, resp);
 	}
+
 
 	private ActionForward generar(RendicionAvisoForm frm, ActionMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			SAMWebClient samClient) throws Exception {
@@ -164,8 +183,12 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		
 		List<String> errores = thubanService.publicarDocumentos(thubanClaseDoc, thubanUser, thubanPass, rendicion, frm.getArchivosASubir());
 		
-		if (errores.size() == frm.getArchivosASubir().size())
-			return writeError(response, StringUtils.join(errores.toArray(), "<br><br>"));
+		if (errores.size() == frm.getArchivosASubir().size()) {
+		    String errorMessage = errores.stream()
+		        .map(StringEscapeUtils::escapeHtml4)
+		        .collect(Collectors.joining("<br><br>"));
+		    return writeError(response, errorMessage);
+		}
 //		else if (rendicion.getEstado().equals("PENDI") || rendicion.getEstado().equals("OBSER")) {
 //			String idu = aprobacionesService.obtenerIDU(rendicion, this.sessionUserWorking.getIdUser(), WM95.DELIM_04_SIN_ADEA);
 //			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()), this.sessionUserWorking.getIdUser(), idu);

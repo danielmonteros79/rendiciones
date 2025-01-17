@@ -1,4 +1,5 @@
 <%@page import="org.apache.struts.action.ActionForm"%>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
@@ -16,9 +17,9 @@
 	<style>td {white-space:nowrap;text-align:left;}</style>
 </head>
 <script>
-var motivo = "<%=request.getSession().getAttribute("cod_motivo")%>";
-var descMotivo = "<%=request.getSession().getAttribute("desc_motivo")%>";
-var gasto = "<%=request.getSession().getAttribute("cod_gasto")%>";
+var motivo = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(request.getSession().getAttribute("cod_motivo").toString())%>";
+var descMotivo = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(request.getSession().getAttribute("desc_motivo").toString())%>";
+var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(request.getSession().getAttribute("cod_gasto").toString())%>";
 </script>
 <body>	
 	<!-- -------------------------------------- -->

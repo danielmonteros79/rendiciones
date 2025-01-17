@@ -23,6 +23,7 @@ import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.bbva.web.struts.sam.ISAMWebAction;
 import ar.com.itrsa.sam.TransactionException;
 import net.sf.json.JSONObject;
+import org.apache.commons.text.StringEscapeUtils;
 
 public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
@@ -118,51 +119,67 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	}
 
 	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws Exception {
-		PrintWriter writer = response.getWriter();
+	    response.setContentType("application/json; charset=UTF-8");
+	    PrintWriter writer = response.getWriter();
 
-		resp.put(STATUS, "OK");
+	    Map<String, Object> safeResp = new HashMap<>();
+	    for (Map.Entry<String, Object> entry : resp.entrySet()) {
+	        String key = entry.getKey();
+	        Object value = entry.getValue();
 
-		writer.print(JSONObject.fromObject(resp));
-		writer.flush();
-		writer.close();
+	        if (value instanceof String) {
+	            safeResp.put(key, StringEscapeUtils.escapeJson((String) value));
+	        } else {
+	            safeResp.put(key, value);
+	        }
+	    }
 
-		return null;
+	    safeResp.put(STATUS, "OK");
+
+	    writer.print(JSONObject.fromObject(safeResp));
+	    writer.flush();
+	    writer.close();
+
+	    return null;
 	}
+
 
 	protected ActionForward writeError(HttpServletResponse response, Exception e) throws Exception {
-		PrintWriter writer = response.getWriter();
+	    response.setContentType("application/json; charset=UTF-8");
+	    PrintWriter writer = response.getWriter();
 
-		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put(STATUS, ERROR);
+	    Map<String, Object> resp = new HashMap<>();
+	    resp.put(STATUS, ERROR);
 
-		if (e instanceof TransactionException)
-			resp.put(ERROR, e.getCause().getMessage());
-		else {
-			resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
-			resp.put("stacktrace", ExceptionUtils.getStackTrace(e));
-		}
+	    if (e instanceof TransactionException) {
+	        String safeMessage = StringEscapeUtils.escapeHtml4(e.getCause().getMessage());
+	        resp.put(ERROR, safeMessage);
+	    } else {
+	        resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+	    }
+	    this.message = "ERROR: " + resp.get(ERROR);
 
-		this.message = "ERROR: " + (String) resp.get(ERROR);
+	    writer.print(JSONObject.fromObject(resp));
+	    writer.flush();
+	    writer.close();
 
-		writer.print(JSONObject.fromObject(resp));
-		writer.flush();
-		writer.close();
-
-		return null;
+	    return null;
 	}
 
+
 	protected ActionForward writeError(HttpServletResponse response, String message) throws Exception {
-		PrintWriter writer = response.getWriter();
+	    response.setContentType("application/json; charset=UTF-8");
+	    PrintWriter writer = response.getWriter();
 
-		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put(STATUS, ERROR);
-		resp.put(ERROR, message);
+	    Map<String, Object> resp = new HashMap<>();
+	    resp.put(STATUS, ERROR);
+	    resp.put(ERROR, StringEscapeUtils.escapeHtml4(message));
 
-		writer.print(JSONObject.fromObject(resp));
-		writer.flush();
-		writer.close();
+	    writer.print(JSONObject.fromObject(resp));
+	    writer.flush();
+	    writer.close();
 
-		return null;
+	    return null;
 	}
 
 	protected void setErrorMessage(Exception e) throws Exception {

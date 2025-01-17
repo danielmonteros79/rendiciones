@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.struts.action.ActionForm;
 
 import com.sa.entities.ComboOpcion;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ParametrosAlertasForm extends ActionForm {
 	private static final long serialVersionUID = 1L;
@@ -142,7 +143,7 @@ public class ParametrosAlertasForm extends ActionForm {
 	}
 
 	public void setCodGasto(String codGasto) {
-		this.codGasto = codGasto;
+	    this.codGasto = (codGasto != null && !codGasto.isEmpty()) ? StringEscapeUtils.escapeHtml4(codGasto) : null;
 	}
 
 	public String getImpCant() {

@@ -138,30 +138,46 @@ function setFormValidate() {
 	
 	
 }
-function selectGlg() {	
-	var codGlg = "";
-	$('input[type=checkbox]').each(function () {
-		$(this).val($(this).is(':checked') ? $(this).parent().find('span')[0].innerHTML : ' ');
-		if ($(this).is(':checked')){
-			codGlg = codGlg + $(this).val();
-		}			
+function selectGlg() {
+    let codGlg = "";
+
+    $('input[type=checkbox]').each(function () {
+        let value = $(this).is(':checked') ? $(this).parent().find('span').text() : ' ';
+        
+        value = encodeHTML(value);
+
+        $(this).val(value);
+
+        if ($(this).is(':checked')) {
+            codGlg += value;
+        }
     });
-	
-	$.ajax( {
-		url : "cuadroGeneral.do?accion=selectGlg",
-		type : "POST",
-		data : "codGlg=" + codGlg,
-		dataType: "json",
-		success : function (data) {
-			$("#motivo").append("<option value=''></option>");
-			$.each(data, function(index) {
-				$("#motivo").append("<option value=" + data[index].codigo + ">" + data[index].descripcion + "</option>");
-			});
-		},
-		error: function (data) {
-			console.log(data);
-		}
-	});
+
+    $.ajax({
+        url: "cuadroGeneral.do?accion=selectGlg",
+        type: "POST",
+        data: "codGlg=" + encodeURIComponent(codGlg),
+        dataType: "json",
+        success: function (data) {
+            let motivoElement = $("#motivo");
+            motivoElement.empty();
+            motivoElement.append("<option value=''></option>");
+
+            $.each(data, function (index) {
+                let codigo = encodeHTML(data[index]?.codigo || "");
+                let descripcion = encodeHTML(data[index]?.descripcion || "");
+
+                let option = $("<option>", {
+                    value: codigo,
+                    text: descripcion
+                });
+                motivoElement.append(option);
+            });
+        },
+        error: function (data) {
+            console.error("Error al cargar datos de selectGlg:", data);
+        }
+    });
 }
 
 function keyPressMonto(e, id) {
@@ -199,4 +215,16 @@ function keyPressMonto(e, id) {
     if (monto.length > 15) {
         return false;
     }
+}
+
+function encodeHTML(str) {
+    if (typeof str !== "string") {
+        return "";
+    }
+
+    return String(str).replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
 }

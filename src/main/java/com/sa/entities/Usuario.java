@@ -3,6 +3,7 @@ package com.sa.entities;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class Usuario {
 	private String idUser;
@@ -17,14 +18,14 @@ public class Usuario {
 	private Set<Integer> glgAprobacion;
 
 	public Usuario(String idUser, String perfil, String nombre, int ccostos, String sector, List<Usuario> delegados) {
-		this.idUser = idUser;
-		this.setTipoPerfil(perfil);
-		this.nombre = nombre;
-		this.ccostos = ccostos;
-		this.sector = sector;
-		this.delegadosAsignados = delegados;
-		this.facultades = perfil.length() > 0 && perfil.substring(0, 1).equals("S") ? "S" : "N";
-		this.glgAprobacion = new HashSet();
+	    this.idUser = StringEscapeUtils.escapeHtml4(idUser);
+	    this.setTipoPerfil(StringEscapeUtils.escapeHtml4(perfil));
+	    this.nombre = StringEscapeUtils.escapeHtml4(nombre);
+	    this.ccostos = ccostos;
+	    this.sector = StringEscapeUtils.escapeHtml4(sector);
+	    this.delegadosAsignados = delegados;
+	    this.facultades = perfil.length() > 0 && perfil.substring(0, 1).equals("S") ? "S" : "N";
+	    this.glgAprobacion = new HashSet<>();
 	}
 
 	public List<Usuario> getDelegadosAsignados() {
@@ -36,7 +37,7 @@ public class Usuario {
 	}
 
 	public String getIdUser() {
-		return this.idUser;
+	    return this.idUser != null ? this.idUser.replaceAll("[^a-zA-Z0-9]", "") : null;
 	}
 
 	public void setIdUser(String idUser) {
@@ -52,7 +53,7 @@ public class Usuario {
 	}
 
 	public String getNombre() {
-		return this.nombre;
+		return this.nombre != null ? this.idUser.replaceAll("[^a-zA-Z0-9]", "") : null;
 	}
 
 	public void setNombre(String nombre) {
@@ -123,4 +124,13 @@ public class Usuario {
 	public Set<Integer> getGlgAprobacion() {
 		return this.glgAprobacion;
 	}
+
+	@Override
+	public String toString() {
+		return "Usuario [idUser=" + idUser + ", perfil=" + perfil + ", tipoPerfil=" + tipoPerfil + ", nombre=" + nombre
+				+ ", ccostos=" + ccostos + ", sector=" + sector + ", manejaFacultades=" + manejaFacultades
+				+ ", delegadosAsignados=" + delegadosAsignados + ", facultades=" + facultades + ", glgAprobacion="
+				+ glgAprobacion + "]";
+	}
+	
 }

@@ -58,23 +58,31 @@ function checkBimon() {
 }
 
 function selectTipoGasto() {
-	$.ajax( {
-		url : "NuevoGastoPopUp.do?accion=selectTipoGasto",
-		type : "POST",
-		data : "codTipoGasto=" + $("#comboTipoGasto").val().substring(0, 4),
-		dataType: "json",
-		success : function (data) {
-			$("#comboComprobante").empty();
-			$.each(data, function(index) {
-				$("#comboComprobante").append("<option value=" + data[index].codigo + ">" + data[index].descripcion + "</option>");
-	       });
-		   check();
-		},
-		error: function (data) {
-			console.log(data);
-		}
-	});
+    $.ajax({
+        url: "NuevoGastoPopUp.do?accion=selectTipoGasto",
+        type: "POST",
+        data: "codTipoGasto=" + encodeURIComponent($("#comboTipoGasto").val().substring(0, 4)),
+        dataType: "json",
+        success: function (data) {
+            $("#comboComprobante").empty();
+            $.each(data, function (index) {
+                const codigo = encodeHTML(data[index].codigo || "");
+                const descripcion = encodeHTML(data[index].descripcion || "");
+
+                const optionElement = $("<option>")
+                    .val(codigo)
+                    .text(descripcion);
+
+                $("#comboComprobante").append(optionElement);
+            });
+            check();
+        },
+        error: function (data) {
+            console.error("Error en la solicitud AJAX:", data);
+        }
+    });
 }
+
 
 function numericOnly(e){
 	var code = e.charCode || e.keyCode;
@@ -84,4 +92,15 @@ function numericOnly(e){
     	return;
     if (!(code >= 48 && code <= 57))
         return false;
+}
+
+function encodeHTML(str) {
+    if (typeof str !== "string") {
+        return "";
+    }
+    return str.replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
 }

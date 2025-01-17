@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles"%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
@@ -68,24 +69,14 @@ body {
 	<table style="margin-bottom: 10px;">
 		<html:form action="SaveShowCierreTarj" styleId="CierreTarjetaSaveForm">
 			<%
-				String resumenes = (String) request
-							.getParameter("idSecResumen");
+		    String resumenes = StringEscapeUtils.escapeHtml4(request.getParameter("idSecResumen"));
+		    String totalPes = StringEscapeUtils.escapeHtml4(request.getParameter("totalPes"));
+		    String totalDol = StringEscapeUtils.escapeHtml4(request.getParameter("totalDol"));
+		    String codUsr = StringEscapeUtils.escapeHtml4(request.getParameter("codUsr"));
 			%>
-			<%
-				String totalPes = (String) request.getParameter("totalPes");
-			%>
-			<%
-				String totalDol = (String) request.getParameter("totalDol");
-			%>
-			<%
-				String codUsr = (String) request.getParameter("codUsr");
-			%>
-			<html:hidden property="idSecResumen" styleId="idSecResumen"
-				value="<%=resumenes%>" />
-			<html:hidden property="totalPes" styleId="totalPes"
-				value="<%=totalPes%>" />
-			<html:hidden property="totalDol" styleId="totalDol"
-				value="<%=totalDol%>" />
+			<html:hidden property="idSecResumen" styleId="idSecResumen" value="<%=resumenes%>" />
+			<html:hidden property="totalPes" styleId="totalPes"	value="<%=totalPes%>" />
+			<html:hidden property="totalDol" styleId="totalDol"	value="<%=totalDol%>" />
 			<html:hidden property="codUsr" styleId="codUsr" value="<%=codUsr%>" />
 			<tbody class="filtro" style="font-size: small; font-weight: bold;">
 				<tr>

@@ -124,7 +124,7 @@ label.error {
 					<div class="has-float-label form-group">
 						<html:select property="codSup" styleId="codSup" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
-							<html:option value="PSUP">SI</html:option>
+							<html:option value="SUPER">SI</html:option>
 							<html:option value="">NO</html:option>
 						</html:select>
 						
@@ -139,7 +139,7 @@ label.error {
 					<div class="has-float-label form-group">
 						<html:select property="codFirma" styleId="codFirma" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
-							<html:option value="PFIRM">SI</html:option>
+							<html:option value="MONTO">SI</html:option>
 							<html:option value="">NO</html:option>
 						</html:select>
 						 <i class="bbva-icon icon-uniE003 text-primary"></i> <label
@@ -155,7 +155,7 @@ label.error {
 						 <div class="errorDiv"></div> -->
 						 <html:select property="codAprobacionGlg" styleId="codAprobacionGlg" styleClass="form-control bg-light">
 							<html:option value=""></html:option>
-							<html:option value="PGLG">SI</html:option>
+							<html:option value="MONTO">SI</html:option>
 							<html:option value="">NO</html:option>
 						</html:select>
 						 <i class="bbva-icon icon-uniE003 text-primary"></i> <label

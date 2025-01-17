@@ -202,4 +202,5 @@ td {
 
 </body>
 </html>
+<script type="text/javascript" src="./static/js/js/DOMPurify-main/DOMPurify-main/dist/purify.js"></script>
 <script type="text/javascript" src="./static/js/distribucionGastos.js"></script>
