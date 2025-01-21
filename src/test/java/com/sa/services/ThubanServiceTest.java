@@ -45,7 +45,7 @@ class ThubanServiceTest {
         Archivo archivo = new Archivo();
         archivo.setIdu("Idu");
         archivo.setInputStream(new ByteArrayInputStream("AXAXAXAX".getBytes("UTF-8")));
-        archivo.setNomArchivo("Nom Archivo");
+        archivo.setNomArchivo("NomArchivo.pdf");
 
         ArrayList<Archivo> files = new ArrayList<>();
         files.add(archivo);
@@ -53,7 +53,7 @@ class ThubanServiceTest {
                 files);
         assertEquals(1, actualPublicarDocumentosResult.size());
         assertEquals(
-                "<b>Nom Archivo:</b><br>ar.com.itrsa.sam.TransactionException: ar.com.itrsa.GeneralException: Properties"
+                "<b>NomArchivo.pdf:</b><br>ar.com.itrsa.sam.TransactionException: ar.com.itrsa.GeneralException: Properties"
                         + " not initialized.",
                 actualPublicarDocumentosResult.get(0));
     }

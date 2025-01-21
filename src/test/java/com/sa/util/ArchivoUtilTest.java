@@ -54,7 +54,7 @@ class ArchivoUtilTest {
   public static Stream<Arguments> getArchivosASubirSource() {
     //given
     Archivo archivo = new Archivo();
-    archivo.setNomArchivo("");
+    archivo.setNomArchivo("NomArchivo.pdf");
     List<Archivo> archivoList = new ArrayList<>();
     archivoList.add(archivo);
 
