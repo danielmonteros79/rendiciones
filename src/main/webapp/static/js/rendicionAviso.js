@@ -166,13 +166,16 @@ function validarExtension(fileName, fileTypes) {
 function agregarASubir(nombreArchivo) {
     let idArchivo = escapeHtml(nombreArchivo.split(".").slice(0, -1).join(''));
 
-    let row = $("<tr>", { id: "archivo_" + idArchivo });
-    let tdName = $("<td>").text(nombreArchivo);
+	let sanitizedFileName = sanitize(nombreArchivo);
+	let sanitizedIdArchivo = sanitize(idArchivo);
+
+    let row = $("<tr>", { id: "archivo_" + sanitizedIdArchivo });
+    let tdName = $("<td>").text(sanitizedFileName);
     let tdAction = $("<td>");
     let deleteLink = $("<a>", {
         class: "borrar",
         href: "#",
-        onclick: `borrarArchivo('archivo_${idArchivo}', '${escapeHtml(nombreArchivo)}')`
+        onclick: `borrarArchivo('archivo_${sanitizedIdArchivo}', '${escapeHtml(sanitizedFileName)}')`
     });
     let deleteImg = $("<img>", {
         src: "./images/iconos/borrar.png",
@@ -214,14 +217,5 @@ $("form input:radio").change(function () {
 });
 
 function escapeHtml(str) {
-    if (typeof str !== "string") {
-        return "";
-    }
-
-    return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    return DOMPurify.sanitize(text);
 }
