@@ -66,17 +66,23 @@ function selectTipoGasto() {
         success: function (data) {
             $("#comboComprobante").empty();
             $.each(data, function (index) {
-                let codigo = encodeHTML(data[index].codigo);
-                let descripcion = encodeHTML(data[index].descripcion);
-                $("#comboComprobante").append(`<option value="${codigo}">${descripcion}</option>`);
+                const codigo = encodeHTML(data[index].codigo || "");
+                const descripcion = encodeHTML(data[index].descripcion || "");
+
+                const optionElement = $("<option>")
+                    .val(codigo)
+                    .text(descripcion);
+
+                $("#comboComprobante").append(optionElement);
             });
             check();
         },
         error: function (data) {
-            console.log(data);
+            console.error("Error en la solicitud AJAX:", data);
         }
     });
 }
+
 
 function numericOnly(e){
 	var code = e.charCode || e.keyCode;
@@ -89,9 +95,12 @@ function numericOnly(e){
 }
 
 function encodeHTML(str) {
-    return String(str).replace(/&/g, "&amp;")
-                      .replace(/</g, "&lt;")
-                      .replace(/>/g, "&gt;")
-                      .replace(/"/g, "&quot;")
-                      .replace(/'/g, "&#039;");
+    if (typeof str !== "string") {
+        return "";
+    }
+    return str.replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
 }
