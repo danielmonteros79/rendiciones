@@ -45,7 +45,10 @@ public class RendicionAvisoForm extends ActionForm {
 	}
 
 	public FormFile getArchivo() {
-		return archivo;
+	    if (!archivo.getFileName().matches("^[a-zA-Z0-9._-]+$")) {
+	        throw new IllegalArgumentException("Nombre de archivo inválido.");
+	    }
+	    return archivo;
 	}
 
 	public void setArchivo(FormFile archivo) {
