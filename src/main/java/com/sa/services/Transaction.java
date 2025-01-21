@@ -20,6 +20,7 @@ import ar.com.itrsa.sam.IServiceAccessManager;
 import ar.com.itrsa.sam.TransactionException;
 import ar.com.itrsa.sam.factory.SAMReference;
 import ar.org.bbva.util.DumpUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 @SuppressWarnings("rawtypes")
 public abstract class Transaction {
@@ -238,7 +239,10 @@ public abstract class Transaction {
 	 * @return
 	 */
 	public Object getDataReturn() {
-		return dataReturn;
+	    if (dataReturn instanceof String) {
+	        return StringEscapeUtils.escapeHtml4((String) dataReturn);
+	    }
+	    return dataReturn;
 	}
 
 	/**

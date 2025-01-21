@@ -7,6 +7,7 @@ import com.sa.services.Transaction;
 
 import ar.com.bbva.web.IWebClient;
 import ar.com.itrsa.sam.TransactionException;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ManagerTransaction {
 
@@ -18,13 +19,15 @@ public class ManagerTransaction {
 	}
 
 	public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
-		this.trx.executeTrx(client, parametersExecute);
+	    parametersExecute.replaceAll((key, value) -> value instanceof String
+	            ? StringEscapeUtils.escapeHtml4((String) value)
+	            : value);
+	    this.trx.executeTrx(client, parametersExecute);
 	}
-	
 
 	
 	public Object getDataReturn() {
-		return this.trx.getDataReturn();
+	    return this.trx.getDataReturn();
 	}
 
 	@SuppressWarnings("rawtypes")

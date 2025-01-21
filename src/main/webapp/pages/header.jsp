@@ -1,6 +1,7 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@page import="java.util.Locale"%>
 <%@page import="com.sa.entities.Usuario"%>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 
 <% 
 	Usuario userSession = (Usuario) request.getSession().getAttribute("usuario");
@@ -31,9 +32,11 @@
                 <li class="nav-item px-md-3">
                     <a class="nav-link float-left" href="#">
                     	<small><b>
-                    		Usuario: <%= userSession != null ? userSession.getIdUser() : "" %>
-                    		<%= !userWorking.getIdUser().equals(userSession.getIdUser()) ? "( con atribuciones de " + userWorking.getNombre() + " )" : "" %>
-                    	</b></small>
+						    Usuario: <%= userSession != null ? StringEscapeUtils.escapeHtml4(userSession.getIdUser()) : "" %>
+						    <%= userWorking != null && !userWorking.getIdUser().equals(userSession.getIdUser()) 
+						        ? "( con atribuciones de " + StringEscapeUtils.escapeHtml4(userWorking.getNombre()) + " )" 
+						        : "" %>
+						</b></small>
                     </a>
                     <a class="nav-link float-right text-info" href="logout.do" title="Cerrar sesi&oacute;n">
                     	<small>
