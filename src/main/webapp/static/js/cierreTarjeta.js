@@ -122,17 +122,24 @@ function selectMotivo() {
         data: "codMotivo=" + encodeURIComponent($("#motivo").val()),
         dataType: "json",
         success: function (data) {
-            $("#gasto").empty().append("<option value=''></option>");
+            let gastoElement = $("#gasto");
+            gastoElement.empty();
+            gastoElement.append("<option value=''></option>");
 
             $.each(data, function (index) {
-                let id = encodeHTML(data[index].id);
-                let descripcion = encodeHTML(data[index].descripcion);
-                $("#gasto").append(`<option value="${id}">${descripcion}</option>`);
+                let id = encodeHTML(data[index]?.id || "");
+                let descripcion = encodeHTML(data[index]?.descripcion || "");
+
+                let option = $("<option>", {
+                    value: id,
+                    text: descripcion
+                });
+
+                gastoElement.append(option);
             });
-            // $("#gasto").append("<option value='9999'>9999 - TODOS LOS GASTOS</option>");
         },
         error: function (data) {
-            console.log(data);
+            console.error("Error al cargar los motivos:", data);
         }
     });
 }
@@ -142,10 +149,13 @@ function showThuban(Link, rend) {
 }
 
 function encodeHTML(str) {
-    return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    if (typeof str !== "string") {
+        return "";
+    }
+
+    return String(str).replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
 }

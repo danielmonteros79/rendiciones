@@ -119,13 +119,14 @@ function selectMotivo() {
             $.each(data, function (index) {
                 let codigo = encodeHTML(data[index].codigo);
                 let descripcion = encodeHTML(data[index].descripcion);
+
                 $("#gasto").append(`<option value="${codigo}">${descripcion}</option>`);
             });
 
             $("#gasto").append("<option value='9999'>9999 - TODOS LOS GASTOS</option>");
         },
         error: function (data) {
-            console.log(data);
+            console.error("Error al obtener los datos:", data);
         }
     });
 }
@@ -193,6 +194,10 @@ function normalizeText(text) {
 }
 
 function encodeHTML(str) {
+    if (typeof str !== "string") {
+        return "";
+    }
+
     return String(str).replace(/&/g, "&amp;")
                       .replace(/</g, "&lt;")
                       .replace(/>/g, "&gt;")
