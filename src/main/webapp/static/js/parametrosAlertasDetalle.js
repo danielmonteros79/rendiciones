@@ -114,16 +114,22 @@ function selectMotivo() {
         data: "codMotivo=" + encodeURIComponent($("#motivo").val()),
         dataType: "json",
         success: function (data) {
-            $("#gasto").empty().append("<option value=''></option>");
+            $("#gasto").empty().append($("<option>", { value: "", text: "" }));
 
             $.each(data, function (index) {
                 let codigo = encodeHTML(data[index].codigo);
                 let descripcion = encodeHTML(data[index].descripcion);
 
-                $("#gasto").append(`<option value="${codigo}">${descripcion}</option>`);
+                $("#gasto").append($("<option>", {
+                    value: codigo,
+                    text: descripcion
+                }));
             });
 
-            $("#gasto").append("<option value='9999'>9999 - TODOS LOS GASTOS</option>");
+            $("#gasto").append($("<option>", {
+                value: "9999",
+                text: "9999 - TODOS LOS GASTOS"
+            }));
         },
         error: function (data) {
             console.error("Error al obtener los datos:", data);
