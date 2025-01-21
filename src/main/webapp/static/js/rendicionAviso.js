@@ -109,11 +109,11 @@ function cargar() {
             let fileNameLowerCase = file?.name?.toLowerCase() || "";
 
             if (fileSize > (1.2 * 1024 * 1024) && fileNameLowerCase.indexOf('.tif') !== -1) {
-                $("#validacionArchivo").html("El tama\u00D1o del archivo '.tif' no debe superar los 1.2 MB.");
+                $("#validacionArchivo").text("El tamaño del archivo '.tif' no debe superar los 1.2 MB.");
             } else if (existe(fileName)) {
-                $("#validacionArchivo").html("Ya existe un archivo con ese nombre.");
+                $("#validacionArchivo").text("Ya existe un archivo con ese nombre.");
             } else {
-                $("#validacionArchivo").html("");
+                $("#validacionArchivo").text("");
 
                 var myFormData = new FormData();
                 myFormData.append("archivo", file);
@@ -126,8 +126,7 @@ function cargar() {
                     dataType: "json",
                     data: myFormData,
                     success: function (data) {
-                        let nombreArchivo = encodeHTML(data?.nombreArchivo || "");
-                        let idArchivo = encodeHTML(data?.nombreArchivo.split(".").slice(0, -1).join('') || "");
+                        let nombreArchivo = escapeHtml(data?.nombreArchivo || "");
 
                         agregarASubir(nombreArchivo);
 
@@ -142,7 +141,7 @@ function cargar() {
                 });
             }
         } else {
-            $("#validacionArchivo").html("Solo puede cargar archivos de tipo PDF o TIF.");
+            $("#validacionArchivo").text("Solo puede cargar archivos de tipo PDF o TIF.");
         }
     }
 }
@@ -165,13 +164,15 @@ function validarExtension(fileName, fileTypes) {
 }
 
 function agregarASubir(nombreArchivo) {
+    let idArchivo = escapeHtml(nombreArchivo.split(".").slice(0, -1).join(''));
+
     let row = $("<tr>", { id: "archivo_" + idArchivo });
     let tdName = $("<td>").text(nombreArchivo);
     let tdAction = $("<td>");
     let deleteLink = $("<a>", {
         class: "borrar",
         href: "#",
-        onclick: `borrarArchivo("archivo_${idArchivo}", "${escapeHtml(nombreArchivo)}")`
+        onclick: `borrarArchivo('archivo_${idArchivo}', '${escapeHtml(nombreArchivo)}')`
     });
     let deleteImg = $("<img>", {
         src: "./images/iconos/borrar.png",
@@ -184,8 +185,6 @@ function agregarASubir(nombreArchivo) {
     row.append(tdName, tdAction);
 
     $("#archivosASubirTable").append(row);
-
-    idArchivo++;
 }
 
 function borrarArchivo(id, nombreArchivo) {
