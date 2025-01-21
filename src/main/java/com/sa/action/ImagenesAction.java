@@ -136,7 +136,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		String thubanPass = (String) request.getSession().getServletContext().getAttribute("esb.thuban.pass");
 		String thubanClaseDoc = (String) request.getSession().getServletContext().getAttribute("esb.thuban.clase.documental");
 		
-		String message = "OK: ARCHIVOS SUBIDOS CON &Eacute;XITO.";
+		String message = "OK: ARCHIVOS SUBIDOS CON ÉXITO.";
 		String idRendicion = request.getParameter("idRendicion");
 	
 		String glg = request.getParameter("glg");
