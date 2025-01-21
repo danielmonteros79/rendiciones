@@ -27,6 +27,7 @@ import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametroAlerta;
 import com.sa.form.parametros.ParametrosAlertasForm;
 import com.sa.services.ParametrosService;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosAlertasDetalleLoadAction.class);
@@ -39,7 +40,9 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ParametrosAlertasForm frm = (ParametrosAlertasForm) form;
 		ParametrosService service = new ParametrosService(samClient);
-		request.getSession().setAttribute("cod_gasto", frm.getCodGasto());
+		String codGasto = frm.getCodGasto();
+		String sanitizedCodGasto = (codGasto != null) ? StringEscapeUtils.escapeHtml4(codGasto) : "";
+		request.getSession().setAttribute("cod_gasto", sanitizedCodGasto);
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("Entra al action ParametrosNuevaAlertaLoadAction. Usuario (" + user.getIdUser() + ")");
 		String accion = request.getParameter("accion");

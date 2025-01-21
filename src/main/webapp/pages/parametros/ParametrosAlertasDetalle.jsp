@@ -16,9 +16,9 @@
 	<style>td {white-space:nowrap;text-align:left;}</style>
 </head>
 <script>
-var motivo = "<%=request.getSession().getAttribute("cod_motivo")%>";
-var descMotivo = "<%=request.getSession().getAttribute("desc_motivo")%>";
-var gasto = "<%=request.getSession().getAttribute("cod_gasto")%>";
+var motivo = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(request.getSession().getAttribute("cod_motivo").toString())%>";
+var descMotivo = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(request.getSession().getAttribute("desc_motivo").toString())%>";
+var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(request.getSession().getAttribute("cod_gasto").toString())%>";
 </script>
 <body>	
 	<!-- -------------------------------------- -->

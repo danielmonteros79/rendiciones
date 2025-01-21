@@ -138,7 +138,12 @@ public class ParametrosAlertasForm extends ActionForm {
 	}
 
 	public String getCodGasto() {
-		return codGasto;
+	    return sanitizeInput(codGasto);
+	}
+
+	private String sanitizeInput(String input) {
+	    if (input == null) return "";
+	    return input.replaceAll("[<>\"'&]", "");
 	}
 
 	public void setCodGasto(String codGasto) {
