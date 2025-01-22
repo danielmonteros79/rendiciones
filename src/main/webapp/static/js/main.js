@@ -347,22 +347,24 @@ function callAjax(url, params, successCallBack, errorCallBack, async, showLoadin
 			}
 		},
 		error: function(request, status, error) {
+    			const sanitizedError = sanitizeHtml(error || 'Se ha producido un error desconocido');
 			if (errorCallBack != null)
 				eval(errorCallBack + '(request);');
 			else
-				showError(request)
+				showError(escapeHtml(request))
 		}
 	});
 }
 
 
 function transformResponse(res) {
-	let startIndex = res.indexOf('{')
-	let endIndex = res.lastIndexOf('}');
-
-	let jsonString = res.substring(startIndex, endIndex + 1);
-
-	return JSON.parse(jsonString);
+    if (typeof res === "string") {
+        let startIndex = res.indexOf('{');
+        let endIndex = res.lastIndexOf('}');
+        let jsonString = res.substring(startIndex, endIndex + 1);
+        return JSON.parse(jsonString);
+    }
+    return res;
 }
 
 
@@ -456,8 +458,9 @@ function showConfirm(confirmCallback, message) {
 }
 
 function showError(data) {
-	console.log(data);
-	$('#modalErrorMsg').html(data && data.error ? data.error : 'Se ha producido un error.');
+    const sanitizedData = sanitizeHtml(data && data.error ? data.error : 'Se ha producido un error');
+	console.log(sanitizedData);
+	$('#modalErrorMsg').html(sanitizedData && sanitizedData.error ? sanitizedData.error : 'Se ha producido un error.');
 	$('#modalError').modal('show');
 }
 

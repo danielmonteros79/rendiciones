@@ -119,15 +119,25 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	}
 
 	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws Exception {
-		PrintWriter writer = response.getWriter();
-
-		resp.put(STATUS, "OK");
-
-		writer.print(JSONObject.fromObject(resp));
-		writer.flush();
-		writer.close();
-
-		return null;
+	    Map<String, Object> sanitizedResp = new HashMap<>();
+	    for (Map.Entry<String, Object> entry : resp.entrySet()) {
+	        Object value = entry.getValue();
+	        if (value instanceof String) {
+	            sanitizedResp.put(entry.getKey(), StringEscapeUtils.escapeHtml4((String) value));
+	        } else {
+	            sanitizedResp.put(entry.getKey(), value);
+	        }
+	    }
+	    sanitizedResp.put(STATUS, "OK");
+	    response.setContentType("application/json");
+	    response.setCharacterEncoding("UTF-8");
+	    try (PrintWriter writer = response.getWriter()) {
+	        String jsonOutput = JSONObject.fromObject(sanitizedResp).toString();
+	        System.out.println("Generated JSON: " + jsonOutput); // Depuración
+	        writer.print(jsonOutput);
+	        writer.flush();
+	    }
+	    return null;
 	}
 
 	protected ActionForward writeError(HttpServletResponse response, Exception e) throws Exception {

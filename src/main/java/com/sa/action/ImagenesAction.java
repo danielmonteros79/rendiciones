@@ -100,7 +100,8 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		    return writeError(response, safeFileName + ": El archivo no es un PDF válido.");
 		}
 		
-		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
+		String nombreArchivo = StringEscapeUtils.escapeHtml4(request.getParameter("nombreArchivo"));
+		resp.put("nombreArchivo", nombreArchivo);
 
 		Archivo archivo = new Archivo();
 		archivo.setNomArchivo(request.getParameter("nombreArchivo"));
