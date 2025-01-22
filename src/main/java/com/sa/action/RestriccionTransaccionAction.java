@@ -164,13 +164,21 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 
 
 	protected ActionForward writeError(HttpServletResponse response, String message) throws Exception {
-	    PrintWriter writer = response.getWriter();
 	    Map<String, Object> resp = new HashMap<>();
 	    resp.put(STATUS, ERROR);
-	    resp.put(ERROR, StringEscapeUtils.escapeJson(message));
-	    writer.print(JSONObject.fromObject(resp));
-	    writer.flush();
-	    writer.close();
+
+	    String sanitizedMessage = StringEscapeUtils.escapeHtml4(message);
+	    resp.put(ERROR, sanitizedMessage);
+
+	    response.setContentType("application/json");
+	    response.setCharacterEncoding("UTF-8");
+
+	    try (PrintWriter writer = response.getWriter()) {
+	        writer.print(JSONObject.fromObject(resp));
+	        writer.flush();
+	        writer.close();
+	    }
+
 	    return null;
 	}
 

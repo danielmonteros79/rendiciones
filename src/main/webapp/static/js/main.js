@@ -347,7 +347,7 @@ function callAjax(url, params, successCallBack, errorCallBack, async, showLoadin
 			}
 		},
 		error: function(request, status, error) {
-    			const sanitizedError = sanitizeHtml(error || 'Se ha producido un error desconocido');
+    			const sanitizedError = escapeHtml(error || 'Se ha producido un error desconocido');
 			if (errorCallBack != null)
 				eval(errorCallBack + '(request);');
 			else
@@ -458,7 +458,7 @@ function showConfirm(confirmCallback, message) {
 }
 
 function showError(data) {
-    const sanitizedData = sanitizeHtml(data && data.error ? data.error : 'Se ha producido un error');
+    const sanitizedData = escapeHtml(data && data.error ? data.error : 'Se ha producido un error');
 	console.log(sanitizedData);
 	$('#modalErrorMsg').html(sanitizedData && sanitizedData.error ? sanitizedData.error : 'Se ha producido un error.');
 	$('#modalError').modal('show');
