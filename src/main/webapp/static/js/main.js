@@ -320,85 +320,51 @@ function setOnlyDataCombo(url, params, callback) {
 
 
 
-function callAjax(url, params, successCallBack, errorCallBack, async = true, showLoading = true, successCallBackParams = {}) {
-    if (showLoading) $('#modalLoading').modal('show');
+function callAjax(url, params, successCallBack, errorCallBack, async, showLoading = true, successCallBackParams) {
+	if (showLoading)
+		$('#modalLoading').modal('show');
 
-    $.ajax({
-        url: url,
-        type: 'POST',
-        data: params,
-        async: async,
-        processData: !(params instanceof FormData),
-        contentType: params instanceof FormData ? false : 'application/x-www-form-urlencoded; charset=UTF-8',
-        success: function(response) {
-            try {
-                let data = transformResponse(response);
+	$.ajax({
+		url: url,
+		type: 'POST',
+		data: params,
+		async: async == null ? true : async,
+		processData: !(params instanceof FormData),
+		contentType: params instanceof FormData ? false : 'application/x-www-form-urlencoded; charset=UTF-8',
+		success: function(response) {
+			let data = transformResponse(response)
 
-                if (data.status === 'ERROR') {
-                    if (typeof errorCallBack === 'function') {
-                        return errorCallBack(data);
-                    } else {
-                        return showError(data);
-                    }
-                }
+			if (data.status == 'ERROR')
+				if (errorCallBack != null)
+					return eval(errorCallBack + '(data);');
+				else
+					return showError(data);
 
-                if (typeof successCallBack === 'function') {
-                    data = $.extend({}, data, successCallBackParams);
-                    successCallBack(data);
-                }
-            } catch (err) {
-                console.error('Error procesando la respuesta:', err);
-                if (typeof errorCallBack === 'function') {
-                    errorCallBack({ message: 'Error procesando la respuesta', error: err });
-                } else {
-                    showError({ message: 'Error procesando la respuesta', error: err });
-                }
-            }
-        },
-        error: function(request, status, error) {
-            try {
-                const errorMessage = {
-                    status: status,
-                    error: error,
-                    responseText: request.responseText ? sanitize(request.responseText) : 'Sin respuesta del servidor'
-                };
-
-                if (typeof errorCallBack === 'function') {
-                    errorCallBack(errorMessage);
-                } else {
-                    showError(errorMessage);
-                }
-            } catch (err) {
-                console.error('Error en manejo del error:', err);
-                showError({ message: 'Error interno', error: err });
-            }
-        },
-        complete: function() {
-            if (showLoading) $('#modalLoading').modal('hide');
-        }
-    });
-}
-
-function sanitize(input) {
-    const div = document.createElement('div');
-    div.innerText = input;
-    return div.innerHTML;
-}
-
-function showError(errorData) {
-    const errorMessage = typeof errorData === 'string' ? sanitize(errorData) : sanitize(errorData.message || 'Error desconocido');
-    console.error('Error:', errorMessage);
-    alert(`Error: ${errorMessage}`);
+			if (successCallBack != null) {
+				data = $.extend({}, data, successCallBackParams);
+				
+				eval(successCallBack + '(data);');
+			}
+		},
+		error: function(request, status, error) {
+    			const sanitizedError = escapeHtml(error || 'Se ha producido un error desconocido');
+			if (errorCallBack != null)
+				eval(errorCallBack + '(request);');
+			else
+				showError(escapeHtml(request))
+		}
+	});
 }
 
 
 function transformResponse(res) {
-	let startIndex = res.indexOf('{')
-	let endIndex = res.lastIndexOf('}');
-
-	let jsonString = res.substring(startIndex, endIndex + 1);
-
-	return JSON.parse(jsonString);
+    if (typeof res === "string") {
+        let startIndex = res.indexOf('{');
+        let endIndex = res.lastIndexOf('}');
+        let jsonString = res.substring(startIndex, endIndex + 1);
+        return JSON.parse(jsonString);
+    }
+    return res;
 }
 
 
@@ -492,8 +458,9 @@ function showConfirm(confirmCallback, message) {
 }
 
 function showError(data) {
-	console.log(data);
-	$('#modalErrorMsg').html(data && data.error ? data.error : 'Se ha producido un error.');
+    const sanitizedData = escapeHtml(data && data.error ? data.error : 'Se ha producido un error');
+	console.log(sanitizedData);
+	$('#modalErrorMsg').html(sanitizedData && sanitizedData.error ? sanitizedData.error : 'Se ha producido un error.');
 	$('#modalError').modal('show');
 }
 

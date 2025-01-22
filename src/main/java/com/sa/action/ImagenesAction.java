@@ -24,7 +24,6 @@ import com.sa.entities.Archivo;
 import com.sa.entities.Rendicion;
 import com.sa.services.ThubanService;
 import org.apache.commons.text.StringEscapeUtils;
-import java.util.stream.Collectors;
 
 public class ImagenesAction extends RestriccionTransaccionAction {
 
@@ -101,14 +100,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		    return writeError(response, safeFileName + ": El archivo no es un PDF válido.");
 		}
 		
-		String nombreArchivo = request.getParameter("nombreArchivo");
-
-		if (nombreArchivo != null && !nombreArchivo.matches("^[a-zA-Z0-9._-]+$")) {
-		    throw new IllegalArgumentException("Nombre de archivo inválido.");
-		}
-
-		nombreArchivo = StringEscapeUtils.escapeHtml4(nombreArchivo);
-
+		String nombreArchivo = StringEscapeUtils.escapeHtml4(request.getParameter("nombreArchivo"));
 		resp.put("nombreArchivo", nombreArchivo);
 
 		Archivo archivo = new Archivo();
@@ -124,29 +116,22 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 
 
 	private ActionForward borrarArchivo(HttpServletRequest request, HttpServletResponse response, RendicionAvisoForm frm) throws Exception {
-	    Map<String, Object> resp = new HashMap<>();
-	    
-	    String nombreArchivo = request.getParameter("nombreArchivo");
-	    if (nombreArchivo == null || !nombreArchivo.matches("^[a-zA-Z0-9._-]+$")) {
-	        throw new IllegalArgumentException("Nombre de archivo inválido.");
-	    }
+		Map<String, Object> resp = new HashMap<String, Object>();
+		
+		resp.put("nombreArchivo", request.getParameter("nombreArchivo"));
+		
+		boolean encontro = false;
+		for (int i = 0; i < frm.getArchivosASubir().size() && !encontro; i++) {
+			Archivo archivo = frm.getArchivosASubir().get(i);
 
-	    String safeNombreArchivo = StringEscapeUtils.escapeHtml4(nombreArchivo);
-	    resp.put("nombreArchivo", safeNombreArchivo);
+			if (archivo.getNomArchivo().equals(request.getParameter("nombreArchivo"))) {
+				encontro = true;
+				frm.getArchivosASubir().remove(i);
+			}
+		}
 
-	    boolean encontro = false;
-	    for (int i = 0; i < frm.getArchivosASubir().size() && !encontro; i++) {
-	        Archivo archivo = frm.getArchivosASubir().get(i);
-
-	        if (archivo.getNomArchivo().equals(nombreArchivo)) {
-	            encontro = true;
-	            frm.getArchivosASubir().remove(i);
-	        }
-	    }
-
-	    return writeJson(response, resp);
+		return writeJson(response, resp);
 	}
-
 
 	private ActionForward generar(RendicionAvisoForm frm, ActionMapping mapping, HttpServletRequest request, HttpServletResponse response,
 			SAMWebClient samClient) throws Exception {
@@ -155,7 +140,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		String thubanPass = (String) request.getSession().getServletContext().getAttribute("esb.thuban.pass");
 		String thubanClaseDoc = (String) request.getSession().getServletContext().getAttribute("esb.thuban.clase.documental");
 		
-		String message = "OK: ARCHIVOS SUBIDOS CON &Eacute;XITO.";
+		String message = "OK: ARCHIVOS SUBIDOS CON ÉXITO.";
 		String idRendicion = request.getParameter("idRendicion");
 	
 		String glg = request.getParameter("glg");
@@ -183,12 +168,8 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		
 		List<String> errores = thubanService.publicarDocumentos(thubanClaseDoc, thubanUser, thubanPass, rendicion, frm.getArchivosASubir());
 		
-		if (errores.size() == frm.getArchivosASubir().size()) {
-		    String errorMessage = errores.stream()
-		        .map(StringEscapeUtils::escapeHtml4)
-		        .collect(Collectors.joining("<br><br>"));
-		    return writeError(response, errorMessage);
-		}
+		if (errores.size() == frm.getArchivosASubir().size())
+			return writeError(response, StringUtils.join(errores.toArray(), "<br><br>"));
 //		else if (rendicion.getEstado().equals("PENDI") || rendicion.getEstado().equals("OBSER")) {
 //			String idu = aprobacionesService.obtenerIDU(rendicion, this.sessionUserWorking.getIdUser(), WM95.DELIM_04_SIN_ADEA);
 //			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()), this.sessionUserWorking.getIdUser(), idu);
