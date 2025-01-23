@@ -119,30 +119,26 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	}
 
 	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws Exception {
-	    response.setContentType("application/json; charset=UTF-8");
-	    PrintWriter writer = response.getWriter();
-
-	    Map<String, Object> safeResp = new HashMap<>();
+	    Map<String, Object> sanitizedResp = new HashMap<>();
 	    for (Map.Entry<String, Object> entry : resp.entrySet()) {
-	        String key = entry.getKey();
 	        Object value = entry.getValue();
-
 	        if (value instanceof String) {
-	            safeResp.put(key, StringEscapeUtils.escapeJson((String) value));
+	            sanitizedResp.put(entry.getKey(), StringEscapeUtils.escapeHtml4((String) value));
 	        } else {
-	            safeResp.put(key, value);
+	            sanitizedResp.put(entry.getKey(), value);
 	        }
 	    }
-
-	    safeResp.put(STATUS, "OK");
-
-	    writer.print(JSONObject.fromObject(safeResp));
-	    writer.flush();
-	    writer.close();
-
+	    sanitizedResp.put(STATUS, "OK");
+	    response.setContentType("application/json");
+	    response.setCharacterEncoding("UTF-8");
+	    try (PrintWriter writer = response.getWriter()) {
+	        String jsonOutput = JSONObject.fromObject(sanitizedResp).toString();
+	        System.out.println("Generated JSON: " + jsonOutput); // Depuración
+	        writer.print(jsonOutput);
+	        writer.flush();
+	    }
 	    return null;
 	}
-
 
 	protected ActionForward writeError(HttpServletResponse response, Exception e) throws Exception {
 	    response.setContentType("application/json; charset=UTF-8");
@@ -168,19 +164,24 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 
 
 	protected ActionForward writeError(HttpServletResponse response, String message) throws Exception {
-	    response.setContentType("application/json; charset=UTF-8");
-	    PrintWriter writer = response.getWriter();
-
 	    Map<String, Object> resp = new HashMap<>();
 	    resp.put(STATUS, ERROR);
-	    resp.put(ERROR, StringEscapeUtils.escapeHtml4(message));
 
-	    writer.print(JSONObject.fromObject(resp));
-	    writer.flush();
-	    writer.close();
+	    String sanitizedMessage = StringEscapeUtils.escapeHtml4(message);
+	    resp.put(ERROR, sanitizedMessage);
+
+	    response.setContentType("application/json");
+	    response.setCharacterEncoding("UTF-8");
+
+	    try (PrintWriter writer = response.getWriter()) {
+	        writer.print(JSONObject.fromObject(resp));
+	        writer.flush();
+	        writer.close();
+	    }
 
 	    return null;
 	}
+
 
 	protected void setErrorMessage(Exception e) throws Exception {
 		this.message = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() :

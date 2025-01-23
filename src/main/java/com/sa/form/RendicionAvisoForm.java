@@ -9,7 +9,6 @@ import org.apache.struts.upload.FormFile;
 import com.sa.entities.Archivo;
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
-import java.util.stream.Collectors;
 
 
 public class RendicionAvisoForm extends ActionForm {
@@ -62,9 +61,7 @@ public class RendicionAvisoForm extends ActionForm {
 	}
 
 	public List<Archivo> getArchivosASubir() {
-	    return archivosASubir.stream()
-	        .filter(archivo -> archivo.getNomArchivo() != null && archivo.getNomArchivo().matches("^[a-zA-Z0-9._-]+$"))
-	        .collect(Collectors.toList());
+		return archivosASubir;
 	}
 
 	public void setArchivosASubir(List<Archivo> archivosASubir) {
