@@ -72,6 +72,7 @@ class ParametrosMotivoSaveActionTest {
     parametrosMotivoFormAlta.setMaInclExcl("");
     parametrosMotivoFormAlta.setCodSup("");
     parametrosMotivoFormAlta.setCodFirma("");
+    parametrosMotivoFormAlta.setDescOscar("OSCAR");
     parametrosMotivoFormAlta.setOscar(new OSCAR("OSCAR"));
     parametrosMotivoFormAlta.setIdNivCarga("");
     parametrosMotivoFormAlta.setTxAviso("");
@@ -92,6 +93,7 @@ class ParametrosMotivoSaveActionTest {
     parametrosMotivoFormBaja.setMaInclExcl("");
     parametrosMotivoFormBaja.setCodSup("");
     parametrosMotivoFormBaja.setCodFirma("");
+    parametrosMotivoFormBaja.setDescOscar("OSCAR");
     parametrosMotivoFormBaja.setOscar(new OSCAR("OSCAR"));
     parametrosMotivoFormBaja.setIdNivCarga("");
     parametrosMotivoFormBaja.setTxAviso("");
@@ -112,6 +114,7 @@ class ParametrosMotivoSaveActionTest {
     parametrosMotivoFormMod.setMaInclExcl("");
     parametrosMotivoFormMod.setCodSup("");
     parametrosMotivoFormMod.setCodFirma("");
+    parametrosMotivoFormMod.setDescOscar("OSCAR");
     parametrosMotivoFormMod.setOscar(new OSCAR("OSCAR"));
     parametrosMotivoFormMod.setIdNivCarga("");
     parametrosMotivoFormMod.setTxAviso("");
@@ -185,6 +188,7 @@ class ParametrosMotivoSaveActionTest {
     parametrosMotivoForm.setMaInclExcl("");
     parametrosMotivoForm.setCodSup("");
     parametrosMotivoForm.setCodFirma("");
+    parametrosMotivoForm.setDescOscar("OSCAR");
     parametrosMotivoForm.setOscar(new OSCAR("OSCAR"));
     parametrosMotivoForm.setIdNivCarga("");
     parametrosMotivoForm.setTxAviso("");
@@ -239,6 +243,7 @@ class ParametrosMotivoSaveActionTest {
     parametrosMotivoForm.setMaInclExcl("");
     parametrosMotivoForm.setCodSup("");
     parametrosMotivoForm.setCodFirma("");
+    parametrosMotivoForm.setDescOscar("OSCAR");
     parametrosMotivoForm.setOscar(new OSCAR("OSCAR"));
     parametrosMotivoForm.setIdNivCarga("");
     parametrosMotivoForm.setTxAviso("");
