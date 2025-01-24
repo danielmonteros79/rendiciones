@@ -264,10 +264,27 @@ function normalizeText(text) {
 }
 
 function encodeHTML(str) {
+    if (str == null) {
+        return '';
+    }
+    if (typeof str !== 'string') {
+        str = String(str);
+    }
     return str.replace(/&/g, "&amp;")
               .replace(/</g, "&lt;")
               .replace(/>/g, "&gt;")
               .replace(/"/g, "&quot;")
               .replace(/'/g, "&#039;");
 }
+
+function numericOnly(event) {
+    const charCode = event.which || event.keyCode;
+    if ((charCode >= 48 && charCode <= 57) || charCode === 8 || charCode === 9) {
+        return true;
+    }
+    event.preventDefault();
+    return false;
+}
+
+
 
