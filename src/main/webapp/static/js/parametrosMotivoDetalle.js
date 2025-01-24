@@ -10,9 +10,21 @@ jQuery(document).ready(function() {
 		$("#fechaHasta").datepicker("show");
 	});
 
-	$('input[type=checkbox]').change(function() {
-        $('#oscar' + $(this)[0].value).val($(this).is(':checked') ? $(this)[0].value : ' ');
+    $('input[type=checkbox]').change(function () {
+        let selectedValues = [];
+        
+        $('input[type=checkbox]').each(function () {
+            if ($(this).is(':checked')) {
+                selectedValues.push($(this).val());
+            }
+        });
+
+		
+
+        $('#descOscar').val(selectedValues.join(''));
     });
+
+    $('input[type=checkbox]').trigger('change');
 	
 	if($("input[name^='centrosCostoI']").size() == 15)
 		$("#addCC").hide();
@@ -140,7 +152,9 @@ function setFormValidate() {
 			fechaDesde: 		{ required : true},
 			fechaHasta: 		{ required : true, dateAfter : 'fechaDesde' },
 			meDiasInterv: 		{ number : true },
-			centrosCosto: 		{ centrosCosto : true }
+			centrosCosto: 		{ centrosCosto : true },
+			descOscar: 			{ required: function() { return $("input[name='oscar']:checked").length > 0; }
+    		}
 		},
 		messages: {
 			codigo: { required : globalMsgRequired, number : "Campo solo numerico" },

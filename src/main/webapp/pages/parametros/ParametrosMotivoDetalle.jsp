@@ -251,7 +251,7 @@ label.error {
 				
 				<div class="col-sm-12 col-lg-6 pt-2  scroll-err">
 					<div class="has-float-label">
-						<html:text property="descOscar" styleId="descOscar" styleClass="form-control bg-light text-uppercase" maxlength="4" onkeypress="return numericOnly(event);"/>
+						<html:text property="descOscar" styleId="descOscar" styleClass="form-control bg-light text-uppercase" maxlength="5" onkeypress="return numericOnly(event);"/>
 						 <label for="modalDelegadoUsuario" style="white-space: pre-line">Que tipo de centros pueden visualizar el motivo						 
 						 
 						  (O-Sucursal/S-C Mixto/A-Area centrales/R-Ficticios)</label>
@@ -262,7 +262,7 @@ label.error {
 				<div class="col-sm-12 col-lg-6 pt-2 scroll-err ">
 				
 					<div class="btn btn-light px-4 py-1 ">
-					<label ><html:checkbox value="O" styleId="oscarO" property="oscar.o"/><span class="d-block">O</span></label>
+						<label ><html:checkbox value="O" styleId="oscarO" property="oscar.o"/><span class="d-block">O</span></label>
 					</div>
 					<div class="btn btn-light px-4 py-1 ">
 						<label><html:checkbox value="S" styleId="oscarS" property="oscar.s" /><span class="d-block">S</span></label>
@@ -276,12 +276,6 @@ label.error {
 					<div  class="btn btn-light px-4 py-1 ">
 						<label><html:checkbox value="R" styleId="oscarR" property="oscar.r" /><span class="d-block">R</span></label>
 					</div>
-				
-					<html:hidden styleId="oscarO" property="oscar.o"/>
-					<html:hidden styleId="oscarS" property="oscar.s"/>
-					<html:hidden styleId="oscarC" property="oscar.c"/>
-					<html:hidden styleId="oscarA" property="oscar.a"/>
-					<html:hidden styleId="oscarR" property="oscar.r"/>
 					
 					 <div class="errorDiv"></div>
 				</div>

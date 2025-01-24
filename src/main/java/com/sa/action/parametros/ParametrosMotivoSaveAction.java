@@ -17,6 +17,7 @@ import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
 
 import com.sa.action.RestriccionTransaccionAction;
+import com.sa.entities.OSCAR;
 import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametroMotivo;
 import com.sa.form.parametros.ParametrosMotivoForm;
@@ -108,7 +109,7 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 		motivo.setCodSup(frm.getCodSup());
 		motivo.setCodFirma(frm.getCodFirma());
 //		motivo.setMeAviso(frm.getMeAviso());
-		motivo.setOscar(frm.getOscar());
+		motivo.setOscar(new OSCAR(frm.getDescOscar()));
 		motivo.setIdNivCarga(frm.getIdNivCarga());
 		motivo.setIdNivAutoriz(frm.getIdNivAutoriz());
 		motivo.setTxAviso(frm.getTxAviso());
