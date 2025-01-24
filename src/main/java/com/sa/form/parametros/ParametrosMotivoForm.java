@@ -232,4 +232,15 @@ public class ParametrosMotivoForm extends ActionForm {
 	public void setidCentroCostosFijo(String idCentroCostosFijo) {
 		this.idCentroCostosFijo = idCentroCostosFijo;
 	}
+
+	@Override
+	public String toString() {
+		return "ParametrosMotivoForm [codigo=" + codigo + ", descripcion=" + descripcion + ", idGlg=" + idGlg
+				+ ", idCentroCostos=" + idCentroCostos + ", estado=" + estado + ", codSup=" + codSup + ", codFirma="
+				+ codFirma + ", codAprobacionGlg=" + codAprobacionGlg + ", oscar=" + oscar + ", fechaDesde="
+				+ fechaDesde + ", fechaHasta=" + fechaHasta + ", idNivCarga=" + idNivCarga + ", idNivAutoriz="
+				+ idNivAutoriz + ", maInclExcl=" + maInclExcl + ", txAviso=" + txAviso + ", idOperEspe=" + idOperEspe
+				+ ", meDiasInterv=" + meDiasInterv + ", centrosCosto=" + centrosCosto + ", accion=" + accion
+				+ ", descOscar=" + descOscar + ", idCentroCostosFijo=" + idCentroCostosFijo + "]";
+	}
 }
