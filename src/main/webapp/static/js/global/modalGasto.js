@@ -296,28 +296,28 @@ function modalGastoCancelar(){
 	$('#modalGastoFueraDePolitica').modal('hide');
 }
 
-function evaluarValidacionGasto(data){
-	console.log(data)
-	if(!data.textoValidacion.includes('OK')){
-		setTimeout(function(){			
-			setTimeout(function(){
-				if(data.textoValidacion.includes('ALERTA')){ 
-					$('#modalGastoTitle').html("El gasto cargado no cumple con la política de gastos acordada"); 
-					$('#aceptarGastoBtn').html("Continuar");
-				}
-				else{
-					$('#modalGastoTitle').html("El gasto requiere ser confirmado");
-					$('#aceptarGastoBtn').html("Confirmar");
-				}	 
-				$('#modalGastoValidarMessage').html(data.textoValidacion);
-			},300)
-			$('#modalGastoFueraDePolitica').modal('show');	
-		},200)	
+function evaluarValidacionGasto(data) {
+    
+    if (!data || typeof data.textoValidacion !== 'string') {
+        console.error("Error: data.textoValidacion es indefinido o no es una cadena de texto.", data);
+        return;
     }
-	
-//	else{
-//		modalGastoGuardar();
-//	}
+
+    if (!data.textoValidacion.includes('OK')) {
+        setTimeout(function() {
+            setTimeout(function() {
+                if (data.textoValidacion.includes('ALERTA')) { 
+                    $('#modalGastoTitle').html("El gasto cargado no cumple con la política de gastos acordada");
+                    $('#aceptarGastoBtn').html("Continuar");
+                } else {
+                    $('#modalGastoTitle').html("El gasto requiere ser confirmado");
+                    $('#aceptarGastoBtn').html("Confirmar");
+                }
+                $('#modalGastoValidarMessage').html(data.textoValidacion);
+            }, 300);
+            $('#modalGastoFueraDePolitica').modal('show');
+        }, 200);
+    }
 }
 
 function modalGastoGuardarSuccess(data) {
