@@ -53,7 +53,7 @@ public class Usuario {
 	}
 
 	public String getNombre() {
-		return this.nombre != null ? this.idUser.replaceAll("[^a-zA-Z0-9]", "") : null;
+		return this.nombre != null ? this.nombre.replaceAll("[^a-zA-Z0-9 áéíóúÁÉÍÓÚ]", "") : null;
 	}
 
 	public void setNombre(String nombre) {

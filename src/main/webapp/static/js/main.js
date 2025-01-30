@@ -234,8 +234,9 @@ function setCombo(url, comboSelector, params, selectedOption, showEmpty) {
 			    Array.isArray(data.combo) &&
 			    data.combo.length == 1
 			) {
-					$(comboSelector).append('<option value="' + escapeHtml(elem.id) + '"' + (elem.id == selectedOption ? ' selected' : '') + '>' +
-					    escapeHtml(elem.descripcion.trim()) + '</option>');
+					$(comboSelector).append('<option value="' + escapeHtml(data.combo[0].id) + '"' + 
+                        (data.combo[0].id == selectedOption ? ' selected' : '') + '>' +
+                        escapeHtml(data.combo[0].descripcion.trim()) + '</option>');
 			    $(comboSelector).attr("disabled", true);
 			} else {
 			    if (showEmpty !== false) {
@@ -418,7 +419,7 @@ function tableLoadFinishedSuccess(data) {
 }
 
 function showMessage(id, message, type) {
-	$('#' + id).html(escapeHtml(message));
+	$('#' + id).html(message);
 	$('#' + id).removeClass('text-success text-warning text-danger');
 	$('#' + id + 'Container').toggleClass('d-none', !message);
 
