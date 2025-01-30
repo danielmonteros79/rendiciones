@@ -419,7 +419,7 @@ function tableLoadFinishedSuccess(data) {
 }
 
 function showMessage(id, message, type) {
-	$('#' + id).html(escapeHtml(message));
+	$('#' + id).html(message);
 	$('#' + id).removeClass('text-success text-warning text-danger');
 	$('#' + id + 'Container').toggleClass('d-none', !message);
 
