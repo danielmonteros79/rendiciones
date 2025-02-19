@@ -37,14 +37,18 @@ function delegarBandejaConfirm() {
 
 
 function reasignarBandejaConfirmSuccess(data) {
-	showMessage('message', 'OK: BANDEJA REASIGNADA EXITOSAMENTE');
-	$('#modalConfirm').modal('hide');
+    if (data.error) {
+        reasignarBandejaConfirmError(data);
+        return;
+    }
+    showMessage('message', 'OK: BANDEJA REASIGNADA EXITOSAMENTE');
+    $('#modalConfirm').modal('hide');
 }
 
 function reasignarBandejaConfirmError(data) {
-	showMessage('message',  data.error );
-	$('#modalConfirm').modal('hide');
-	
+    let errorMessage = data.error ? data.error : "Se produjo un error desconocido.";
+    showMessage('message', errorMessage);
+    $('#modalConfirm').modal('hide');
 }
 
  $('#legajoDelegadoOrigen').blur(function() {
