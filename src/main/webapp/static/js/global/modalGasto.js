@@ -139,6 +139,10 @@ function modalGastoSetVisibility() {
 
 function modalGastoSetValues(data) {
 	let cantCupones = modalCuponesCuponesSel.length +1;
+	let estadoRend = modalGastoLoadParams.estadoRend;
+	
+	let esEditable = estadoRend === "PENDI" || estadoRend === "ESCAN";
+	
 	if (!modalGastoLoadParams.cupon.esProxCupon) {
 		modalGastoTipoComprobanteSel = null;
 		$('[id^=modalGasto]').not($('#modalGastoTipoGasto')).val('');
@@ -146,9 +150,11 @@ function modalGastoSetValues(data) {
 		$('#modalGastoDetalleCuponDesc').addClass("d-none")
 		$('#modalGastoTipoFactura').val('A');
 		//$('[id^=modalGasto]').attr('disabled', false);
-		$('#modalGastoMoneda').attr('disabled', false);
-		$('#modalGastoFechaGasto').attr('disabled', false);
-		$($('#modalGastoFechaGasto').parent().find('button')[0]).attr('disabled', false);
+		$('#modalGastoTipoGasto').attr('disabled', !esEditable);
+		//$('#modalGastoMoneda').attr('disabled', !esEditable);
+		$('#modalGastoTipoComprobante').attr('disabled', !esEditable);
+		$('#modalGastoObservaciones').attr('disabled', !esEditable);
+		$($('#modalGastoFechaGasto').parent().find('button')[0]).attr('disabled', !esEditable);
 		AutoNumeric.getAutoNumericElement('#modalGastoMonto').clear();
 		
 		$('#modalGastoMsgCupon').html('');
@@ -159,6 +165,7 @@ function modalGastoSetValues(data) {
 		$('#modalGastoFechaGasto').datepicker('setStartDate', modalGastoLoadParams.fechaDesde);
 		$('#modalGastoFechaGasto').datepicker('setEndDate', modalGastoLoadParams.fechaHasta);
 		
+		$('#modalGastoFechaGasto').attr('disabled', !esEditable);
 	}
 	
 	if (data.gasto) {
@@ -206,6 +213,7 @@ function modalGastoSetValues(data) {
 		.attr('readonly', 'readonly')
 	}
 
+	$('#modalGastoFechaGasto').attr('disabled', !esEditable);
 	
 }
 
