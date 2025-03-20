@@ -2,152 +2,174 @@ package com.sa.action.aprobacion;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import ar.com.itrsa.sam.TransactionException;
+
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
-import com.sa.manager.ManagerTransaction;
 import com.sa.services.AprobacionesService;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.mock.MockHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
 
 class ListadoAprobacionesActionTest {
-//
-//  @Mock
-//  ActionForward actionForwardMocked;
-//  @Mock
-//  PrintWriter printWriterMocked;
-//  @Mock
-//  ActionMapping actionMappingMocked;
-//  @Mock
-//  ActionForm actionFormMocked;
-//  @Mock
-//  HttpServletRequest httpServletRequestMocked;
-//  @Mock
-//  HttpServletResponse httpServletResponseMocked;
-//  @Mock
-//  SAMWebClient samWebClientMocked;
-//  @Mock
-//  SAMWebApplication samWebApplicationMocked;
-//  @Mock
-//  AprobacionesService aprobacionesServiceMocked;
-//  @InjectMocks
-//  ListadoAprobacionesAction listadoAprobacionesAction;
-//
-//  public static Stream<Arguments> executeActionSource() {
-//    //given
-//    ActionForward actionForward = new ActionForward();
-//    String actionFiltrar = "filtrar";
-//    String actionAprobar = "aprobar";
-//    String actionSuccess = "success";
-//    String alerta1 = "1";
-//    String alerta0 = "0";
-//
-//    Rendicion rendicion = new Rendicion();
-//    rendicion.setAdea("1");
-//    List<Rendicion> rendicionList = new ArrayList<>();
-//    rendicionList.add(rendicion);
-//
-//    return Stream.of(
-//        Arguments.of(actionSuccess, alerta0, rendicionList),
-//        Arguments.of(actionFiltrar, alerta1, rendicionList),
-//        Arguments.of(actionFiltrar, alerta0, rendicionList),
-//        Arguments.of(actionAprobar, alerta0, rendicionList)
-//                    );
-//  }
-//
-//  public static Stream<Arguments> filtrarSource() {
-//    //given
-//    MockHttpServletRequest request = new MockHttpServletRequest();
-//    ActionForward actionForward = new ActionForward();
-//    List<Rendicion> rendicionList = new ArrayList<>();
-//    Rendicion rendicion = new Rendicion();
-//
-//    rendicionList.add(rendicion);
-//
-//    return Stream.of(
-//        Arguments.of(request, actionForward, rendicionList)
-//                    );
-//  }
-//
-//  @BeforeEach
-//  void setUp() {
-//    MockitoAnnotations.openMocks(this);
-//    Usuario usuario = new Usuario("", "", "", 0, "", new ArrayList<>());
-//    listadoAprobacionesAction.setSessionUserWorking(usuario);
-//  }
-//
-//
-//  @ParameterizedTest
-//  @MethodSource("executeActionSource")
-//  @DisplayName("Should execute Action")
-//  void shouldExecuteAction(String action, String alerta, List<Rendicion> rendicionList) throws Exception {
-//    //when
-//    when(httpServletRequestMocked.getParameter("action")).thenReturn(action);
-//    when(httpServletRequestMocked.getParameter("nroAlerta")).thenReturn(alerta);
-//    when(httpServletRequestMocked.getParameter("usuario")).thenReturn("");
-//    when(httpServletRequestMocked.getParameter("motivo")).thenReturn("");
-//    when(httpServletRequestMocked.getParameter("glg")).thenReturn("1234567");
-//    when(httpServletRequestMocked.getParameter("idRendiciones")).thenReturn("[\"1\", \"2\", \"3\"]");
-//
-//    when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
-//    when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
-//
-//    try (MockedConstruction<AprobacionesService> aprobacionesServiceMC = Mockito.mockConstruction(AprobacionesService.class,
-//        (mockAprobacionesService, context) -> {
-//          when(mockAprobacionesService.getCantRendiciones()).thenReturn("1");
-//        })) {
-//      try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
-//          (mockManagerTransaction, context) -> {
-//            doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
-//          })) {
-//        //then
-//        ActionForward actionForwardToAssert = listadoAprobacionesAction.executeAction(actionMappingMocked, actionFormMocked, samWebApplicationMocked,
-//            samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
-//        if (action.equals("aprobar")) {
-//          assertNull(actionForwardToAssert);
-//        } else {
-//          assertNotNull(actionForwardToAssert);
-//        }
-//      }
-//    }
-//  }
-//
-//
-//  @Test
-//  @DisplayName("Should catch Exception when execute Action")
-//  void shouldCatchExceptionWhenExecuteAction() throws Exception {
-//    //when
-//    when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
-//    //then
-//    ActionForward actionForwardToAssert = listadoAprobacionesAction.executeAction(actionMappingMocked, actionFormMocked, samWebApplicationMocked,
-//        samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
-//    assertNull(actionForwardToAssert);
-//  }
+	
+    @Mock HttpServletRequest httpServletRequest;    
+    @Mock HttpServletResponse httpServletResponse;
+    @Mock ActionMapping actionMapping;
+    @Mock ActionForm actionForm;    
+    @Mock AprobacionesService aprobacionesService;
+    @Mock SAMWebApplication samWebApplication;
+    @Mock SAMWebClient samWebClient;
+    
+    @InjectMocks private ListadoAprobacionesAction listadoAprobacionesAction;
+
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        listadoAprobacionesAction = new ListadoAprobacionesAction(aprobacionesService);
+
+        Usuario usuarioMock = new Usuario("1234", "SS", "PEPE", 1212, "", null);
+        listadoAprobacionesAction.setSessionUser(usuarioMock);
+        listadoAprobacionesAction.setSessionUserWorking(usuarioMock);
+        
+        aprobacionesService = mock(AprobacionesService.class);
+        listadoAprobacionesAction.setAprobacionesService(aprobacionesService);
+        
+        Rendicion rendicion1 = mock(Rendicion.class);
+        when(rendicion1.getAdea()).thenReturn("9000000000");
+        
+        try {
+			when(httpServletResponse.getWriter()).thenReturn(mock(PrintWriter.class));
+			
+			doReturn(Collections.singletonList(rendicion1)).when(aprobacionesService)
+	        .getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString());
+			
+			doReturn("OPERACION EFECTUADA").when(aprobacionesService)
+			.cambiarEstadoRendiciones(any(), any(), any(), any(), any());
+		} catch (IOException | TransactionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+
+    @Test
+    @DisplayName("Debería devolver success cuando no hay action")
+    void executeAction_Success() throws Exception {
+
+        when(httpServletRequest.getParameter("action")).thenReturn(null);
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+        
+        List<Rendicion> rendicionesMock = Collections.singletonList(new Rendicion());
+        when(aprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(rendicionesMock);
+        
+        when(actionMapping.findForward("success")).thenReturn(new ActionForward("success", "/successPath", false));
+
+        try {
+        ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient , httpServletRequest, httpServletResponse);
+        
+        assertNotNull(result);
+        assertEquals("success", result.getName());
+        
+        verify(aprobacionesService, times(1)).getAprobacionesPendientes(
+                eq(""), eq(""), eq(""), eq("04"), eq("1234")
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("❌ Error inesperado en `executeAction()`: " + e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Debe filtrar correctamente las aprobaciones")
+    void filtrar_Success() throws Exception {
+
+    	when(httpServletRequest.getParameter("action")).thenReturn("filtrar");
+        when(httpServletRequest.getParameter("idRendicion")).thenReturn("123");
+        when(httpServletRequest.getParameter("usuario")).thenReturn("pepe");
+        when(httpServletRequest.getParameter("motivo")).thenReturn("test");
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+        when(httpServletRequest.getParameter("supervisado")).thenReturn("1234");
+        when(httpServletRequest.getParameter("nroAlerta")).thenReturn("1");
+
+        Rendicion rendicion1 = mock(Rendicion.class);
+        when(rendicion1.getAdea()).thenReturn("9000000000");
+
+        List<Rendicion> rendicionesMock = Collections.singletonList(rendicion1);
+        when(aprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(rendicionesMock);
+        when(aprobacionesService.getCantRendiciones()).thenReturn("1");
+
+        when(actionMapping.findForward("aprobaciones")).thenReturn(new ActionForward("success", "/successPath", false));
+
+        try {
+            ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient , httpServletRequest, httpServletResponse);
+            
+            assertNotNull(result);
+            assertEquals("success", result.getName());
+            
+            verify(aprobacionesService, times(1)).getAprobacionesPendientes(
+                    eq("123"), eq("PEPE"), eq("test"), eq("04"), eq("1234")
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail("❌ Error inesperado en `executeAction()`: " + e.getMessage());
+            }
+    }
+    
+    @Test
+    @DisplayName("Debe aprobar correctamente las aprobaciones")
+    void aprobar_Success() throws Exception {
+
+    	when(httpServletRequest.getParameter("action")).thenReturn("aprobar");
+        when(httpServletRequest.getParameter("idRendicion")).thenReturn("123");
+        when(httpServletRequest.getParameter("idRendiciones")).thenReturn("[\"1\",\"2\",\"3\"]");
+        when(httpServletRequest.getParameter("usuario")).thenReturn("pepe");
+        when(httpServletRequest.getParameter("motivo")).thenReturn("test");
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+        when(httpServletRequest.getParameter("supervisado")).thenReturn("1234");
+        when(httpServletRequest.getParameter("nroAlerta")).thenReturn("1");
+
+        Rendicion rendicion1 = mock(Rendicion.class);
+        when(rendicion1.getAdea()).thenReturn("9000000000");
+        
+        when(aprobacionesService.cambiarEstadoRendiciones(any(), any(), any(), any(), any()))
+        	.thenReturn("OPERACION EFECTUADA");
+
+        when(actionMapping.findForward("success")).thenReturn(new ActionForward("success", "/successPath", false));
+
+        try {
+            ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient , httpServletRequest, httpServletResponse);
+            
+            verify(aprobacionesService, times(1)).cambiarEstadoRendiciones(
+            		any(), any(), any(), any(), any()
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail("❌ Error inesperado en `executeAction()`: " + e.getMessage());
+            }
+    }
+
 }
