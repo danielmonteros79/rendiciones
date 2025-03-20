@@ -32,8 +32,18 @@ public class AprobacionesService {
 	private String cantRendiciones;
 	private SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyy-MM-dd");
 
+	private ManagerTransaction managerTransaction;
+	
+	public AprobacionesService() {}
+	
 	public AprobacionesService(SAMWebClient samClient) {
 		this.client = samClient;
+		this.managerTransaction = new ManagerTransaction(new SU61());
+	}
+	
+	public AprobacionesService(SAMWebClient samClient, ManagerTransaction managerTransaction) {
+	    this.client = samClient;
+	    this.managerTransaction = managerTransaction != null ? managerTransaction : new ManagerTransaction(new SU61());
 	}
 
 	public List<Rendicion> getAprobacionesPendientes(String id, String usuarioFiltro, String motivo, String estado, String usuario)
@@ -42,7 +52,7 @@ public class AprobacionesService {
 		if (id != null && !id.equalsIgnoreCase("")) {
 			id = String.format("%016d",Integer.parseInt(id));
 		}
-		ManagerTransaction manager = new ManagerTransaction(new SU61());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU61());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("id_rend", id);
 		parametersExecute.put("id_user", usuarioFiltro);
@@ -61,7 +71,7 @@ public class AprobacionesService {
 	
 	public String cambiarEstadoRendiciones(String user, List<Integer> idRendiciones, String estado, String motivoRechazo, String glg) throws TransactionException {
 		log.info("Se llama a la trx que realiza el cambio de estado de rendiciones (aprob)");
-		ManagerTransaction manager = new ManagerTransaction(new SU62());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU62());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 
 		String rendiciones = "";
@@ -98,7 +108,7 @@ public class AprobacionesService {
 
 	public String cambiarEstadoDeUnaRendicion(String user, String idRendicion, String estado, String motivoRechazo, String glg) throws TransactionException {
 		log.info("Se llama a la trx que realiza el cambio de estado de una sola rendicion (aprob-recha)");
-		ManagerTransaction manager = new ManagerTransaction(new SU62());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU62());
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("cod_user", user);
 		parametersExecute.put("estado_rendicion", estado);
@@ -114,7 +124,7 @@ public class AprobacionesService {
 		String iduAdea = null;
 
 		try {
-			ManagerTransaction manager = new ManagerTransaction(new WM95());
+			ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new WM95());
 
 			manager.executeTrx(client, this.mapDataIdu(rendicion, userId, tipoAdea));
 
@@ -152,7 +162,7 @@ public class AprobacionesService {
 		// TODO Auto-generated method stub
 		String iduAdea = null;
 		// try {
-		ManagerTransaction manager = new ManagerTransaction(new SU60());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU60());
 		Map parameters = new HashMap();
 
 		parameters.put("id_rend", String.format("%016d", Integer
@@ -176,7 +186,7 @@ public class AprobacionesService {
 	}
 
 	public void cambiarEscanRendicion(String idRendicion, String user, String idu) throws TransactionException {
-		ManagerTransaction manager = new ManagerTransaction(new SU60());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU60());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 
 		parametersExecute.put("id_rend", String.format("%016d", Integer.parseInt(String.valueOf(idRendicion))));
@@ -187,7 +197,7 @@ public class AprobacionesService {
 		msg = (String) manager.getMensajeAviso();
 	}
 	public List<Journal> getJournal(String idRendicion) throws TransactionException {
-		ManagerTransaction manager = new ManagerTransaction(new SU70());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU70());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("id_rendicion", idRendicion);
 		
