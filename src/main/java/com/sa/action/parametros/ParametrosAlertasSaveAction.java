@@ -16,15 +16,24 @@ import ar.com.itrsa.sam.TransactionException;
 import com.sa.action.RestriccionTransaccionAction;
 import com.sa.entities.Usuario;
 import com.sa.form.parametros.ParametrosAlertasForm;
+import com.sa.services.AprobacionesService;
 import com.sa.services.ParametrosService;
 
 public class ParametrosAlertasSaveAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosAlertasSaveAction.class);
+	
+	private ParametrosService parametrosService;
+	
+	public ParametrosAlertasSaveAction() {}
+	
+	public ParametrosAlertasSaveAction(ParametrosService parametrosService) {
+		this.parametrosService = parametrosService;
+	}
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ParametrosAlertasForm frm = (ParametrosAlertasForm) form;
-		ParametrosService service = new ParametrosService(samClient);
+		ParametrosService service = this.parametrosService != null ? this.parametrosService : new ParametrosService(samClient);
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("Entra al action ParametrosAlertaSaveAction. Usuario (" + user.getIdUser() + ")");
 		String resultado = "";
