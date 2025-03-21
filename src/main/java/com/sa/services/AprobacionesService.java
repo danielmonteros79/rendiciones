@@ -38,7 +38,7 @@ public class AprobacionesService {
 	
 	public AprobacionesService(SAMWebClient samClient) {
 		this.client = samClient;
-		this.managerTransaction = new ManagerTransaction(new SU61());
+		this.managerTransaction = null;
 	}
 	
 	public AprobacionesService(SAMWebClient samClient, ManagerTransaction managerTransaction) {
