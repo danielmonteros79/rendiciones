@@ -12,11 +12,11 @@ import com.sa.services.trxs.SU85;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.mock.MockHttpServletRequest;
-import org.apache.struts.mock.MockHttpServletResponse;
 import org.apache.struts.mock.MockHttpSession;
 import org.apache.struts.mock.MockServletContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
@@ -40,8 +39,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.anyString;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -55,6 +56,34 @@ class ParametrosGastosDetalleLoadActionTest {
 
   @InjectMocks
   ParametrosGastosDetalleLoadAction parametrosGastosDetalleLoadAction;
+  
+  
+  @Mock private HttpServletResponse response;
+  @Mock private ParametrosService parametrosService;
+  @Mock private ParametroGasto mockGasto;
+  
+  @InjectMocks private ParametrosGastosDetalleLoadAction action;
+
+  private MockHttpServletRequest request;
+  private MockHttpSession session;
+  private ActionMapping mapping;
+  private SAMWebClient samWebClient;
+  private ParametrosGastosForm form;
+
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    
+    request = new MockHttpServletRequest();
+    session = new MockHttpSession();
+    request.setHttpSession(session);
+    mapping = new ActionMapping();
+    samWebClient = new SAMWebClient();
+    form = new ParametrosGastosForm();
+    form.setCentrosCosto("123");
+    
+    session.setAttribute("usuario", new Usuario("123", "John Doe", "testUser", 100, "CC001", null));
+  }
 
   public static Stream<Arguments> executeActionSource() {
     //given
@@ -303,42 +332,135 @@ class ParametrosGastosDetalleLoadActionTest {
         Arguments.of(parametrosGastosFormLongList, printWriter)
         );
   }
+  
+  @Test
+  void executeAction_Modificacion_Success() throws Exception {
+      // Given
+      form.setAccion("modificacion");
+      form.setCodigo("G001");
+      ActionMapping mapping = new ActionMapping();
+      mapping.addForwardConfig(new ActionForward("modificacion", "/modificacion.jsp", false));
+      when(parametrosService.loadModificacionGastoGaston(anyString(), anyString())).thenReturn(mockGasto);
+      when(parametrosService.getMsgAviso()).thenReturn("Operación exitosa");
 
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
+      // When
+      ActionForward result = action.executeAction(mapping, form, null, samWebClient, request, response);
+
+      // Then
+      verify(parametrosService, times(1)).loadModificacionGastoGaston("G001", "123");
+      verify(parametrosService, times(1)).getMsgAviso();
+      assertEquals("modificacion", result.getName());
+  }
+  
+  @Test
+  void executeAction_Baja_Success() throws Exception {
+      // Given
+      form.setAccion("baja");
+      form.setCodigo("G001");
+      ActionMapping mapping = new ActionMapping();
+      mapping.addForwardConfig(new ActionForward("baja", "/baja.jsp", false));
+      when(parametrosService.loadBajaGastoGaston(anyString(), anyString())).thenReturn(mockGasto);
+      when(parametrosService.getMsgAviso()).thenReturn("Operación exitosa");
+
+      // When
+      ActionForward result = action.executeAction(mapping, form, null, samWebClient, request, response);
+
+      // Then
+      verify(parametrosService, times(1)).loadBajaGastoGaston("G001", "123");
+      verify(parametrosService, times(1)).getMsgAviso();
+      assertEquals("baja", result.getName());
+  }
+  
+  @Test
+  void executeAction_ExceptionHandling() throws Exception {
+      // Given
+      form.setAccion("modificacion");
+      form.setCodigo("G001");
+      
+      ActionMapping mapping = new ActionMapping();
+      mapping.addForwardConfig(new ActionForward("modificacion", "/modificacion.jsp", false));
+      
+      when(parametrosService.loadModificacionGastoGaston(anyString(), anyString())).thenThrow(new RuntimeException("Simulación de error"));
+
+      // When
+      ActionForward result = action.executeAction(mapping, form, null, samWebClient, request, response);
+
+      // Then
+      verify(parametrosService, times(1)).loadModificacionGastoGaston("G001", "123");
+      assertEquals("ERROR: Simulación de error", request.getAttribute("message"));
+      assertEquals("modificacion", result.getName());
+  }
+  
+  @Test
+  void gastoToFormGaston_Success() {
+      // Given
+      ParametrosGastosForm form = new ParametrosGastosForm();
+      ParametroGasto gasto = new ParametroGasto();
+      gasto.setEstado("A");
+      gasto.setBimon("SI");
+      gasto.setObserv("Observación de prueba");
+      gasto.setNivelIngreso("NIVEL1");
+      gasto.setRistra("12345");
+      gasto.setDescripcionMotivo("Motivo de prueba");
+      gasto.setDescripcionGasto("Gasto de prueba");
+
+      // When
+      action.gastoToFormGaston(form, request, gasto);
+
+      // Then
+      assertEquals("A", form.getEstado());
+      assertEquals("SI", form.getBimon());
+      assertEquals("Observación de prueba", form.getObserv());
+      assertEquals("NIVEL1", form.getIdNivAutoriz());
+      assertEquals("12345", form.getDetalleRistra());
+      assertEquals("Motivo de prueba", form.getDescripcionMotivo());
+      assertEquals("Gasto de prueba", form.getDescripcionGasto());
   }
 
   @ParameterizedTest
   @MethodSource("executeActionSource")
   @DisplayName("Should determine what action execute")
-  void shouldDetermineWhatActionExecute(ActionMapping actionMapping, SAMWebApplication samApplication, SAMWebClient samClient, MockHttpServletRequest request,
-                                        ParametrosGastosForm parametrosGastosForm, List<String> combosList, PrintWriter printWriter,
-                                        ParametroGasto parametroGasto, Usuario usuario) throws Exception {
-    //given
-    Method cargarCombosMocked = ParametrosGastosDetalleLoadAction.class.getDeclaredMethod("cargarCombos", HttpServletRequest.class, List.class);
-    cargarCombosMocked.setAccessible(true);
-    cargarCombosMocked.invoke(parametrosGastosDetalleLoadAction, request, combosList);
-    //when
-    try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class,
-        (mockParametrosService, context) -> {
-          when(managerTransaction.getDataReturn()).thenReturn(parametroGasto);
-          when(managerTransaction.getDataReturnList()).thenReturn(combosList);
-          when(mockParametrosService.getGastosCombos()).thenReturn(combosList);
-          when(mockParametrosService.getMsgAviso()).thenReturn("Aviso");
-          when(mockParametrosService.loadModificacionGasto(parametrosGastosForm.getCodigo(), usuario.getIdUser())).thenReturn(managerTransaction);
-          when(httpServletResponse.getWriter()).thenReturn(printWriter);
-        })) {
-      //then
-      ActionForward actionForwardToAssert = parametrosGastosDetalleLoadAction.executeAction(actionMapping, parametrosGastosForm, samApplication, samClient,
-          request, httpServletResponse);
-      if (request.getParameter("accionJson").equals("borrarCentroCosto") || request.getParameter("accionJson").equals("agregarCentroCosto")) {
-        assertNull(actionForwardToAssert);
-      } else {
-        assertNotNull(actionForwardToAssert);
+  void shouldDetermineWhatActionExecute(
+          ActionMapping actionMapping,
+          SAMWebApplication samApplication,
+          SAMWebClient samClient,
+          MockHttpServletRequest request,
+          ParametrosGastosForm parametrosGastosForm,
+          List<String> combosList,
+          PrintWriter printWriter,
+          ParametroGasto parametroGasto,
+          Usuario usuario) throws Exception {
+
+      // 🔹 Asegurar que centrosCosto está inicializado para evitar NullPointerException
+      parametrosGastosForm.setCentrosCosto("123123"); 
+
+      // 🔹 Asegurar que el método `getDataReturn()` devuelva un objeto válido
+      when(managerTransaction.getDataReturn()).thenReturn(new ParametroGasto()); 
+      when(managerTransaction.getDataReturnList()).thenReturn(combosList);
+      when(httpServletResponse.getWriter()).thenReturn(printWriter);
+
+      try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(
+              ParametrosService.class, (mockParametrosService, context) -> {
+                  when(mockParametrosService.getGastosCombos()).thenReturn(combosList);
+                  when(mockParametrosService.getMsgAviso()).thenReturn("Aviso");
+                  when(mockParametrosService.loadModificacionGasto(parametrosGastosForm.getCodigo(), usuario.getIdUser()))
+                          .thenReturn(managerTransaction);
+              })) {
+
+          // 🔹 Ejecutar la acción
+          ActionForward actionForwardToAssert = parametrosGastosDetalleLoadAction.executeAction(
+                  actionMapping, parametrosGastosForm, samApplication, samClient, request, httpServletResponse);
+
+          // 🔹 Validar el resultado
+          if ("borrarCentroCosto".equals(request.getParameter("accionJson")) ||
+                  "agregarCentroCosto".equals(request.getParameter("accionJson"))) {
+              assertNull(actionForwardToAssert);
+          } else {
+              assertNotNull(actionForwardToAssert);
+          }
       }
-    }
   }
+
 
   /*@ParameterizedTest
   @MethodSource("executeActionFormOptionsSource")
