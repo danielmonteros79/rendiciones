@@ -23,6 +23,25 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 
 public class AvanzarRendicionAction extends RestriccionTransaccionAction {
+	
+	private PagosService pagosService;
+	private RendicionesService rendicionesService;
+	private AprobacionesService aprobacionesService;
+	
+    public AvanzarRendicionAction() {
+    }
+
+    public AvanzarRendicionAction(PagosService pagosService) {
+        this.pagosService = pagosService;
+    }
+    
+    public void setRendicionesService(RendicionesService service) {
+    	this.rendicionesService = service;
+    }
+    
+    public void setAprobacionesService(AprobacionesService service) {
+    	this.aprobacionesService = service;
+    }
 
 	@Override
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
@@ -40,8 +59,8 @@ public class AvanzarRendicionAction extends RestriccionTransaccionAction {
 		String glg = request.getParameter("glg");
 		boolean esAprobacion = request.getParameter("esAprobacion").equals("true");
 
-		RendicionesService rendicionesService = new RendicionesService(samClient);
-		AprobacionesService aprobacionesService = new AprobacionesService(samClient);
+		rendicionesService = this.rendicionesService != null ? this.rendicionesService : new RendicionesService(samClient);
+		aprobacionesService = this.aprobacionesService != null ? this.aprobacionesService : new AprobacionesService(samClient);
 
 		Rendicion rendicion = null;
 		if (esAprobacion)
@@ -80,7 +99,7 @@ public class AvanzarRendicionAction extends RestriccionTransaccionAction {
 	private ActionForward validarRend(HttpServletResponse response, SAMWebClient samClient, String idRendicion) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		 
-		PagosService pagosService = new PagosService(samClient);
+		PagosService pagosService = this.pagosService != null ? this.pagosService : new PagosService(samClient);
 		
 		String validacionExc = pagosService.getValidacionRendicion("0001", "000000000000" + idRendicion, "000000001");
 		//String validacionHardcodeada = "NO OKA";
