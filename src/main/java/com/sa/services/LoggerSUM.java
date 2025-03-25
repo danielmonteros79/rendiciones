@@ -121,15 +121,15 @@ public class LoggerSUM {
 		// e.printStackTrace();
 		// }
 		String out = getFormattedDate() + " <SIA> " + msg;
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(new FileWriter(createPath(file),
-					true));
-			pw.println(out);
-			pw.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		//PrintWriter pw = null;
+		try (
+			    FileOutputStream fos = new FileOutputStream(createPath(EXCEPTIONS_FILE), true);
+			    PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos, "ISO-8859-1")), true)
+			) {
+			    pw.println(out);
+			} catch (Exception ex) {
+			    ex.printStackTrace();
+			}
 	}
 
 	/**
