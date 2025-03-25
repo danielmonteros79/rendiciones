@@ -43,7 +43,7 @@ public class AprobacionesService {
 	
 	public AprobacionesService(SAMWebClient samClient, ManagerTransaction managerTransaction) {
 	    this.client = samClient;
-	    this.managerTransaction = managerTransaction != null ? managerTransaction : new ManagerTransaction(new SU61());
+	    this.managerTransaction = managerTransaction;
 	}
 
 	public List<Rendicion> getAprobacionesPendientes(String id, String usuarioFiltro, String motivo, String estado, String usuario)

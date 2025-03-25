@@ -26,11 +26,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.contains;
 
 class ListadoAprobacionesActionTest {
 	
@@ -171,5 +173,86 @@ class ListadoAprobacionesActionTest {
                 fail("❌ Error inesperado en `executeAction()`: " + e.getMessage());
             }
     }
+    
+    @Test
+    @DisplayName("Debe retornar error si sessionUserWorking es null")
+    void executeAction_SessionUserNull() throws Exception {
+        listadoAprobacionesAction.setSessionUserWorking(null);
+
+        when(httpServletRequest.getParameter("action")).thenReturn(null);
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+
+        PrintWriter writerMock = mock(PrintWriter.class);
+        writerMock.print("{\"error\" = \"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.\", \"status\" = \"error\"}");
+        when(httpServletResponse.getWriter()).thenReturn(writerMock);
+
+        ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse);
+
+        verify(writerMock, times(1)).print(contains("{\"error\" = \"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.\", \"status\" = \"error\"}"));
+    }
+
+
+    
+
+    @Test
+    @DisplayName("Debe manejar correctamente excepciones en executeAction")
+    void executeAction_ExceptionHandling() throws Exception {
+        when(httpServletRequest.getParameter("action")).thenReturn(null);
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+
+        PrintWriter writerMock = mock(PrintWriter.class);
+        writerMock.print("{\"error\" = \"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.\", \"status\" = \"error\"}");
+
+        when(httpServletResponse.getWriter()).thenReturn(writerMock);
+
+        doThrow(new RuntimeException("Simulación de error")).when(aprobacionesService)
+                .getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString());
+
+        ActionForward result = listadoAprobacionesAction.executeAction(
+                actionMapping, actionForm, samWebApplication, samWebClient,
+                httpServletRequest, httpServletResponse
+        );
+
+        verify(writerMock, times(1)).print(contains("{\"error\" = \"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.\", \"status\" = \"error\"}"));
+
+        verify(httpServletResponse, times(1)).setContentType("application/json; charset=UTF-8");
+    }
+
+
+    @Test
+    @DisplayName("Debe retornar error si idRendiciones es null en aprobar")
+    void aprobar_InvalidIdRendiciones() throws Exception {
+        when(httpServletRequest.getParameter("action")).thenReturn("aprobar");
+        when(httpServletRequest.getParameter("idRendiciones")).thenReturn(null);
+
+        ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse);
+
+        assertNull(result);
+    }
+
+    @Test
+    @DisplayName("Debe filtrar correctamente cuando los parámetros son nulos o vacíos")
+    void filtrar_EmptyParams() throws Exception {
+        when(httpServletRequest.getParameter("action")).thenReturn("filtrar");
+        when(httpServletRequest.getParameter("idRendicion")).thenReturn("");
+        when(httpServletRequest.getParameter("usuario")).thenReturn("");
+        when(httpServletRequest.getParameter("motivo")).thenReturn("");
+        when(httpServletRequest.getParameter("glg")).thenReturn("");
+        when(httpServletRequest.getParameter("supervisado")).thenReturn(null);
+        when(httpServletRequest.getParameter("nroAlerta")).thenReturn("");
+
+        List<Rendicion> rendicionesMock = Collections.singletonList(new Rendicion());
+        when(aprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(rendicionesMock);
+        when(aprobacionesService.getCantRendiciones()).thenReturn("0");
+
+        when(actionMapping.findForward("aprobaciones")).thenReturn(new ActionForward("aprobaciones", "/aprobacionesPath", false));
+
+        ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse);
+
+        assertNotNull(result);
+        assertEquals("aprobaciones", result.getName());
+    }
+
 
 }
