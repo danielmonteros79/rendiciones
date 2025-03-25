@@ -33,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -1031,6 +1033,163 @@ class ParametrosServiceTest {
         return Stream.of(
                 Arguments.of(codGasto,idUser)
         );
+    }
+    
+    @Test
+    void getMotivos_Success() throws TransactionException {
+        // Simulación de datos de retorno
+        List<ParametroMotivo> mockMotivos = Arrays.asList(new ParametroMotivo(), new ParametroMotivo());
+
+        // Mock del constructor de ManagerTransaction
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                when(mock.getDataReturnList()).thenReturn(mockMotivos);
+            })) {
+
+            // Llamado al método bajo prueba
+            List<ParametroMotivo> resultado = parametrosService.getMotivos("MOT001", "USER123", "1");
+
+            // Verificaciones
+            assertNotNull(resultado);
+            assertEquals(2, resultado.size());
+        }
+    }
+
+    @Test
+    void getMotivos_TransactionException() throws TransactionException {
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                doThrow(new TransactionException("Error en transacción")).when(mock).executeTrx(any(), any());
+            })) {
+
+            // Verificación de excepción
+            assertThrows(TransactionException.class, () -> parametrosService.getMotivos("MOT001", "USER123", "1"));
+        }
+    }
+    
+    @Test
+    void getGastos_Success() throws TransactionException {
+        List<ParametroGasto> mockGastos = Arrays.asList(new ParametroGasto(), new ParametroGasto());
+
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                when(mock.getDataReturnList()).thenReturn(mockGastos);
+            })) {
+
+            List<ParametroGasto> resultado = parametrosService.getGastos("USER123", "GAST001", "MOT001");
+
+            assertNotNull(resultado);
+            assertEquals(2, resultado.size());
+        }
+    }
+
+    @Test
+    void getGastos_TransactionException() throws TransactionException {
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                doThrow(new TransactionException("Error en transacción")).when(mock).executeTrx(any(), any());
+            })) {
+
+            assertThrows(TransactionException.class, () -> parametrosService.getGastos("USER123", "GAST001", "MOT001"));
+        }
+    }
+    
+    @Test
+    void getDelegaciones_Success() throws TransactionException {
+        List<ParametriaUsuarioDelegado> mockDelegaciones = Arrays.asList(new ParametriaUsuarioDelegado());
+
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                when(mock.getDataReturnList()).thenReturn(mockDelegaciones);
+            })) {
+
+            List<ParametriaUsuarioDelegado> resultado = parametrosService.getDelegaciones("USER123");
+
+            assertNotNull(resultado);
+            assertEquals(1, resultado.size());
+        }
+    }
+
+    @Test
+    void getAlertas_Success() throws TransactionException {
+        List<ParametroAlerta> mockAlertas = Arrays.asList(new ParametroAlerta(), new ParametroAlerta());
+
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                when(mock.getDataReturnList()).thenReturn(mockAlertas);
+            })) {
+
+            List<ParametroAlerta> resultado = parametrosService.getAlertas("LIST", "MOT001", "GAST001", "1");
+
+            assertNotNull(resultado);
+            assertEquals(2, resultado.size());
+        }
+    }
+    
+    @Test
+    void getAlerta_Success() throws TransactionException {
+        ParametroAlerta mockAlerta = new ParametroAlerta();
+
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                when(mock.getDataReturnList()).thenReturn(Arrays.asList(mockAlerta));
+            })) {
+
+            ParametroAlerta resultado = parametrosService.getAlerta("LIST", "MOT001", "GAST001", "20240319", "AL001");
+
+            assertNotNull(resultado);
+        }
+    }
+    
+    @Test
+    void bajaParamAlerta_Success() throws TransactionException {
+        ParametrosAlertasForm formMock = mock(ParametrosAlertasForm.class);
+        when(formMock.getCodAlerta()).thenReturn("AL001");
+        when(formMock.getCodMotivo()).thenReturn("MOT001 - Motivo de prueba");
+        when(formMock.getCodGasto()).thenReturn("GAST001");
+        when(formMock.getMontCant()).thenReturn("M");
+        when(formMock.getImpCant()).thenReturn("1234");
+
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                when(mock.getMensajeAviso()).thenReturn("Operación exitosa");
+            })) {
+
+            String resultado = parametrosService.bajaParamAlerta(formMock);
+
+            assertNotNull(resultado);
+            assertEquals("Operación exitosa", resultado);
+        }
+    }
+    
+    @Test
+    void loadModificacionGastoGaston_Success() throws TransactionException {
+        ParametroGasto mockGasto = new ParametroGasto();
+
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                when(mock.getDataReturnList()).thenReturn(Arrays.asList(mockGasto));
+            })) {
+
+            ParametroGasto resultado = parametrosService.loadModificacionGastoGaston("GAST001", "USER123");
+
+            assertNotNull(resultado);
+        }
+    }
+    
+    @Test
+    void loadBajaGastoGaston_Success() throws TransactionException {
+        ParametroGasto mockGasto = new ParametroGasto();
+
+        try (MockedConstruction<ManagerTransaction> mocked = Mockito.mockConstruction(ManagerTransaction.class,
+            (mock, context) -> {
+                when(mock.getDataReturnList()).thenReturn(Arrays.asList(mockGasto));
+            })) {
+
+            ParametroGasto resultado = parametrosService.loadBajaGastoGaston("GAST001", "USER123");
+
+            assertNotNull(resultado);
+        }
     }
 
 }

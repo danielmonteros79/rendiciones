@@ -53,7 +53,7 @@ table.report th {
 	cursor: hand;
 }
 
-table.report idcol {
+table.report .idcol {
 	background: buttonface;
 }
 

@@ -2,6 +2,8 @@ package com.sa.action.parametros;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import ar.com.itrsa.sam.TransactionException;
+
 import com.sa.entities.Usuario;
 import com.sa.form.parametros.ParametrosAlertasForm;
 import com.sa.services.ParametrosService;
@@ -32,32 +34,26 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.eq;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class ParametrosAlertasSaveActionTest {
 
-  @Mock
-  Usuario usuarioMocked;
-  @Mock
-  ActionMapping actionMappingMocked;
-  @Mock
-  HttpServletResponse httpServletResponseMocked;
-  @Mock
-  HttpServletRequest httpServletRequestMocked;
-  @Mock
-  ParametrosAlertasForm parametrosAlertasFormMocked;
-  @Mock
-  SAMWebClient samWebClientMocked;
-  @Mock
-  SAMWebApplication samWebApplicationMocked;
-  @Mock
-  ActionForward actionForwardMocked;
-  @Mock
-  HttpSession httpSessionMocked;
-  @InjectMocks
-  ParametrosAlertasSaveAction parametrosAlertasSaveAction;
+  @Mock Usuario usuarioMocked;
+  @Mock ActionMapping actionMappingMocked;
+  @Mock HttpServletResponse httpServletResponseMocked;
+  @Mock HttpServletRequest httpServletRequestMocked;
+  @Mock ParametrosAlertasForm parametrosAlertasFormMocked;
+  @Mock SAMWebClient samWebClientMocked;
+  @Mock SAMWebApplication samWebApplicationMocked;
+  @Mock ActionForward actionForwardMocked;
+  @Mock HttpSession httpSessionMocked;
+  @InjectMocks ParametrosAlertasSaveAction parametrosAlertasSaveAction;
+  @Mock private ParametrosService parametrosService;
 
   public static Stream<Arguments> executeActionSource() {
     //given
@@ -136,18 +132,26 @@ class ParametrosAlertasSaveActionTest {
     }
   }
 
-  /*@Test
-  @DisplayName("Should catch an exception")
-  void shouldCatchAnException() throws Exception {
-    //when
-    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
-    when(httpSessionMocked.getAttribute(anyString())).thenReturn(usuarioMocked);
-    when(usuarioMocked.getIdUser()).thenReturn("0");
-    when(parametrosAlertasFormMocked.getAccion()).thenReturn("baja");
+  @Test
+  void executeAction_ShouldHandleTransactionException() throws Exception {
+      Usuario usuarioMock = new Usuario(null, "SS", null, 0, null, null);
+      usuarioMock.setIdUser("123");
+      when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+      when(httpSessionMocked.getAttribute("usuario")).thenReturn(usuarioMock);
 
-    when(actionMappingMocked.findForward(anyString())).thenReturn(actionForwardMocked);
-    //then
-    ActionForward actionForwardToAssert = parametrosAlertasSaveAction.executeAction(actionMappingMocked, parametrosAlertasFormMocked, samWebApplicationMocked,samWebClientMocked,httpServletRequestMocked, httpServletResponseMocked);
-    assertNotNull(actionForwardToAssert);
-  }*/
+      ParametrosAlertasForm formMock = mock(ParametrosAlertasForm.class);
+      when(formMock.getAccion()).thenReturn("alta");
+
+      when(parametrosService.altaParamAlerta(formMock))
+              .thenThrow(new TransactionException(new Exception("Error de transacción")));
+
+      ActionForward failForward = new ActionForward("fail");
+      when(actionMappingMocked.findForward("fail")).thenReturn(failForward);
+
+      ActionForward result = parametrosAlertasSaveAction.executeAction(
+    		  actionMappingMocked, formMock, samWebApplicationMocked, samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+
+      assertNotNull(result);
+      verify(httpServletRequestMocked).setAttribute(eq("message"), anyString());
+  }
 }

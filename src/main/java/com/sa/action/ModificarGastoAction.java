@@ -24,6 +24,16 @@ import com.sa.util.ParamsConstants;
 
 public class ModificarGastoAction extends RestriccionTransaccionAction {
 	
+	private RendicionesService rendicionesService;
+	private PagosService pagosService;
+
+    public ModificarGastoAction() {}
+
+    public ModificarGastoAction(RendicionesService rendicionesService, PagosService pagosService) {
+        this.rendicionesService = rendicionesService;
+        this.pagosService = pagosService;
+    }
+	
 	private static final String COD_MOTIVO = "codMotivo";
 	private static final String CODIGO = "codigo";
 	private static final String LISTADO_APRO = "listadoAprob";
@@ -73,7 +83,7 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 
 		private void cargarCombos(HttpServletRequest request, SAMWebClient samClient,
 		        String userId) throws TransactionException {
-		    RendicionesService serviceCombos = new RendicionesService(samClient);
+			RendicionesService serviceCombos = this.rendicionesService != null ? this.rendicionesService : new RendicionesService(samClient);
 
 		    List<ComboOpcion2> moneda = serviceCombos.getComboOpcion2(ParamsConstants.MONEDA_OPCION,
 		            ParamsConstants.MONEDA_TABLA + ParamsConstants.MONEDA_SUBTABLA + ParamsConstants.MONEDA_CODIGO,
@@ -86,7 +96,7 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 		            ParamsConstants.COMPROBANTE_CANTIDAD, userId);
 		    request.setAttribute("ComboComprobante", comprobante);
 
-		    PagosService service = new PagosService(samClient);
+		    PagosService service = this.pagosService != null ? this.pagosService : new PagosService(samClient);
 		    List<ComboGasto> tipoGastos = service.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION, userId,
 		            request.getParameter(COD_MOTIVO));
 		    if (tipoGastos != null) {
@@ -96,7 +106,7 @@ public class ModificarGastoAction extends RestriccionTransaccionAction {
 
 		private void obtenerDatosGasto(HttpServletRequest request, SAMWebClient samClient, RendicionDetalleForm renForm,
 		        String userId) throws TransactionException {
-		    RendicionesService serviceCombos = new RendicionesService(samClient);
+		    RendicionesService serviceCombos = this.rendicionesService != null ? this.rendicionesService : new RendicionesService(samClient);
 		    Integer idRendicion = Integer.parseInt(request.getParameter(CODIGO));
 		    String idGasto = request.getParameter("idGasto");
 

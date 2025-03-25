@@ -30,7 +30,7 @@ public class LoggerSUM {
 	private static final String LOG_DATE_FORMAT = "yyyyMMdd";
 	private static final String LOG_FILE_EXTENSION = ".txt";
 
-	private XMLConfigReader xml;
+	protected XMLConfigReader xml;
 
 	public LoggerSUM(XMLConfigReader xml) {
 		this.xml = xml;
@@ -46,7 +46,7 @@ public class LoggerSUM {
 	 *         sistema.
 	 * @throws Exception
 	 */
-	private String createFileName(String fileName) throws Exception {
+	protected String createFileName(String fileName) throws Exception {
 		String path = "";
 		if (this.xml != null) {
 			path = xml.getLogsPath()
@@ -69,7 +69,7 @@ public class LoggerSUM {
 	 * @return el path al archivo como va a ser usado por los metodos de log().
 	 * @throws Exception
 	 */
-	private String createPath(int key) throws Exception {
+	protected String createPath(int key) throws Exception {
 		String fileName = null;
 		switch (key) {
 		case APPLICATION_FILE:
@@ -92,7 +92,7 @@ public class LoggerSUM {
 		return fileName;
 	}
 
-	private String getFormattedDate() {
+	protected String getFormattedDate() {
 		SimpleDateFormat df = new SimpleDateFormat();
 		String formattedDate = df.format(Calendar.getInstance().getTime());
 		return formattedDate;
@@ -121,15 +121,15 @@ public class LoggerSUM {
 		// e.printStackTrace();
 		// }
 		String out = getFormattedDate() + " <SIA> " + msg;
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(new FileWriter(createPath(file),
-					true));
-			pw.println(out);
-			pw.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		//PrintWriter pw = null;
+		try (
+			    FileOutputStream fos = new FileOutputStream(createPath(EXCEPTIONS_FILE), true);
+			    PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos, "ISO-8859-1")), true)
+			) {
+			    pw.println(out);
+			} catch (Exception ex) {
+			    ex.printStackTrace();
+			}
 	}
 
 	/**

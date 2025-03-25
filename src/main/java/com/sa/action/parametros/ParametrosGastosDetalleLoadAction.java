@@ -23,10 +23,22 @@ import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametroGasto;
 import com.sa.form.parametros.ParametrosGastosForm;
 import com.sa.manager.ManagerTransaction;
+import com.sa.services.AprobacionesService;
 import com.sa.services.ParametrosService;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAction {
+	
+	private ParametrosService parametrosService;
+	
+	public ParametrosGastosDetalleLoadAction() {
+		
+	}
+	
+	public ParametrosGastosDetalleLoadAction(ParametrosService parametrosService) {
+		this.parametrosService = parametrosService;
+	}
+	
 	private static final Log log = LogFactory.getLog(ParametrosGastosDetalleLoadAction.class);
 	List<ComboOpcion> cmbObservacion = new ArrayList<ComboOpcion>();
 	List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
@@ -35,7 +47,7 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ParametrosGastosForm frm = (ParametrosGastosForm) form;
-		ParametrosService service = new ParametrosService(samClient);
+		ParametrosService service =  this.parametrosService != null ? this.parametrosService : new ParametrosService(samClient);
 		String descripcionMotivo = frm.getDescripcionMotivo();
 		String sanitizedDescripcionMotivo = (descripcionMotivo != null) ? StringEscapeUtils.escapeHtml4(descripcionMotivo) : "";
 		request.getSession().setAttribute("desc_motivo", sanitizedDescripcionMotivo);
@@ -58,18 +70,15 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 				if (frm.getAccion().equals("alta")) {
 					frm.clear();
 					frm.setEstado("A");
-					//this.cargarCombos(request, service.getGastosCombos()); ya no es necesario que cargue los gastos del motivo
 				} else if (frm.getAccion().equals("modificacion"))
-					//this.gastoToForm(frm, request, service.loadModificacionGasto(frm.getCodigo(), user.getIdUser()));
 					this.gastoToFormGaston(frm, request, service.loadModificacionGastoGaston(frm.getCodigo(), user.getIdUser()));
 				else if (frm.getAccion().equals("baja")) {
-					//this.cargarCombos(request, service.getGastosCombos()); //Gracias Amadi
-					//this.gastoToForm(frm, request, service.loadBajaGasto(frm.getCodigo(), user.getIdUser()));
 					this.gastoToFormGaston(frm, request, service.loadBajaGastoGaston(frm.getCodigo(), user.getIdUser()));
 				}
 				request.setAttribute("message", service.getMsgAviso());
 			} catch (Exception e) {
-				request.setAttribute("message", "ERROR: " + e.getCause().getMessage());
+				String errorMessage = (e.getCause() != null) ? e.getCause().getMessage() : e.getMessage();
+			    request.setAttribute("message", "ERROR: " + errorMessage);
 			}
 		}
 		
@@ -101,7 +110,7 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 		//this.cargarCombos(request, (List<String>) manager.getDataReturnList());
 	}
 	
-	private void gastoToFormGaston(ParametrosGastosForm frm, HttpServletRequest request, ParametroGasto gasto) {
+	protected void gastoToFormGaston(ParametrosGastosForm frm, HttpServletRequest request, ParametroGasto gasto) {
 		
 		frm.setEstado(gasto.getEstado());
 		//frm.setIdCentroCostos(gasto.getCcostos());
