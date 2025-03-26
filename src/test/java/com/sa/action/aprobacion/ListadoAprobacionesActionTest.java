@@ -344,5 +344,10 @@ class ListadoAprobacionesActionTest {
         verify(httpServletResponse, times(1)).setContentType("application/json; charset=UTF-8");
     }
 
+    @Test
+    public void testConstructorVacio() {
+        ListadoAprobacionesAction action = new ListadoAprobacionesAction();
+        assertNotNull(action, "El constructor debería crear una instancia no nula");
+    }
 
 }
