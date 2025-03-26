@@ -13,6 +13,8 @@ import org.mockito.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -172,20 +174,76 @@ class AprobacionesServiceTest {
         String result = aprobacionesService.obtenerIDU(rendicionMock, "user1", "ADEA");
         assertNull(result, "Si ocurre un error, debe retornar null");
     }
+    
+    @Test
+    public void testConstructorVacio() {
+        AprobacionesService service = new AprobacionesService();
+        assertNotNull(service, "El constructor debería crear una instancia no nula");
+    }
+    
+    @Test
+    public void testConstructor() {
+        AprobacionesService service = new AprobacionesService(samWebClient);
+        assertNotNull(service, "El constructor debería crear una instancia no nula");
+    }
+    
+    @Test
+    @DisplayName("Debe ejecutar scanRendicion sin errores")
+    void scanRendicion_Success() throws Exception {
+        String idRendicion = "12345";
+        String user = "testUser";
 
-//    @Test
-//    @DisplayName("Debe retornar cantidad de rendiciones")
-//    void getCantRendiciones() {
-//    	
-//        AprobacionesService service = aprobacionesService;
-//        try {
-//			service.cambiarEstadoRendiciones("user1", Arrays.asList(123), "APROB", null, "glg123");
-//		} catch (TransactionException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//        
-//        assertNotNull(service.getCantRendiciones());
-//    }
+        doNothing().when(managerTransaction).executeTrx(any(), any());
+
+        assertDoesNotThrow(() -> aprobacionesService.scanRendicion(idRendicion, user));
+
+        verify(managerTransaction, times(1)).executeTrx(eq(samWebClient), (Map<String, Object>) any(Map.class));
+    }
+    
+    @Test
+    @DisplayName("Debe manejar error en scanRendicion")
+    void scanRendicion_Exception() throws Exception {
+        String idRendicion = "12345";
+        String user = "testUser";
+
+        doThrow(new TransactionException("Error en scanRendicion")).when(managerTransaction).executeTrx(any(), any());
+
+        TransactionException exception = assertThrows(TransactionException.class, () -> {
+            aprobacionesService.scanRendicion(idRendicion, user);
+        });
+
+        assertEquals("Error en scanRendicion", exception.getMessage());
+    }
+    
+    @Test
+    @DisplayName("Debe ejecutar cambiarEscanRendicion sin errores")
+    void cambiarEscanRendicion_Success() throws Exception {
+        String idRendicion = "12345";
+        String user = "testUser";
+        String idu = "IDU123";
+
+        doNothing().when(managerTransaction).executeTrx(any(), any());
+        when(managerTransaction.getMensajeAviso()).thenReturn("Mensaje de éxito");
+
+        assertDoesNotThrow(() -> aprobacionesService.cambiarEscanRendicion(idRendicion, user, idu));
+
+        verify(managerTransaction, times(1)).executeTrx(eq(samWebClient), any(Map.class));
+        assertEquals("Mensaje de éxito", aprobacionesService.getMsg());
+    }
+    
+    @Test
+    @DisplayName("Debe manejar error en cambiarEscanRendicion")
+    void cambiarEscanRendicion_Exception() throws Exception {
+        String idRendicion = "12345";
+        String user = "testUser";
+        String idu = "IDU123";
+
+        doThrow(new TransactionException("Error en cambiarEscanRendicion")).when(managerTransaction).executeTrx(any(), any());
+
+        TransactionException exception = assertThrows(TransactionException.class, () -> {
+            aprobacionesService.cambiarEscanRendicion(idRendicion, user, idu);
+        });
+
+        assertEquals("Error en cambiarEscanRendicion", exception.getMessage());
+    }
 }

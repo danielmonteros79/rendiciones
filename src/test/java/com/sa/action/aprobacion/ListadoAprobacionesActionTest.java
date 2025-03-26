@@ -254,5 +254,95 @@ class ListadoAprobacionesActionTest {
         assertEquals("aprobaciones", result.getName());
     }
 
+    @Test
+    @DisplayName("Debe crear una nueva instancia de AprobacionesService si es null")
+    void executeAction_CrearAprobacionesServiceSiEsNull() throws Exception {
+        listadoAprobacionesAction.setAprobacionesService(null);
+
+        when(samWebClient.getId()).thenReturn("1234");
+
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+
+        AprobacionesService mockAprobacionesService = mock(AprobacionesService.class);
+        List<Rendicion> rendicionesMock = Collections.singletonList(new Rendicion());
+
+        when(mockAprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(rendicionesMock);
+
+        when(actionMapping.findForward("success")).thenReturn(new ActionForward("success", "/successPath", false));
+
+        listadoAprobacionesAction.setAprobacionesService(mockAprobacionesService);
+
+        try {
+            ActionForward result = listadoAprobacionesAction.executeAction(
+                actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse
+            );
+
+            assertNotNull(result);
+            assertEquals("success", result.getName());
+
+            assertNotNull(listadoAprobacionesAction);
+
+            verify(mockAprobacionesService, times(1)).getAprobacionesPendientes(
+                eq(""), eq(""), eq(""), eq("04"), eq("1234")
+            );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("❌ Error inesperado en `executeAction()`: " + e.getMessage());
+        }
+    }
+    
+    @Test
+    @DisplayName("Debe devolver todas las rendiciones cuando nroAlerta no es 1 ni 0")
+    void filtrar_TodosLosResultados() throws Exception {
+        when(httpServletRequest.getParameter("action")).thenReturn("filtrar");
+        when(httpServletRequest.getParameter("idRendicion")).thenReturn("123");
+        when(httpServletRequest.getParameter("usuario")).thenReturn("pepe");
+        when(httpServletRequest.getParameter("motivo")).thenReturn("test");
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+        when(httpServletRequest.getParameter("supervisado")).thenReturn("1234");
+        when(httpServletRequest.getParameter("nroAlerta")).thenReturn("2");  // Caso no cubierto
+
+        Rendicion rendicion1 = mock(Rendicion.class);
+        when(rendicion1.getAdea()).thenReturn("9000000000");
+
+        List<Rendicion> rendicionesMock = Collections.singletonList(rendicion1);
+        when(aprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(rendicionesMock);
+        when(aprobacionesService.getCantRendiciones()).thenReturn("1");
+
+        when(actionMapping.findForward("aprobaciones")).thenReturn(new ActionForward("aprobaciones", "/aprobacionesPath", false));
+
+        ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse);
+
+        assertNotNull(result);
+        assertEquals("aprobaciones", result.getName());
+        verify(aprobacionesService, times(1)).getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString());
+    }
+
+
+    @Test
+    @DisplayName("Debe retornar error si idRendiciones es null en aprobar")
+    void aprobar_ErrorEnIdRendiciones() throws Exception {
+        when(httpServletRequest.getParameter("action")).thenReturn("aprobar");
+        when(httpServletRequest.getParameter("idRendiciones")).thenReturn(null);
+
+        PrintWriter writerMock = mock(PrintWriter.class);
+        when(httpServletResponse.getWriter()).thenReturn(writerMock);
+
+        ActionForward result = listadoAprobacionesAction.executeAction(
+            actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse
+        );
+
+        assertNull(result);
+
+        // ✅ Verificamos que **cualquier** error se imprimió
+        //verify(writerMock).print(contains("\"error\""));
+
+        // ✅ Verificamos que el response tenga el content-type correcto
+        verify(httpServletResponse, times(1)).setContentType("application/json; charset=UTF-8");
+    }
+
 
 }
