@@ -255,43 +255,34 @@ class ListadoAprobacionesActionTest {
     }
 
     @Test
-    @DisplayName("Debe crear una nueva instancia de AprobacionesService si es null")
+    @DisplayName("Debe crear AprobacionesService si es null y ejecutar correctamente")
     void executeAction_CrearAprobacionesServiceSiEsNull() throws Exception {
         listadoAprobacionesAction.setAprobacionesService(null);
 
-        when(samWebClient.getId()).thenReturn("1234");
-
+        when(httpServletRequest.getParameter("action")).thenReturn(null);
         when(httpServletRequest.getParameter("glg")).thenReturn("04");
 
-        AprobacionesService mockAprobacionesService = mock(AprobacionesService.class);
         List<Rendicion> rendicionesMock = Collections.singletonList(new Rendicion());
 
-        when(mockAprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
-            .thenReturn(rendicionesMock);
+        try (MockedConstruction<AprobacionesService> mockedService = Mockito.mockConstruction(
+                AprobacionesService.class,
+                (mock, context) -> when(mock.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+                        .thenReturn(rendicionesMock))) {
 
-        when(actionMapping.findForward("success")).thenReturn(new ActionForward("success", "/successPath", false));
+            when(actionMapping.findForward("success")).thenReturn(new ActionForward("success", "/successPath", false));
 
-        listadoAprobacionesAction.setAprobacionesService(mockAprobacionesService);
-
-        try {
             ActionForward result = listadoAprobacionesAction.executeAction(
-                actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse
+                    actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse
             );
 
             assertNotNull(result);
             assertEquals("success", result.getName());
 
-            assertNotNull(listadoAprobacionesAction);
-
-            verify(mockAprobacionesService, times(1)).getAprobacionesPendientes(
-                eq(""), eq(""), eq(""), eq("04"), eq("1234")
-            );
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("❌ Error inesperado en `executeAction()`: " + e.getMessage());
+            assertEquals(1, mockedService.constructed().size());
         }
     }
+
+
     
     @Test
     @DisplayName("Debe devolver todas las rendiciones cuando nroAlerta no es 1 ni 0")
