@@ -6,6 +6,7 @@ import ar.com.itrsa.sam.TransactionException;
 
 import com.sa.entities.Usuario;
 import com.sa.form.parametros.ParametrosAlertasForm;
+import com.sa.services.AprobacionesService;
 import com.sa.services.ParametrosService;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -153,5 +154,11 @@ class ParametrosAlertasSaveActionTest {
 
       assertNotNull(result);
       verify(httpServletRequestMocked).setAttribute(eq("message"), anyString());
+  }
+  
+  @Test
+  public void testConstructorVacio() {
+      ParametrosAlertasSaveAction action = new ParametrosAlertasSaveAction();
+      assertNotNull(action, "El constructor debería crear una instancia no nula");
   }
 }

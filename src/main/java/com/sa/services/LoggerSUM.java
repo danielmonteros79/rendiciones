@@ -139,18 +139,17 @@ public class LoggerSUM {
 	 * @param e
 	 */
 	public void logException(Exception e) {
-		String out = getFormattedDate() + " <SIA> Excepcion: " + e.getClass()
-				+ " - Causa: " + e.getCause() + " - Mensaje: " + e.getMessage();
-		PrintWriter pw = null;
-		try {
-			FileOutputStream fos = new FileOutputStream(
-					createPath(EXCEPTIONS_FILE), true);
-			pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos,
-					"ISO-8859-1")), true);
-			pw.println(out);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+	    String out = getFormattedDate() + " <SIA> Excepcion: " + e.getClass()
+	            + " - Causa: " + e.getCause() + " - Mensaje: " + e.getMessage();
+	    
+	    try (
+	        FileOutputStream fos = new FileOutputStream(createPath(EXCEPTIONS_FILE), true);
+	        PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos, "ISO-8859-1")), true)
+	    ) {
+	        pw.println(out);
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
 	}
 
 	/**
@@ -159,16 +158,15 @@ public class LoggerSUM {
 	 * @param e
 	 */
 	public void logExceptionStackTrace(Exception e) {
-		PrintWriter pw = null;
-		try {
-			FileOutputStream fos = new FileOutputStream(
-					createPath(EXCEPTIONS_FILE), true);
-			pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos,
-					"ISO-8859-1")), true);
+		try (
+			FileOutputStream fos = new FileOutputStream(createPath(EXCEPTIONS_FILE), true);
+			PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos, "ISO-8859-1")), true)
+		) {
 			e.printStackTrace(pw);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
+	
 
 }

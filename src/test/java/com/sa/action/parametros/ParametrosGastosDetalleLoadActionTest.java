@@ -543,4 +543,10 @@ class ParametrosGastosDetalleLoadActionTest {
     ActionForward actionForwardToAssert = (ActionForward) agregarCentroCostoMocked.invoke(parametrosGastosDetalleLoadAction, parametrosGastosForm, httpServletResponse);
     assertNull(actionForwardToAssert);
   }
+  
+  @Test
+  public void testConstructorVacio() {
+      ParametrosGastosDetalleLoadAction action = new ParametrosGastosDetalleLoadAction();
+      assertNotNull(action, "El constructor debería crear una instancia no nula");
+  }
 }
