@@ -357,17 +357,34 @@ function callAjax(url, params, successCallBack, errorCallBack, async, showLoadin
 	});
 }
 
-
 function transformResponse(res) {
+    console.log("MAIN TRANSFORM RESPONSE:");
+    console.log(res);
+	console.log(JSON.stringify(res));
+    
     if (typeof res === "string") {
-        let startIndex = res.indexOf('{');
-        let endIndex = res.lastIndexOf('}');
-        let jsonString = res.substring(startIndex, endIndex + 1);
-        return JSON.parse(jsonString);
+        try {
+            return JSON.parse(res);
+        } catch (error) {
+            console.warn("Error al parsear JSON:", error);
+            
+            let startIndex = res.indexOf('{');
+            let endIndex = res.lastIndexOf('}');
+            
+            if (startIndex !== -1 && endIndex !== -1) {
+                let jsonString = res.substring(startIndex, endIndex + 1);
+                try {
+                    return JSON.parse(jsonString);
+                } catch (nestedError) {
+                    console.warn("Error al parsear JSON extraído:", nestedError);
+                    return res;
+                }
+            }
+        }
     }
+    
     return res;
 }
-
 
 
 function loadTable(containerSelector, link, params, firstLoad = true) {
