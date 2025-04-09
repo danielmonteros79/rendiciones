@@ -151,7 +151,7 @@ function modalGastoSetValues(data) {
 		$('#modalGastoTipoFactura').val('A');
 		//$('[id^=modalGasto]').attr('disabled', false);
 		$('#modalGastoTipoGasto').attr('disabled', !esEditable);
-		//$('#modalGastoMoneda').attr('disabled', !esEditable);
+		$('#modalGastoMoneda').attr('disabled', !esEditable);
 		$('#modalGastoTipoComprobante').attr('disabled', !esEditable);
 		$('#modalGastoObservaciones').attr('disabled', !esEditable);
 		$($('#modalGastoFechaGasto').parent().find('button')[0]).attr('disabled', !esEditable);

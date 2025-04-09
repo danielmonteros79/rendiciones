@@ -18,11 +18,11 @@ public class Usuario {
 	private Set<Integer> glgAprobacion;
 
 	public Usuario(String idUser, String perfil, String nombre, int ccostos, String sector, List<Usuario> delegados) {
-	    this.idUser = StringEscapeUtils.escapeHtml4(idUser);
-	    this.setTipoPerfil(StringEscapeUtils.escapeHtml4(perfil));
-	    this.nombre = StringEscapeUtils.escapeHtml4(nombre);
+	    this.idUser = idUser;
+	    this.setTipoPerfil(perfil);
+	    this.nombre = nombre;
 	    this.ccostos = ccostos;
-	    this.sector = StringEscapeUtils.escapeHtml4(sector);
+	    this.sector = sector;
 	    this.delegadosAsignados = delegados;
 	    this.facultades = perfil.length() > 0 && perfil.substring(0, 1).equals("S") ? "S" : "N";
 	    this.glgAprobacion = new HashSet<>();
@@ -53,7 +53,10 @@ public class Usuario {
 	}
 
 	public String getNombre() {
-		return this.nombre != null ? this.nombre.replaceAll("[^a-zA-Z0-9 áéíóúÁÉÍÓÚ]", "") : null;
+		if (this.nombre == null) return null;
+
+		String decoded = StringEscapeUtils.unescapeHtml4(this.nombre);
+		return decoded.replaceAll("[^a-zA-Z0-9 áéíóúÁÉÍÓÚñÑüÜ]", "");
 	}
 
 	public void setNombre(String nombre) {
