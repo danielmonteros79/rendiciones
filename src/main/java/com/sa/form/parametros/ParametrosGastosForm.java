@@ -244,5 +244,17 @@ public class ParametrosGastosForm extends ActionForm {
 	public void setDetalleRistra(String detalleRistra) {
 		this.detalleRistra = detalleRistra;
 	}
+
+	@Override
+	public String toString() {
+		return "ParametrosGastosForm [codigo=" + codigo + ", descripcionGasto=" + descripcionGasto + ", motivo="
+				+ motivo + ", ristra=" + ristra + ", bimon=" + bimon + ", comprob=" + comprob + ", autoriz=" + autoriz
+				+ ", oscar=" + oscar + ", observ=" + observ + ", maInclExcl=" + maInclExcl + ", antiguedad="
+				+ antiguedad + ", estado=" + estado + ", accion=" + accion + ", avisoMonto=" + avisoMonto
+				+ ", idCentroCostos=" + idCentroCostos + ", idNivAutoriz=" + idNivAutoriz + ", plazoAprob=" + plazoAprob
+				+ ", readonly=" + readonly + ", back=" + back + ", centrosCosto=" + centrosCosto
+				+ ", descripcionMotivo=" + descripcionMotivo + ", detalleRistra=" + detalleRistra + "]";
+	}
+	
 	
 }

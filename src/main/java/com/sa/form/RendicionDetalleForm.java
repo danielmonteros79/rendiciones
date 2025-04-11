@@ -327,4 +327,21 @@ public class RendicionDetalleForm extends ActionForm {
 	public void setEsAdelanto(String esAdelanto) {
 		this.esAdelanto = esAdelanto;
 	}
+
+	@Override
+	public String toString() {
+		return "RendicionDetalleForm [idRendicion=" + idRendicion + ", fechaD=" + fechaD + ", fechaH=" + fechaH
+				+ ", gasto=" + gasto + ", monto=" + monto + ", accion=" + accion + ", moneda=" + moneda
+				+ ", fechaGasto=" + fechaGasto + ", tipoComprobante=" + tipoComprobante + ", tipoFactura=" + tipoFactura
+				+ ", factura=" + factura + ", codMotivo=" + codMotivo + ", centroCostos=" + centroCostos + ", opcion="
+				+ opcion + ", idGasto=" + idGasto + ", cuponesCheck=" + cuponesCheck + ", cupCred=" + cupCred
+				+ ", cupDeb=" + cupDeb + ", cupon=" + cupon + ", descCupon=" + descCupon + ", importeCupon="
+				+ importeCupon + ", nroTarjeta=" + nroTarjeta + ", estadoRendicion=" + estadoRendicion
+				+ ", observacionGasto=" + observacionGasto + ", usuarioRend=" + usuarioRend + ", glg=" + glg
+				+ ", montoMaximo=" + montoMaximo + ", cuit=" + cuit + ", aviso=" + aviso + ", thubanLink=" + thubanLink
+				+ ", user=" + user + ", nombreUsuario=" + nombreUsuario + ", costos=" + costos + ", costosDestino="
+				+ costosDestino + ", esAdelanto=" + esAdelanto + "]";
+	}
+	
+	
 }

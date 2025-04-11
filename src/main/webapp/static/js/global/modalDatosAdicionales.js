@@ -282,13 +282,57 @@ function obtenerDatosInvitados(){
 	}
 }
 
-//$("#modalDatosAdicionalesBtnSalir").click(function() {
-//	if (modalDatosAdicionalesLoadParams.codObserv == "00210" || modalDatosAdicionalesLoadParams.codObserv == "0210"  ) { 
-//		obtenerDatosCumbustible();}else{
-//			console.log('entra')
-//			console.log(modalDatosAdicionalesLoadParams)
-//		}
-//})
+$("#modalDatosAdicionalesBtnSalir").click(function() {
+	if (modalDatosAdicionalesLoadParams.codObserv == "00210" || modalDatosAdicionalesLoadParams.codObserv == "0210"  ) { 
+			calcularCombustible();
+		}else{
+			console.log('entra')
+			console.log(modalDatosAdicionalesLoadParams)
+		}
+})
+
+function calcularCombustible(){
+	console.log("INTENTO OBTENER DATOS COMBUSTIBLES.")
+	console.log(modalDatosAdicionalesCampos)
+	let datosAdicionesCombustible = "";
+	
+	var monedaGuardada = sessionStorage.getItem('moneda');
+	var tipoComprobanteGuardado = sessionStorage.getItem('tipoComprobante');
+
+	
+	modalDatosAdicionalesCampos.filas.forEach(function (item, index) {
+	  console.log(item, index);
+	  datosAdicionesCombustible += item.toString().trim() + " _ " 
+	  item.forEach(function (item, index) {
+		  console.log(item, index);
+		  miString = item[index]
+	  });	  
+	});
+	console.log(datosAdicionesCombustible);
+	
+	
+	let params = {
+			action: 'calcularCombustible',
+			idRendicion: modalDatosAdicionalesLoadParams.idRendicion,
+			codMotivo: modalDatosAdicionalesLoadParams.codMotivo,
+			idGasto: modalDatosAdicionalesLoadParams.idGasto,
+			codGasto: modalDatosAdicionalesLoadParams.codGasto,
+			serv: modalDatosAdicionalesLoadParams.codObserv,
+			gastoMonto: modalDatosAdicionalesLoadParams.gastoMonto,
+			readOnly: modalDatosAdicionalesLoadParams.readOnly,
+			message: modalDatosAdicionalesLoadParams.message,
+			nombreUsuarioRend: nombreUsuarioRend,
+			moneda: monedaGuardada,
+			tipoComprobante: tipoComprobanteGuardado,
+			datosAdicionesCombustible: datosAdicionesCombustible			
+	};
+	
+	sessionStorage.removeItem('moneda');
+	sessionStorage.removeItem('tipoComprobante');
+	
+	callAjax('datosAdicionales.do', params, 'respuestaCalcularCoeficiente');
+	location.reload();	
+}
 
 //function obtenerDatosCumbustible(){
 	//console.log("obtenerDatosCombustible");
@@ -324,13 +368,14 @@ function obtenerDatosInvitados(){
 	
 //}
 
-//function respuestaCalcularCoeficiente(data){
+function respuestaCalcularCoeficiente(data){
 	//if(data.massage == 'igual'){
 		//$('#modalDatosAdicionales').modal('hide');
 	//}else{		
 		//showAcept(close, data.message) 
 	//}
-	//}
+	console.log("RESPUESTA CALCULAR COMBUSTIBLE");
+}
 
 //function close (){
 	 	
