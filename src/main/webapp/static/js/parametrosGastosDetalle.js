@@ -183,7 +183,7 @@ function setFormValidate() {
 }
 
 function normalizeText(text) {
-    	return text.replace(/[^a-zA-ZáéíóúÁÉÍÓÚ0-9\s\/$%*#-]/g, "");
+    	return text.replace(/[^a-zA-Z0-9\s\/$%*#-]/g, "");
 }
 
 function encodeHTML(str) {
