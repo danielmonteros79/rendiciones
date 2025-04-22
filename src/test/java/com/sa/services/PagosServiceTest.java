@@ -425,6 +425,31 @@ class PagosServiceTest {
     }
     
     @Test
+    void testResolveManagerTransaction_retornaMockSiEstaSeteado() {
+        PagosService service = new PagosService(samWebClient);
+        ManagerTransaction mockTx = mock(ManagerTransaction.class);
+        service.setManagerTransaction(mockTx);
+
+        Transaction dummyHandler = mock(Transaction.class);
+        ManagerTransaction result = service.resolveManagerTransaction(dummyHandler);
+
+        assertSame(mockTx, result);
+    }
+    
+    @Test
+    void testResolveManagerTransaction_retornaInstanciaNuevaSiNoHayMock() {
+        PagosService service = new PagosService();
+
+        Transaction handler = mock(Transaction.class);
+        ManagerTransaction result = service.resolveManagerTransaction(handler);
+
+        assertNotNull(result);
+        assertTrue(result instanceof ManagerTransaction);
+    }
+
+
+    
+    @Test
     void testAltaConCupon() throws Exception {
     	
     	PrintWriter printWriter = new PrintWriter(new StringWriter());
