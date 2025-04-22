@@ -1,6 +1,5 @@
 package com.sa.action;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +50,7 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		}
 	}
 	
-	private ActionForward calcularCombustible(SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	protected ActionForward calcularCombustible(SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		PagosService service = new PagosService(samClient);
 		
@@ -59,6 +58,8 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		String idRendicion = request.getParameter("idRendicion");
 		String gastoMonto = request.getParameter("gastoMonto");
 		String codMotivo = request.getParameter("codMotivo");
+		String codGasto = request.getParameter("codGasto");
+		System.out.println("CODGASTO: " + codGasto);
 		String moneda = request.getParameter("moneda");
 		String tipoComprobante = request.getParameter("tipoComprobante");
 		
@@ -120,7 +121,7 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 	    System.out.println("Gasto calculado final = " + gastoMonto);
 	    
 		service.altaModifGasto("MODI", idGasto, idRendicion, moneda, tipoComprobante, null,
-				null, null, null, gastoMonto, null, codMotivo, null,
+				null, null, codGasto, gastoMonto, null, codMotivo, null,
 				null, null, null, null, null, null, null  );
 		return writeJson(response, resp);
 	}

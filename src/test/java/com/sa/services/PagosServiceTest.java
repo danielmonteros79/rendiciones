@@ -4,6 +4,8 @@ import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
 import com.sa.entities.*;
 import com.sa.manager.ManagerTransaction;
+import com.sa.services.trxs.SU56;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -13,9 +15,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
+
+import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,11 +36,26 @@ class PagosServiceTest {
 
     @Spy
     SAMWebClient samWebClient;
+    
+    @Mock
+    private ManagerTransaction mockManager;
+    
+    @Mock
+    HttpServletResponse httpServletResponseMocked;
+
+    @Mock
+    private SU56 mockSU56;
 
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        MockitoAnnotations.openMocks(this);        
+
+        mockManager = mock(ManagerTransaction.class);
+
+        // Simular valores por defecto
+        when(mockManager.getMensajeAviso()).thenReturn("OK");
+        when(mockManager.getDataReturn()).thenReturn(123);
     }
 
     @ParameterizedTest
@@ -372,5 +394,54 @@ class PagosServiceTest {
         return Stream.of(
                 Arguments.of(accion, idRendicion, gastoOriginal, montoItems, ccostoItems, gastoItems, user, msg)
         );
+    }
+    
+    @Test
+    void testParametrosNulosLanzaExcepcion() {
+        assertThrows(IllegalArgumentException.class, () -> {
+        	pagosService.altaModifGasto(null, null, null, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+        });
+    }
+    
+    @Test
+    void testAltaSinCupon() throws Exception {
+    	
+    	PrintWriter printWriter = new PrintWriter(new StringWriter());
+  	  	when(httpServletResponseMocked.getWriter()).thenReturn(printWriter);
+  	  	
+  	  	pagosService.setManagerTransaction(mockManager);
+
+        when(mockManager.getDataReturnList()).thenReturn(Collections.emptyList());
+        when(mockManager.getDataReturn()).thenReturn(123);
+        when(mockManager.getMensajeAviso()).thenReturn("OK");
+  	  	
+        Integer result = pagosService.altaModifGasto(
+            "A", "123", "456", "ARS", "F", "A", "001-00000001", "20202020202", 
+            "0001Descripcion00000", "1234.56", "01/01/2024", "MOT", "12", 
+            null, null, null, null, null, null, null
+        );
+
+        assertEquals(123, result);
+    }
+    
+    @Test
+    void testAltaConCupon() throws Exception {
+    	
+    	PrintWriter printWriter = new PrintWriter(new StringWriter());
+  	  	when(httpServletResponseMocked.getWriter()).thenReturn(printWriter);
+  	  	
+  	  	pagosService.setManagerTransaction(mockManager);
+
+        when(mockManager.getDataReturnList()).thenReturn(Collections.emptyList());
+        when(mockManager.getDataReturn()).thenReturn(123);
+        when(mockManager.getMensajeAviso()).thenReturn("OK");
+        
+        Integer result = pagosService.altaModifGasto(
+            "A", "123", "456", "ARS", "F", "A", "001-00000001", "20202020202", 
+            "0001Descripcion00000", "1000", "01/01/2024", "MOT", "12", 
+            "111", "222", "123456", "Descuento especial", "123.45", "4321432143214321", "Observaciones"
+        );
+
+        assertEquals(123, result);
     }
 }

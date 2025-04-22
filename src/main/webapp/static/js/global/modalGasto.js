@@ -278,6 +278,7 @@ function modalGastoGuardar() {
 	
 	sessionStorage.setItem('moneda', params.moneda);
 	sessionStorage.setItem('tipoComprobante', params.tipoComprobante);
+	sessionStorage.setItem('monto', params.monto);
 	
 	callAjax('gastos.do', params, 'modalGastoGuardarSuccess');
 	setPatagonia()

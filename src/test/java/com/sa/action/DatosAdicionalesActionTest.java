@@ -4,11 +4,15 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 import com.sa.entities.DatosPantallaDinamica;
 import com.sa.manager.ManagerTransaction;
+import com.sa.services.CierreService;
+import com.sa.services.PagosService;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,14 +21,18 @@ import org.mockito.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
 class DatosAdicionalesActionTest {
@@ -134,5 +142,38 @@ class DatosAdicionalesActionTest {
           samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
       assertNull(actionForwardToAssert);
     }
+  }
+  
+  @Test
+  @DisplayName("Debe modificar monto gasto")
+  void executeAction_calcularCombustible() throws Exception {
+	  
+	  PrintWriter printWriter = new PrintWriter(new StringWriter());
+	  when(httpServletResponseMocked.getWriter()).thenReturn(printWriter);
+	  
+      when(httpServletRequestMocked.getParameter("action")).thenReturn("calcularCombustible");
+      when(httpServletRequestMocked.getParameter("idGasto")).thenReturn("0001");
+      when(httpServletRequestMocked.getParameter("idRendicion")).thenReturn("1212");
+      when(httpServletRequestMocked.getParameter("gastoMonto")).thenReturn("1000");
+      when(httpServletRequestMocked.getParameter("codMotivo")).thenReturn("0820");
+      when(httpServletRequestMocked.getParameter("codGasto")).thenReturn("1234");
+      when(httpServletRequestMocked.getParameter("moneda")).thenReturn("ARD");
+      when(httpServletRequestMocked.getParameter("tipoComprobante")).thenReturn("00004");
+      when(httpServletRequestMocked.getParameter("datosAdicionesCombustible")).thenReturn("IDOBS=1,COD1=00001 - NO,TXT1=Buenos Aires                                      ,TXT2=Salta                                             ,NUM1=       40,NUM2=000001172 _ ");
+      
+      when(actionMappingMock.findForward("aprobacionesPendientes")).thenReturn(new ActionForward("datosAdicionales", "/datosAdicionalesPath", false));  // Asegurar que el mock no devuelve null
+
+      try (MockedConstruction<PagosService> mock = mockConstruction(PagosService.class, (mockPagosService, context) -> {
+          when(mockPagosService.altaModifGasto(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+        		  								anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),
+        		  								anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString()))
+          										.thenReturn(1);
+      })) {
+          ActionForward result = datosAdicionalesAction.executeAction(actionMappingMock, actionFormMocked, samWebApplicationMocked,
+                  samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+
+          assertNull(result); // Validar antes de assertEquals
+          //assertEquals("aprobacionesPendientes", result.getName(), "El nombre del forward debería ser 'aprobacionesPendientes'");
+      }
   }
 }

@@ -30,6 +30,7 @@ import com.sa.services.trxs.SU56;
 import com.sa.services.trxs.SU57;
 import com.sa.services.trxs.SU58;
 import com.sa.services.trxs.SU59;
+import com.sa.services.trxs.SU62;
 import com.sa.services.trxs.SU67;
 import com.sa.services.trxs.SU68;
 import com.sa.services.trxs.SU86;
@@ -40,6 +41,12 @@ public class PagosService {
 
 	private String msg;
 	private IWebClient samClient;
+	
+	private ManagerTransaction managerTransaction;
+
+	public void setManagerTransaction(ManagerTransaction managerTransaction) {
+	    this.managerTransaction = managerTransaction;
+	}
 
 	public PagosService(IWebClient samClient) {
 		this.samClient = samClient;
@@ -47,7 +54,7 @@ public class PagosService {
 
 	public List<ComboGasto> getComboGasto(String opcion, String user, String codMotivo) throws TransactionException {
 		log.info("Comienza llamado a trx para traer el listado de estados para el combo");
-		ManagerTransaction manager = new ManagerTransaction(new SU51());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU51());
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("opcion", opcion);
 		parametersExecute.put("cod_usr", user);
@@ -66,7 +73,7 @@ public class PagosService {
 			String campoCodigo1, String campoCodigo2, String campoTexto250,
 			String campoFecha1, String campoFecha2) throws TransactionException {
 		log.info("Comienza llamado a trx para crear el detalle obligtorio.");
-		ManagerTransaction manager = new ManagerTransaction(new SU58());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU58());
 		Map parametersExecute = new HashMap();
 
 		parametersExecute.put("opcion", "ALTA");
@@ -134,7 +141,7 @@ public class PagosService {
 	    String descGasto = tipoGasto.length() >= 54 ? tipoGasto.substring(4, 54) : null;
 	    String cod_det_oblig = tipoGasto.length() >= 59 ? tipoGasto.substring(54, 59) : null;
 
-	    ManagerTransaction manager = new ManagerTransaction(new SU56());
+	    ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU56());
 	    Map<String, Object> parametersExecute = new HashMap<>();
 
 	    parametersExecute.put("opcion", opcion);
@@ -180,7 +187,7 @@ public class PagosService {
 	public List<Cupones> getCupones(String opcion, String subTrx, String codapli, String user,
 			String fechaDesde, String fechaHasta, String idRendicion, String codMotivo, String montoMin, String moneda) throws TransactionException {
 		log.info("Comienza llamado a trx para traer el listado de cupones");
-		ManagerTransaction manager = new ManagerTransaction(new SU68());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU68());
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("pantalla", "cupones");
 		parametersExecute.put("opcion", opcion);
@@ -203,7 +210,7 @@ public class PagosService {
 	
 	public String getValidacionRendicion(String opcion, String idRendicion, String idGasto) throws TransactionException {
 		log.info("Comienza llamado a trx para validar el gasto o la rendicion actual");
-		ManagerTransaction manager = new ManagerTransaction(new SU86());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU86());
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("opcion", opcion);
 		parametersExecute.put("id_rendiciones", idRendicion);
@@ -220,7 +227,7 @@ public class PagosService {
 			String cuponTarjeta, String cuponDeb, String cuponCred, String descCupon, String monedaCupon, String fechaPresentacion)
 			throws TransactionException {
 		log.info("Comienza llamado a trx para asignar cupon");
-		ManagerTransaction manager = new ManagerTransaction(new SU56());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU56());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 
 		double value = Double.parseDouble(impCuponTj.replace(",", "."));
@@ -255,7 +262,7 @@ public class PagosService {
 	public List<DatosPantallaDinamica> consultaDatosAdicionales(String idRendicion, String idGasto, String codMotivo, String codObserv)
 			throws TransactionException {
 		log.info("Comienza llamado a trx para consultar datos adicionales");
-		ManagerTransaction manager = new ManagerTransaction(new SU57());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU57());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("id_rendicion", idRendicion);
 		parametersExecute.put("id_gasto", idGasto);
@@ -272,7 +279,7 @@ public class PagosService {
 			String campoTexto2, String campoNumerico1, String campoNumerico2, String campoCodigo1, String campoCodigo2,
 			String campoTexto250, String campoFecha1, String campoFecha2) throws TransactionException {
 		log.info("Comienza llamado a trx para crear o editar dato adicional");
-		ManagerTransaction manager = new ManagerTransaction(new SU58());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU58());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 
 		parametersExecute.put("opcion", idObservacion.equals("") ? "ALTA" : "MODI");
@@ -296,7 +303,7 @@ public class PagosService {
 
 	public void bajaDatoAdicional(String idRendicion, String idGasto, String codGasto, String codDetOblig, String idObservacion) throws TransactionException {
 		log.info("Comienza llamado a trx para eliminar dato adicional");
-		ManagerTransaction manager = new ManagerTransaction(new SU58());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU58());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 
 		parametersExecute.put("opcion", "BAJA");
@@ -312,7 +319,7 @@ public class PagosService {
 	public List<List<String>> consultaDetallesGastos(String idRendicion, String idGasto, String idObserv,
 			List<DatosPantallaDinamica> fieldsScreen) throws TransactionException {
 		log.info("Comienza llamado a trx para consultar el detalle obl ");
-		ManagerTransaction manager = new ManagerTransaction(new SU59(fieldsScreen));
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU59(fieldsScreen));
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("id_rendicion", StringUtils.leftPad(idRendicion, 16, "0"));
 		parametersExecute.put("id_gasto", StringUtils.leftPad(idGasto, 9, "0"));
@@ -328,7 +335,7 @@ public class PagosService {
 			String idRendicion, String idGasto, String codMotivo,
 			String codObserv) throws TransactionException {
 		log.info("Comienza llamado a trx para consultar el detalle obl ");
-		ManagerTransaction manager = new ManagerTransaction(new SU57());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU57());
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("id_rendicion", idRendicion);
 		parametersExecute.put("id_gasto", idGasto);
@@ -344,7 +351,7 @@ public class PagosService {
 
 	public Integer bajaGasto(String idGasto, String user, String idRendicion) throws TransactionException {
 		log.info("Comienza llamado a trx para eliminar un gasto");
-		ManagerTransaction manager = new ManagerTransaction(new SU56());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU56());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		parametersExecute.put("opcion", "BAJA");
@@ -360,7 +367,7 @@ public class PagosService {
 
 	public List<String> getCodigosPatagonia() throws TransactionException {
 		log.info("Comienza llamado a trx para traer los codigos de Patagonia");
-		ManagerTransaction manager = new ManagerTransaction(new SU51());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU51());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("opcion", "2");
 		parametersExecute.put("cant_tablas", "01");
@@ -378,7 +385,7 @@ public class PagosService {
 
 	public List<Cupones> getCuponUnico(String idRendicion, String idGasto, String idUser, String codMotivo) throws TransactionException {
 		log.info("Comienza llamado a trx para traer el cupon");
-		ManagerTransaction manager = new ManagerTransaction(new SU55());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU55());
 		Map parametersExecute = new HashMap();
 		if (idRendicion != null && !idRendicion.equalsIgnoreCase("")) {
 			idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
@@ -404,7 +411,7 @@ public class PagosService {
 			String gastoItems, Usuario user) throws TransactionException {
 		// TODO Auto-generated method stub
 		log.info("Comienza llamado a trx para anular o redistribuir gastos ");
-		ManagerTransaction manager = new ManagerTransaction(new SU67());
+		ManagerTransaction manager = this.managerTransaction != null ? this.managerTransaction : new ManagerTransaction(new SU67());
 		Map parametersExecute = new HashMap();
 
 		idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
