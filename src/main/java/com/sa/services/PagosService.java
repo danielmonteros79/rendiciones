@@ -15,13 +15,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import ar.com.bbva.web.IWebClient;
-import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
 
 import com.sa.entities.ComboGasto;
 import com.sa.entities.Cupones;
 import com.sa.entities.DatosPantallaDinamica;
-import com.sa.entities.Gastos;
 import com.sa.entities.Usuario;
 import com.sa.manager.ManagerTransaction;
 import com.sa.services.trxs.SU51;
@@ -40,6 +38,16 @@ public class PagosService {
 
 	private String msg;
 	private IWebClient samClient;
+	
+	private ManagerTransaction managerTransaction;
+
+	public void setManagerTransaction(ManagerTransaction managerTransaction) {
+	    this.managerTransaction = managerTransaction;
+	}
+	
+	public PagosService() {
+		
+	}
 
 	public PagosService(IWebClient samClient) {
 		this.samClient = samClient;
@@ -47,7 +55,7 @@ public class PagosService {
 
 	public List<ComboGasto> getComboGasto(String opcion, String user, String codMotivo) throws TransactionException {
 		log.info("Comienza llamado a trx para traer el listado de estados para el combo");
-		ManagerTransaction manager = new ManagerTransaction(new SU51());
+		ManagerTransaction manager = resolveManagerTransaction(new SU51());
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("opcion", opcion);
 		parametersExecute.put("cod_usr", user);
@@ -66,7 +74,7 @@ public class PagosService {
 			String campoCodigo1, String campoCodigo2, String campoTexto250,
 			String campoFecha1, String campoFecha2) throws TransactionException {
 		log.info("Comienza llamado a trx para crear el detalle obligtorio.");
-		ManagerTransaction manager = new ManagerTransaction(new SU58());
+		ManagerTransaction manager = resolveManagerTransaction(new SU58());
 		Map parametersExecute = new HashMap();
 
 		parametersExecute.put("opcion", "ALTA");
@@ -95,97 +103,92 @@ public class PagosService {
 	
 
 	public Integer altaModifGasto(String opcion, String idGasto, String idRendicion, String moneda, String tipoComprobante, String tipoFactura,
-			String factura, String cuit, String tipoGasto, String importe, String fechaGasto, String codMotivo, String centroCosto,
-			String cupCred, String cupDeb, String cupon, String descCupon, String importeCupon, String nroTarjeta, String observacionGasto)
-					throws TransactionException {
-		log.info("Comienza llamado a trx para crear o modificar nuevo gasto)");
-		if (idRendicion != null && !idRendicion.equalsIgnoreCase("")) {
-			idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
-		}
-		centroCosto = String.format("%04d", Integer.parseInt(centroCosto));
-		
-		
-		double value = Double.parseDouble(importe.replace(",", "."));
-		DecimalFormat decimalFormat = new DecimalFormat("#.00");
-		String imp = decimalFormat.format(value).replace(".", "");
-		importe = String.format("%015.0f", Double.parseDouble(imp.replace(",", "")));
+	        String factura, String cuit, String tipoGasto, String importe, String fechaGasto, String codMotivo, String centroCosto,
+	        String cupCred, String cupDeb, String cupon, String descCupon, String importeCupon, String nroTarjeta, String observacionGasto)
+	        throws TransactionException {
+	    log.info("Comienza llamado a trx para crear o modificar nuevo gasto");
 
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-		Date date = null;
+	    if (opcion == null || idGasto == null || idRendicion == null) {
+	        throw new IllegalArgumentException("Los parámetros opcion, idGasto e idRendicion no pueden ser nulos.");
+	    }
 
-		if (fechaGasto != null && !fechaGasto.equalsIgnoreCase("")) {
-			try {
-				date = formatter.parse(fechaGasto);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
+	    idRendicion = idRendicion.isEmpty() ? "" : String.format("%016d", Integer.parseInt(idRendicion));
+	    centroCosto = (centroCosto == null || centroCosto.isEmpty()) ? "0000" : String.format("%04d", Integer.parseInt(centroCosto));
+	    importe = (importe == null || importe.isEmpty()) ? "0" : importe.replaceAll("[^\\d,\\.]", "").replace(",", ".");
+	    fechaGasto = (fechaGasto == null) ? "" : fechaGasto;
+	    tipoGasto = (tipoGasto == null || tipoGasto.length() < 59) ? "0000" + "Descripcion" + "00000" : tipoGasto;
 
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd ");
-		if (date != null) {
-			fechaGasto = df.format(date).trim();
-		}
-		String codGasto = (tipoGasto.substring(0, 4));
-		System.out.println("TIPOGASTO: "+tipoGasto);
-		String descGasto = (tipoGasto.substring(4, 54));
-		String cod_det_oblig = (tipoGasto.substring(54, 59));
-		ManagerTransaction manager = new ManagerTransaction(new SU56());
-		Map parametersExecute = new HashMap();
-		parametersExecute.put("opcion", opcion);
-		parametersExecute.put("id_rendicion", idRendicion);
-		if (!idGasto.equalsIgnoreCase("")) {
-			idGasto = String.format("%09d", Integer.parseInt(idGasto));
-			parametersExecute.put("id_gasto", idGasto);
-		}
-		// cod motivo corresponde al codigo de gasto del combo.
-		parametersExecute.put("cod_motivo", codGasto);
-		parametersExecute.put("tipo_comprobante", tipoComprobante);
-		if (tipoComprobante.equals("0006")) {
-			parametersExecute.put("clave_ident", cuit);
-			parametersExecute.put("cod_sit_imp", tipoFactura); 
-			parametersExecute.put("cod_pvnro_p", String.format("%04d", Integer.parseInt(factura.substring(0, 4))));
-			parametersExecute.put("nro_comprobante", String.format("%08d", Integer.parseInt(factura.substring(4))));
-			
-		}
-		parametersExecute.put("cod_moneda", moneda);
-		log.info("Setea importe_gasto (" + importe + ")");
-		parametersExecute.put("importe_gasto", importe);
-		parametersExecute.put("fecha_gasto", fechaGasto);
-		// parametersExecute.put("desc_gasto", "");
-		parametersExecute.put("centro_costo", centroCosto);
-		parametersExecute.put("cod_det_oblig", cod_det_oblig);
-		if (!observacionGasto.equalsIgnoreCase(""))
-			parametersExecute.put("desc_gasto", observacionGasto);
+	    double value = Double.parseDouble(importe);
+	    long centavos = Math.round(value * 100);
+	    importe = String.format("%015d", centavos);
 
-		if (cupon != null && !cupon.equalsIgnoreCase("")) {
-			log.info("va con cupon");
-			double valueCupon = Double.parseDouble(importeCupon.replace(",", "."));
 
-			String impCupon = decimalFormat.format(valueCupon).replace(",", "");
-			log.info(impCupon);
+	    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	    Date date = null;
+	    try {
+	        if (!fechaGasto.isEmpty()) {
+	            date = formatter.parse(fechaGasto);
+	        }
+	    } catch (ParseException e) {
+	        log.warn("Fecha inválida: " + fechaGasto);
+	    }
 
-			importeCupon = String.format("%015d", Integer.parseInt(impCupon.replace(".", "")));
-			parametersExecute.put("cupon_deb", String.format("%012d", Integer.parseInt(cupDeb.trim().equals("") ? "0" : cupDeb)));
-			parametersExecute.put("cupon_cred", String.format("%012d", Integer.parseInt(cupCred)));
-			try {
-				parametersExecute.put("cupon_tarjeta", String.format("%012d", Integer.parseInt(cupon)));
-			} catch (Exception e) {
-				parametersExecute.put("cupon_tarjeta", cupon);
-			}
-			parametersExecute.put("descrip_cupon", descCupon);
-			parametersExecute.put("importe_cupon", String.format("%015d", Integer.parseInt(importeCupon)));
-			parametersExecute.put("nro_tarjeta", nroTarjeta);
-		}
-		manager.executeTrx(this.samClient, parametersExecute);
-		msg = (String) manager.getMensajeAviso();
-		Integer idGastoTrx = (Integer) manager.getDataReturn();
-		return idGastoTrx;
+	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    if (date != null) {
+	        fechaGasto = df.format(date).trim();
+	    }
+
+	    String codGasto = tipoGasto.substring(0, 4);
+	    String descGasto = tipoGasto.length() >= 54 ? tipoGasto.substring(4, 54) : null;
+	    String cod_det_oblig = tipoGasto.length() >= 59 ? tipoGasto.substring(54, 59) : null;
+
+	    ManagerTransaction manager = resolveManagerTransaction(new SU56());
+	    Map<String, Object> parametersExecute = new HashMap<>();
+
+	    parametersExecute.put("opcion", opcion);
+	    parametersExecute.put("id_rendicion", idRendicion);
+	    if (!idGasto.isEmpty()) {
+	        idGasto = String.format("%09d", Integer.parseInt(idGasto));
+	        parametersExecute.put("id_gasto", idGasto);
+	    }
+	    parametersExecute.put("cod_motivo", codGasto);
+	    parametersExecute.put("tipo_comprobante", tipoComprobante == null ? "" : tipoComprobante);
+	    parametersExecute.put("cod_moneda", moneda == null ? "" : moneda);
+	    parametersExecute.put("importe_gasto", importe);
+	    parametersExecute.put("fecha_gasto", fechaGasto);
+	    parametersExecute.put("centro_costo", centroCosto);
+	    parametersExecute.put("cod_det_oblig", cod_det_oblig);
+	    if (observacionGasto != null && !observacionGasto.isEmpty()) {
+	        parametersExecute.put("desc_gasto", observacionGasto);
+	    }
+
+	    if (cupon != null && !cupon.isEmpty()) {
+	        log.info("va con cupon");
+	        double valueCupon = Double.parseDouble(importeCupon == null ? "0" : importeCupon.replace(",", "."));
+	        long centavosCupon = Math.round(valueCupon * 100);
+	        importeCupon = String.format("%015d", centavosCupon);
+	        parametersExecute.put("cupon_deb", String.format("%012d", Integer.parseInt(cupDeb == null || cupDeb.trim().isEmpty() ? "0" : cupDeb)));
+	        parametersExecute.put("cupon_cred", String.format("%012d", Integer.parseInt(cupCred == null || cupCred.isEmpty() ? "0" : cupCred)));
+	        try {
+	            parametersExecute.put("cupon_tarjeta", String.format("%012d", Integer.parseInt(cupon)));
+	        } catch (Exception e) {
+	            parametersExecute.put("cupon_tarjeta", cupon);
+	        }
+	        parametersExecute.put("descrip_cupon", descCupon == null ? "" : descCupon);
+	        parametersExecute.put("importe_cupon", importeCupon);
+	        parametersExecute.put("nro_tarjeta", nroTarjeta == null ? "" : nroTarjeta);
+	    }
+
+	    manager.executeTrx(this.samClient, parametersExecute);
+	    msg = (String) manager.getMensajeAviso();
+	    return (Integer) manager.getDataReturn();
 	}
+
 
 	public List<Cupones> getCupones(String opcion, String subTrx, String codapli, String user,
 			String fechaDesde, String fechaHasta, String idRendicion, String codMotivo, String montoMin, String moneda) throws TransactionException {
 		log.info("Comienza llamado a trx para traer el listado de cupones");
-		ManagerTransaction manager = new ManagerTransaction(new SU68());
+		ManagerTransaction manager = resolveManagerTransaction(new SU68());
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("pantalla", "cupones");
 		parametersExecute.put("opcion", opcion);
@@ -208,7 +211,7 @@ public class PagosService {
 	
 	public String getValidacionRendicion(String opcion, String idRendicion, String idGasto) throws TransactionException {
 		log.info("Comienza llamado a trx para validar el gasto o la rendicion actual");
-		ManagerTransaction manager = new ManagerTransaction(new SU86());
+		ManagerTransaction manager = resolveManagerTransaction(new SU86());
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("opcion", opcion);
 		parametersExecute.put("id_rendiciones", idRendicion);
@@ -225,7 +228,7 @@ public class PagosService {
 			String cuponTarjeta, String cuponDeb, String cuponCred, String descCupon, String monedaCupon, String fechaPresentacion)
 			throws TransactionException {
 		log.info("Comienza llamado a trx para asignar cupon");
-		ManagerTransaction manager = new ManagerTransaction(new SU56());
+		ManagerTransaction manager = resolveManagerTransaction(new SU56());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 
 		double value = Double.parseDouble(impCuponTj.replace(",", "."));
@@ -260,7 +263,7 @@ public class PagosService {
 	public List<DatosPantallaDinamica> consultaDatosAdicionales(String idRendicion, String idGasto, String codMotivo, String codObserv)
 			throws TransactionException {
 		log.info("Comienza llamado a trx para consultar datos adicionales");
-		ManagerTransaction manager = new ManagerTransaction(new SU57());
+		ManagerTransaction manager = resolveManagerTransaction(new SU57());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("id_rendicion", idRendicion);
 		parametersExecute.put("id_gasto", idGasto);
@@ -277,7 +280,7 @@ public class PagosService {
 			String campoTexto2, String campoNumerico1, String campoNumerico2, String campoCodigo1, String campoCodigo2,
 			String campoTexto250, String campoFecha1, String campoFecha2) throws TransactionException {
 		log.info("Comienza llamado a trx para crear o editar dato adicional");
-		ManagerTransaction manager = new ManagerTransaction(new SU58());
+		ManagerTransaction manager = resolveManagerTransaction(new SU58());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 
 		parametersExecute.put("opcion", idObservacion.equals("") ? "ALTA" : "MODI");
@@ -301,7 +304,7 @@ public class PagosService {
 
 	public void bajaDatoAdicional(String idRendicion, String idGasto, String codGasto, String codDetOblig, String idObservacion) throws TransactionException {
 		log.info("Comienza llamado a trx para eliminar dato adicional");
-		ManagerTransaction manager = new ManagerTransaction(new SU58());
+		ManagerTransaction manager = resolveManagerTransaction(new SU58());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 
 		parametersExecute.put("opcion", "BAJA");
@@ -317,7 +320,7 @@ public class PagosService {
 	public List<List<String>> consultaDetallesGastos(String idRendicion, String idGasto, String idObserv,
 			List<DatosPantallaDinamica> fieldsScreen) throws TransactionException {
 		log.info("Comienza llamado a trx para consultar el detalle obl ");
-		ManagerTransaction manager = new ManagerTransaction(new SU59(fieldsScreen));
+		ManagerTransaction manager = resolveManagerTransaction(new SU59(fieldsScreen));
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("id_rendicion", StringUtils.leftPad(idRendicion, 16, "0"));
 		parametersExecute.put("id_gasto", StringUtils.leftPad(idGasto, 9, "0"));
@@ -333,7 +336,7 @@ public class PagosService {
 			String idRendicion, String idGasto, String codMotivo,
 			String codObserv) throws TransactionException {
 		log.info("Comienza llamado a trx para consultar el detalle obl ");
-		ManagerTransaction manager = new ManagerTransaction(new SU57());
+		ManagerTransaction manager = resolveManagerTransaction(new SU57());
 		Map parametersExecute = new HashMap();
 		parametersExecute.put("id_rendicion", idRendicion);
 		parametersExecute.put("id_gasto", idGasto);
@@ -349,7 +352,7 @@ public class PagosService {
 
 	public Integer bajaGasto(String idGasto, String user, String idRendicion) throws TransactionException {
 		log.info("Comienza llamado a trx para eliminar un gasto");
-		ManagerTransaction manager = new ManagerTransaction(new SU56());
+		ManagerTransaction manager = resolveManagerTransaction(new SU56());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		parametersExecute.put("opcion", "BAJA");
@@ -365,7 +368,7 @@ public class PagosService {
 
 	public List<String> getCodigosPatagonia() throws TransactionException {
 		log.info("Comienza llamado a trx para traer los codigos de Patagonia");
-		ManagerTransaction manager = new ManagerTransaction(new SU51());
+		ManagerTransaction manager = resolveManagerTransaction(new SU51());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		parametersExecute.put("opcion", "2");
 		parametersExecute.put("cant_tablas", "01");
@@ -383,7 +386,7 @@ public class PagosService {
 
 	public List<Cupones> getCuponUnico(String idRendicion, String idGasto, String idUser, String codMotivo) throws TransactionException {
 		log.info("Comienza llamado a trx para traer el cupon");
-		ManagerTransaction manager = new ManagerTransaction(new SU55());
+		ManagerTransaction manager = resolveManagerTransaction(new SU55());
 		Map parametersExecute = new HashMap();
 		if (idRendicion != null && !idRendicion.equalsIgnoreCase("")) {
 			idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
@@ -409,7 +412,7 @@ public class PagosService {
 			String gastoItems, Usuario user) throws TransactionException {
 		// TODO Auto-generated method stub
 		log.info("Comienza llamado a trx para anular o redistribuir gastos ");
-		ManagerTransaction manager = new ManagerTransaction(new SU67());
+		ManagerTransaction manager = resolveManagerTransaction(new SU67());
 		Map parametersExecute = new HashMap();
 
 		idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
@@ -470,4 +473,9 @@ public class PagosService {
 	public String getMsg (){
 		return msg;
 	}
+	
+	protected ManagerTransaction resolveManagerTransaction(Transaction trxHandler) {
+	    return (this.managerTransaction != null) ? this.managerTransaction : new ManagerTransaction(trxHandler);
+	}
+
 }

@@ -276,6 +276,10 @@ function modalGastoGuardar() {
 		nroTarjeta: modalGastoLoadParams.cupon && !modalGastoLoadParams.idGasto ? modalGastoLoadParams.cupon.nroTarjeta : null
 	};
 	
+	sessionStorage.setItem('moneda', params.moneda);
+	sessionStorage.setItem('tipoComprobante', params.tipoComprobante);
+	sessionStorage.setItem('monto', params.monto);
+	
 	callAjax('gastos.do', params, 'modalGastoGuardarSuccess');
 	setPatagonia()
 	$('#modalGastoFueraDePolitica').modal('hide');

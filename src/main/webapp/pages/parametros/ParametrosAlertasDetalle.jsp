@@ -220,6 +220,34 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 						</div>
 					</div>
 					
+					<script>
+					    const textarea = document.getElementById('txAviso');
+					    const errorDiv = document.getElementById('avisoError');
+					    const counter = document.getElementById('contadorAviso');
+					    const max = 50;
+					
+					    textarea.addEventListener('input', () => {
+					        let value = textarea.value;
+					
+					        if (value.length > max) {
+					            // Recorta el texto automaticamente
+					            textarea.value = value.substring(0, max);
+					            errorDiv.style.display = 'block';
+					            textarea.classList.add('is-invalid');
+					        } else {
+					            errorDiv.style.display = 'none';
+					            textarea.classList.remove('is-invalid');
+					        }
+					
+					        counter.textContent = `${textarea.value.length} / ${max}`;
+					    });
+					
+					    window.addEventListener('DOMContentLoaded', () => {
+					        errorDiv.style.display = 'none';
+					        counter.textContent = `${textarea.value.length} / ${max}`;
+					    });
+					</script>
+					
 					<div class="col-sm-12 col-lg-3 pt-2  has-float-label">
 					<div class="has-float-label form-group">
 						

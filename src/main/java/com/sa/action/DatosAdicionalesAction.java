@@ -40,12 +40,90 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 				return this.obtenerCodigosPatagonia(samClient, request, response);
 			else if(action.equals("buscarInvitado")) 
 				return this.buscarInvitado(samClient, request, response);
+			else if(action.equals("calcularCombustible"))
+				return this.calcularCombustible(samClient, request, response);
 
 			return null;
 		} catch (Exception e) {
 			log.error("", e);
 			return writeError(response, e);
 		}
+	}
+	
+	protected ActionForward calcularCombustible(SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Map<String, Object> resp = new HashMap<String, Object>();
+		PagosService service = new PagosService(samClient);
+		
+		String idGasto = request.getParameter("idGasto");
+		String idRendicion = request.getParameter("idRendicion");
+		String gastoMonto = request.getParameter("gastoMonto");
+		String codMotivo = request.getParameter("codMotivo");
+		String codGasto = request.getParameter("codGasto");
+		System.out.println("CODGASTO: " + codGasto);
+		String moneda = request.getParameter("moneda");
+		String tipoComprobante = request.getParameter("tipoComprobante");
+		
+		if (idRendicion != null && !idRendicion.isEmpty()) {
+		    idRendicion = String.format("%016d", Long.parseLong(idRendicion));
+		}
+
+		if (idGasto != null && !idGasto.isEmpty()) {
+		    idGasto = String.format("%09d", Integer.parseInt(idGasto));
+		}
+	    
+	    String datos = request.getParameter("datosAdicionesCombustible");
+	    String cod1 = null; //00002 vehìculo propio, 00001 vehìculo no propio
+	    double num1 = 0; // KM
+	    double num2 = 0; // Valor litro
+
+	    if (datos != null && !datos.isEmpty()) {
+	        String[] partes = datos.split(",");
+	        for (String parte : partes) {
+	            parte = parte.trim();
+	            if (parte.startsWith("COD1=")) {
+	                String valorCrudo = parte.substring("COD1=".length()).trim();
+	                cod1 = valorCrudo.split("[\\s\\-]", 2)[0];
+	            } else if (parte.startsWith("NUM1=")) {
+	                String valor = parte.substring("NUM1=".length()).trim();
+	                valor = valor.replace(".", "").replace(",", "."); // En caso de que venga 1.000,00
+	                try {
+	                    num1 = Double.parseDouble(valor);
+	                } catch (NumberFormatException e) {
+	                    System.out.println("Error parseando NUM1: " + valor);
+	                }
+	            } else if (parte.startsWith("NUM2=")) {
+	            	String valor = parte.substring("NUM2=".length()).trim();
+	            	valor = valor.replaceAll("[^\\d,\\.]", "");
+	            	valor = valor.replace(".", "").replace(",", ".");
+	                try {
+	                    num2 = Double.parseDouble(valor);
+	                } catch (NumberFormatException e) {
+	                    System.out.println("Error parseando NUM2: " + valor);
+	                }
+	            }
+	        }
+	    }
+
+	    System.out.println("COD1 limpio = " + cod1);
+	    System.out.println("KM recorridos (NUM1) = " + num1);
+	    System.out.println("Precio por litro (NUM2) = " + num2);
+	    
+	    double gastoCalculado = num1 * num2;
+	    System.out.println("GastoCalculado: " + gastoCalculado);
+
+	    if ("00002".equals(cod1)) {
+	        gastoCalculado *= 0.22; // Vehículo propio
+	    }
+	    
+	    gastoMonto = String.valueOf(gastoCalculado);
+	    System.out.println(">>>> gastoMonto enviado a altaModifGasto = " + gastoMonto);
+	    
+	    System.out.println("Gasto calculado final = " + gastoMonto);
+	    
+		service.altaModifGasto("MODI", idGasto, idRendicion, moneda, tipoComprobante, null,
+				null, null, codGasto, gastoMonto, null, codMotivo, null,
+				null, null, null, null, null, null, null  );
+		return writeJson(response, resp);
 	}
 
 	private ActionForward consulta(SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {

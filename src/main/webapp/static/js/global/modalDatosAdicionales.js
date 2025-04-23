@@ -282,13 +282,88 @@ function obtenerDatosInvitados(){
 	}
 }
 
-//$("#modalDatosAdicionalesBtnSalir").click(function() {
-//	if (modalDatosAdicionalesLoadParams.codObserv == "00210" || modalDatosAdicionalesLoadParams.codObserv == "0210"  ) { 
-//		obtenerDatosCumbustible();}else{
-//			console.log('entra')
-//			console.log(modalDatosAdicionalesLoadParams)
-//		}
-//})
+function obtenerValoresPorCampo(campo, datos) {
+    return datos.filas.map(fila => {
+        const dato = fila.find(d => d.startsWith(`${campo}=`));
+        return dato ? dato.split("=")[1].trim() : null;
+    }).filter(valor => valor !== null);
+}
+
+$("#modalDatosAdicionalesBtnSalir").click(function() {
+    let cantKm = obtenerValoresPorCampo("NUM1", modalDatosAdicionalesCampos)[0];
+    let precioNafta = obtenerValoresPorCampo("NUM2", modalDatosAdicionalesCampos)[0];
+    let vehiculoPropio = obtenerValoresPorCampo("COD1", modalDatosAdicionalesCampos)[0];
+    let monto = parseFloat(sessionStorage.getItem('monto'));
+
+    cantKm = parseFloat(cantKm);
+    precioNafta = parseFloat(precioNafta);
+
+    let coef = vehiculoPropio === "00002 - SI" ? 0.22 : 1;
+    let montoPolitica = cantKm * precioNafta * coef;
+
+    let diferencia = Math.abs(monto - montoPolitica);
+
+    if (diferencia > 0.01) {
+        showConfirm(
+            'confirmarSalir',
+            "El monto del ticket ingresado no coincide con cuenta según política: km x coef x litro de nafta. ¿Querés ajustarlo a la política vigente?"
+        );
+    }
+});
+
+
+function confirmarSalir(){
+	if (modalDatosAdicionalesLoadParams.codObserv == "00210" || modalDatosAdicionalesLoadParams.codObserv == "0210"  ) { 
+				calcularCombustible();
+			}else{
+				console.log('entra')
+				console.log(modalDatosAdicionalesLoadParams)
+			}
+}
+
+function calcularCombustible(){
+	console.log("INTENTO OBTENER DATOS COMBUSTIBLES.")
+	console.log(modalDatosAdicionalesCampos)
+	let datosAdicionesCombustible = "";
+	
+	var monedaGuardada = sessionStorage.getItem('moneda');
+	var tipoComprobanteGuardado = sessionStorage.getItem('tipoComprobante');
+
+	
+	modalDatosAdicionalesCampos.filas.forEach(function (item, index) {
+	  console.log(item, index);
+	  datosAdicionesCombustible += item.toString().trim() + " _ " 
+	  item.forEach(function (item, index) {
+		  console.log(item, index);
+		  miString = item[index]
+	  });	  
+	});
+	console.log(datosAdicionesCombustible);
+	
+	
+	let params = {
+			action: 'calcularCombustible',
+			idRendicion: modalDatosAdicionalesLoadParams.idRendicion,
+			codMotivo: modalDatosAdicionalesLoadParams.codMotivo,
+			idGasto: modalDatosAdicionalesLoadParams.idGasto,
+			codGasto: modalDatosAdicionalesLoadParams.codGasto,
+			serv: modalDatosAdicionalesLoadParams.codObserv,
+			gastoMonto: modalDatosAdicionalesLoadParams.gastoMonto,
+			readOnly: modalDatosAdicionalesLoadParams.readOnly,
+			message: modalDatosAdicionalesLoadParams.message,
+			nombreUsuarioRend: nombreUsuarioRend,
+			moneda: monedaGuardada,
+			tipoComprobante: tipoComprobanteGuardado,
+			datosAdicionesCombustible: datosAdicionesCombustible			
+	};
+	
+	sessionStorage.removeItem('moneda');
+	sessionStorage.removeItem('tipoComprobante');
+	sessionStorage.removeItem('monto');
+	
+	callAjax('datosAdicionales.do', params, 'respuestaCalcularCoeficiente');
+	location.reload();	
+}
 
 //function obtenerDatosCumbustible(){
 	//console.log("obtenerDatosCombustible");
@@ -324,13 +399,14 @@ function obtenerDatosInvitados(){
 	
 //}
 
-//function respuestaCalcularCoeficiente(data){
+function respuestaCalcularCoeficiente(data){
 	//if(data.massage == 'igual'){
 		//$('#modalDatosAdicionales').modal('hide');
 	//}else{		
 		//showAcept(close, data.message) 
 	//}
-	//}
+	console.log("RESPUESTA CALCULAR COMBUSTIBLE");
+}
 
 //function close (){
 	 	

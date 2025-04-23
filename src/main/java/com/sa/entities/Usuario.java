@@ -56,7 +56,7 @@ public class Usuario {
 		if (this.nombre == null) return null;
 
 		String decoded = StringEscapeUtils.unescapeHtml4(this.nombre);
-		return decoded.replaceAll("[^a-zA-Z0-9 áéíóúÁÉÍÓÚñÑüÜ]", "");
+		return decoded.replaceAll("[^a-zA-Z0-9 ñÑüÜ]", "");
 	}
 
 	public void setNombre(String nombre) {
