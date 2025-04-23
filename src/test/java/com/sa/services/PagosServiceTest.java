@@ -536,4 +536,46 @@ class PagosServiceTest {
 
         assertEquals("Redistribución exitosa", resultado);
     }
+    
+    @Test
+    void testAltaModifGastoParametrosNulos() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+            pagosService.altaModifGasto(null, null, null, "ARS", null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null, null)
+        );
+        assertEquals("Los parámetros opcion, idGasto e idRendicion no pueden ser nulos.", exception.getMessage());
+    }
+    
+    @Test
+    void testAltaModifGastoConFechaInvalida() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+        
+        when(mockManager.getDataReturn()).thenReturn(321);
+        when(mockManager.getMensajeAviso()).thenReturn("OK");
+
+        Integer result = pagosService.altaModifGasto(
+            "M", "123", "456", "ARS", "F", "A", "001-00000001", "20202020202",
+            "0001Descripcion", "1000", "32/13/2023", "MOT", "", null, null, null, null, null, null, ""
+        );
+
+        assertEquals(321, result);
+    }
+
+    @Test
+    void testAltaModifGastoCuponConValorNoNumerico() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+
+        when(mockManager.getDataReturn()).thenReturn(999);
+        when(mockManager.getMensajeAviso()).thenReturn("Con cupon string");
+
+        Integer result = pagosService.altaModifGasto(
+            "A", "123", "456", "ARS", "F", "A", "001-00000001", "20202020202", 
+            "0001Descripcion00000", "500.00", "01/01/2024", "MOT", "0012", 
+            "0001", "0002", "NO_NUMERICO", "Desc.", "10", "000012341234", "Obs"
+        );
+
+        assertEquals(999, result);
+    }
+
+
 }
