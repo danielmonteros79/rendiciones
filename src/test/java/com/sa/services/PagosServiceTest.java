@@ -18,6 +18,7 @@ import org.mockito.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -468,5 +469,71 @@ class PagosServiceTest {
         );
 
         assertEquals(123, result);
+    }
+    
+    @Test
+    void testGetValidacionRendicion() throws Exception {
+        List<String> retorno = Arrays.asList("VALIDO");
+        Mockito.when(mockManager.getDataReturnList()).thenReturn(retorno);
+        Mockito.when(mockManager.getMensajeAviso()).thenReturn("Mensaje OK");
+
+        pagosService.setManagerTransaction(mockManager);
+
+        String resultado = pagosService.getValidacionRendicion("1", "123", "456");
+
+        assertEquals("VALIDO", resultado);
+        assertEquals("Mensaje OK", pagosService.getMsg());
+    }
+    
+    @Test
+    void testConsultaDatosAdicionales() throws Exception {
+        List<DatosPantallaDinamica> mockLista = new ArrayList<>();
+        mockLista.add(new DatosPantallaDinamica());
+
+        Mockito.when(mockManager.getDataReturnList()).thenReturn(mockLista);
+        Mockito.when(mockManager.getMensajeAviso()).thenReturn("OK");
+        pagosService.setManagerTransaction(mockManager);
+
+        List<DatosPantallaDinamica> resultado = pagosService.consultaDatosAdicionales("100", "200", "M01", "OBS");
+
+        assertFalse(resultado.isEmpty());
+    }
+    
+    @Test
+    void testAltaModifDatoAdicional_alta() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+
+        assertDoesNotThrow(() -> pagosService.altaModifDatoAdicional("1", "2", "3", "4", "", "txt1",
+                "txt2", "100", "200", "001", "002", "text large", "2025-01-01", "2025-02-02"));
+    }
+    
+    @Test
+    void testBajaDatoAdicional() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+
+        assertDoesNotThrow(() -> pagosService.bajaDatoAdicional("1", "2", "3", "4", "5"));
+    }
+    
+    @Test
+    void testGetCodigosPatagonia() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+        List<String> resultado = pagosService.getCodigosPatagonia();
+
+        assertNotNull(resultado);
+        assertEquals(2, resultado.size());
+        assertTrue(resultado.contains("00212"));
+    }
+    
+    @Test
+    void testRedistribuirGastos() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+        Usuario mockUser = new Usuario(null, "SS", null, 0, null, null);
+        mockUser.setIdUser("USR001");
+
+        Mockito.when(mockManager.getMensajeAviso()).thenReturn("Redistribución exitosa");
+
+        String resultado = pagosService.redistribuirGastos("DER", "123", "456", "100.50", "1001", "8888", mockUser);
+
+        assertEquals("Redistribución exitosa", resultado);
     }
 }
