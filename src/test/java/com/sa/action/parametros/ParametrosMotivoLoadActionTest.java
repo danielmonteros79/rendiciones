@@ -13,29 +13,45 @@ import org.apache.struts.mock.MockHttpSession;
 import org.apache.struts.mock.MockServletContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ParametrosMotivoLoadActionTest {
 
   @Mock
   HttpServletResponse httpServletResponse;
+  @Mock
+  ActionMapping actionMappingMock;
+  @Mock
+  HttpServletRequest requestMock;
+  @Mock
+  SAMWebApplication samWebApplicationMock;
+  @Mock
+  SAMWebClient samWebClientMock;
+  @Mock
+  ParametrosMotivoFiltroForm formMock;
 
   @InjectMocks
   ParametrosMotivoLoadAction parametrosMotivoLoadAction;
+
+  private Usuario usuarioMock;
 
   public static Stream<Arguments> executeActionSource() {
     //given
@@ -82,8 +98,13 @@ class ParametrosMotivoLoadActionTest {
   }
 
   @BeforeEach
-  void setUp() {
+  void setUp(){
     MockitoAnnotations.openMocks(this);
+
+    usuarioMock = new Usuario("1234", "SS", "PEPE", 1212, "", null);
+    parametrosMotivoLoadAction.setSessionUser(usuarioMock);
+    parametrosMotivoLoadAction.setSessionUserWorking(usuarioMock);
+
   }
 
   /*@ParameterizedTest
@@ -113,5 +134,113 @@ class ParametrosMotivoLoadActionTest {
     ActionForward actionForwardToAssert = parametrosMotivoLoadAction.executeAction(actionMapping, parametrosMotivoFiltroForm, samApplication, samClient, request,
         httpServletResponse);
     assertNotNull(actionForwardToAssert);
+  }
+  
+  @Test
+  @DisplayName("Debe ejecutar action normalmente con número")
+  void executeAction_filtrarPorNumero() throws Exception {
+
+      when(requestMock.getParameter("action")).thenReturn("filtrar");
+      when(requestMock.getParameter("codigo")).thenReturn("11");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      List<ParametroMotivo> motivos = new ArrayList<>();
+      ParametroMotivo motivo = new ParametroMotivo();
+      motivo.setCodigo("0011");
+      motivo.setDescripcion("Descripción test");
+      motivo.setCodSup("PSUP");
+      motivo.setCodAprobacionGlg("MONTO");
+      motivo.setCodFirma("MONTO");
+      motivo.setEstado("A");
+      motivo.setLastElement("S");
+      motivos.add(motivo);
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(anyString(), anyString(), anyString())).thenReturn(motivos);
+          when(serviceMock.getMsgAviso()).thenReturn("Mensaje exitoso");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, requestMock, httpServletResponse);
+
+          assertNotNull(forward);
+          assertEquals("parametrosMotivoFiltro", forward.getName());
+      }
+  }
+  
+  @Test
+  @DisplayName("Debe ejecutar action filtrando por texto")
+  void executeAction_filtrarPorTexto() throws Exception {
+
+      when(requestMock.getParameter("action")).thenReturn("filtrar");
+      when(requestMock.getParameter("codigo")).thenReturn("test");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      List<ParametroMotivo> motivos = new ArrayList<>();
+      ParametroMotivo motivo = new ParametroMotivo();
+      motivo.setCodigo("TEST01");
+      motivo.setDescripcion("Una descripcion con test");
+      motivo.setCodSup("SUPER");
+      motivo.setCodAprobacionGlg("PGLG");
+      motivo.setCodFirma("PFIRM");
+      motivo.setEstado("I");
+      motivo.setLastElement("S");
+      motivos.add(motivo);
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(anyString(), anyString(), anyString())).thenReturn(motivos);
+          when(serviceMock.getMsgAviso()).thenReturn("Mensaje exitoso");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, requestMock, httpServletResponse);
+
+          assertNotNull(forward);
+          assertEquals("parametrosMotivoFiltro", forward.getName());
+      }
+  }
+  
+  @Test
+  @DisplayName("Debe ejecutar action sin código enviado")
+  void executeAction_sinCodigo() throws Exception {
+	  
+      when(requestMock.getParameter("action")).thenReturn("filtrar");
+      when(requestMock.getParameter("codigo")).thenReturn("");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      List<ParametroMotivo> motivos = new ArrayList<>();
+      ParametroMotivo motivo = new ParametroMotivo();
+      motivo.setCodigo("0002");
+      motivo.setDescripcion("Test sin codigo");
+      motivo.setCodSup("PSUP");
+      motivo.setCodAprobacionGlg("MONTO");
+      motivo.setCodFirma("PFIRM");
+      motivo.setEstado("A");
+      motivo.setLastElement("S");
+      motivos.add(motivo);
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(anyString(), anyString(), anyString())).thenReturn(motivos);
+          when(serviceMock.getMsgAviso()).thenReturn("OK");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, requestMock, httpServletResponse);
+
+          assertNotNull(forward);
+          assertEquals("parametrosMotivoFiltro", forward.getName());
+      }
+  }
+  
+  @Test
+  @DisplayName("Debe capturar excepción y devolver success")
+  void executeAction_capturaExcepcion() throws Exception {
+	  StringWriter stringWriter = new StringWriter();
+	  PrintWriter printWriter = new PrintWriter(stringWriter);
+	  when(httpServletResponse.getWriter()).thenReturn(mock(PrintWriter.class));
+      when(requestMock.getParameter("action")).thenReturn("filtrar");
+      when(actionMappingMock.findForward("success")).thenReturn(new ActionForward("success", "/pathSuccess", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(anyString(), anyString(), anyString())).thenThrow(new RuntimeException("Error esperado"));
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, requestMock, httpServletResponse);
+
+          assertNull(forward);
+      }
   }
 }
