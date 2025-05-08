@@ -64,9 +64,10 @@ public class SU53 extends Transaction {
 				int codThuban = str.length();
 				if (codThuban > 232) {
 					rendicion.setIdu(str.substring(232, 242).trim());
-					if (codThuban > 242)
-						//rendicion.setAdea(str.substring(248, 259).trim());
-						System.out.println("Debemos setear Adea");
+					if (codThuban > 242) {
+						rendicion.setAdea(str.substring(242, Math.min(253, codThuban)).trim());
+						//System.out.println("Debemos setear Adea");
+					}
 					else
 						rendicion.setAdea("");
 				} else {
@@ -75,12 +76,11 @@ public class SU53 extends Transaction {
 				}
 				
 				//INICIO BLOQUE DATO EXEP
-				if(str.substring(str.length() - 4).equals("EXEP")){
-					rendicion.setExceptuado(str.substring(str.length() - 4));
-				}
-				else{
-					rendicion.setExceptuado("");
-				}
+				if (codThuban >= 4 && str.substring(codThuban - 4).equals("EXEP")) {
+	                rendicion.setExceptuado(str.substring(codThuban - 4));
+	            } else {
+	                rendicion.setExceptuado("");
+	            }
 				//FIN BLOQUE DATO EXEP
 				
 				rendicion.setDescripcionEstado(((String) parametersExecute.get("desc_est_rend")).trim());

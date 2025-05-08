@@ -485,8 +485,22 @@ function modalDatosAdicionalesSetOnChanges() {
 
 function modalDatosAdicionalesGuardar() {
 	modalDatosAdicionalesSubmitted = true;
+		
+	$('#modalDatosAdicionales_TXT1').removeClass('is-invalid');
+	$('#modalDatosAdicionales_TXT1').next('.invalid-feedback').remove();
+	
 	if (!validateForm('modalDatosAdicionales', true))
 		return;
+		
+	if (modalDatosAdicionalesLoadParams.codMotivo == 8221) {
+		var campoObligatorio = $('#modalDatosAdicionales_TXT1');
+		if ($.trim(campoObligatorio.val()) === '') {
+			campoObligatorio.addClass('is-invalid');
+			campoObligatorio.after('<div class="invalid-feedback" style="color: #dc3545; font-size: 0.875em; display: block;">Este campo es obligatorio.</div>');
+			campoObligatorio.focus();
+			return;
+		}
+	}
 	
 	params = jQuery.extend({}, modalDatosAdicionalesLoadParams);
 	params.action = 'altaModif';
