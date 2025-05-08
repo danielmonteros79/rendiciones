@@ -1,5 +1,6 @@
 package com.sa.services.trxs;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,62 +42,78 @@ public class SU53 extends Transaction {
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) throws Exception {
 		if (parametersExecute.get("lista") != null) {
-			for (Object obj : (List) parametersExecute.get("lista")) {
-				String str = getStrLista(obj);
-				Rendicion rendicion = new Rendicion();
-				
-				if (parametersExecute.get("aviso") != null && !((String) parametersExecute.get("aviso")).trim().equals(""))
-					rendicion.setAviso((String) parametersExecute.get("aviso"));
-				else
-					rendicion.setAviso("");
-
-				SimpleDateFormat toDate = new SimpleDateFormat("yyyy-MM-dd");
-				rendicion.setId(Integer.parseInt(str.substring(0, 16).replaceFirst("^0*", "")));
-				rendicion.setCodMotivo(str.substring(16, 20));
-				rendicion.setMotivo(str.substring(20, 66));
-				rendicion.setCostosDestino(str.substring(66, 70));
-				rendicion.setDescripcion(str.substring(70, 190).trim());
-				rendicion.setEstado(str.substring(190, 195));
-				rendicion.setFechaDesde(toDate.parse(str.substring(195, 205)));
-				rendicion.setFechaHasta(toDate.parse(str.substring(205, 215)));
-				rendicion.setImporte(str.substring(215, 232).replaceFirst("^0*", ""));
-				
-				int codThuban = str.length();
-				if (codThuban > 232) {
-					rendicion.setIdu(str.substring(232, 242).trim());
-					if (codThuban > 242)
-						//rendicion.setAdea(str.substring(248, 259).trim());
-						System.out.println("Debemos setear Adea");
-					else
-						rendicion.setAdea("");
-				} else {
-					rendicion.setIdu("");
-					rendicion.setAdea("");
-				}
-				
-				//INICIO BLOQUE DATO EXEP
-				if(str.substring(str.length() - 4).equals("EXEP")){
-					rendicion.setExceptuado(str.substring(str.length() - 4));
-				}
-				else{
-					rendicion.setExceptuado("");
-				}
-				//FIN BLOQUE DATO EXEP
-				
-				rendicion.setDescripcionEstado(((String) parametersExecute.get("desc_est_rend")).trim());
-				rendicion.setUsuarioAprobador(((String) parametersExecute.get("nomUsrAprob")).trim());
-				rendicion.setCodUsuarioAprobador(((String) parametersExecute.get("codUsrAprob")).trim());
-				rendicion.setMotivoRechazo(((String) parametersExecute.get("desc_rechazo")).trim());
-				
-				if (parametersExecute.get("fec_ult_mod") != null) {
-					rendicion.setFechaUltimaModificacion(((String) parametersExecute.get("fec_ult_mod")).trim());
-				}
-				
-
+			List<?> lista = (List<?>) parametersExecute.get("lista");
+			for (Object obj : lista) {
+				Rendicion rendicion = buildRendicion(obj, parametersExecute);
 				listaRendiciones.add(rendicion);
 			}
 		}
 	}
+
+	private Rendicion buildRendicion(Object obj, Map<String, Object> parameters) throws ParseException {
+		String str = getStrLista(obj);
+		SimpleDateFormat toDate = new SimpleDateFormat("yyyy-MM-dd");
+		Rendicion rendicion = new Rendicion();
+
+		rendicion.setAviso(getAviso(parameters));
+		rendicion.setId(parseIntSafe(str.substring(0, 16)));
+		rendicion.setCodMotivo(str.substring(16, 20));
+		rendicion.setMotivo(str.substring(20, 66));
+		rendicion.setCostosDestino(str.substring(66, 70));
+		rendicion.setDescripcion(str.substring(70, 190).trim());
+		rendicion.setEstado(str.substring(190, 195));
+		rendicion.setFechaDesde(toDate.parse(str.substring(195, 205)));
+		rendicion.setFechaHasta(toDate.parse(str.substring(205, 215)));
+		rendicion.setImporte(str.substring(215, 232).replaceFirst("^0*", ""));
+
+		setOptionalFields(str, rendicion);
+		setMetadata(parameters, rendicion);
+
+		return rendicion;
+	}
+
+	private String getAviso(Map<String, Object> parameters) {
+		String aviso = (String) parameters.get("aviso");
+		return (aviso != null && !aviso.trim().isEmpty()) ? aviso : "";
+	}
+
+	private int parseIntSafe(String str) {
+		return Integer.parseInt(str.replaceFirst("^0*", ""));
+	}
+
+	private void setOptionalFields(String str, Rendicion rendicion) {
+		int length = str.length();
+		if (length > 232) {
+			rendicion.setIdu(str.substring(232, 242).trim());
+			rendicion.setAdea(length > 242 ? str.substring(242, Math.min(253, length)).trim() : "");
+		} else {
+			rendicion.setIdu("");
+			rendicion.setAdea("");
+		}
+
+		if (length >= 4 && str.substring(length - 4).equals("EXEP")) {
+			rendicion.setExceptuado("EXEP");
+		} else {
+			rendicion.setExceptuado("");
+		}
+	}
+
+	private void setMetadata(Map<String, Object> parameters, Rendicion rendicion) {
+		rendicion.setDescripcionEstado(getStringTrimmed(parameters, "desc_est_rend"));
+		rendicion.setUsuarioAprobador(getStringTrimmed(parameters, "nomUsrAprob"));
+		rendicion.setCodUsuarioAprobador(getStringTrimmed(parameters, "codUsrAprob"));
+		rendicion.setMotivoRechazo(getStringTrimmed(parameters, "desc_rechazo"));
+
+		if (parameters.get("fec_ult_mod") != null) {
+			rendicion.setFechaUltimaModificacion(((String) parameters.get("fec_ult_mod")).trim());
+		}
+	}
+
+	private String getStringTrimmed(Map<String, Object> map, String key) {
+		Object value = map.get(key);
+		return value != null ? ((String) value).trim() : "";
+	}
+
 
 	@Override
 	public List getDataReturnList() {
