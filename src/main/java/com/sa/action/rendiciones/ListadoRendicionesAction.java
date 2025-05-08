@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 	
-	public static final SimpleDateFormat dfYYYY_MM_DD = new SimpleDateFormat("yyyy-MM-dd");
+	public final SimpleDateFormat dfYYYY_MM_DD = new SimpleDateFormat("yyyy-MM-dd");
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
