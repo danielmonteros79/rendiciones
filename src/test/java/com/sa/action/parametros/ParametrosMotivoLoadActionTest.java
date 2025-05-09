@@ -29,6 +29,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -243,4 +244,75 @@ class ParametrosMotivoLoadActionTest {
           assertNull(forward);
       }
   }
+  
+  @Test
+  @DisplayName("Debe detenerse si getMotivos devuelve vacío")
+  void executeAction_sinMotivosDevueltos() throws Exception {
+      when(requestMock.getParameter("action")).thenReturn("filtrar");
+      when(requestMock.getParameter("codigo")).thenReturn("11");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(anyString(), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Mensaje sin motivos");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, requestMock, httpServletResponse);
+          assertNotNull(forward);
+          assertEquals("parametrosMotivoFiltro", forward.getName());
+      }
+  }
+  
+  @Test
+  @DisplayName("Debe detener búsqueda si texto no coincide con ningún motivo")
+  void executeAction_textoSinCoincidencia() throws Exception {
+      when(requestMock.getParameter("action")).thenReturn("filtrar");
+      when(requestMock.getParameter("codigo")).thenReturn("nope");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      List<ParametroMotivo> motivos = new ArrayList<>();
+      ParametroMotivo motivo = new ParametroMotivo();
+      motivo.setCodigo("AAA");  // no contiene "nope"
+      motivo.setDescripcion("Algo irrelevante");
+      motivo.setLastElement("S");
+      motivos.add(motivo);
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(anyString(), anyString(), anyString())).thenReturn(motivos);
+          when(serviceMock.getMsgAviso()).thenReturn("Mensaje sin coincidencias");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, requestMock, httpServletResponse);
+          assertNotNull(forward);
+          assertEquals("parametrosMotivoFiltro", forward.getName());
+      }
+  }
+
+  @Test
+  @DisplayName("Debe mantener valores si no coinciden con condiciones de transformación")
+  void executeAction_valoresNoTransformados() throws Exception {
+      when(requestMock.getParameter("action")).thenReturn("filtrar");
+      when(requestMock.getParameter("codigo")).thenReturn("9999");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      List<ParametroMotivo> motivos = new ArrayList<>();
+      ParametroMotivo motivo = new ParametroMotivo();
+      motivo.setCodigo("9999");
+      motivo.setDescripcion("Otra desc");
+      motivo.setCodSup("ABC");
+      motivo.setCodAprobacionGlg("XYZ");
+      motivo.setCodFirma("QWE");
+      motivo.setEstado("Z");
+      motivo.setLastElement("S");
+      motivos.add(motivo);
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(anyString(), anyString(), anyString())).thenReturn(motivos);
+          when(serviceMock.getMsgAviso()).thenReturn("Sin transformaciones");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, requestMock, httpServletResponse);
+          assertNotNull(forward);
+          assertEquals("parametrosMotivoFiltro", forward.getName());
+      }
+  }
+
+
 }

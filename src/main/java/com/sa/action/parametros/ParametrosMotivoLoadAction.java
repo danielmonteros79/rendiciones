@@ -16,9 +16,7 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 
 import com.sa.action.RestriccionTransaccionAction;
-import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametroMotivo;
-import com.sa.form.parametros.ParametrosMotivoFiltroForm;
 import com.sa.services.ParametrosService;
 
 public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
