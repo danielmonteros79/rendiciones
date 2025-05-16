@@ -1,6 +1,8 @@
 package com.sa.action.rendiciones;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,7 @@ import ar.com.bbva.web.impl.SAMWebClient;
 import ar.org.bbva.util.DateUtils;
 
 import java.util.stream.Collectors;
+import java.time.ZoneId;
 
 public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 	
@@ -57,20 +60,20 @@ public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 				dfYYYY_MM_DD.format(DateUtils.dfDDMMYYYY.parse(fechaHastaStr));
 
 		List<Rendicion> rendiciones = service.obtenerListadoRendiciones(
-				this.sessionUserWorking.getIdUser(), id, null, fechaDesdeFormatted, fechaHastaFormatted);
+				this.sessionUserWorking.getIdUser(), id, null, "", "");
 
-		Date filtroDesde = fechaDesdeFormatted.isEmpty() ? null : dfYYYY_MM_DD.parse(fechaDesdeFormatted);
-		Date filtroHasta = fechaHastaFormatted.isEmpty() ? null : dfYYYY_MM_DD.parse(fechaHastaFormatted);
+		LocalDate filtroDesde = fechaDesdeFormatted.isEmpty() ? null : toLocalDate(dfYYYY_MM_DD.parse(fechaDesdeFormatted));
+		LocalDate filtroHasta = fechaHastaFormatted.isEmpty() ? null : toLocalDate(dfYYYY_MM_DD.parse(fechaHastaFormatted));
 
 		List<Rendicion> rendicionesFiltradas = rendiciones.stream()
 			.filter(r -> {
-				Date rendicionDesde = r.getFechaDesde();
-				Date rendicionHasta = r.getFechaHasta();
+				LocalDate rendicionDesde = toLocalDate(r.getFechaDesde());
+				LocalDate rendicionHasta = toLocalDate(r.getFechaHasta());
 
-				boolean empiezaDespuesDeFiltro = (filtroHasta == null || !rendicionDesde.after(filtroHasta));
-				boolean terminaAntesDeFiltro = (filtroDesde == null || !rendicionHasta.before(filtroDesde));
+				boolean cumpleDesde = filtroDesde == null || !rendicionHasta.isBefore(filtroDesde);
+				boolean cumpleHasta = filtroHasta == null || !rendicionDesde.isAfter(filtroHasta);
 
-				return empiezaDespuesDeFiltro && terminaAntesDeFiltro;
+				return cumpleDesde && cumpleHasta;
 			})
 			.collect(Collectors.toList());
 
@@ -91,4 +94,11 @@ public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 		
 		return writeJson(response, resp);
 	}
+	
+	private LocalDate toLocalDate(Date date) {
+		if (date == null) return null;
+		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+
+
 }
