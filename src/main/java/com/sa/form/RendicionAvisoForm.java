@@ -49,7 +49,7 @@ public class RendicionAvisoForm extends ActionForm {
 	    if (archivo == null) {
 	        return null;
 	    }
-	    if (!archivo.getFileName().matches("^[a-zA-Z0-9._-]+$")) {
+	    if (!archivo.getFileName().matches("^[a-zA-Z0-9._ \\\\-]+$")) {
 	        throw new IllegalArgumentException("Nombre de archivo inválido.");
 	    }
 	    return archivo;
