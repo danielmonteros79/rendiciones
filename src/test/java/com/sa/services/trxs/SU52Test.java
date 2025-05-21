@@ -103,5 +103,32 @@ class SU52Test {
         assertEquals("A103555 AUDRUICQ, DIEGO ANDRES                                                     85701721S",
                 ((List<String>) getResult).get(1));
     }
+    
+    @Test
+    @DisplayName("mapData crea Usuario correctamente cuando coincide cod_user")
+    void mapDataUsuarioCoincideCodUser() {
+        SU52 su52 = new SU52();
+
+        List<String> lista = new ArrayList<>();
+        lista.add("O123456 PEPE, POTAMO                                                               17279617S");
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("cod_user", "O123456");
+        parametersExecute.put("facultad", "N");
+        parametersExecute.put("ctro_costos", "1234");
+        parametersExecute.put("sector", "SUPE");
+        parametersExecute.put("nombre_apellido", "Nombre Apellido");
+
+        su52.mapData(parametersExecute);
+
+        Usuario u = (Usuario) su52.getDataReturn();
+        assertEquals("O123456", u.getIdUser());
+        assertEquals("N", u.getFacultades());
+        assertEquals("Nombre Apellido", u.getNombre());
+        assertEquals(1234, u.getCcostos());
+        assertEquals("SUPE", u.getSector());
+    }
+
 }
 

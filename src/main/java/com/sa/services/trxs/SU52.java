@@ -9,6 +9,7 @@ import com.sa.services.Transaction;
 
 import ar.com.bbva.web.IWebClient;
 import ar.com.itrsa.sam.TransactionException;
+
 import org.apache.commons.text.StringEscapeUtils;
 
 public class SU52 extends Transaction {
@@ -31,15 +32,28 @@ public class SU52 extends Transaction {
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) {
 	    log.info(this.CURRENT_TRX + " --> Mapeando datos de la transacción");
-
+	    
 	    String codUser = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("cod_user"));
 	    String facultad = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("facultad"));
 	    String nombreApellido = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("nombre_apellido"));
 	    String ctroCostos = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("ctro_costos"));
 	    String sector = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("sector"));
+	    
 
 	    List<Usuario> delegados = new ArrayList<>();
 	    List retorno = (List) parametersExecute.get("lista");
+	    
+		for (Object obj : retorno) {
+			String str = getStrLista(obj);
+			
+			if (str.substring(0, 8).trim().equals(parametersExecute.get("cod_user"))) {
+				delegados.add(new Usuario(str.substring(0, 8).trim(), (String) parametersExecute.get("facultad"), str.substring(8, str.length()).trim(),
+						Integer.valueOf((String) parametersExecute.get("ctro_costos")), (String) parametersExecute.get("sector"), null));
+			} else {
+				delegados.add(new Usuario(str.substring(0, 8).trim(), str.substring((str.length() - 1), str.length()).trim(), str.substring(8, 83).trim(),
+						Integer.valueOf(str.substring(83, 87)), str.substring(87, (str.length() - 1)), null));
+			}
+		}
 
 	    log.debug("Usuario: " + codUser);
 	    log.debug("Facultad: " + facultad);
