@@ -1,147 +1,163 @@
 package com.sa.services.trxs;
 
-import ar.com.bbva.web.IWebClient;
-import ar.com.itrsa.sam.TransactionException;
-import com.sa.entities.Rendicion;
-import com.sa.services.Transaction;
-import com.sa.util.FormatosCampos;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.sa.entities.Rendicion;
+import com.sa.services.Transaction;
+
+import ar.com.bbva.web.IWebClient;
+import ar.com.itrsa.sam.TransactionException;
+
+@SuppressWarnings("rawtypes")
 public class SU53 extends Transaction {
+	public List<Rendicion> listaRendiciones = new ArrayList<Rendicion>();
 
-    protected final String FORMATO_IDRENDICION = "0000000000000000";
-    protected final String FORMATO_IDMOTIVO = "000000000";
-    protected final String FORMATO_COD_MOTIVO = "    ";
-    protected final String FORMATO_DESCRIPCION_MOTIVO = "                                                  ";
-    protected final String FORMATO_DESCRIPCION_RENDICION = "                                                                                                                        ";
-    protected final String FORMATO_ESTADO_RENDICION = "     ";
-    protected final String FORMATO_FECHA_DESDE = "          ";
-    protected final String FORMATO_FECHA_HASTA = "          ";
-    protected final String FORMATO_IMPORTE = "          ";
-    public List<Rendicion> listaRendiciones = new ArrayList<Rendicion>();
+	public SU53() {
+		this.PARAMETER_TRX = "SUM_CONS_RENDICIONES";
+		this.CURRENT_TRX = "SU53";
+	}
 
-    public static String[] FIELDS_INPUT = new String[]{"codUsuario", "estadoRendicion", "fDesde", "fHasta", "cod_gasto"};
-    public static String[] FIELDS_OUTPUT = new String[]{"mensajesRespuesta"};
+	@Override
+	public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
+		try {
+			execute(client, this.PARAMETER_TRX, parametersExecute);
+			try {
+				mapData(parametersExecute);
+			} catch (Exception e) {
+				log.error("", e);
+				throw new TransactionException("Error de mapeo " + this.CURRENT_TRX);
+			}
+ 		} catch (Exception e) {
+			log.error("", e);
+			throw new TransactionException(e);
+		}
+	}
 
-    public SU53() {
-        this.PARAMETER_TRX = "SUM_CONS_RENDICIONES";
-        this.CURRENT_TRX = "SU53";
-    }
+	@Override
+	protected void mapData(Map<String, Object> parametersExecute) throws Exception {
+		if (parametersExecute.get("lista") != null) {
+			List<?> lista = (List<?>) parametersExecute.get("lista");
+			for (Object obj : lista) {
+				Rendicion rendicion = buildRendicion(obj, parametersExecute);
+				listaRendiciones.add(rendicion);
+			}
+		}
+	}
 
-    @Override
-    public void executeTrx(IWebClient client, Map parametersExecute) throws TransactionException {
-        try {
-            execute(client, this.PARAMETER_TRX, parametersExecute);
-            try {
-                mapData(parametersExecute);
-            } catch (Exception e) {
-                log.error(e);
-                throw new TransactionException("Error de mapeo " + this.CURRENT_TRX);
-            }
-        } catch (Exception e) {
-            log.error(e);
-            throw new TransactionException(e);
-        }
-    }
+	private Rendicion buildRendicion(Object obj, Map<String, Object> parameters) throws ParseException {
+		String str = getStrLista(obj);
+		SimpleDateFormat toDate = new SimpleDateFormat("yyyy-MM-dd");
+		Rendicion rendicion = new Rendicion();
 
-    @Override
-    public void executeTrx(IWebClient client, String... parameters) throws TransactionException {
-        try {
-            execute(client, this.PARAMETER_TRX, this.mapInputParams(parameters));
-        } catch (Exception e) {
-            log.error(e);
-            throw new TransactionException(e);
-        }
-    }
+		rendicion.setAviso(getAviso(parameters));
+		rendicion.setId(parseIntSafe(str.substring(0, 16)));
+		rendicion.setCodMotivo(str.substring(16, 20));
+		rendicion.setMotivo(str.substring(20, 66));
+		rendicion.setCostosDestino(str.substring(66, 70));
+		rendicion.setDescripcion(str.substring(70, 190).trim());
+		rendicion.setEstado(str.substring(190, 195));
+		rendicion.setFechaDesde(toDate.parse(str.substring(195, 205)));
+		rendicion.setFechaHasta(toDate.parse(str.substring(205, 215)));
+		rendicion.setImporte(str.substring(215, 232).replaceFirst("^0*", ""));
 
-    @Override
-    protected Map mapInputParams(String... parameters) {
-        log.info("Se ejecuta el mapeo de datos con los parametros de entrada");
+		setOptionalFields(str, rendicion);
+		setMetadata(parameters, rendicion);
 
-        Map parametersExecute = new HashMap();
+		return rendicion;
+	}
 
-        for (int i = 0; i < parameters.length; i++) {
-            parametersExecute.put(FIELDS_INPUT[i], parameters[i]);
-        }
+	private String getAviso(Map<String, Object> parameters) {
+		String aviso = (String) parameters.get("aviso");
+		return (aviso != null && !aviso.trim().isEmpty()) ? aviso : "";
+	}
 
-        return parametersExecute;
-    }
+	private int parseIntSafe(String str) {
+		return Integer.parseInt(str.replaceFirst("^0*", ""));
+	}
 
-    @Override
-    protected void mapData(Map parametersExecute) throws Exception {
-        if (parametersExecute.get("lista") != null) {
-            for (Object obj : (List) parametersExecute.get("lista")) {
-                String str = (String) ((BasicDynaBean) obj).get("lista");
-                Rendicion rendicion = new Rendicion();
+	private void setOptionalFields(String str, Rendicion rendicion) {
+		int length = str.length();
+		if (length > 232) {
+			rendicion.setIdu(str.substring(232, 242).trim());
+			rendicion.setAdea(length > 242 ? str.substring(242, Math.min(253, length)).trim() : "");
+		} else {
+			rendicion.setIdu("");
+			rendicion.setAdea("");
+		}
 
-                if (parametersExecute.get("aviso") != null && !((String) parametersExecute.get("aviso")).trim().equals("")) {
-                    rendicion.setAviso((String) parametersExecute.get("aviso"));
-                } else {
-                    rendicion.setAviso("");
-                }
+		if (length >= 4 && str.substring(length - 4).equals("EXEP")) {
+			rendicion.setExceptuado("EXEP");
+		} else {
+			rendicion.setExceptuado("");
+		}
+	}
 
-                SimpleDateFormat toDate = new SimpleDateFormat("yyyy-MM-dd");
-                String importe = str.substring(215, 232).replaceFirst("^0*", "");
-                rendicion.setId(Integer.parseInt(str.substring(0, 16).replaceFirst("^0*", "")));
-                rendicion.setCodMotivo(str.substring(16, 20));
-                rendicion.setMotivo(str.substring(20, 66));
-                rendicion.setCostosDestino(str.substring(66, 70));
-                rendicion.setDescripcion(str.substring(70, 190).trim());
-                rendicion.setEstado(str.substring(190, 195));
-                rendicion.setFechaDesde(toDate.parse(str.substring(195, 205)));
-                rendicion.setFechaHasta(toDate.parse(str.substring(205, 215)));
-                rendicion.setImporte(str.substring(215, 232).replaceFirst("^0*", ""));
+	private void setMetadata(Map<String, Object> parameters, Rendicion rendicion) {
+		rendicion.setDescripcionEstado(getStringTrimmed(parameters, "desc_est_rend"));
+		rendicion.setUsuarioAprobador(getStringTrimmed(parameters, "nomUsrAprob"));
+		rendicion.setCodUsuarioAprobador(getStringTrimmed(parameters, "codUsrAprob"));
+		rendicion.setMotivoRechazo(getStringTrimmed(parameters, "desc_rechazo"));
 
-                int codThuban = str.length();
-                if (codThuban > 232) {
-                    rendicion.setIdu(str.substring(232, 242).trim());
-                    if (codThuban > 242) {
-                        rendicion.setAdea(str.substring(248, 259).trim());
-                    } else {
-                        rendicion.setAdea("");
-                    }
-                } else {
-                    rendicion.setIdu("");
-                    rendicion.setAdea("");
-                }
-                rendicion.setDescripcionEstado(((String) parametersExecute.get("desc_est_rend")).trim());
-                rendicion.setUsuarioAprobador(((String) parametersExecute.get("nomUsrAprob")).trim());
-                rendicion.setCodUsuarioAprobador(((String) parametersExecute.get("codUsrAprob")).trim());
-                rendicion.setMotivoRechazo(((String) parametersExecute.get("desc_rechazo")).trim());
+		if (parameters.get("fec_ult_mod") != null) {
+			rendicion.setFechaUltimaModificacion(((String) parameters.get("fec_ult_mod")).trim());
+		}
+	}
 
-                if (parametersExecute.get("fec_ult_mod") != null) {
-                    rendicion.setFechaUltimaModificacion(((String) parametersExecute.get("fec_ult_mod")).trim());
-                }
-                //rendicion.setAlerta(((String) obj).substring(259, 260));
-                rendicion.setAlerta("0");
+	private String getStringTrimmed(Map<String, Object> map, String key) {
+		Object value = map.get(key);
+		return value != null ? ((String) value).trim() : "";
+	}
 
-                listaRendiciones.add(rendicion);
-            }
-        }
-    }
 
-    @Override
-    public List getDataReturnList() {
-        log.info("Se da return al listado de rendiciones");
-        return listaRendiciones;
-    }
+	@Override
+	public List getDataReturnList() {
+		return listaRendiciones;
+	}
 
-    public String getRendiciones(String idRendicion, String idMotivo, String codMotivo, String descripcionMotivo,
-            String descripcionRendicion, String fechaDesde, String fechaHasta, String Importe) throws TransactionException {
-        String strIn241 = FormatosCampos.formatString(idRendicion, FORMATO_IDRENDICION)
-                + FormatosCampos.formatString(idMotivo, FORMATO_IDMOTIVO + "")
-                + FormatosCampos.formatString(codMotivo, FORMATO_COD_MOTIVO + "")
-                + FormatosCampos.formatString(descripcionMotivo, FORMATO_DESCRIPCION_MOTIVO + "")
-                + FormatosCampos.formatString(descripcionRendicion, FORMATO_DESCRIPCION_RENDICION + "")
-                + FormatosCampos.formatString(fechaDesde, FORMATO_FECHA_DESDE + "")
-                + FormatosCampos.formatString(fechaHasta, FORMATO_FECHA_HASTA + "")
-                + FormatosCampos.formatString(Importe, FORMATO_IMPORTE + "");
-
-        return strIn241;
-    }
+	@Override
+	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+		parametersExecute.put("desc_est_rend", "");
+		parametersExecute.put("nomUsrAprob", "");
+		parametersExecute.put("codUsrAprob", "");
+		parametersExecute.put("desc_rechazo", "");
+		parametersExecute.put("fec_ult_mod", "01/02/2018");
+		parametersExecute.put("aviso", "SE ACTUALIZO LA POLITICA DE GASTOS - NUEVOS TOPES VIGENTES");
+	
+		List<String> retList = new ArrayList<String>();
+		List<String> list = new ArrayList<String>();
+		
+		list.add("00000000000011080205COMPRA DE BIENES DE USO                           a                                                                                                                       PSUP 2017-11-262018-11-26          2005,00A000174494");
+		list.add("00000000000011070204USO DE VEHICULOS DE GESTION COMERCIAL             a                                                                                                                       OBSER2018-11-262018-11-26           633,00");
+		list.add("00000000000011060203COMITE Y REUNIONES DE TRABAJO                     a                                                                                                                       PENDI2018-11-262018-11-26           516,00");
+		list.add("00000000000011050202VIAJES DE GESTION LOCAL                           a                                                                                                                       PENDI2018-11-262018-11-26             0,00");
+		list.add("00000000000011040723PAGO DE MATERIAS                                  x                                                                                                                       PFIRM2018-11-262018-11-26            11,00");
+		list.add("00000000000011030717ENFERMEDAD                                        a                                                                                                                       PENDI2018-11-262018-11-26           100,00");
+		list.add("00000000000011010201VIAJE AL EXTERIOR                                 x                                                                                                                       PENDI2017-01-012017-04-01             0,00");
+		list.add("00000000000011000200REPRESENTACION AACC - COMIDAS                     x                                                                                                                       ESCAN2018-11-082018-11-19             0,00");
+		list.add("00000000000010990200REPRESENTACION AACC - COMIDAS                     a                                                                                                                       RECHA2018-11-012018-11-02             0,00");
+		list.add("00000000000010984102AYUDAS GRACIABLES - DTO MEDICO                    PRUEBA DE CARGA INICIAL DE AYUDAS GRACIABLES                                                                            PENDI2018-10-022018-10-02             0,00");
+		list.add("00000000000010970201VIAJE AL EXTERIOR                                 d                                                                                                                       ESCAN2018-09-032018-10-01             1,00A000174469");
+		list.add("00000000000010960200REPRESENTACION AACC - COMIDAS                     as                                                                                                                      PENDI2018-09-032018-09-03             0,00");
+		list.add("00000000000010950725DESARROLLO Y SELECCION INTERNA                    sdsd                                                                                                                    PENDI2018-09-032018-09-04             2,00");
+		list.add("00000000000010940200REPRESENTACION AACC - COMIDAS                     Test2                                                                                                                   ESCAN2018-04-022018-06-14         45634,00A000174457");
+		
+		if (!parametersExecute.get("idRendicion").equals("")) {
+			for (String row : list) {
+				if (Integer.parseInt(row.substring(0, 16)) == Integer.parseInt((String) parametersExecute.get("idRendicion"))) {
+					parametersExecute.put("desc_est_rend", row.substring(190, 195));
+					retList.add(row);
+					break;
+				}
+			}
+		} else
+			retList = list;
+		
+		parametersExecute.put("lista", retList);
+	}
 }

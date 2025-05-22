@@ -3,33 +3,32 @@ package com.sa.form.parametros;
 import org.apache.struts.action.ActionForm;
 
 public class ParametrosExceptuadosFiltroForm extends ActionForm {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
+	private String motivoUsuario;
+	private String exceptuadoFiltro;
+	
+	public ParametrosExceptuadosFiltroForm() {
+	}
+	
+	public void clear() {
+		this.motivoUsuario = null;
+		this.exceptuadoFiltro = null;
+	}
 
-    private String motivoUsuario;
-    private String exceptuadoFiltro;
+	public String getExceptuadoFiltro() {
+		return exceptuadoFiltro;
+	}
 
-    public ParametrosExceptuadosFiltroForm() {
-    }
+	public void setExceptuadoFiltro(String exceptuadoFiltro) {
+		this.exceptuadoFiltro = exceptuadoFiltro;
+	}
 
-    public void clear() {
-        this.motivoUsuario = null;
-        this.exceptuadoFiltro = null;
-    }
+	public String getMotivoUsuario() {
+		return motivoUsuario;
+	}
 
-    public String getExceptuadoFiltro() {
-        return exceptuadoFiltro;
-    }
-
-    public void setExceptuadoFiltro(String exceptuadoFiltro) {
-        this.exceptuadoFiltro = exceptuadoFiltro;
-    }
-
-    public String getMotivoUsuario() {
-        return motivoUsuario;
-    }
-
-    public void setMotivoUsuario(String motivoUsuario) {
-        this.motivoUsuario = motivoUsuario;
-    }
+	public void setMotivoUsuario(String motivoUsuario) {
+		this.motivoUsuario = motivoUsuario;
+	}
 }

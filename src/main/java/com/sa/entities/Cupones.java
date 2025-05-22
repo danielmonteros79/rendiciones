@@ -5,270 +5,270 @@ import java.util.Date;
 import java.util.List;
 
 public class Cupones {
+	private String idRendicion;
+	private String idGastoRend;
+	private String opciones;
+	private String tipo;
+	private String codAdmin;
+	private String cuentaCredito;
+	private String nroCupon;
+	private String nroCliente;
+	private String nroTarjeta;
+	private String liquidacionDebito;
+	private String liquidacionCredito;
+	private String liquidacionNeto;
+	private String fechaPresentacion;
+	private String fechaCierre;
+	private String moneda;
+	private String establecimiento;
+	private String codigoAutorizacion;
+	private String tipoMovimiento;
+	private String tipoConsumo;
+	private String marcaFacturado;
+	private String nroCuponDebito;
+	private String nroCuponCredito;
+	private String montoUtilizado;
+	private String disponible;
+	private String cuponCheck;
+	private List<Cupones> cupones;
+	private boolean adelanto;
 
-    private String idRendicion;
-    private String idGastoRend;
-    private String opciones;
-    private String tipo;
-    private String codAdmin;
-    private String cuentaCredito;
-    private String nroCupon;
-    private String nroCliente;
-    private String nroTarjeta;
-    private String liquidacionDebito;
-    private String liquidacionCredito;
-    private String liquidacionNeto;
-    private String fechaPresentacion;
-    private String fechaCierre;
-    private String moneda;
-    private String establecimiento;
-    private String codigoAutorizacion;
-    private String tipoMovimiento;
-    private String tipoConsumo;
-    private String marcaFacturado;
-    private String nroCuponDebito;
-    private String nroCuponCredito;
-    private String montoUtilizado;
-    private String disponible;
-    private String cuponCheck;
-    private List<Cupones> cupones;
-    private boolean adelanto;
+	public Cupones() {
+	
+	}
+	
+	public String getNroTarjetaCliente() {
+		try {
+			return "XXXX-XXXX-XXXX-" + nroTarjeta.substring(12, 16);
+		} catch (Exception e) {
+			return "";
+		}
+	}
+	
+	public String getIdRendicion() {
+		return idRendicion;
+	}
 
-    public Cupones() {
+	public void setIdRendicion(String idRendicion) {
+		this.idRendicion = idRendicion;
+	}
 
-    }
+	public String getIdGastoRend() {
+		return idGastoRend;
+	}
 
-    public String getNroTarjetaCliente() {
-        try {
-            return "XXXX-XXXX-XXXX-" + nroTarjeta.substring(12, 16);
-        } catch (Exception e) {
-            return "";
-        }
-    }
+	public void setIdGastoRend(String idGastoRend) {
+		this.idGastoRend = idGastoRend;
+	}
 
-    public String getIdRendicion() {
-        return idRendicion;
-    }
 
-    public void setIdRendicion(String idRendicion) {
-        this.idRendicion = idRendicion;
-    }
+	public String getFechaCierre() {
+		return fechaCierre;
+	}
 
-    public String getIdGastoRend() {
-        return idGastoRend;
-    }
+	public void setFechaCierre(String fechaCierre) {
+		this.fechaCierre = fechaCierre;
+	}
 
-    public void setIdGastoRend(String idGastoRend) {
-        this.idGastoRend = idGastoRend;
-    }
+	public String getNroCupon() {
+		return nroCupon;
+	}
 
-    public String getFechaCierre() {
-        return fechaCierre;
-    }
+	public void setNroCupon(String nroCupon) {
+		this.nroCupon = nroCupon;
+	}
 
-    public void setFechaCierre(String fechaCierre) {
-        this.fechaCierre = fechaCierre;
-    }
+	public String getEstablecimiento() {
+		return establecimiento;
+	}
 
-    public String getNroCupon() {
-        return nroCupon;
-    }
+	public void setEstablecimiento(String establecimiento) {
+		this.establecimiento = establecimiento;
+	}
 
-    public void setNroCupon(String nroCupon) {
-        this.nroCupon = nroCupon;
-    }
+	public String getMoneda() {
+		return moneda;
+	}
 
-    public String getEstablecimiento() {
-        return establecimiento;
-    }
+	public void setMoneda(String moneda) {
+		this.moneda = moneda;
+	}
 
-    public void setEstablecimiento(String establecimiento) {
-        this.establecimiento = establecimiento;
-    }
+	public List<Cupones> getCupones() {
+		return cupones;
+	}
 
-    public String getMoneda() {
-        return moneda;
-    }
+	public void setCupones(List<Cupones> cupones) {
+		this.cupones = cupones;
+	}
 
-    public void setMoneda(String moneda) {
-        this.moneda = moneda;
-    }
+	public String getTipo() {
+		return tipo;
+	}
 
-    public List<Cupones> getCupones() {
-        return cupones;
-    }
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
 
-    public void setCupones(List<Cupones> cupones) {
-        this.cupones = cupones;
-    }
+	public String getCodAdmin() {
+		return codAdmin;
+	}
 
-    public String getTipo() {
-        return tipo;
-    }
+	public void setCodAdmin(String codAdmin) {
+		this.codAdmin = codAdmin;
+	}
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
+	public String getCuentaCredito() {
+		return cuentaCredito;
+	}
 
-    public String getCodAdmin() {
-        return codAdmin;
-    }
+	public void setCuentaCredito(String cuentaCredito) {
+		this.cuentaCredito = cuentaCredito;
+	}
 
-    public void setCodAdmin(String codAdmin) {
-        this.codAdmin = codAdmin;
-    }
+	public String getNroCliente() {
+		return nroCliente;
+	}
 
-    public String getCuentaCredito() {
-        return cuentaCredito;
-    }
+	public void setNroCliente(String nroCliente) {
+		this.nroCliente = nroCliente;
+	}
 
-    public void setCuentaCredito(String cuentaCredito) {
-        this.cuentaCredito = cuentaCredito;
-    }
+	public String getNroTarjeta() {
+		return nroTarjeta;
+	}
 
-    public String getNroCliente() {
-        return nroCliente;
-    }
+	public void setNroTarjeta(String nroTarjeta) {
+		this.nroTarjeta = nroTarjeta;
+	}
 
-    public void setNroCliente(String nroCliente) {
-        this.nroCliente = nroCliente;
-    }
+	public String getLiquidacionDebito() {
+		return liquidacionDebito;
+	}
 
-    public String getNroTarjeta() {
-        return nroTarjeta;
-    }
+	public void setLiquidacionDebito(String liquidacionDebito) {
+		this.liquidacionDebito = liquidacionDebito;
+	}
 
-    public void setNroTarjeta(String nroTarjeta) {
-        this.nroTarjeta = nroTarjeta;
-    }
+	public String getLiquidacionCredito() {
+		return liquidacionCredito;
+	}
 
-    public String getLiquidacionDebito() {
-        return liquidacionDebito;
-    }
+	public void setLiquidacionCredito(String liquidacionCredito) {
+		this.liquidacionCredito = liquidacionCredito;
+	}
 
-    public void setLiquidacionDebito(String liquidacionDebito) {
-        this.liquidacionDebito = liquidacionDebito;
-    }
+	public String getLiquidacionNeto() {
+		return liquidacionNeto;
+	}
 
-    public String getLiquidacionCredito() {
-        return liquidacionCredito;
-    }
+	public void setLiquidacionNeto(String liquidacionNeto) {
+		this.liquidacionNeto = liquidacionNeto;
+	}
 
-    public void setLiquidacionCredito(String liquidacionCredito) {
-        this.liquidacionCredito = liquidacionCredito;
-    }
+	public String getFechaPresentacion() {
+		return fechaPresentacion;
+	}
 
-    public String getLiquidacionNeto() {
-        return liquidacionNeto;
-    }
+	public Date getFechaPresentacionDate() {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			return sdf.parse(fechaPresentacion);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
-    public void setLiquidacionNeto(String liquidacionNeto) {
-        this.liquidacionNeto = liquidacionNeto;
-    }
+	public void setFechaPresentacion(String fechaPresentacion) {
+		this.fechaPresentacion = fechaPresentacion;
+	}
 
-    public String getFechaPresentacion() {
-        return fechaPresentacion;
-    }
+	public String getCodigoAutorizacion() {
+		return codigoAutorizacion;
+	}
 
-    public Date getFechaPresentacionDate() {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            return sdf.parse(fechaPresentacion);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+	public void setCodigoAutorizacion(String codigoAutorizacion) {
+		this.codigoAutorizacion = codigoAutorizacion;
+	}
 
-    public void setFechaPresentacion(String fechaPresentacion) {
-        this.fechaPresentacion = fechaPresentacion;
-    }
+	public String getTipoMovimiento() {
+		return tipoMovimiento;
+	}
 
-    public String getCodigoAutorizacion() {
-        return codigoAutorizacion;
-    }
+	public void setTipoMovimiento(String tipoMovimiento) {
+		this.tipoMovimiento = tipoMovimiento;
+	}
 
-    public void setCodigoAutorizacion(String codigoAutorizacion) {
-        this.codigoAutorizacion = codigoAutorizacion;
-    }
+	public String getTipoConsumo() {
+		return tipoConsumo;
+	}
 
-    public String getTipoMovimiento() {
-        return tipoMovimiento;
-    }
+	public void setTipoConsumo(String tipoConsumo) {
+		this.tipoConsumo = tipoConsumo;
+	}
 
-    public void setTipoMovimiento(String tipoMovimiento) {
-        this.tipoMovimiento = tipoMovimiento;
-    }
+	public String getMarcaFacturado() {
+		return marcaFacturado;
+	}
 
-    public String getTipoConsumo() {
-        return tipoConsumo;
-    }
+	public void setMarcaFacturado(String marcaFacturado) {
+		this.marcaFacturado = marcaFacturado;
+	}
 
-    public void setTipoConsumo(String tipoConsumo) {
-        this.tipoConsumo = tipoConsumo;
-    }
+	public String getNroCuponDebito() {
+		return nroCuponDebito;
+	}
 
-    public String getMarcaFacturado() {
-        return marcaFacturado;
-    }
+	public void setNroCuponDebito(String nroCuponDebito) {
+		this.nroCuponDebito = nroCuponDebito;
+	}
 
-    public void setMarcaFacturado(String marcaFacturado) {
-        this.marcaFacturado = marcaFacturado;
-    }
+	public String getNroCuponCredito() {
+		return nroCuponCredito;
+	}
 
-    public String getNroCuponDebito() {
-        return nroCuponDebito;
-    }
+	public void setNroCuponCredito(String nroCuponCredito) {
+		this.nroCuponCredito = nroCuponCredito;
+	}
 
-    public void setNroCuponDebito(String nroCuponDebito) {
-        this.nroCuponDebito = nroCuponDebito;
-    }
+	public String getMontoUtilizado() {
+		return montoUtilizado;
+	}
 
-    public String getNroCuponCredito() {
-        return nroCuponCredito;
-    }
+	public void setMontoUtilizado(String montoUtilizado) {
+		this.montoUtilizado = montoUtilizado;
+	}
 
-    public void setNroCuponCredito(String nroCuponCredito) {
-        this.nroCuponCredito = nroCuponCredito;
-    }
+	public String getDisponible() {
+		return disponible;
+	}
 
-    public String getMontoUtilizado() {
-        return montoUtilizado;
-    }
+	public void setDisponible(String disponible) {
+		this.disponible = disponible;
+	}
 
-    public void setMontoUtilizado(String montoUtilizado) {
-        this.montoUtilizado = montoUtilizado;
-    }
+	public String getOpciones() {
+		return opciones;
+	}
 
-    public String getDisponible() {
-        return disponible;
-    }
+	public void setOpciones(String opciones) {
+		this.opciones = opciones;
+	}
 
-    public void setDisponible(String disponible) {
-        this.disponible = disponible;
-    }
+	public void setCuponCheck(String cuponCheck) {
+		this.cuponCheck = cuponCheck;
+	}
 
-    public String getOpciones() {
-        return opciones;
-    }
+	public String getCuponCheck() {
+		return cuponCheck;
+	}
 
-    public void setOpciones(String opciones) {
-        this.opciones = opciones;
-    }
+	public boolean isAdelanto() {
+		return adelanto;
+	}
 
-    public void setCuponCheck(String cuponCheck) {
-        this.cuponCheck = cuponCheck;
-    }
-
-    public String getCuponCheck() {
-        return cuponCheck;
-    }
-
-    public boolean isAdelanto() {
-        return adelanto;
-    }
-
-    public void setAdelanto(boolean adelanto) {
-        this.adelanto = adelanto;
-    }
+	public void setAdelanto(boolean adelanto) {
+		this.adelanto = adelanto;
+	}
 }

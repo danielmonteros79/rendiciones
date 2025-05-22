@@ -1,29 +1,27 @@
 #DivsPopUp {
-    width: 50%;
-    height: 70%;
-    float: left;
-    font-size:small;
-    font-weight: bold;
+	width: 50%;
+	height: 70%;
+	float: left;
+	font-size:small;
+	font-weight: bold;
 }
 #BotonSavePopUp {
-    width: 20%;
-    height: 100%;
-    float: right;
-    border: 50%;
-    text-align: center;
-    margin-top:0px;
+	width: 20%;
+	height: 100%;
+	float: right;
+	border: 50%;
+	text-align: center;
+	margin-top:0px;
 
 }
 #NuevoGastoPopUp{
-    width: 90%;
-    height: 18%;
-    margin-left:8%;
+	width: 90%; height: 18%;margin-left:8%;
 }
 
 table {
-    width: 90%;
-    border: 0;
-    text-align: left;
-    font-size:small;
-    font-weight: bold;
+	width: 90%;
+	border: 0;
+	text-align: left;
+	font-size:small;
+	font-weight: bold;
 } 

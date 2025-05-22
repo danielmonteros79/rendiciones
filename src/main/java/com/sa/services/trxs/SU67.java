@@ -1,79 +1,72 @@
 package com.sa.services.trxs;
 
-import ar.com.bbva.web.IWebClient;
-import ar.com.itrsa.sam.TransactionException;
-import com.sa.entities.Rendicion;
-import com.sa.services.Transaction;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.sa.entities.CierreTarjeta;
+import com.sa.services.Transaction;
+
+import ar.com.bbva.web.IWebClient;
+import ar.com.itrsa.sam.TransactionException;
+import ar.org.bbva.util.DateUtils;
+
 public class SU67 extends Transaction {
+	private static final Log log = LogFactory.getLog(SU67.class);
 
-    private static final Log log = LogFactory.getLog(SU64.class);
+	public SU67() {
+		this.PARAMETER_TRX = "SUM_REDISTRIBUCION_GASTO";
+		this.CURRENT_TRX = "SU67";
+	}
 
-    private final String[] FIELDS_INPUT = new String[]{};
-    public List<Rendicion> listaRendiciones = new ArrayList<Rendicion>();
+	@Override
+	public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
+		try {
+			execute(client, this.PARAMETER_TRX, parametersExecute);
+			mapData(parametersExecute);
+		} catch (Exception e) {
+			log.error("", e);
+			throw new TransactionException(e);
+		}
 
-    public SU67() {
-        // TODO Auto-generated constructor stub
-        this.PARAMETER_TRX = "SUM_REDISTRIBUCION_GASTO";
-        this.CURRENT_TRX = "SU67";
-    }
+	}
 
-    @Override
-    public void executeTrx(IWebClient client, Map parametersExecute)
-            throws TransactionException {
-        // TODO Auto-generated method stub
-//		parametersExecute = new HashMap();	
-        try {
+	@Override
+	protected void mapData(Map<String, Object> parametersExecute) throws ParseException {
+		CierreTarjeta cd = new CierreTarjeta();
+		if (parametersExecute.get("lista") != null) {
+			for (Object obj : (List) parametersExecute.get("lista")) {
+				String str = getStrLista(obj);
+				int i = 0;
 
-            execute(client, this.PARAMETER_TRX, parametersExecute);
+				SimpleDateFormat toDate = new SimpleDateFormat("yyyy-MM-dd");
+				cd.setUsuario(str.substring(i, i += 8));
+				//cd.setIdRend(str.substring(8,25));
+				cd.setFechaCupon(toDate.parse(str.substring(70, 84)));
+				cd.setEstablecimiento(str.substring(82, 112));
+				cd.setMoneda(str.substring(112, 115));
+				cd.setEstadoResumen(str.substring(115, 120));
 
-            // Mapear los datos
-//			mapData(parametersExecute);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            throw new TransactionException(e);
-        }
+				//cd.setMontoCupon(Integer.parseInt(str.substring(71, 93)));
+				cd.setMontoCupon(Double.valueOf((String) parametersExecute.get("importe")));
+				System.out.println(str + " datos de cupon ahh");
+		
+				dataReturnList.add(cd);
+				
+			}
+			
+		}
+		
+	
+		
+		
+	}
 
-    }
-
-    @Override
-    public void executeTrx(IWebClient client, String... parameters)
-            throws TransactionException {
-        // TODO Auto-generated method stub
-        try {
-
-            execute(client, this.PARAMETER_TRX, this.mapInputParams(parameters));
-
-            // Mapear los datos
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            throw new TransactionException(e);
-        }
-    }
-
-    @Override
-    protected Map mapInputParams(String... parameters) {
-        // TODO Auto-generated method stub
-        Map parametersExecute = new HashMap<Object, Object>();
-
-        for (int i = 0; i < parameters.length; i++) {
-            parametersExecute.put(FIELDS_INPUT[i], parameters[i]);
-        }
-        return parametersExecute;
-    }
-
-    @Override
-    protected void mapData(Map parametersExecute) {
-        log.info("Se mapean los datos");
-
-        // BasicDynaBean bean = (BasicDynaBean)
-        // parametersExecute.get("mensajesRespuesta");
-    }
-
+	@Override
+	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+	}
 }

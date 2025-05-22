@@ -1,110 +1,112 @@
 package com.sa.util;
 
 import java.text.SimpleDateFormat;
+
 import javax.sql.DataSource;
 
 public final class GlobalConfig {
 
-    private static GlobalConfig instance;
+	private static GlobalConfig instance;
+	
+	private DataSource dataSource;
+	private DataSource vtosDataSource;
+	private DataSource notifDataSource;
+	private DataSource fdosDataSource;
+	
+	private int hitsPerPage;
 
-    private DataSource dataSource;
-    private DataSource vtosDataSource;
-    private DataSource notifDataSource;
-    private DataSource fdosDataSource;
+	private String dateFormatPattern;
+	private SimpleDateFormat dateFormatter;
+	
+	private int logMailErorPageSize;
+	
+	private GlobalConfig() {
+		//set here all default values
+		hitsPerPage = 20;
+		logMailErorPageSize = 10;
+	}
+	
+	public static GlobalConfig getInstance() {
+		if(instance == null) {
+			instance = new GlobalConfig();
+		}
+		return instance;
+	}
 
-    private int hitsPerPage;
+	public DataSource getDataSource() {
+		return dataSource;
+	}
 
-    private String dateFormatPattern;
-    private SimpleDateFormat dateFormatter;
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+	
+	public DataSource getVencimientosDataSource() {
+		return vtosDataSource;
+	}
 
-    private int logMailErorPageSize;
+	public void setVencimientosDataSource(DataSource vtosDataSource) {
+		this.vtosDataSource = vtosDataSource;
+	}
+	
+	public DataSource getNotificacionesDataSource() {
+		return notifDataSource;
+	}
 
-    private GlobalConfig() {
-        //set here all default values
-        hitsPerPage = 20;
-        logMailErorPageSize = 10;
-    }
+	public void setNotificacionesDataSource(DataSource notifDataSource) {
+		this.notifDataSource = notifDataSource;
+	}
+	
+	public DataSource getFeriadosDataSource() {
+		return fdosDataSource;
+	}
 
-    public static GlobalConfig getInstance() {
-        if (instance == null) {
-            instance = new GlobalConfig();
-        }
-        return instance;
-    }
+	public void setFeriadosDataSource(DataSource fdosDataSource) {
+		this.fdosDataSource = fdosDataSource;
+	}
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
+	public int getHitsPerPage() {
+		return getHitsPerPage(false);
+	}
+	
+	public int getHitsPerPage(boolean isRia) {
+		if(isRia) {
+			return 50;
+		} else {
+			return hitsPerPage;
+		}
+	}
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+	public void setHitsPerPage(int hitsPerPage) {
+		this.hitsPerPage = hitsPerPage;
+	}
 
-    public DataSource getVencimientosDataSource() {
-        return vtosDataSource;
-    }
+	public String getDateFormatPattern() {
+		return dateFormatPattern;
+	}
 
-    public void setVencimientosDataSource(DataSource vtosDataSource) {
-        this.vtosDataSource = vtosDataSource;
-    }
+	public void setDateFormatPattern(String dateFormatPattern) {
+		this.dateFormatPattern = dateFormatPattern;
+	}
 
-    public DataSource getNotificacionesDataSource() {
-        return notifDataSource;
-    }
+	public SimpleDateFormat getDateFormatter() {
+		if(dateFormatter == null) {
+			dateFormatter = new SimpleDateFormat(dateFormatPattern);
+		}
+		return dateFormatter;
+	}
 
-    public void setNotificacionesDataSource(DataSource notifDataSource) {
-        this.notifDataSource = notifDataSource;
-    }
+	public void setDateFormatter(SimpleDateFormat dateFormatter) {
+		this.dateFormatter = dateFormatter;
+	}
 
-    public DataSource getFeriadosDataSource() {
-        return fdosDataSource;
-    }
+	public int getLogMailErorPageSize() {
+		return logMailErorPageSize;
+	}
 
-    public void setFeriadosDataSource(DataSource fdosDataSource) {
-        this.fdosDataSource = fdosDataSource;
-    }
-
-    public int getHitsPerPage() {
-        return getHitsPerPage(false);
-    }
-
-    public int getHitsPerPage(boolean isRia) {
-        if (isRia) {
-            return 50;
-        } else {
-            return hitsPerPage;
-        }
-    }
-
-    public void setHitsPerPage(int hitsPerPage) {
-        this.hitsPerPage = hitsPerPage;
-    }
-
-    public String getDateFormatPattern() {
-        return dateFormatPattern;
-    }
-
-    public void setDateFormatPattern(String dateFormatPattern) {
-        this.dateFormatPattern = dateFormatPattern;
-    }
-
-    public SimpleDateFormat getDateFormatter() {
-        if (dateFormatter == null) {
-            dateFormatter = new SimpleDateFormat(dateFormatPattern);
-        }
-        return dateFormatter;
-    }
-
-    public void setDateFormatter(SimpleDateFormat dateFormatter) {
-        this.dateFormatter = dateFormatter;
-    }
-
-    public int getLogMailErorPageSize() {
-        return logMailErorPageSize;
-    }
-
-    public void setLogMailErorPageSize(int logMailErorPageSize) {
-        this.logMailErorPageSize = logMailErorPageSize;
-    }
-
+	public void setLogMailErorPageSize(int logMailErorPageSize) {
+		this.logMailErorPageSize = logMailErorPageSize;
+	}
+	
+	
 }

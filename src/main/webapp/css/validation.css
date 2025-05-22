@@ -1,4 +1,7 @@
 label.error {
-    color : red;
-    border-color:red;
+	color : red;
+	border-color:red;
+}
+.error {
+    border: 2px solid red;
 }

@@ -1,159 +1,107 @@
 package com.sa.decorator;
 
-//comentario
-import com.sa.entities.Rendicion;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
+import com.sa.entities.Rendicion;
+
 public class RendicionesTableDecorator extends SumTableDecorator {
 
-    @Override
-    protected String getVerLink() {
-        PageContext pc = this.getPageContext();
-        HttpServletRequest request = (HttpServletRequest) pc.getRequest();
-        String contextPath = request.getContextPath();
+	@Override
+	protected String getVerLink() {
+		PageContext pc = this.getPageContext();
+		HttpServletRequest request = (HttpServletRequest) pc.getRequest();
+		String contextPath = request.getContextPath();
 
-        Rendicion rendicion = (Rendicion) this.getCurrentRowObject();
-        String imgTag = "<img src=\"" + contextPath + "/images/iconos/ver.png\" alt=\"Ver\" title=\"Ver\" border=\"0\" />";
-        String verLink = "<a href=\"" + contextPath
-                + "/mostrarDetalleGastos.do?action=mostrarDetalleGastos"
-                + "&codigo=" + rendicion.getId()
-                + "\">" + imgTag + "</a>";
-        return verLink;
-    }
+		Rendicion rendicion = (Rendicion) this.getCurrentRowObject();
+		String imgTag = "<i class=\"bbva-icon icon-coronita_search\" data-toggle=\"tooltip\" title=\"Ver\"></i>";
+		
+		return  "<a href=\"" + contextPath + "/rendicionDetalleGastos.do?" + "codigo=" + rendicion.getId() + "\">" + imgTag + "</a>";
+		
+	}
 
-    @Override
-    protected String getEditarLink() {
-        return "";
-    }
+	@Override
+	protected String getEditarLink() {
+		return "";
+	}
 
-    @Override
-    protected String getBorrarLink() {
-        Rendicion rendicion = (Rendicion) this.getCurrentRowObject();
+	@Override
+	protected String getBorrarLink() {
+		Rendicion rendicion = (Rendicion) this.getCurrentRowObject();
 
-        PageContext pc = this.getPageContext();
-        HttpServletRequest request = (HttpServletRequest) pc.getRequest();
-        String contextPath = request.getContextPath();
-        String borrarLink = "";
-        String idRendicion = rendicion.getId().toString();
-        if (rendicion.getEstado().equalsIgnoreCase("PENDI")) {
-            String imgTag = "<a href=\"#\" onclick=\"eliminarRendicion("
-                    + idRendicion
-                    + ")\"><img src=\""
-                    + contextPath
-                    + "/images/iconos/borrar.png\" alt=\"Eliminar\" title=\"Eliminar\" border=\"0\" /> </a>";
-            borrarLink = "<a href=\"" + contextPath
-                    + "/listaRendiciones.do?action=deleteSector&codigo="
-                    + rendicion.getId() + "\">" + imgTag + "</a></td>";
-        }
+		String borrarLink = "";
+		String idRendicion = rendicion.getId().toString();
+		
+		if (rendicion.getEstado().equalsIgnoreCase("PENDI")) {
+			String imgTag = "<i class=\"bbva-icon icon-coronita_trash\" data-toggle=\"tooltip\" title=\"Eliminar\"></i>";
+			borrarLink = "<a href=\"#a\" class=\"text-gray\" onclick=\"eliminarRendicion(" + idRendicion + ")\">" + imgTag + "</a>";
+		}
 
-        return borrarLink;
+		return borrarLink;
+	}
+ 
+	public String getStatusColor() {
+		Rendicion rend = (Rendicion) this.getCurrentRowObject();
+		String div = "";
+		
+		if (rend.getEstado().equalsIgnoreCase("PENDI"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-zero-in-a-circle.png); background-color: yellow;\" data-toggle=\"tooltip\" title=\"PENDIENTE\"> </div>";
+		else if (rend.getEstado().equalsIgnoreCase("ESCAN"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-one-in-a-circle.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"ESCANEADA\"> </div>";
+		else if (rend.getEstado().trim().equalsIgnoreCase("PSUP"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-two-in-a-circle.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"PENDIENTE SUPERVISOR\"> </div>";
+		else if (rend.getEstado().equalsIgnoreCase("PFIRM"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-three-in-a-circle.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"PENDIENTE FIRMA\"> </div>";
+		else if (rend.getEstado().trim().equalsIgnoreCase("PGLG"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-four-in-circular-button.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"PENDIENTE GLG\"> </div>";
+		else if (rend.getEstado().equalsIgnoreCase("OBSER"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-four-in-circular-button.png); background-color: yellow;\" data-toggle=\"tooltip\" title=\"OBSERVADA\"> </div>";
+		else if (rend.getEstado().equalsIgnoreCase("APROB"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: lightblue;\" data-toggle=\"tooltip\" title=\"APROBADA\"> </div>";
+		else if (rend.getEstado().equalsIgnoreCase("ORDPG"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: #5cb85c;\" data-toggle=\"tooltip\" title=\"" + rend.getEstado() + "\"></div>";
+		else if (rend.getEstado().equalsIgnoreCase("SUSPE"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: yellow;\" data-toggle=\"tooltip\" title=\"SUSPENDIDA\"> </div>";
+		else if (rend.getEstado().equalsIgnoreCase("RECHA"))
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/circular-button.png); background-color: red;\" data-toggle=\"tooltip\" title=\"RECHAZADA\"> </div>";
+		else
+			div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: red;\" data-toggle=\"tooltip\" title=\"" + rend.getEstado() + "\"></div>";
 
-    }
+		return div;
+	}
 
-    @Override
-    protected String getScanLink() {
-        PageContext pc = this.getPageContext();
-        HttpServletRequest request = (HttpServletRequest) pc.getRequest();
-        String contextPath = request.getContextPath();
+	@Override
+	protected String getDestinatariosLink() {
+		return null;
+	}
 
-        Rendicion sector = (Rendicion) this.getCurrentRowObject();
-        String verLink = "";
-        if (sector.getEstado().equalsIgnoreCase("PENDI") || sector.getEstado().equalsIgnoreCase("ESCAN")) {
-            String imgTag = "<img src=\""
-                    + contextPath
-                    + "/images/iconos/scanner.png\" alt=\"Escan\" title=\"Escan\" border=\"0\"width=\"24\" height=\"24\" />";
-            verLink = "<a href=\""
-                    + contextPath
-                    + "/mostrarDetalleScan.do?action=mostrarDetalleScan&codigo="
-                    + sector.getId() + "\">" + imgTag + "</a>";
-        }
+	@Override
+	protected String getCuponesLink() {
+		Rendicion rend = (Rendicion) this.getCurrentRowObject();
+		String img = "";
+		PageContext pc = this.getPageContext();
+		HttpServletRequest request = (HttpServletRequest) pc.getRequest();
+		String contextPath = request.getContextPath();
+		if( rend.getAdea() == null || rend.getAdea().equals("") || rend.getAdea().equals("00000000000")) rend.setAlerta("0"); 
+		
+		else rend.setAlerta(rend.getAdea().substring(0,1));
+	
+		img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_riesgo_grave.png' alt='Riesgo' title='Riesgo' data-toggle='tooltip' title='Riesgo' />";
+		
+		String link = "<a href=\"#a\" class=\"text-gray\" onclick=\"obtenerDetalleAlerta("+rend.getId() + "," +  rend.getAdea() + ")\">" + img + "</a>";
 
-        return verLink;
-    }
+		//String verLink = "<a href=\"" + contextPath + "/listadoAlertas.do?" + "codigo=" + rend.getId() +  "&glg=" + request.getParameter("glg") + "\">" + img + "</a>";
+		return rend.getAlerta().equals("1") ? link : "";
+	}
 
-    @Override
-    protected String getDestinatariosLink() {
-        return "";
-    }
 
-    @Override
-    protected String getCuponesLink() {
-        Rendicion rend = (Rendicion) this.getCurrentRowObject();
-        String img = "";
-        PageContext pc = this.getPageContext();
-        HttpServletRequest request = (HttpServletRequest) pc.getRequest();
-        String contextPath = request.getContextPath();
+	@Override
+	protected String getScanLink() {
+		return null;
+	}
 
-        if (rend.getAlerta().equalsIgnoreCase("1")) {
-            img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_riesgo_grave.png' alt='Riesgo grave' title='Riesgo grave'/>";
-        } else if (rend.getAlerta().equalsIgnoreCase("2")) {
-            img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_riesgo.png' alt='Riesgo' title='Riesgo'/>";
-        } else if (rend.getAlerta().equalsIgnoreCase("3")) {
-            img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_incidencia_grave.png' alt='Incidencia grave' title='Incidencia grave'/>";
-        } else if (rend.getAlerta().equalsIgnoreCase("4")) {
-            img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_incidente.png' alt='Incidente' title='Incidente'/>";
-        } else if (rend.getAlerta().equalsIgnoreCase("5")) {
-            img = "<img width='25px' src='" + contextPath + "/images/iconos/alerta_anomalia.png' alt='Anomal&iacute;a' title='Anomal&iacute;a'/>";
-        }
-
-        return img;
-    }
-
-    public String getStatusColor() {
-        Rendicion rend = (Rendicion) this.getCurrentRowObject();
-        String div = "";
-        if (rend.getEstado().equalsIgnoreCase("PENDI")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-zero-in-a-circle.png); background-color: yellow;margin-left:7px\"> </div>";
-        } else if (rend.getEstado().equalsIgnoreCase("ESCAN")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-one-in-a-circle.png); background-color: lightblue;margin-left:7px\"> </div>";
-        } else if (rend.getEstado().trim().equalsIgnoreCase("PSUP")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-two-in-a-circle.png); background-color: lightblue;margin-left:7px\"> </div>";
-        } else if (rend.getEstado().equalsIgnoreCase("PFIRM")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-three-in-a-circle.png); background-color: lightblue;margin-left:7px\"> </div>";
-        } else if (rend.getEstado().trim().equalsIgnoreCase("PGLG")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-four-in-circular-button.png); background-color: lightblue;margin-left:7px\"> </div>";
-        } else if (rend.getEstado().equalsIgnoreCase("OBSER")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-four-in-circular-button.png); background-color: yellow;margin-left:7px\"> </div>";
-        } else if (rend.getEstado().equalsIgnoreCase("APROB")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: lightblue;margin-left:7px\"> </div>";
-        } else if (rend.getEstado().equalsIgnoreCase("ORDPG")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: #5cb85c;margin-left:7px\"> </div>";
-        } else if (rend.getEstado().equalsIgnoreCase("SUSPE")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: yellow;margin-left:7px\"> </div>";
-        } else if (rend.getEstado().equalsIgnoreCase("RECHA")) {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/circular-button.png); background-color: red;margin-left:7px\"> </div>";
-        } else {
-            div = "<div id=\"circulo\" style=\"background-image: url(./images/iconos/number-five-in-circular-button.png); background-color: red;margin-left:7px\"> </div>";
-        }
-
-        return div;
-    }
-
-    @Override
-    protected String getCaratulaLink() {
-        // TODO Auto-generated method stub
-        PageContext pc = this.getPageContext();
-        HttpServletRequest request = (HttpServletRequest) pc.getRequest();
-        String contextPath = request.getContextPath();
-
-        Rendicion rendicion = (Rendicion) this.getCurrentRowObject();
-
-        String verLink = "";
-        if (!rendicion.getEstado().equalsIgnoreCase("PENDI")) {
-            if (!rendicion.getIdu().equals("")
-                    && !rendicion.getAdea().equalsIgnoreCase("")) {
-                String imgTag = "<img src=\""
-                        + contextPath
-                        + "/images/iconos/pdf.png\" alt=\"Caratula\" title=\"Caratula\" border=\"0\" />";
-                verLink = "<a href=\""
-                        + contextPath
-                        + "/rendicionAviso.do?generate=anymode&rnd="
-                        + rendicion.getId() + "\">" + imgTag + "</a>";
-            }
-
-        }
-
-        return verLink;
-    }
+	@Override
+	protected String getCaratulaLink() {
+		return null;
+	}
 }

@@ -11,179 +11,257 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-    <head>
+<head>
 
 
-        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="./css/select2Personalized.css">
+<link rel="stylesheet" type="text/css" href="./css/Parametros.css">
+<link rel="stylesheet" type="text/css" href="./css/validation.css">
+<style>
+td {
+	text-align: left;
+}
 
-        <link rel="stylesheet" type="text/css" href="./css/Parametros.css">
-        <link rel="stylesheet" type="text/css" href="./css/validation.css">
-        <style>
-            td {
-                text-align: left;
-            }
+label.error {
+	position: absolute;
+}
+</style>
+</head>
+<body>
 
-            label.error {
-                position: absolute;
-            }
-        </style>
-    </head>
-    <body>
-        <logic:present name="message">
-            <% String message = (String) request.getAttribute("message");
-		
-            if(message.contains("ERROR")) { %>
-            <div id="messageErr" class="message">
-                <%= message.substring(7) %>
-            </div>
-            <%} else if(message.contains("OK")) { %>
-            <div id="messageOk" class="message">
-                <%= message.substring(4) %>
-            </div>
-            <%} else {%>
-            <div id="messageAviso" class="message">
-                AVISO: <%= message %>
-            </div>
-            <%}%>
-        </logic:present>
-        <html:form action="FiltroCuadroDetallado" styleId="CuadroDetalladoForm">
-            <table style="margin-bottom: 10px;">
-                <thead>
-                    <tr>
-                        <th colspan="13">Filtro Cuadro Detallado</th>
-                    </tr>
-                </thead>
-                <tbody class="filtro" style="font-size: small; font-weight: bold;">
-                    <tr>
-                        <td colspan="4">Usuario:
-                            <html:text styleClass="green" property="nombreUsuario" style="width: 280px;" readonly="true"/>
-                        </td>
-                        <td colspan="4">C.Costos:
-                            <html:text styleClass="green" property="costos" readonly="true" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Opci&oacute;n:</td>
-                        <td>
-                            <html:select property="opcion" styleId="opcion" onchange="selectOpcion()">
-                                <html:option value="01">Estado actual</html:option>
-                                <html:option value="02">Estado final</html:option>
-                                <html:option value="03">Fecha de carga</html:option>
-                            </html:select>
-                        </td>
-                        <td>GLG:</td>
-                        <!-- 					<td colspan="3" id="tdGlg"  -->
-                        <!-- 						style="white-space:normal;padding-right:90px;height:29px;width:750px;vertical-align:top;"> -->
-                        <%-- 						<logic:iterate name="CuadroFiltroForm" property="glg" id="glgI" indexId="i"> --%>
-                        <%-- 							<%String glg ="glgI[" + i + "]"; %> --%>
-                        <%-- 							<%String glgSel ="glgSelI[" + i + "]"; %> --%>
-                        <%-- 							<%String glgId ="glg" + i; %> --%>
-                        <%-- 							<bean:define id="val" name="CuadroFiltroForm" property="<%=glg%>"/> --%>
-                        <!-- 							<div class="ck-button"><label> -->
-                        <%-- 								<html:checkbox styleId="<%=glgId%>" value="<%=val.toString()%>"  --%>
-                        <%-- 									property="<%=glgSel%>" style="width:50px;" /> --%>
-                        <%-- 								<span><bean:write name="CuadroFiltroForm" property="<%=glg%>" /></span> --%>
-                        <!-- 							</label></div> -->
-                        <%-- 						</logic:iterate> --%>
-                        <!-- 						<input type="hidden" name="glg"/> -->
-                        <!-- 					</td> -->
-                        <td>
-                            <html:select property="codGlg" styleId="codGlg" style="width:100px;">
-                                <html:options collection="ComboGlg" property="id" labelProperty="descripcion"/>
-                            </html:select>
-                        </td>
-                        <td>Motivo:</td>
-                        <td colspan="3">
-                            <html:select property="codMotivo" styleId="codMotivo" style="width:320px;">
-                                <html:option value="">TODOS</html:option>
-                                <html:options collection="ComboMotivo" property="id" labelProperty="descripcion"/>
-                            </html:select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Desde:</td>
-                        <td>
-                            <html:text property="fechaDesde" styleId="fechaDesde" size="8" 
-                                       style="width:80px; color:black;" styleClass="fechaDDMMYY"/>
-                            <img id="imageCal1" src='./images/Calendar.png' border='0' 
-                                 style="float:left;position:absolute;cursor:pointer;margin-left:5px;">
-                        </td>
-                        <td>Hasta:</td>
-                        <td style="padding-right:30px;">
-                            <html:text property="fechaHasta" styleId="fechaHasta" size="8" 
-                                       style="width:80px; color:black;" styleClass="fechaDDMMYY"/>
-                            <img id="imageCal2" src='./images/Calendar.png' border='0' 
-                                 style="float:left;position:absolute;cursor:pointer;margin-left:5px;">
-                        </td>
-                        <td>Monto Desde:</td>
-                        <td>
-                            <html:text property="montoDesde" styleId="montoDesde" style="width:110px;" 
-                                       maxlength="16" onkeypress="return keyPressMonto(event, 'montoDesde');"/>
-                        </td>
-                        <td>Monto Hasta:</td>
-                        <td>
-                            <html:text property="montoHasta" styleId="montoHasta" style="width:110px;" 
-                                       maxlength="16" onkeypress="return keyPressMonto(event, 'montoHasta');"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td colspan="3">
-                            <div id="errorFechas" style="color:red;"></div>
-                        </td>
-                        <td></td>
-                        <td colspan="3">
-                            <div id="errorMonto" style="color:red;"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Usuario:</td>
-                        <td>
-                            <html:text property="usuario" styleId="usuario" style="width:110px;text-transform:uppercase;" maxlength="8"/>
-                        </td>
-                        <td>Estado</td>
-                        <td colspan="3"> 
-                            <html:select property="codEstado" styleId="codEstado">
-                                <html:option value="">Todos</html:option>
-                                <html:options collection="ComboEstado" property="id" labelProperty="descripcion" />
-                            </html:select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="13" style="text-align:right;padding-right:10px;">
-                            <html:submit styleClass="buttonFilter" value="Filtrar" />
-                            <html:button styleClass="buttonClear" value="Limpiar" property="" onclick="resetForm()" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </html:form>
+	<html:form action="FiltroCuadroDetallado" styleId="CuadroDetalladoForm">
+		<div class="bg-light" id="filtro">
+		<div class="py-3 bg-light container">
+			<logic:present name="message">
+				<%
+				String message = (String) request.getAttribute("message");
 
-        <logic:equal value="t" name="Tabla">
-            <div id="paginacion" style="margin-top: 43px;">
-                <display:table uid="row" name="CuadroDetallado"
-                               requestURI="FiltroCuadroDetallado.do" id="RendicionesTable" excludedParams="username password"
-                               decorator="com.sa.decorator.CuadroDetalladoTableDecorator" pagesize="15"
-                               style="margin-left:-0.9%;width:99.7%;" export="true">
-                    <display:column property="id" title="ID" style="width:4%;text-align:center" sortable="true" media="html csv excel" />
-                    <display:column property="motivo" title="Motivo" style="width:16%" media="html csv excel" />
-                    <display:column property="descripcion" title="Descripcion" style="width:20%" media="html csv excel" />
-                    <display:column property="estado" title="Estado" style="width:10%" media="html csv excel" />
-                    <display:column property="proxUsuario" title="PROX.USUARIO"  style="width:3%;text-align:center;" media="html" />
-                    <display:column property="fechaUltModif" format="{0,date,dd/MM/yyyy}" title="Fecha.Ult.Modif" style="width:3%;text-align:center;" media="html" />
-                    <display:column property="importe" title="Importe (*)" style="width:10%;text-align:center;" media="html csv excel"/>
-                    <display:column property="opciones" title="Opciones" style="width:3%;text-align:center;" media="html" />
+				if (message.contains("ERROR")) {
+				%>
+				<div id="messageErr" class="message text-danger  pt-1 text-center">
+					<%=message.substring(7)%>
+				</div>
+				<%
+				} else if (message.contains("OK")) {
+				%>
+				<div id="messageOk" class="message pt-1  text-center">
+					<%=message.substring(4)%>
+				</div>
+				<%
+				} else {
+				%>
+				<div id="messageAviso" class="message pt-1 text-center">
+					AVISO:
+					<%=message%>
+				</div>
+				<%
+				}
+				%>
+			</logic:present>
 
-                    <display:setProperty name="export.csv.filename" value="CuadroDetallado.csv"/>
-                    <display:setProperty name="export.excel.filename" value="CuadroDetallado.xls"/>
-                </display:table>
-            </div>
+				<div class="row">
+					<div class="mb-md-2 col-sm-12">
+						<span class="font-weight-bold">B&uacute;squeda</span>
+					</div>
+				</div>
 
-            <div style="color:#FF0000;">
-                <br/><br/>
-                <p>(*) importe rendici&oacute;n estimado</p>
-            </div>
-        </logic:equal>
+				<div class="row">
+					<div class="col-sm-12  col-lg-6">
+						<span>Usuario </span>
+						<html:text styleClass="form-control" property="nombreUsuario"
+							readonly="true" />
+					</div>
+					<div class="col-sm-12 pl-lg-1 col-lg-6">
+						<span>C.Costos: </span>
+						<html:text styleClass="form-control" property="costos"
+							readonly="true" />
+					</div>
+					<div class="col-sm-6 col-lg-4 pt-2  has-float-label scroll-err">
+						<div class="has-float-label form-group">
+							<html:select property="opcion" styleClass="form-control"
+								styleId="opcion" onchange="selectOpcion()">
+								<html:option value="01">Estado actual</html:option>
+								<html:option value="02">Estado final</html:option>
+								<html:option value="03">Fecha de carga</html:option>
+							</html:select>
+							<label
+								for="opcion">Opci&oacute;n:</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-lg-4 pt-2 pl-1 has-float-label scroll-err">
+						<div class="has-float-label form-group">
+							<html:select property="codGlg" styleClass="form-control"
+								styleId="codGlg">
+								<html:options collection="ComboGlg" property="id"
+									labelProperty="descripcion" />
+							</html:select>
+							 <label
+								for="codGlg">GLG</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+					</div>
 
-        <script type="text/javascript" src="./js/cuadroDetallado.js"></script>
-    </body>
+					<div
+						class="col-sm-6 col-lg-4 pt-2 pl-lg-1 has-float-label scroll-err">
+						<div class="has-float-label form-group">
+							<html:select property="codMotivo" styleId="codMotivo"
+								styleClass="form-control">
+								<html:option value="">TODOS</html:option>
+								<html:options collection="ComboMotivo" property="id"
+									labelProperty="descripcion" />
+							</html:select>
+							 <label
+								for="modalDelegadoInforme">Motivo</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+					</div>
+
+					<div class="col-sm-6 col-lg-4 pt-2  has-float-label scroll-err">
+						<div class="input-group">
+							<html:text property="fechaDesde" styleId="fechaDesde"
+								styleClass="form-control datepicker " readonly="true" />
+							<label for="fechaDesde">Desde</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+
+					</div>
+					<div
+						class="col-sm-6  col-lg-4 pt-2 pl-lg-1  has-float-label scroll-err ">
+
+						<div class="input-group">
+							<html:text property="fechaHasta" styleId="fechaHasta"
+								styleClass="form-control datepicker" readonly="true" />
+							<label for="fechaHasta">Hasta</label>
+
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+					</div>
+
+					<div class="col-sm-6 col-lg-4 pt-2 pl-1 has-float-label scroll-err">
+						<div class="has-float-label">
+							<label
+							for="montoDesde">Monto desde</label>
+							<html:text property="montoDesde" styleId="montoDesde" styleClass="form-control"
+							maxlength="16" onkeypress="return keyPressMonto(event, 'montoDesde');"/>
+						</div>
+						<div id="errorMonto" style="color: red;"></div>
+					</div>
+
+					<div class="col-sm-12 col-lg-4 pt-2 has-float-label scroll-err">
+						<div class="has-float-label">
+					 		<label for="montoHasta">Monto hasta</label> 
+								<html:text property="montoHasta" styleId="montoHasta" styleClass="form-control"  
+								maxlength="16" onkeypress="return keyPressMonto(event, 'montoHasta');"/>	
+						</div>
+						<div id="errorMonto" style="color: red;"></div>
+					</div>
+
+					<div
+						class="col-sm-6 col-lg-4 pt-2  pl-lg-1 has-float-label scroll-err">
+						<div class="has-float-label">
+						<!-- <input type="text" class="form-control" id="usuario"
+							placeholder="Descripción" /> <label for="usuario">Usuario</label> -->
+							<label for="usuario">Usuario</label>
+							<html:text property="usuario" styleClass="form-control" styleId="usuario" style="text-transform:uppercase;" maxlength="8"/>
+						</div>
+					</div>
+
+
+
+					<div
+						class="col-sm-6 col-lg-4 pt-2 pl-sm-1 has-float-label scroll-err">
+						<div class="has-float-label form-group">
+							<html:select property="codEstado" styleId="codEstado"
+								styleClass="form-control">
+								<html:option value="">Todos</html:option>
+								<html:options collection="ComboEstado" property="id"
+									labelProperty="descripcion" />
+							</html:select>
+							<label
+								for="codEstado">Estado</label>
+							<div class="invalid-feedback mb-3"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12 pt-3 pt-md-3 text-center">
+						<html:submit value="Filtrar" onclick="filtrar()"
+							styleClass="btn btn-primary px-4 py-2 mx-2" />
+						<html:button styleClass="btn btn-primary px-4 py-2 mx-2"
+							value="Limpiar" property="" onclick="resetForm()" />
+					</div>
+				</div>
+			</div>
+			<html:hidden styleId="codEstado" property="codEstado" />
+
+		</div>
+
+		<div class="container pt-5 div-resultado"
+			id="listadoRendicionesDivResultado">
+			<div class="row">
+				<div class="col-sm-12 mb-md-4">
+					<i
+						class="bbva-icon icon-coronita_bullet fab fa-rotate-270 text-blue align-middle mx-2"></i>
+					<small class="font-weight-bold">Cuadro Detalle</small>
+				</div>
+			</div>
+			<div class="row py-3">
+				<div class="col-sm-12">
+					<h2 class="font-weight-500">Listado Detallado</h2>
+				</div>
+			</div>
+
+		</div>
+
+	</html:form>
+
+	<logic:equal value="t" name="Tabla">
+		<div id="paginacion" style="margin-top: 20px;" class=" container ">
+			<div class="py-4  table container table-responsive">
+				<display:table uid="row" name="CuadroDetallado" class="w-100"
+					requestURI="FiltroCuadroDetallado.do" id="RendicionesTable"
+					excludedParams="username password"
+					decorator="com.sa.decorator.CuadroDetalladoTableDecorator"
+					pagesize="15" style="width:50%;" export="true">
+					<display:column property="id" title="ID"
+						style="width:4%;text-align:center" sortable="true"
+						media="html csv excel" />
+					<display:column property="motivo" title="MOTIVO" style="width:15%"
+						media="html csv excel" />
+					<display:column property="descripcion" title="DESCRIPCI&Oacute;N"
+						style="width:40%" media="html csv excel" />
+					<display:column property="estado" title="Estado" style="width:10%"
+						media="html csv excel" />
+					<display:column property="proxUsuario" title="PROX.USUARIO"
+						style="width:3%;text-align:center;" media="html" />
+					<display:column property="fechaUltModif"
+						format="{0,date,dd/MM/yyyy}" title="FECHA.ULT.MODIF"
+						style="width:3%;text-align:center;" media="html" />
+					<display:column property="importe" title="IMPORTE(*)"
+						style="width:10%;text-align:center;" media="html csv excel" />
+					<display:column property="opciones" title="DETALLE"
+						style="width:3%;text-align:center;" media="html" />
+					<display:setProperty name="export.csv.filename"
+						value="CuadroDetallado.csv" />
+					<display:setProperty name="export.excel.filename"
+						value="CuadroDetallado.xls" />
+				</display:table>
+			</div>
+		</div>
+
+		<div style="color: #FF0000" class="container py-4">
+			<p>(*) importe rendici&oacute;n estimado</p>
+		</div>
+	</logic:equal>
+
+
+	<script type="text/javascript" src="static/js/select2.min.js"></script>
+	<script type="text/javascript" src="./static/js/cuadroDetallado.js"></script>
+</body>
+</html>
+
+
+
