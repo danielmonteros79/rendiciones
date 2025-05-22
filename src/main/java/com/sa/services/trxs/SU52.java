@@ -13,6 +13,12 @@ import ar.com.itrsa.sam.TransactionException;
 import org.apache.commons.text.StringEscapeUtils;
 
 public class SU52 extends Transaction {
+	
+	private final String COD_USER = "cod_user";
+	private final String FACULTAD = "facultad";
+	private final String NOMBRE_APELLIDO = "nombre_apellido";
+	private final String CTRO_COSTOS = "ctro_costos";
+	private final String SECTOR = "sector";
 
 	public SU52() {
 		this.PARAMETER_TRX = "SUM_CONS_USERDATA";
@@ -33,11 +39,11 @@ public class SU52 extends Transaction {
 	protected void mapData(Map<String, Object> parametersExecute) {
 	    log.info(this.CURRENT_TRX + " --> Mapeando datos de la transacción");
 	    
-	    String codUser = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("cod_user"));
-	    String facultad = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("facultad"));
-	    String nombreApellido = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("nombre_apellido"));
-	    String ctroCostos = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("ctro_costos"));
-	    String sector = StringEscapeUtils.escapeHtml4((String) parametersExecute.get("sector"));
+	    String codUser = StringEscapeUtils.escapeHtml4((String) parametersExecute.get(COD_USER));
+	    String facultad = StringEscapeUtils.escapeHtml4((String) parametersExecute.get(FACULTAD));
+	    String nombreApellido = StringEscapeUtils.escapeHtml4((String) parametersExecute.get(NOMBRE_APELLIDO));
+	    String ctroCostos = StringEscapeUtils.escapeHtml4((String) parametersExecute.get(CTRO_COSTOS));
+	    String sector = StringEscapeUtils.escapeHtml4((String) parametersExecute.get(SECTOR));
 	    
 
 	    List<Usuario> delegados = new ArrayList<>();
@@ -46,9 +52,9 @@ public class SU52 extends Transaction {
 		for (Object obj : retorno) {
 			String str = getStrLista(obj);
 			
-			if (str.substring(0, 8).trim().equals(parametersExecute.get("cod_user"))) {
-				delegados.add(new Usuario(str.substring(0, 8).trim(), (String) parametersExecute.get("facultad"), str.substring(8, str.length()).trim(),
-						Integer.valueOf((String) parametersExecute.get("ctro_costos")), (String) parametersExecute.get("sector"), null));
+			if (str.substring(0, 8).trim().equals(parametersExecute.get(COD_USER))) {
+				delegados.add(new Usuario(str.substring(0, 8).trim(), (String) parametersExecute.get(FACULTAD), str.substring(8, str.length()).trim(),
+						Integer.valueOf((String) parametersExecute.get(CTRO_COSTOS)), (String) parametersExecute.get(SECTOR), null));
 			} else {
 				delegados.add(new Usuario(str.substring(0, 8).trim(), str.substring((str.length() - 1), str.length()).trim(), str.substring(8, 83).trim(),
 						Integer.valueOf(str.substring(83, 87)), str.substring(87, (str.length() - 1)), null));
@@ -75,20 +81,20 @@ public class SU52 extends Transaction {
 	protected void hardcodear(Map<String, Object> parametersExecute) {
 		List<String> retList = new ArrayList<String>();
 
-		if (parametersExecute.get("cod_user").equals("A103555")) {
-			parametersExecute.put("facultad", "NN");
+		if (parametersExecute.get(COD_USER).equals("A103555")) {
+			parametersExecute.put(FACULTAD, "NN");
 			parametersExecute.put("cta_monetaria", "040099000561767");
-			parametersExecute.put("sector", "1721");
-			parametersExecute.put("nombre_apellido", "AUDRUICQ, DIEGO ANDRES");
-			parametersExecute.put("ctro_costos", "8570");
+			parametersExecute.put(SECTOR, "1721");
+			parametersExecute.put(NOMBRE_APELLIDO, "AUDRUICQ, DIEGO ANDRES");
+			parametersExecute.put(CTRO_COSTOS, "8570");
 
 			retList.add("A103555 AUDRUICQ, DIEGO ANDRES                                                     85701721S");
 		} else {
-			parametersExecute.put("facultad", "SS");
+			parametersExecute.put(FACULTAD, "SS");
 			parametersExecute.put("cta_monetaria", "040141000108834");
-			parametersExecute.put("sector", "8568");
-			parametersExecute.put("nombre_apellido", "RED DEVIL, ANALIA LAURA");
-			parametersExecute.put("ctro_costos", "0099");
+			parametersExecute.put(SECTOR, "8568");
+			parametersExecute.put(NOMBRE_APELLIDO, "RED DEVIL, ANALIA LAURA");
+			parametersExecute.put(CTRO_COSTOS, "0099");
 
 			retList.add("A126661 RED DEVIL, ANALIA LAURA                                                    00998568S");
 			retList.add("A103555 AUDRUICQ, DIEGO ANDRES                                                     85701721S");
