@@ -116,7 +116,6 @@ public class PagosService {
 	    centroCosto = (centroCosto == null || centroCosto.isEmpty()) ? "0000" : String.format("%04d", Integer.parseInt(centroCosto));
 	    importe = (importe == null || importe.isEmpty()) ? "0" : importe.replaceAll("[^\\d,\\.]", "").replace(",", ".");
 	    fechaGasto = (fechaGasto == null) ? "" : fechaGasto;
-	    tipoGasto = (tipoGasto == null || tipoGasto.length() < 59) ? "0000" + "Descripcion" + "00000" : tipoGasto;
 
 	    double value = Double.parseDouble(importe);
 	    long centavos = Math.round(value * 100);
@@ -137,6 +136,25 @@ public class PagosService {
 	    if (date != null) {
 	        fechaGasto = df.format(date).trim();
 	    }
+	    
+	    if (tipoGasto == null) {
+	        log.warn("tipoGasto es null. Se asignará valor completo por defecto.");
+	        tipoGasto = "0000" + String.format("%-50s", "Descripcion") + "00000";
+	    } else if (tipoGasto.length() < 59) {
+	        log.warn("tipoGasto incompleto. Se completará sin modificar el código.");
+	        
+	        String cod = tipoGasto.length() >= 4 ? tipoGasto.substring(0, 4) : "0000";
+	        String resto = tipoGasto.length() > 4 ? tipoGasto.substring(4) : "";
+	        
+	        // Rellenar descripción hasta 50 caracteres (posiciones 4 a 54)
+	        String descripcion = resto.length() >= 50 ? resto.substring(0, 50) : String.format("%-50s", resto);
+	        
+	        // Rellenar código obligatorio (posiciones 54 a 59)
+	        String codOblig = resto.length() >= 55 ? resto.substring(50, 55) : "00000";
+
+	        tipoGasto = cod + descripcion + codOblig;
+	    }
+
 
 	    String codGasto = tipoGasto.substring(0, 4);
 	    String descGasto = tipoGasto.length() >= 54 ? tipoGasto.substring(4, 54) : null;

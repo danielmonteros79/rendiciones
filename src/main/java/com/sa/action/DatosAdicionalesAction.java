@@ -59,7 +59,6 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		String gastoMonto = request.getParameter("gastoMonto");
 		String codMotivo = request.getParameter("codMotivo");
 		String codGasto = request.getParameter("codGasto");
-		System.out.println("CODGASTO: " + codGasto);
 		String moneda = request.getParameter("moneda");
 		String tipoComprobante = request.getParameter("tipoComprobante");
 		
@@ -103,22 +102,14 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 	            }
 	        }
 	    }
-
-	    System.out.println("COD1 limpio = " + cod1);
-	    System.out.println("KM recorridos (NUM1) = " + num1);
-	    System.out.println("Precio por litro (NUM2) = " + num2);
 	    
 	    double gastoCalculado = num1 * num2;
-	    System.out.println("GastoCalculado: " + gastoCalculado);
 
 	    if ("00002".equals(cod1)) {
 	        gastoCalculado *= 0.22; // Vehículo propio
 	    }
 	    
 	    gastoMonto = String.valueOf(gastoCalculado);
-	    System.out.println(">>>> gastoMonto enviado a altaModifGasto = " + gastoMonto);
-	    
-	    System.out.println("Gasto calculado final = " + gastoMonto);
 	    
 		service.altaModifGasto("MODI", idGasto, idRendicion, moneda, tipoComprobante, null,
 				null, null, codGasto, gastoMonto, null, codMotivo, null,
