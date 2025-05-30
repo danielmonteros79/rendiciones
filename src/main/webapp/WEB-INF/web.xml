@@ -18,7 +18,7 @@
 	<!-- Filtro de Seguridad para automatizar el control de usuarios logueados. 
 		S�lo si se usan los objetos IWebApplication e IWebClient provistos por la 
 		librer�a CNLS_BBVAWeb. -->
-	<filter>
+	<!--<filter>
 		<filter-name>WebSecurityFilter</filter-name>
 		<filter-class>ar.com.bbva.web.impl.WebSecurityFilter</filter-class>
 		<init-param>
@@ -26,7 +26,7 @@
 			<param-value>*/NL-*</param-value>
 		</init-param>
 	</filter>
-
+	-->
 
 	<!-- S� SUBIR ESTO AL AMBIENTE DE WebSphere y descomentarlo!!! -->
 	<filter>
