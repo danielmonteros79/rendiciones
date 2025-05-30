@@ -578,4 +578,93 @@ class PagosServiceTest {
     }
 
 
+    @Test
+    void testAltaModifGastoConTipoGastoNull() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+        
+        when(mockManager.getDataReturn()).thenReturn(456);
+        when(mockManager.getMensajeAviso()).thenReturn("OK con tipoGasto null");
+
+        Integer result = pagosService.altaModifGasto(
+            "A", "123", "456", "ARS", "F", "A", "001-00000001", "20202020202",
+            null, // tipoGasto es null
+            "1000.50", "01/01/2024", "MOT", "12", 
+            null, null, null, null, null, null, "Observaciones"
+        );
+
+        assertEquals(456, result);
+        assertEquals("OK con tipoGasto null", pagosService.getMsg());
+    }
+    
+    @Test
+    void testAltaModifGastoConTipoGastoIncompleto() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+        
+        when(mockManager.getDataReturn()).thenReturn(789);
+        when(mockManager.getMensajeAviso()).thenReturn("OK con tipoGasto incompleto");
+
+        Integer result = pagosService.altaModifGasto(
+            "A", "123", "456", "ARS", "F", "A", "001-00000001", "20202020202",
+            "0001Desc", // tipoGasto incompleto (menos de 59 caracteres)
+            "2500.75", "15/03/2024", "MOT", "25", 
+            null, null, null, null, null, null, "Test incompleto"
+        );
+
+        assertEquals(789, result);
+        assertEquals("OK con tipoGasto incompleto", pagosService.getMsg());
+    }
+    
+    @Test
+    void testAltaModifGastoConTipoGastoMuyCorto() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+        
+        when(mockManager.getDataReturn()).thenReturn(101);
+        when(mockManager.getMensajeAviso()).thenReturn("OK con tipoGasto muy corto");
+
+        Integer result = pagosService.altaModifGasto(
+            "M", "555", "777", "USD", "R", "B", "002-00000002", "30303030303",
+            "01", // tipoGasto muy corto (menos de 4 caracteres)
+            "750.00", "20/06/2024", "XYZ", "8", 
+            null, null, null, null, null, null, "Gasto modificado"
+        );
+
+        assertEquals(101, result);
+        assertEquals("OK con tipoGasto muy corto", pagosService.getMsg());
+    }
+    
+    @Test
+    void testAltaModifGastoConTipoGastoVacio() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+        
+        when(mockManager.getDataReturn()).thenReturn(202);
+        when(mockManager.getMensajeAviso()).thenReturn("OK con tipoGasto vacío");
+
+        Integer result = pagosService.altaModifGasto(
+            "A", "888", "999", "EUR", "F", "C", "003-00000003", "40404040404",
+            "", // tipoGasto vacío
+            "150.25", "10/12/2024", "ABC", "15", 
+            null, null, null, null, null, null, null
+        );
+
+        assertEquals(202, result);
+        assertEquals("OK con tipoGasto vacío", pagosService.getMsg());
+    }
+    
+    @Test
+    void testAltaModifGastoConTipoGastoLongitudIntermedia() throws Exception {
+        pagosService.setManagerTransaction(mockManager);
+        
+        when(mockManager.getDataReturn()).thenReturn(303);
+        when(mockManager.getMensajeAviso()).thenReturn("OK con longitud intermedia");
+
+        Integer result = pagosService.altaModifGasto(
+            "M", "111", "222", "ARS", "T", "A", "004-00000004", "50505050505",
+            "0123DescripcionParcialTexto", // tipoGasto con longitud intermedia (entre 4 y 59)
+            "3000.00", "05/08/2024", "DEF", "30", 
+            null, null, null, null, null, null, "Test intermedio"
+        );
+
+        assertEquals(303, result);
+        assertEquals("OK con longitud intermedia", pagosService.getMsg());
+    }
 }
