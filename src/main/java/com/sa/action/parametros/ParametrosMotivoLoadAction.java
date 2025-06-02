@@ -49,24 +49,58 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    boolean isTextSearch = false;
 	    
 	    if (codigoParam != null && !codigoParam.trim().isEmpty()) {
-	        try {
-	            int codInt = Integer.parseInt(codigoParam.trim());
-	            codMotivo = String.format("%04d", codInt);
-	        } catch (NumberFormatException e) {
+	        String paramTrimmed = codigoParam.trim();
+	        
+	        if (paramTrimmed.matches("\\d+")) {
+	            try {
+	                int codInt = Integer.parseInt(paramTrimmed);
+	                
+	                if (codInt < 0 || codInt > 9999) {
+	                    isTextSearch = true;
+	                    codMotivo = "";
+	                } else {
+	                    codMotivo = String.format("%04d", codInt);
+	                    isTextSearch = false;
+	                }
+	            } catch (NumberFormatException e) {
+	                isTextSearch = true;
+	                codMotivo = "";
+	            }
+	        } else {
+	            // Contiene letras u otros caracteres, es búsqueda de texto
 	            isTextSearch = true;
 	            codMotivo = "";
 	        }
+	    } else {
+	        // Si no hay parámetro, mostrar todos los resultados
+	        isTextSearch = false;
+	        codMotivo = "";
 	    }
 	    
 	    while (pagina) {
-	        List<ParametroMotivo> motivos = service.getMotivos(codMotivo, this.sessionUserWorking.getIdUser(), "0" + paginado);
+	        List<ParametroMotivo> motivos = new ArrayList<>();
+	        
+	        try {
+	            
+	            motivos = service.getMotivos(codMotivo, this.sessionUserWorking.getIdUser(), "0" + paginado);
+	            
+	            
+	        } catch (Exception e) {
+	            
+	            if (!isTextSearch) {
+	                this.message = "No se encontró el motivo con código: " + codMotivo;
+	                request.setAttribute("motivos", motivosTotales);
+	                return mapping.findForward("parametrosMotivoFiltro");
+	            }
+	            
+	            break;
+	        }
 	        
 	        for (ParametroMotivo parametroMotivo : motivos) {
 	            String codigo = parametroMotivo.getCodigo() != null ? parametroMotivo.getCodigo().toLowerCase() : "";
 	            String descripcion = parametroMotivo.getDescripcion() != null ? parametroMotivo.getDescripcion().toLowerCase() : "";
 	            String buscado = codigoParam.trim().toLowerCase();
 	            
-	            // Si es búsqueda por texto, normalizar texto removiendo tildes para la comparación
 	            if (isTextSearch) {
 	                String codigoNormalizado = removerTildes(codigo);
 	                String descripcionNormalizada = removerTildes(descripcion);
@@ -77,6 +111,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	                }
 	            }
 	            
+	            // Transformaciones de códigos
 	            if (parametroMotivo.getCodSup().trim().equalsIgnoreCase("PSUP") || parametroMotivo.getCodSup().equalsIgnoreCase("SUPER")) {
 	                parametroMotivo.setCodSup("SI");
 	            }
@@ -95,6 +130,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	            motivosTotales.add(parametroMotivo);
 	        }
 	        
+	        // Determinar si continuar con la siguiente página
 	        if (!motivos.isEmpty()) {
 	            ParametroMotivo ultimo = motivos.get(motivos.size() - 1);
 	            if ("N".equalsIgnoreCase(ultimo.getLastElement())) {
@@ -107,8 +143,17 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	        }
 	    }
 	    
+	    // Verificar si no se encontraron resultados SOLO para búsqueda por texto
+	    if (isTextSearch && motivosTotales.isEmpty() && codigoParam != null && !codigoParam.trim().isEmpty()) {
+	        request.setAttribute("noResultados", true);
+	        request.setAttribute("terminoBuscado", codigoParam.trim());
+	        this.message = "No se encontraron motivos que contengan '" + codigoParam.trim() + "'";
+	    }
+	    
 	    request.setAttribute("motivos", motivosTotales);
-	    this.message = service.getMsgAviso();
+	    if (this.message == null || this.message.isEmpty()) {
+	        this.message = service.getMsgAviso();
+	    }
 	    return mapping.findForward("parametrosMotivoFiltro");
 	}
 
