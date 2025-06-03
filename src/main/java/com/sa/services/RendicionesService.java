@@ -48,7 +48,7 @@ public class RendicionesService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		if (idRendicion != null && !idRendicion.equalsIgnoreCase(""))
-			idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
+			idRendicion = String.format("%016d", Long.parseLong(idRendicion));
 		
 		parametersExecute.put("codUsuario", idUser);
 		parametersExecute.put("idRendicion", idRendicion != null ? idRendicion : "");

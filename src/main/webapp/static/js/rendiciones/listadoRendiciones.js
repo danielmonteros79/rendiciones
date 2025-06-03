@@ -5,6 +5,13 @@ $(document).ready(function() {
 	showMessage('message', getLocalStorageItem('message'));
 	$('.nav-rendiciones').addClass('active');
 	dtParams = { action: 'filtrar' };
+	
+	if (AutoNumeric.getAutoNumericElement('#filtroId')) {
+        AutoNumeric.getAutoNumericElement('#filtroId').update({
+            maximumValue: '9999999999999999'
+        });
+    }
+
 	loadRendicionesTable();
 });
 
