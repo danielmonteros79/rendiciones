@@ -42,119 +42,197 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	private ActionForward filtrar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	    ParametrosService service = new ParametrosService(samClient);
 	    String codigoParam = request.getParameter("codigo");
-	    String codMotivo = "";
-	    int paginado = 0;
-	    List<ParametroMotivo> motivosTotales = new ArrayList<>();
-	    boolean pagina = true;
-	    boolean isTextSearch = false;
 	    
-	    if (codigoParam != null && !codigoParam.trim().isEmpty()) {
-	        String paramTrimmed = codigoParam.trim();
-	        
-	        if (paramTrimmed.matches("\\d+")) {
-	            try {
-	                int codInt = Integer.parseInt(paramTrimmed);
-	                
-	                if (codInt < 0 || codInt > 9999) {
-	                    isTextSearch = true;
-	                    codMotivo = "";
-	                } else {
-	                    codMotivo = String.format("%04d", codInt);
-	                    isTextSearch = false;
-	                }
-	            } catch (NumberFormatException e) {
-	                isTextSearch = true;
-	                codMotivo = "";
-	            }
-	        } else {
-	            // Contiene letras u otros caracteres, es búsqueda de texto
-	            isTextSearch = true;
-	            codMotivo = "";
-	        }
-	    } else {
-	        // Si no hay parámetro, mostrar todos los resultados
-	        isTextSearch = false;
-	        codMotivo = "";
+	    ParametrosBusqueda parametrosBusqueda = analizarParametrosBusqueda(codigoParam);
+	    List<ParametroMotivo> motivosTotales = buscarMotivos(service, parametrosBusqueda);
+	    
+	    configurarRespuesta(request, parametrosBusqueda, motivosTotales, service);
+	    return mapping.findForward("parametrosMotivoFiltro");
+	}
+
+	private ParametrosBusqueda analizarParametrosBusqueda(String codigoParam) {
+	    ParametrosBusqueda params = new ParametrosBusqueda();
+	    
+	    if (codigoParam == null || codigoParam.trim().isEmpty()) {
+	        params.codMotivo = "";
+	        params.isTextSearch = false;
+	        params.terminoBuscado = "";
+	        return params;
 	    }
+	    
+	    String paramTrimmed = codigoParam.trim();
+	    params.terminoBuscado = paramTrimmed;
+	    
+	    if (paramTrimmed.matches("\\d+")) {
+	        return procesarBusquedaNumerica(paramTrimmed, params);
+	    } else {
+	        params.isTextSearch = true;
+	        params.codMotivo = "";
+	        return params;
+	    }
+	}
+
+	private ParametrosBusqueda procesarBusquedaNumerica(String paramTrimmed, ParametrosBusqueda params) {
+	    try {
+	        int codInt = Integer.parseInt(paramTrimmed);
+	        
+	        if (codInt < 0 || codInt > 9999) {
+	            params.isTextSearch = true;
+	            params.codMotivo = "";
+	        } else {
+	            params.codMotivo = String.format("%04d", codInt);
+	            params.isTextSearch = false;
+	        }
+	    } catch (NumberFormatException e) {
+	        params.isTextSearch = true;
+	        params.codMotivo = "";
+	    }
+	    
+	    return params;
+	}
+
+	private List<ParametroMotivo> buscarMotivos(ParametrosService service, ParametrosBusqueda parametrosBusqueda) {
+	    List<ParametroMotivo> motivosTotales = new ArrayList<>();
+	    int paginado = 0;
+	    boolean pagina = true;
 	    
 	    while (pagina) {
-	        List<ParametroMotivo> motivos = new ArrayList<>();
-	        
 	        try {
+	            List<ParametroMotivo> motivos = service.getMotivos(
+	                parametrosBusqueda.codMotivo, 
+	                this.sessionUserWorking.getIdUser(), 
+	                "0" + paginado
+	            );
 	            
-	            motivos = service.getMotivos(codMotivo, this.sessionUserWorking.getIdUser(), "0" + paginado);
+	            List<ParametroMotivo> motivosFiltrados = filtrarYTransformarMotivos(motivos, parametrosBusqueda);
+	            motivosTotales.addAll(motivosFiltrados);
 	            
+	            pagina = deberContinuarPaginacion(motivos);
+	            if (pagina) {
+	                paginado++;
+	            }
 	            
 	        } catch (Exception e) {
-	            
-	            if (!isTextSearch) {
-	                this.message = "No se encontró el motivo con código: " + codMotivo;
-	                request.setAttribute("motivos", motivosTotales);
-	                return mapping.findForward("parametrosMotivoFiltro");
-	            }
-	            
+	            manejarExcepcionBusqueda(parametrosBusqueda);
 	            break;
 	        }
-	        
-	        for (ParametroMotivo parametroMotivo : motivos) {
-	            String codigo = parametroMotivo.getCodigo() != null ? parametroMotivo.getCodigo().toLowerCase() : "";
-	            String descripcion = parametroMotivo.getDescripcion() != null ? parametroMotivo.getDescripcion().toLowerCase() : "";
-	            String buscado = codigoParam.trim().toLowerCase();
-	            
-	            if (isTextSearch) {
-	                String codigoNormalizado = removerTildes(codigo);
-	                String descripcionNormalizada = removerTildes(descripcion);
-	                String buscadoNormalizado = removerTildes(buscado);
-	                
-	                if (!(codigoNormalizado.contains(buscadoNormalizado) || descripcionNormalizada.contains(buscadoNormalizado))) {
-	                    continue;
-	                }
-	            }
-	            
-	            // Transformaciones de códigos
-	            if (parametroMotivo.getCodSup().trim().equalsIgnoreCase("PSUP") || parametroMotivo.getCodSup().equalsIgnoreCase("SUPER")) {
-	                parametroMotivo.setCodSup("SI");
-	            }
-	            if (parametroMotivo.getCodAprobacionGlg().equalsIgnoreCase("MONTO") || parametroMotivo.getCodAprobacionGlg().trim().equalsIgnoreCase("PGLG")) {
-	                parametroMotivo.setCodAprobacionGlg("SI");
-	            }
-	            if (parametroMotivo.getCodFirma().equalsIgnoreCase("MONTO") || parametroMotivo.getCodFirma().equalsIgnoreCase("PFIRM")) {
-	                parametroMotivo.setCodFirma("SI");
-	            }
-	            if (parametroMotivo.getEstado().equalsIgnoreCase("A")) {
-	                parametroMotivo.setEstado("ACTIVO");
-	            } else if (parametroMotivo.getEstado().equalsIgnoreCase("I")) {
-	                parametroMotivo.setEstado("INACTIVO");
-	            }
-	            
-	            motivosTotales.add(parametroMotivo);
-	        }
-	        
-	        // Determinar si continuar con la siguiente página
-	        if (!motivos.isEmpty()) {
-	            ParametroMotivo ultimo = motivos.get(motivos.size() - 1);
-	            if ("N".equalsIgnoreCase(ultimo.getLastElement())) {
-	                paginado++;
-	            } else {
-	                pagina = false;
-	            }
-	        } else {
-	            pagina = false;
+	    }
+	    
+	    return motivosTotales;
+	}
+
+	private List<ParametroMotivo> filtrarYTransformarMotivos(List<ParametroMotivo> motivos, ParametrosBusqueda parametrosBusqueda) {
+	    List<ParametroMotivo> motivosFiltrados = new ArrayList<>();
+	    
+	    for (ParametroMotivo motivo : motivos) {
+	        if (cumpleCriteriosBusqueda(motivo, parametrosBusqueda)) {
+	            transformarParametroMotivo(motivo);
+	            motivosFiltrados.add(motivo);
 	        }
 	    }
 	    
-	    // Verificar si no se encontraron resultados SOLO para búsqueda por texto
-	    if (isTextSearch && motivosTotales.isEmpty() && codigoParam != null && !codigoParam.trim().isEmpty()) {
-	        request.setAttribute("noResultados", true);
-	        request.setAttribute("terminoBuscado", codigoParam.trim());
-	        this.message = "No se encontraron motivos que contengan '" + codigoParam.trim() + "'";
+	    return motivosFiltrados;
+	}
+
+	private boolean cumpleCriteriosBusqueda(ParametroMotivo motivo, ParametrosBusqueda parametrosBusqueda) {
+	    if (!parametrosBusqueda.isTextSearch) {
+	        return true;
 	    }
 	    
+	    String codigo = motivo.getCodigo() != null ? motivo.getCodigo().toLowerCase() : "";
+	    String descripcion = motivo.getDescripcion() != null ? motivo.getDescripcion().toLowerCase() : "";
+	    String buscado = parametrosBusqueda.terminoBuscado.toLowerCase();
+	    
+	    String codigoNormalizado = removerTildes(codigo);
+	    String descripcionNormalizada = removerTildes(descripcion);
+	    String buscadoNormalizado = removerTildes(buscado);
+	    
+	    return codigoNormalizado.contains(buscadoNormalizado) || 
+	           descripcionNormalizada.contains(buscadoNormalizado);
+	}
+
+	private void transformarParametroMotivo(ParametroMotivo motivo) {
+	    transformarCodSup(motivo);
+	    transformarCodAprobacionGlg(motivo);
+	    transformarCodFirma(motivo);
+	    transformarEstado(motivo);
+	}
+
+	private void transformarCodSup(ParametroMotivo motivo) {
+	    String codSup = motivo.getCodSup().trim();
+	    if ("PSUP".equalsIgnoreCase(codSup) || "SUPER".equalsIgnoreCase(codSup)) {
+	        motivo.setCodSup("SI");
+	    }
+	}
+
+	private void transformarCodAprobacionGlg(ParametroMotivo motivo) {
+	    String codAprobacion = motivo.getCodAprobacionGlg().trim();
+	    if ("MONTO".equalsIgnoreCase(codAprobacion) || "PGLG".equalsIgnoreCase(codAprobacion)) {
+	        motivo.setCodAprobacionGlg("SI");
+	    }
+	}
+
+	private void transformarCodFirma(ParametroMotivo motivo) {
+	    String codFirma = motivo.getCodFirma();
+	    if ("MONTO".equalsIgnoreCase(codFirma) || "PFIRM".equalsIgnoreCase(codFirma)) {
+	        motivo.setCodFirma("SI");
+	    }
+	}
+
+	private void transformarEstado(ParametroMotivo motivo) {
+	    String estado = motivo.getEstado();
+	    if ("A".equalsIgnoreCase(estado)) {
+	        motivo.setEstado("ACTIVO");
+	    } else if ("I".equalsIgnoreCase(estado)) {
+	        motivo.setEstado("INACTIVO");
+	    }
+	}
+
+	private boolean deberContinuarPaginacion(List<ParametroMotivo> motivos) {
+	    if (motivos.isEmpty()) {
+	        return false;
+	    }
+	    
+	    ParametroMotivo ultimo = motivos.get(motivos.size() - 1);
+	    return "N".equalsIgnoreCase(ultimo.getLastElement());
+	}
+
+	private void manejarExcepcionBusqueda(ParametrosBusqueda parametrosBusqueda) {
+	    if (!parametrosBusqueda.isTextSearch) {
+	        this.message = "No se encontró el motivo con código: " + parametrosBusqueda.codMotivo;
+	    }
+	}
+
+	private void configurarRespuesta(HttpServletRequest request, ParametrosBusqueda parametrosBusqueda, 
+	                                List<ParametroMotivo> motivosTotales, ParametrosService service) {
+	    
+	    configurarMensajeNoResultados(request, parametrosBusqueda, motivosTotales);
 	    request.setAttribute("motivos", motivosTotales);
+	    
 	    if (this.message == null || this.message.isEmpty()) {
 	        this.message = service.getMsgAviso();
 	    }
-	    return mapping.findForward("parametrosMotivoFiltro");
+	}
+
+	private void configurarMensajeNoResultados(HttpServletRequest request, ParametrosBusqueda parametrosBusqueda, 
+	                                          List<ParametroMotivo> motivosTotales) {
+	    
+	    boolean noResultadosEnBusquedaTexto = parametrosBusqueda.isTextSearch && 
+	                                         motivosTotales.isEmpty() && 
+	                                         !parametrosBusqueda.terminoBuscado.isEmpty();
+	    
+	    if (noResultadosEnBusquedaTexto) {
+	        request.setAttribute("noResultados", true);
+	        request.setAttribute("terminoBuscado", parametrosBusqueda.terminoBuscado);
+	        this.message = "No se encontraron motivos que contengan '" + parametrosBusqueda.terminoBuscado + "'";
+	    }
+	}
+
+	// Clase auxiliar para encapsular los parámetros de búsqueda
+	private static class ParametrosBusqueda {
+	    String codMotivo = "";
+	    boolean isTextSearch = false;
+	    String terminoBuscado = "";
 	}
 
 	/**
