@@ -141,11 +141,15 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    
 	    String codigo = motivo.getCodigo() != null ? motivo.getCodigo().toLowerCase() : "";
 	    String descripcion = motivo.getDescripcion() != null ? motivo.getDescripcion().toLowerCase() : "";
-	    String buscado = parametrosBusqueda.terminoBuscado.toLowerCase();
+	    String buscado = parametrosBusqueda.terminoBuscado != null ? parametrosBusqueda.terminoBuscado.toLowerCase() : "";
 	    
 	    String codigoNormalizado = removerTildes(codigo);
 	    String descripcionNormalizada = removerTildes(descripcion);
 	    String buscadoNormalizado = removerTildes(buscado);
+	    
+	    if (codigoNormalizado == null) codigoNormalizado = "";
+	    if (descripcionNormalizada == null) descripcionNormalizada = "";
+	    if (buscadoNormalizado == null) buscadoNormalizado = "";
 	    
 	    return codigoNormalizado.contains(buscadoNormalizado) || 
 	           descripcionNormalizada.contains(buscadoNormalizado);
