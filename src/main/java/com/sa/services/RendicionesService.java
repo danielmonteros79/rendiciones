@@ -35,6 +35,7 @@ public class RendicionesService {
 	private static final Log log = LogFactory.getLog(RendicionesService.class);
 	private SAMWebClient client;
 	private String msg;
+	private final String ID_RENDICION_FORMAT = "%016d";
 
 	public RendicionesService(SAMWebClient samClient) {
 		this.client = samClient;
@@ -48,7 +49,7 @@ public class RendicionesService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		if (idRendicion != null && !idRendicion.equalsIgnoreCase(""))
-			idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
+			idRendicion = String.format(ID_RENDICION_FORMAT, Long.parseLong(idRendicion));
 		
 		parametersExecute.put("codUsuario", idUser);
 		parametersExecute.put("idRendicion", idRendicion != null ? idRendicion : "");
@@ -152,7 +153,7 @@ public class RendicionesService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		parametersExecute.put("opcion", "MODI");
-		parametersExecute.put("id_rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
+		parametersExecute.put("id_rendicion", String.format(ID_RENDICION_FORMAT, Integer.parseInt(idRendicion)));
 		parametersExecute.put("id_user", idUser);
 		parametersExecute.put("fecha_desde", fechaDesde);
 		parametersExecute.put("fecha_hasta", fechaHasta);
@@ -174,7 +175,7 @@ public class RendicionesService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		parametersExecute.put("opcion", opcion);
-		parametersExecute.put("id_rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
+		parametersExecute.put("id_rendicion", String.format(ID_RENDICION_FORMAT, Integer.parseInt(idRendicion)));
 		parametersExecute.put("cod_estado_doc", excepcion);
 		
 		manager.executeTrx(this.client, parametersExecute);
@@ -213,7 +214,7 @@ public class RendicionesService {
 		ManagerTransaction manager = new ManagerTransaction(new SU55());
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		if (idRendicion != null && !idRendicion.equalsIgnoreCase("")) {
-			idRendicion = String.format("%016d", Integer.parseInt(idRendicion));
+			idRendicion = String.format(ID_RENDICION_FORMAT, Integer.parseInt(idRendicion));
 		}
 		if (idGasto != null && !idGasto.equalsIgnoreCase("")) {
 			idGasto = String.format("%09d", Integer.parseInt(idGasto));
@@ -238,7 +239,7 @@ public class RendicionesService {
 		
 		parametersExecute.put("opcion", "BAJA");
 		parametersExecute.put("id_user", user);
-		parametersExecute.put("id_rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
+		parametersExecute.put("id_rendicion", String.format(ID_RENDICION_FORMAT, Integer.parseInt(idRendicion)));
 		manager.executeTrx(this.client, parametersExecute);
 		
 		String idRendicionBorrada = (String) manager.getDataReturn();
@@ -369,7 +370,7 @@ public class RendicionesService {
 		Map<String, Object> parametersExecute = new HashMap<String, Object>();
 		
 		parametersExecute.put("id_user", user);
-		parametersExecute.put("rendicion", String.format("%016d", Integer.parseInt(idRendicion)));
+		parametersExecute.put("rendicion", String.format(ID_RENDICION_FORMAT, Integer.parseInt(idRendicion)));
 		parametersExecute.put("estado", String.format("%1$-" + 5 + "s", estado));
 		manager.executeTrx(this.client, parametersExecute);
 		

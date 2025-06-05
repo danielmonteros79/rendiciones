@@ -119,12 +119,12 @@ function deseleccionarTodo(){
 
 
 function limpiar() {
-	$('input[id^=filtro]').val('');
-	$('#filtroMotivo').val('');
-	$('#filtroAlerta').val('')
-	AutoNumeric.getAutoNumericElement('input[id^=filtro].an-integer-pos').set('');
-	
-	scrollToElem('#divFiltro', false);
+    $('input[id^=filtro]').val('');
+    $('#filtroMotivo').val('');
+    $('#filtroAlerta').val('').trigger("chosen:updated");   
+    $('#filtroSupervisado').val('').trigger("chosen:updated");
+    AutoNumeric.getAutoNumericElement('input[id^=filtro].an-integer-pos').set('');    
+    scrollToElem('#divFiltro', false);
 }
 
 function tableAfterLoad() {

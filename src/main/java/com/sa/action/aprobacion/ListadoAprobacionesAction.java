@@ -21,6 +21,7 @@ import com.sa.services.AprobacionesService;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import ar.com.itrsa.sam.TransactionException;
 import net.sf.json.JSONArray;
 
 
@@ -76,49 +77,81 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 	}
 
 	protected ActionForward filtrar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (this.sessionUserWorking == null) {
-            return writeError(response, new Exception("Sesión no iniciada"));
-        }
+	    if (this.sessionUserWorking == null) {
+	        return writeError(response, new Exception("Sesión no iniciada"));
+	    }
+	    
+	    AprobacionesService service = this.aprobacionesService;
+	    List<Rendicion> rendiciones = obtenerRendicionesFiltradas(request, service);
+	    List<Rendicion> rendicionesProcesadas = procesarAlerta(request, rendiciones);
+	    
+	    request.setAttribute("Rendicion", rendicionesProcesadas);
+	    request.setAttribute("cantRendiciones", service.getCantRendiciones());
+	    return mapping.findForward("aprobaciones");
+	}
 
-        AprobacionesService service = this.aprobacionesService;
-        String alerta = request.getParameter("nroAlerta");
-        String supervisado = request.getParameter("supervisado");
-        
-        if (supervisado == null || supervisado.isEmpty()) {
-            supervisado = this.sessionUserWorking.getIdUser();
-        }
+	private List<Rendicion> obtenerRendicionesFiltradas(HttpServletRequest request, AprobacionesService service) throws TransactionException {
+	    String supervisado = request.getParameter("supervisado");
+	    boolean hayFiltroSupervisado = (supervisado != null && !supervisado.trim().isEmpty());
+	    
+	    String usuarioFiltro = obtenerUsuarioFiltro(request);
+	    String supervisadoFinal = obtenerSupervisadoFinal(supervisado, hayFiltroSupervisado);
+	    
+	    if (hayFiltroSupervisado) {
+	        return service.getAprobacionesPendientes(
+	            request.getParameter("idRendicion"),
+	            supervisado,
+	            request.getParameter("motivo"),
+	            request.getParameter("glg"),
+	            this.sessionUserWorking.getIdUser()
+	        );
+	    } else {
+	        return service.getAprobacionesPendientes(
+	            request.getParameter("idRendicion"),
+	            usuarioFiltro,
+	            request.getParameter("motivo"),
+	            request.getParameter("glg"),
+	            supervisadoFinal
+	        );
+	    }
+	}
 
-        System.out.println("🔍 Valor de supervisado: [" + supervisado + "]");
-        List<Rendicion> rendiciones = service.getAprobacionesPendientes(
-            request.getParameter("idRendicion"),
-            request.getParameter("usuario").trim().toUpperCase(),
-            request.getParameter("motivo"),
-            request.getParameter("glg"),
-            supervisado
-        );
+	private String obtenerUsuarioFiltro(HttpServletRequest request) {
+	    String usuarioParam = request.getParameter("usuario");
+	    if (usuarioParam != null && !usuarioParam.trim().isEmpty()) {
+	        return usuarioParam.trim().toUpperCase();
+	    }
+	    return null;
+	}
 
-        List<Rendicion> rendicionesFiltradas = new ArrayList<>();
-        if ("1".equals(alerta)) {
-            for (Rendicion r : rendiciones) {
-                if (r.getAdea().startsWith("1")) {
-                    rendicionesFiltradas.add(r);
-                }
-            }
-        } else if ("0".equals(alerta)) {
-            for (Rendicion r : rendiciones) {
-                if ("0000000000".equals(r.getAdea()) || r.getIdu() == null) {
-                    rendicionesFiltradas.add(r);
-                }
-            }
-        } else {
-            rendicionesFiltradas = rendiciones;
-        }
+	private String obtenerSupervisadoFinal(String supervisado, boolean hayFiltroSupervisado) {
+	    if (!hayFiltroSupervisado && (supervisado == null || supervisado.isEmpty())) {
+	        return this.sessionUserWorking.getIdUser();
+	    }
+	    return supervisado;
+	}
 
-        request.setAttribute("Rendicion", rendicionesFiltradas);
-        request.setAttribute("cantRendiciones", service.getCantRendiciones());
+	private List<Rendicion> procesarAlerta(HttpServletRequest request, List<Rendicion> rendiciones) {
+	    String alerta = request.getParameter("nroAlerta");
+	    
+	    if ("1".equals(alerta)) {
+	        return filtrarRendicionesPorAlerta(rendiciones, r -> r.getAdea().startsWith("1"));
+	    } else if ("0".equals(alerta)) {
+	        return filtrarRendicionesPorAlerta(rendiciones, r -> "0000000000".equals(r.getAdea()) || r.getIdu() == null);
+	    }
+	    
+	    return rendiciones;
+	}
 
-        return mapping.findForward("aprobaciones");
-    }
+	private List<Rendicion> filtrarRendicionesPorAlerta(List<Rendicion> rendiciones, java.util.function.Predicate<Rendicion> condicion) {
+	    List<Rendicion> rendicionesFiltradas = new ArrayList<>();
+	    for (Rendicion r : rendiciones) {
+	        if (condicion.test(r)) {
+	            rendicionesFiltradas.add(r);
+	        }
+	    }
+	    return rendicionesFiltradas;
+	}
 
     private ActionForward aprobar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (this.sessionUserWorking == null) {
