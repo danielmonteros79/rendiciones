@@ -76,8 +76,17 @@ public class AbmDelegadoAction extends RestriccionTransaccionAction {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		ParametrosService service = new ParametrosService(samClient);
 		String legajo = request.getParameter("legajo").trim().toUpperCase();
-		Usuario delegado = service.getUsuarioDelegacion(legajo, ParamsConstants.SU81_CONSULTA);
-		resp.put("delegado", delegado);
+		try {
+			Usuario delegado = service.getUsuarioDelegacion(legajo, ParamsConstants.SU81_CONSULTA);
+			resp.put("success", true);
+			resp.put("delegado", delegado);
+		} catch (Exception e) {
+	        log.error("Usuario no encontrado", e);
+	        
+	        resp.put("success", false);
+	        resp.put("error", "Usuario no encontrado");
+	        resp.put("message", "No se encontró el usuario con legajo: " + legajo);
+	    }
 		
 		return writeJson(response, resp);
 	}

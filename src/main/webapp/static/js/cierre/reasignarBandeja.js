@@ -81,26 +81,29 @@ function buscarUsuario(legajo, tipoUsuario) {
 }
 
 function buscarUsuarioOrigenSuccess(data) {
-	clearFormError($('#legajoDelegadoOrigen').parent());
-	$('#nombreDelegadoOrigen').val(data.delegado.nombre)
-
-	
+    if (data.success) {
+        clearFormError($('#legajoDelegadoOrigen').parent());
+        $('#nombreDelegadoOrigen').val(data.delegado.nombre);
+    } else {
+        buscarUsuarioOrigenError(data);
+    }
 }
 
 function buscarUsuarioOrigenError(data) {
-	showFormError('#legajoDelegadoOrigen', data.error);
-	$('#nombreDelegadoOrigen').val("")
-	
+    showFormError('#legajoDelegadoOrigen', data.error || 'Error al buscar usuario');
+    $('#nombreDelegadoOrigen').val("");
 }
 
 function buscarUsuarioDestinoSuccess(data) {
-	clearFormError($('#legajoDelegadoDestino').parent());
-	 $('#nombreDelegadoDestino').val(data.delegado.nombre)
-	
+    if (data.success) {
+        clearFormError($('#legajoDelegadoDestino').parent());
+        $('#nombreDelegadoDestino').val(data.delegado.nombre);
+    } else {
+        buscarUsuarioDestinoError(data);
+    }
 }
 
 function buscarUsuarioDestinoError(data) {
-	showFormError('#legajoDelegadoDestino', data.error);
-	$('#nombreDelegadoDestino').val("")
-	
+    showFormError('#legajoDelegadoDestino', data.error || 'Error al buscar usuario');
+    $('#nombreDelegadoDestino').val("");
 }
