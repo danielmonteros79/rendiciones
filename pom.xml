@@ -465,7 +465,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>rendiciones</finalName>
+		<finalName>rendiciones90</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>
