@@ -95,7 +95,7 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		String base64Decoded = request.getParameter("base64");
 	    //byte[] decodedData = DatatypeConverter.parseBase64Binary(base64Decoded);
      
-		if (!extension.contains("pdf")) {
+		if (!extension.contains("pdf") && !extension.contains("tif")) {
 		    String safeFileName = StringEscapeUtils.escapeHtml4(frm.getArchivo().getFileName());
 		    return writeError(response, safeFileName + ": El archivo no es un PDF válido.");
 		}
