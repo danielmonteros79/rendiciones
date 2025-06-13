@@ -29,306 +29,312 @@
 
 	<global-exceptions>
 		<exception key="lang.Exception" type="java.lang.Exception"
-			handler="com.sa.core.ManejadorExcepciones" />
+				   handler="com.sa.core.ManejadorExcepciones" />
 	</global-exceptions>
 	<global-forwards>
-		<forward name="login" path="/login.jsp"></forward>
-<!-- 		<forward name="inicio" path="inicioApp"></forward> -->
-		<forward name="permisoDenegado" path="permisoDenegado"></forward>
-		<!-- 			contextRelative="true">-->
-		<forward name="errorService" path="errorService"></forward>
-		<forward name="sessionTimeOut" path="timeOutSession"></forward>
-		<!-- 			contextRelative="true">-->
+		<forward name="login" path="/rendiciones90/login.jsp"></forward>
+		<forward name="permisoDenegado" path="/rendiciones90/permisoDenegado"></forward>
+		<forward name="errorService" path="/rendiciones90/errorService"></forward>
+		<forward name="sessionTimeOut" path="/rendiciones90/timeOutSession"></forward>
 	</global-forwards>
-	<!-- ========== Users Forward Definitions =============================== -->
+
 	<action-mappings>
-		<action path="/Login" type="com.sa.core.PuntoEntradaAction"
-			name="LoginForm" className="com.sa.core.SecurityActionMapping" input="login.jsp">
+		<action path="/rendiciones90/Login" type="com.sa.core.PuntoEntradaAction"
+				name="LoginForm" className="com.sa.core.SecurityActionMapping" input="/rendiciones90/login.jsp">
 			<set-property value="1" property="applicationZone" />
-			<forward name="success" path="/bienvenida.do" />
-			<forward name="aprob1" path="/listadoAprobacion.do?glg=1" />
-			<forward name="aprob2" path="/listadoAprobacion.do?glg=2" />
-			<forward name="aprob3" path="/listadoAprobacion.do?glg=3" />
-			<forward name="cierre" path="/cierreOrdenDePago.do" />
-			<forward name="failure" path="/error.jsp" />
+			<forward name="success" path="/rendiciones90/bienvenida.do" />
+			<forward name="aprob1" path="/rendiciones90/listadoAprobacion.do?glg=1" />
+			<forward name="aprob2" path="/rendiciones90/listadoAprobacion.do?glg=2" />
+			<forward name="aprob3" path="/rendiciones90/listadoAprobacion.do?glg=3" />
+			<forward name="cierre" path="/rendiciones90/cierreOrdenDePago.do" />
+			<forward name="failure" path="/rendiciones90/error.jsp" />
 		</action>
-		<action path="/logout" type="com.sa.action.LogoutAction"
-			className="com.sa.core.SecurityActionMapping">
+
+		<action path="/rendiciones90/logout" type="com.sa.action.LogoutAction"
+				className="com.sa.core.SecurityActionMapping">
 			<set-property value="1" property="applicationZone" />
-			<forward name="success" path="/timeOut.jsp" />
+			<forward name="success" path="/rendiciones90/timeOut.jsp" />
 		</action>
-		<action path="/bienvenida" type="com.sa.action.GenericAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="inicioApp" />
+
+		<action path="/rendiciones90/bienvenida" type="com.sa.action.GenericAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="/rendiciones90/inicioApp" />
 		</action>
-		<action path="/listadoRendiciones" type="com.sa.action.rendiciones.ListadoRendicionesAction">
-			<forward name="ok" path="listadoRendiciones"></forward>
-			<forward name="rendiciones" path="/pages/rendiciones/dtRendiciones.jsp"/>
+
+		<action path="/rendiciones90/listadoRendiciones" type="com.sa.action.rendiciones.ListadoRendicionesAction">
+			<forward name="ok" path="/rendiciones90/listadoRendiciones"></forward>
+			<forward name="rendiciones" path="/rendiciones90/pages/rendiciones/dtRendiciones.jsp"/>
 		</action>
-		<action path="/altaRendicion" type="com.sa.action.rendiciones.RendicionLoadAction" name="RendicionForm">
-			<forward name="success" path="rendicionDetalle" />
+
+		<action path="/rendiciones90/altaRendicion" type="com.sa.action.rendiciones.RendicionLoadAction" name="RendicionForm">
+			<forward name="success" path="/rendiciones90/rendicionDetalle" />
 		</action>
-		<action path="/saveRendicion" type="com.sa.action.rendiciones.RendicionSaveAction" name="RendicionForm">
-			<forward name="detalleGastos" path="/rendicionDetalleGastos.do" />
-			<forward name="success" path="/listadoRendiciones.do" />
-			<forward name="failure" path="rendicionDetalle" />
+
+		<action path="/rendiciones90/saveRendicion" type="com.sa.action.rendiciones.RendicionSaveAction" name="RendicionForm">
+			<forward name="detalleGastos" path="/rendiciones90/rendicionDetalleGastos.do" />
+			<forward name="success" path="/rendiciones90/listadoRendiciones.do" />
+			<forward name="failure" path="/rendiciones90/rendicionDetalle" />
 		</action>
-		<action path="/rendicionDetalleGastos" type="com.sa.action.rendiciones.RendicionDetalleGastosAction"
-			className="com.sa.core.SecurityActionMapping" name="RendicionForm">
-			<forward name="rendicionDetalleGastos" path="showDetalleGastos"></forward>
-			<forward name="gastos" path="/pages/global/dtGastos.jsp"/>
-			<forward name="consumosPendientes" path="/pages/rendiciones/dtConsumosPendientes.jsp"/>
+
+		<action path="/rendiciones90/rendicionDetalleGastos" type="com.sa.action.rendiciones.RendicionDetalleGastosAction"
+				className="com.sa.core.SecurityActionMapping" name="RendicionForm">
+			<forward name="rendicionDetalleGastos" path="/rendiciones90/showDetalleGastos"/>
+			<forward name="gastos" path="/rendiciones90/pages/global/dtGastos.jsp"/>
+			<forward name="consumosPendientes" path="/rendiciones90/pages/rendiciones/dtConsumosPendientes.jsp"/>
 		</action>
-		<action path="/datosAdicionales" type="com.sa.action.DatosAdicionalesAction" className="com.sa.core.SecurityActionMapping"></action>
-		<action path="/gastos" type="com.sa.action.GastosAction" name="RendicionDetalleForm"></action>
-		
-		<action path="/avanzarRend" type="com.sa.action.AvanzarRendicionAction" className="com.sa.core.SecurityActionMapping" name="RendicionForm"></action>
-		
-		<action path="/cuponesPopup" type="com.sa.action.CuponesAction" className="com.sa.core.SecurityActionMapping" name="CuponesForm"></action>
-		<action path="/accesoDelegado" type="com.sa.action.delegacion.AccesoDelegadoAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="accesoDelegado" />
+		<action path="/datosAdicionales" type="com.sa.action.DatosAdicionalesAction"
+				className="com.sa.core.SecurityActionMapping"/>
+		<action path="/rendiciones90/gastos" type="com.sa.action.GastosAction" name="RendicionDetalleForm"/>
+
+		<action path="/rendiciones90/avanzarRend" type="com.sa.action.AvanzarRendicionAction"
+				className="com.sa.core.SecurityActionMapping" name="RendicionForm"/>
+
+		<action path="/rendiciones90/cuponesPopup" type="com.sa.action.CuponesAction" className="com.sa.core.SecurityActionMapping"
+				name="CuponesForm"/>
+		<action path="/rendiciones90/accesoDelegado" type="com.sa.action.delegacion.AccesoDelegadoAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="/rendiciones90/accesoDelegado" />
 		</action>
-		<action path="/abmDelegado" type="com.sa.action.delegacion.AbmDelegadoAction" name="AbmDelegadoForm">
-			<forward name="success" path="abmDelegado" />
-			<forward name="delegados" path="/pages/delegacion/dtDelegados.jsp"/>
+		<action path="/rendiciones90/abmDelegado" type="com.sa.action.delegacion.AbmDelegadoAction" name="AbmDelegadoForm">
+			<forward name="success" path="/rendiciones90/abmDelegado" />
+			<forward name="delegados" path="/rendiciones90/pages/delegacion/dtDelegados.jsp"/>
 		</action>
 		<action path="/listadoAprobaciones" type="com.sa.action.aprobacion.ListadoAprobacionesAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="listadoAprobaciones"/>
-			<forward name="aprobaciones" path="/pages/aprobacion/dtAprobaciones.jsp"/>
+			<forward name="success" path="/rendiciones90/listadoAprobaciones"/>
+			<forward name="aprobaciones" path="/rendiciones90/pages/aprobacion/dtAprobaciones.jsp"/>
 		</action>
 		<action path="/aprobacionDetalle" type="com.sa.action.aprobacion.AprobacionDetalleAction" className="com.sa.core.SecurityActionMapping" name="RendicionForm">
-			<forward name="success" path="aprobacionDetalle"/>
-			<forward name="gastos" path="/pages/global/dtGastos.jsp"/>
+			<forward name="success" path="/rendiciones90/aprobacionDetalle"/>
+			<forward name="gastos" path="/rendiciones90/pages/global/dtGastos.jsp"/>
 		</action>
-		<action path="/redistribucionGastos" type="com.sa.action.RedistribucionGastosLoadAction"
+		<action path="/rendiciones90/redistribucionGastos" type="com.sa.action.RedistribucionGastosLoadAction"
 			className="com.sa.core.SecurityActionMapping" name="RendicionForm">
-			<forward name="success" path="redistribucionGastos"></forward>
+			<forward name="success" path="/rendiciones90/redistribucionGastos"></forward>
 		</action>
-		<action path="/journal" type="com.sa.action.JournalAction" className="com.sa.core.SecurityActionMapping"></action>
+		<action path="/rendiciones90/journal" type="com.sa.action.JournalAction" className="com.sa.core.SecurityActionMapping"></action>
 		
 		<action path="/cierreOrdenDePago" type="com.sa.action.cierre.CierreOrdenDePagoAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="cierreOrdenDePago"></forward>
-			<forward name="cierreOrdenDePago" path="/pages/cierre/dtCierreOrdenDePago.jsp"/>
+			<forward name="success" path="/rendiciones90/cierreOrdenDePago"></forward>
+			<forward name="cierreOrdenDePago" path="/rendiciones90/pages/cierre/dtCierreOrdenDePago.jsp"/>
 		</action>
-		<action path="/reasignarBandeja" type="com.sa.action.cierre.ReasignarBandejaAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="reasignarBandeja"></forward>
+		<action path="/rendiciones90/reasignarBandeja" type="com.sa.action.cierre.ReasignarBandejaAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="/rendiciones90/reasignarBandeja"></forward>
 		</action>
 		
-		<action path="/consumosSinRendir" type="com.sa.action.cierre.ConsumosNoRendidosAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="consumosSinRendir"></forward>
+		<action path="/rendiciones90/consumosSinRendir" type="com.sa.action.cierre.ConsumosNoRendidosAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="/rendiciones90/consumosSinRendir"></forward>
 			<forward name="consumosSinRendir" path="/pages/cierre/dtConsumosNoRendidos.jsp"/> 
 		</action>
-		<action path="/aprobacionesPendientes" type="com.sa.action.cierre.AprobacionesPendientesAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="aprobacionesPendientes"></forward>
+		<action path="/rendiciones90/aprobacionesPendientes" type="com.sa.action.cierre.AprobacionesPendientesAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="/rendiciones90/aprobacionesPendientes"></forward>
 			<forward name="aprobacionesPendientes" path="/pages/cierre/dtAprobacionesPendientes.jsp"/> 
 		</action>
 		
-		<action path="/cierreDetalle" type="com.sa.action.cierre.CierreDetalleAction" className="com.sa.core.SecurityActionMapping" name="RendicionForm">
-			<forward name="success" path="cierreDetalle"/>
-			<forward name="gastos" path="/pages/global/dtGastos.jsp"/>
+		<action path="/rendiciones90/cierreDetalle" type="com.sa.action.cierre.CierreDetalleAction" className="com.sa.core.SecurityActionMapping" name="RendicionForm">
+			<forward name="success" path="/rendiciones90/cierreDetalle"/>
+			<forward name="gastos" path="/rendiciones90/pages/global/dtGastos.jsp"/>
 		</action>
-		<action path="/cierreTarjeta" type="com.sa.action.cierre.CierreTarjetaAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="cierreTarjeta"></forward>
-			<forward name="cierreTarjeta" path="/pages/cierre/dtCierreTarjeta.jsp"/>
+		<action path="/rendiciones90/cierreTarjeta" type="com.sa.action.cierre.CierreTarjetaAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="/rendiciones90/cierreTarjeta"></forward>
+			<forward name="cierreTarjeta" path="/rendiciones90/pages/cierre/dtCierreTarjeta.jsp"/>
 		</action>
-		<action path="/CierreDiario" type="com.sa.action.CierreDiarioAction"
+		<action path="/rendiciones90/CierreDiario" type="com.sa.action.CierreDiarioAction"
 			className="com.sa.core.SecurityActionMapping" name="CierreFiltroForm">
-			<forward name="success" path="CierreDiario"></forward>
+			<forward name="success" path="/rendiciones90/CierreDiario"></forward>
 		</action>
 		<action path="/ReactivacionSuspensos" type="com.sa.action.ReactivacionSuspensosAction"
 			className="com.sa.core.SecurityActionMapping" name="CierreFiltroForm">
 			<forward name="success" path="ReactivacionSuspensos"></forward>
 		</action>
-		<action path="/CierreMensualFormal" type="com.sa.action.CierreMensualFormalAction"
+		<action path="/rendiciones90/CierreMensualFormal" type="com.sa.action.CierreMensualFormalAction"
 			className="com.sa.core.SecurityActionMapping" name="CierreFiltroForm">
-			<forward name="success" path="CierreMensualFormal"></forward>
+			<forward name="success" path="/rendiciones90/CierreMensualFormal"></forward>
 		</action>
-		<action path="/CierreMensualSimulado" type="com.sa.action.CierreMensualSimuladoAction"
+		<action path="/rendiciones90/CierreMensualSimulado" type="com.sa.action.CierreMensualSimuladoAction"
 			className="com.sa.core.SecurityActionMapping" name="CierreFiltroForm">
-			<forward name="success" path="CierreMensualSimulado"></forward>
+			<forward name="success" path="/rendiciones90/CierreMensualSimulado"></forward>
 		</action>
-		<action path="/CierreMensualContable" type="com.sa.action.CierreMensualContableAction"
+		<action path="/rendiciones90/CierreMensualContable" type="com.sa.action.CierreMensualContableAction"
 			className="com.sa.core.SecurityActionMapping" name="CierreFiltroForm">
-			<forward name="success" path="CierreMensualContable"></forward>
+			<forward name="success" path="/rendiciones90/CierreMensualContable"></forward>
 		</action>
-		<action path="/consumosNoRendidos" type="com.sa.action.tarjetaCorporativa.ConsumosNoRendidosAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="consumosNoRendidos"></forward>
-			<forward name="consumos" path="/pages/tarjetaCorporativa/dtConsumosNoRendidos.jsp"/>
+		<action path="/rendiciones90/consumosNoRendidos" type="com.sa.action.tarjetaCorporativa.ConsumosNoRendidosAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="/rendiciones90/consumosNoRendidos"></forward>
+			<forward name="consumos" path="/rendiciones90/pages/tarjetaCorporativa/dtConsumosNoRendidos.jsp"/>
 		</action>
-		<action path="/resumenesAnteriores" type="com.sa.action.tarjetaCorporativa.ResumenesAnterioresAction" className="com.sa.core.SecurityActionMapping">
-			<forward name="success" path="resumenesAnteriores"></forward>
-			<forward name="resumen" path="/pages/tarjetaCorporativa/dtResumenesAnteriores.jsp"/>
+		<action path="/rendiciones90/resumenesAnteriores" type="com.sa.action.tarjetaCorporativa.ResumenesAnterioresAction" className="com.sa.core.SecurityActionMapping">
+			<forward name="success" path="/rendiciones90/resumenesAnteriores"></forward>
+			<forward name="resumen" path="/rendiciones90/pages/tarjetaCorporativa/dtResumenesAnteriores.jsp"/>
 		</action>
 		
-		<action path="/imagenes" type="com.sa.action.ImagenesAction" name="ImagenesForm">
+		<action path="/rendiciones90/imagenes" type="com.sa.action.ImagenesAction" name="ImagenesForm">
 		</action>
 		
 		<!-- LISTADO ALERTAS-->
-		<action path="/listadoAlertas" type="com.sa.action.alertas.ListadoAlertasAction" className="com.sa.core.SecurityActionMapping" name="AlertaForm">
-			<forward name="success" path="listadoAlertas"></forward>
-			<forward name="rendiciones" path="/pages/alertas/dtListadoAlertas.jsp"/>
+		<action path="/rendiciones90/listadoAlertas" type="com.sa.action.alertas.ListadoAlertasAction" className="com.sa.core.SecurityActionMapping" name="AlertaForm">
+			<forward name="success" path="/rendiciones90/listadoAlertas"></forward>
+			<forward name="rendiciones" path="/rendiciones90/pages/alertas/dtListadoAlertas.jsp"/>
 		</action>
 		
-		<action path="/detalleAlerta" type="com.sa.action.alertas.DetalleAlertaAction" className="com.sa.core.SecurityActionMapping" name="AlertaForm">
-			<forward name="success" path="detalleAlerta"></forward>
-			<forward name="rendiciones" path="/pages/alertas/dtDetalleAlerta.jsp"/>
+		<action path="/rendiciones90/detalleAlerta" type="com.sa.action.alertas.DetalleAlertaAction" className="com.sa.core.SecurityActionMapping" name="AlertaForm">
+			<forward name="success" path="/rendiciones90/detalleAlerta"></forward>
+			<forward name="rendiciones" path="/rendiciones90/pages/alertas/dtDetalleAlerta.jsp"/>
 		</action>
 	
 		<!-- DETALLE DE ALERTA -->
 		
 		<!-- PARAMETRIA ============================================= -->
-		<action path="/parametrosMotivo"
+		<action path="/rendiciones90/parametrosMotivo"
 			type="com.sa.action.parametros.ParametrosMotivoLoadAction" name="ParametrosMotivoFiltroForm">
-			<forward name="success" path="parametrosMotivo" />
-			<forward name="parametrosMotivoFiltro" path="/pages/parametros/dtMotivos.jsp"/>
+			<forward name="success" path="/rendiciones90/parametrosMotivo" />
+			<forward name="parametrosMotivoFiltro" path="/rendiciones90/pages/parametros/dtMotivos.jsp"/>
 		</action>
 	
 
-		<action path="/parametrosMotivoDetalle"
+		<action path="/rendiciones90/parametrosMotivoDetalle"
 			type="com.sa.action.parametros.ParametrosMotivoDetalleLoadAction"
 			name="ParametrosMotivoForm">
-			<forward name="alta" path="parametrosMotivoAlta" />
-			<forward name="modificacion" path="parametrosMotivoModificacion" />
-			<forward name="baja" path="parametrosMotivoBaja" />
+			<forward name="alta" path="/rendiciones90/parametrosMotivoAlta" />
+			<forward name="modificacion" path="/rendiciones90/parametrosMotivoModificacion" />
+			<forward name="baja" path="/rendiciones90/parametrosMotivoBaja" />
 		</action>
 		
-		<action path="/saveMotivo"
+		<action path="/rendiciones90/saveMotivo"
 			type="com.sa.action.parametros.ParametrosMotivoSaveAction" name="ParametrosMotivoForm">
-			<forward name="success" path="/parametrosMotivo.do" />
-			<forward name="errorAlta" path="parametrosMotivoAlta" />
-			<forward name="errorModificacion" path="parametrosMotivoModificacion" />
-			<forward name="errorBaja" path="parametrosMotivoBaja" />
+			<forward name="success" path="/rendiciones90/parametrosMotivo.do" />
+			<forward name="errorAlta" path="/rendiciones90/parametrosMotivoAlta" />
+			<forward name="errorModificacion" path="/rendiciones90/parametrosMotivoModificacion" />
+			<forward name="errorBaja" path="/rendiciones90/parametrosMotivoBaja" />
 		</action>
 		
-		<action path="/parametrosGastos"
+		<action path="/rendiciones90/parametrosGastos"
 			type="com.sa.action.parametros.ParametrosGastosLoadAction" name="ParametrosGastosFiltroForm">
-			<forward name="success" path="parametrosGastos" />
-			<forward name="parametrosGastoFiltro" path="/pages/parametros/dtGastos.jsp"/> 
+			<forward name="success" path="/rendiciones90/parametrosGastos" />
+			<forward name="parametrosGastoFiltro" path="/rendiciones90/pages/parametros/dtGastos.jsp"/>
 		</action>
 		
-		<action path="/parametrosGastosFiltro"
+		<action path="/rendiciones90/parametrosGastosFiltro"
 			type="com.sa.action.parametros.ParametrosGastosFiltroAction" name="ParametrosGastosFiltroForm">
-			<forward name="success" path="parametrosGastos" />
+			<forward name="success" path="/rendiciones90/parametrosGastos" />
 		
 		</action>
 				
-		<action path="/parametrosGastosDetalle"
+		<action path="/rendiciones90/parametrosGastosDetalle"
 			type="com.sa.action.parametros.ParametrosGastosDetalleLoadAction"
 			name="ParametrosGastosForm">
 			<forward name="alta" path="parametrosGastosAlta" />
-			<forward name="modificacion" path="parametrosGastosModificacion" />
-			<forward name="baja" path="parametrosGastosBaja" />
+			<forward name="modificacion" path="/rendiciones90/parametrosGastosModificacion" />
+			<forward name="baja" path="/rendiciones90/parametrosGastosBaja" />
 		</action>
 		
-		<action path="/saveGasto"
+		<action path="/rendiciones90/saveGasto"
 			type="com.sa.action.parametros.ParametrosGastosSaveAction" name="ParametrosGastosForm">
-			<forward name="success" path="/parametrosGastos.do" />
-			<forward name="fail" path="/parametrosGastosDetalle.do" />
+			<forward name="success" path="/rendiciones90/parametrosGastos.do" />
+			<forward name="fail" path="/rendiciones90/parametrosGastosDetalle.do" />
 		</action>
 		
-		<action path="/RistraPopUp" type="com.sa.action.RistraPopUpLoadAction"
+		<action path="/rendiciones90/RistraPopUp" type="com.sa.action.RistraPopUpLoadAction"
 			name="ParametrosGastosForm">
-			<forward name="success" path="/pages/popups/ristraPopUp.jsp"/>
+			<forward name="success" path="/rendiciones90/pages/popups/ristraPopUp.jsp"/>
 		</action>
 		
-		<action path="/RistraPopUpSave" type="com.sa.action.RistraPopUpSaveAction"
+		<action path="/rendiciones90/RistraPopUpSave" type="com.sa.action.RistraPopUpSaveAction"
 			name="ParametrosGastosForm">
-			<forward name="success" path="/parametrosGastosDetalle.do"/>
+			<forward name="success" path="/rendiciones90/parametrosGastosDetalle.do"/>
 		</action>
 		
-		<action path="/parametrosExceptuados"
+		<action path="/rendiciones90/parametrosExceptuados"
 			type="com.sa.action.parametros.ParametrosExceptuadosLoadAction" name="ParametrosExceptuadosFiltroForm">
-			<forward name="success" path="parametrosExceptuados" />
+			<forward name="success" path="/rendiciones90/parametrosExceptuados" />
 		</action>
 		
-		<action path="/parametrosExceptuadosFiltro"
+		<action path="/rendiciones90/parametrosExceptuadosFiltro"
 			type="com.sa.action.parametros.ParametrosExceptuadosFiltroAction"
 			name="ParametrosExceptuadosFiltroForm">
-			<forward name="success" path="parametrosExceptuados" />
-			<forward name="exceptuados" path="/pages/parametros/dtExceptuados.jsp"/>
+			<forward name="success" path="/rendiciones90/parametrosExceptuados" />
+			<forward name="exceptuados" path="/rendiciones90/pages/parametros/dtExceptuados.jsp"/>
 		</action>
 		
-		<action path="/parametrosExceptuadosDetalle"
+		<action path="/rendiciones90/parametrosExceptuadosDetalle"
 			type="com.sa.action.parametros.ParametrosExceptuadosDetalleLoadAction"
 			name="ParametrosExceptuadosForm">
-			<forward name="alta" path="parametrosExceptuadosAlta" />
-			<forward name="modificacion" path="parametrosExceptuadosModificacion" />
-			<forward name="baja" path="parametrosExceptuadosBaja" />
+			<forward name="alta" path="/rendiciones90/parametrosExceptuadosAlta" />
+			<forward name="modificacion" path="/rendiciones90/parametrosExceptuadosModificacion" />
+			<forward name="baja" path="/rendiciones90/parametrosExceptuadosBaja" />
 		</action>
 		
-		<action path="/chequearCodigo"
+		<action path="/rendiciones90/chequearCodigo"
 			type="com.sa.action.parametros.CheckCodigoExceptuadosAction">
 			
 		</action>
-		<action path="/saveExcepcion"
+		<action path="/rendiciones90/saveExcepcion"
 			type="com.sa.action.parametros.ParametrosExceptuadosSaveAction" name="ParametrosExceptuadosForm">
-			<forward name="success" path="/parametrosExceptuados.do" />
-			<forward name="fail" path="parametrosExceptuadosAlta" />
+			<forward name="success" path="/rendiciones90/parametrosExceptuados.do" />
+			<forward name="fail" path="/rendiciones90/parametrosExceptuadosAlta" />
 		</action>
 		
-		<action path="/parametrosAlertas"
+		<action path="/rendiciones90/parametrosAlertas"
 			type="com.sa.action.parametros.ParametrosAlertasLoadAction" name="ParametrosAlertasFiltroForm">
-			<forward name="success" path="parametrosAlertas" />
-			<forward name="parametrosAlertaFiltro" path="/pages/parametros/dtAlertas.jsp"/>
+			<forward name="success" path="/rendiciones90/parametrosAlertas" />
+			<forward name="parametrosAlertaFiltro" path="/rendiciones90/pages/parametros/dtAlertas.jsp"/>
 		</action>
 		
-		<action path="/parametrosAlertasFiltro"
+		<action path="/rendiciones90/parametrosAlertasFiltro"
 			type="com.sa.action.parametros.ParametrosAlertasFiltroAction" name="ParametrosAlertasFiltroForm">
 			<forward name="success" path="parametrosAlertas" />
-			<forward name="fail" path="/parametrosAlertas.do" />
-			<forward name="parametrosAlertaFiltro" path="/pages/parametros/dtAlertas.jsp"/>
+			<forward name="fail" path="/rendiciones90/parametrosAlertas.do" />
+			<forward name="parametrosAlertaFiltro" path="/rendiciones90/pages/parametros/dtAlertas.jsp"/>
 		</action>
 		
-		<action path="/parametrosAlertasDetalle"
+		<action path="/rendiciones90/parametrosAlertasDetalle"
 			type="com.sa.action.parametros.ParametrosAlertasDetalleLoadAction"
 			name="ParametrosAlertasForm">
-			<forward name="alta" path="parametrosAlertasAlta" />
-			<forward name="modificacion" path="parametrosAlertasModificacion" />
-			<forward name="baja" path="parametrosAlertasBaja" />
+			<forward name="alta" path="/rendiciones90/parametrosAlertasAlta" />
+			<forward name="modificacion" path="/rendiciones90/parametrosAlertasModificacion" />
+			<forward name="baja" path="/rendiciones90/parametrosAlertasBaja" />
 		</action>
 		
-		<action path="/saveAlerta"
+		<action path="/rendiciones90/saveAlerta"
 			type="com.sa.action.parametros.ParametrosAlertasSaveAction" name="ParametrosAlertasForm">
-			<forward name="success" path="/parametrosAlertas.do" />
-			<forward name="fail" path="/parametrosAlertasDetalle.do" />
+			<forward name="success" path="/rendiciones90/parametrosAlertas.do" />
+			<forward name="fail" path="/rendiciones90/parametrosAlertasDetalle.do" />
 		</action>
 		
 		<!-- REPORTERIA -->
-		<action path="/cuadroGeneral" type="com.sa.action.CuadroGeneralLoadAction" name="CuadroFiltroForm">
-			<forward name="success" path="cuadroGeneral" />
+		<action path="/rendiciones90/cuadroGeneral" type="com.sa.action.CuadroGeneralLoadAction" name="CuadroFiltroForm">
+			<forward name="success" path="/rendiciones90/cuadroGeneral" />
 		</action>
 		
-		<action path="/cuadroGeneralFiltro" type="com.sa.action.CuadroGeneralFiltroAction" name="CuadroFiltroForm">
-			<forward name="success" path="cuadroGeneral" />
-			<forward name="fail" path="/cuadroGeneral.do" />
+		<action path="/rendiciones90/cuadroGeneralFiltro" type="com.sa.action.CuadroGeneralFiltroAction" name="CuadroFiltroForm">
+			<forward name="success" path="/rendiciones90/cuadroGeneral" />
+			<forward name="fail" path="/rendiciones90/cuadroGeneral.do" />
 		</action>
 		
-		<action path="/CuadroDetallado" type="com.sa.action.CuadroDetalladoLoadAction"
+		<action path="/rendiciones90/CuadroDetallado" type="com.sa.action.CuadroDetalladoLoadAction"
 			name="CuadroFiltroForm">
-			<forward name="success" path="CuadroDetallado">
+			<forward name="success" path="/rendiciones90/CuadroDetallado">
 			</forward>
 		</action>
 		
-		<action path="/FiltroCuadroDetallado" type="com.sa.action.CuadroDetalladoFiltroAction"
+		<action path="/rendiciones90/FiltroCuadroDetallado" type="com.sa.action.CuadroDetalladoFiltroAction"
 			name="CuadroFiltroForm">
-			<forward name="ok" path="CuadroDetallado">
+			<forward name="ok" path="/rendiciones90/CuadroDetallado">
 			</forward>
 		</action>
 		<!-- REDISTRIBUCION GASTOS -->
-		<action path="/distribucionGastosLoad"
+		<action path="/rendiciones90/distribucionGastosLoad"
 			type="com.sa.action.redistribucion.DistribucionGastosLoadAction">
-			<forward name="success" path="distribucionGastosPage" />
+			<forward name="success" path="/rendiciones90/distribucionGastosPage" />
 		</action>
-		<action path="/confirmDistribucionGasto"
+		<action path="/rendiciones90/confirmDistribucionGasto"
 			type="com.sa.action.redistribucion.DistribucionGastosConfirmAction">
 		</action>
-		<action path="/checkGastosMotivoDistribucion"
+		<action path="/rendiciones90/checkGastosMotivoDistribucion"
 			type="com.sa.action.redistribucion.ParamsDistribucionGastosAction">
 		</action>
-		<action path="/obtenerDistribucionGasto"
+		<action path="/rendiciones90/obtenerDistribucionGasto"
 			type="com.sa.action.redistribucion.BuscarGastosDistribuidosAction">
 		</action>
 		
-		<action path="/combos" type="com.sa.action.CombosAction"
+		<action path="/rendiciones90/combos" type="com.sa.action.CombosAction"
 			className="com.sa.core.SecurityActionMapping" name="LoginForm">
 		</action>
 	</action-mappings>
