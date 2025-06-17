@@ -75,14 +75,23 @@
 			<version>1.8.9</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.axis2</groupId>
-		    <artifactId>axis2-kernel</artifactId>
-		    <version>1.6.2</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.axis2</groupId>
-		    <artifactId>axis2-adb</artifactId>
-		    <version>1.6.2</version>
+		    <groupId>axis</groupId>
+			<artifactId>axis</artifactId>
+			<version>1.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.axis</groupId>
+					<artifactId>axis-jaxrpc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.axis</groupId>
+					<artifactId>axis-saaj</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>axis</groupId>
+					<artifactId>axis-wsdl4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.barcode4j</groupId>
