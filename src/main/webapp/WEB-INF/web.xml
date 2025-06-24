@@ -35,16 +35,16 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>ResponseOverrideFilter</filter-name>
-		<url-pattern>*.do</url-pattern>
+		<url-pattern>/rendiciones90/*.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>ResponseOverrideFilter</filter-name>
-		<url-pattern>*.jsp</url-pattern>
+		<url-pattern>/rendiciones90/*.jsp</url-pattern>
 	</filter-mapping>
-	
-	
-	
-	
+
+
+
+
 	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para que se pueda resolver 
 		localmente bien el tema del contenido est�tico y que no lo derive a la p�gina 
 		de login. -->
@@ -108,7 +108,7 @@
 
 
 
-	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para resolver localmente 
+	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para resolver localmente
 		el tema de que el Tomcat pueda levantar los objetos estaticos (como las imagenes), 
 		del path 'html' separado que se creo para las aplicaciones WAS - Comienzo -->
 	<!-- <servlet> <servlet-name>fileEnabler</servlet-name> <servlet-class>com.sa.util.fileEnabler</servlet-class> 
