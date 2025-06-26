@@ -10,14 +10,14 @@
         {
             "script": {
                 "path": "/prod/apps/scripts/rendiciones90.sh",
-                "params": "borr_class",
+                "params": "presync",
                 "sudo": "true"
             }
         },
-        {
+         {
             "script": {
                 "path": "/prod/apps/scripts/rendiciones90.sh",
-                "params": "presync",
+                "params": "borr_class",
                 "sudo": "true"
             }
         },
