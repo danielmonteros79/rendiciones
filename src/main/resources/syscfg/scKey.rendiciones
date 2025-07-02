@@ -1,0 +1,4 @@
+#Modificado el:
+#Wed Oct 11 12:08:43 ART 2023
+cipher.provider.AES=SunJCE
+cipher.secretKey.AES=07\:2E\:C6\:5D\:37\:EC\:9D\:18\:8E\:F9\:A2\:1C\:BE\:2B\:C3\:BC
