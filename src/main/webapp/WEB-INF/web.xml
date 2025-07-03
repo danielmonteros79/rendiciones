@@ -131,7 +131,37 @@
 		el tema de que el Tomcat pueda levantar los objetos estaticos (como las imagenes), 
 		del path 'html' separado que se creo para las aplicaciones WAS - Fin -->
 
-	<!-- Configuraci�n de mapping de struts -->
+	<!-- Mapeo para recursos estáticos -->
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/static/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Mapeo para archivos CSS -->
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/css/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Mapeo para archivos JavaScript -->
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/js/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Mapeo para archivos de imágenes -->
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/images/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Mapeo para archivos de fuentes -->
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/fonts/*</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Asegúrate de que este mapeo esté DESPUÉS de los mapeos de recursos estáticos -->
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>
