@@ -39,6 +39,7 @@ public abstract class Dao {
 	 * @param rs
 	 *            ResultSet.
 	 */
+	
 	public final void close(Statement stmt, ResultSet rs) {
 		if (stmt != null) {
 			try {
@@ -61,7 +62,7 @@ public abstract class Dao {
 	/**
 	 * Realiza la logica por default para manejar excepciones de este nivel
 	 * (logging y tirar excepcion de alto nivel envolviendo a la q se pasa).
-	 * 
+	 *
 	 * @param e
 	 * @throws DAOException
 	 */
