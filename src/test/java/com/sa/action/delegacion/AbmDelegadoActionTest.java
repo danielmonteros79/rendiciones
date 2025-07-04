@@ -101,12 +101,12 @@ class AbmDelegadoActionTest {
     requestAbm.addParameter("action", "abm");
 
     return Stream.of(
-        Arguments.of(requestEmptyAction, ""),
-        Arguments.of(requestGetDelegados, actionGetDelegados),
-        Arguments.of(requestGetDelegado, actionGetDelegado),
-        Arguments.of(requestBuscarUsuario, actionBuscarUsuario),
-        Arguments.of(requestAbm, actionAbm)
-                    );
+            Arguments.of(requestEmptyAction, ""),
+            Arguments.of(requestGetDelegados, actionGetDelegados),
+            Arguments.of(requestGetDelegado, actionGetDelegado),
+            Arguments.of(requestBuscarUsuario, actionBuscarUsuario),
+            Arguments.of(requestAbm, actionAbm)
+    );
   }
 
   /**
@@ -127,15 +127,15 @@ class AbmDelegadoActionTest {
     when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
 
     try (MockedConstruction<ManagerTransaction> managerTransactionMC = Mockito.mockConstruction(ManagerTransaction.class,
-        (mockManagerTransaction, context) -> {
-          doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
-          when(mockManagerTransaction.getDataReturnList()).thenReturn(null);
-          when(mockManagerTransaction.getDataReturn()).thenReturn(null);
-          when(mockManagerTransaction.getMensajeAviso()).thenReturn("");
-        })) {
+            (mockManagerTransaction, context) -> {
+              doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+              when(mockManagerTransaction.getDataReturnList()).thenReturn(null);
+              when(mockManagerTransaction.getDataReturn()).thenReturn(null);
+              when(mockManagerTransaction.getMensajeAviso()).thenReturn("");
+            })) {
       //then
       ActionForward actionForwardToAssert = abmDelegadoAction.executeAction(actionMappingMocked, abmDelegadoFormMocked, samWebApplicationMocked,
-          samWebClientMocked, request, httpServletResponseMocked);
+              samWebClientMocked, request, httpServletResponseMocked);
       if (action.equals("getDelegado") || action.equals("buscarUsuario") || action.equals("abm")) {
         assertNull(actionForwardToAssert);
       } else {
@@ -153,7 +153,7 @@ class AbmDelegadoActionTest {
     when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
     //then
     ActionForward actionForwardToAssert = abmDelegadoAction.executeAction(actionMappingMocked, abmDelegadoFormMocked, samWebApplicationMocked,
-        samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+            samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
     assertNull(actionForwardToAssert);
   }
 }
