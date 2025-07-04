@@ -27,10 +27,10 @@ public class AbmDelegadoAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(AbmDelegadoAction.class);
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
+									   HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
 			String action = request.getParameter("action") == null ? "" : request.getParameter("action");
-			
+
 			if (action.equals("getDelegados"))
 				return this.getDelegados(samClient, mapping, request);
 			else if (action.equals("getDelegado"))
@@ -39,14 +39,14 @@ public class AbmDelegadoAction extends RestriccionTransaccionAction {
 				return this.buscarUsuario(samClient, request, response);
 			else if (action.equals("abm"))
 				return this.abm(form, samClient, request, response);
-		
+
 			return mapping.findForward("success");
 		} catch (Exception e) {
 			log.error("", e);
 			return writeError(response, e);
 		}
 	}
-	
+
 	private ActionForward getDelegados(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
 		ParametrosService service = new ParametrosService(samClient);
 		List<ParametriaUsuarioDelegado> usuarioDelegados = service.getDelegaciones(this.sessionUser.getIdUser());
@@ -61,14 +61,14 @@ public class AbmDelegadoAction extends RestriccionTransaccionAction {
 	private ActionForward getDelegado(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		String id = request.getParameter("id");
-		
+
 		for (ParametriaUsuarioDelegado delegado : (List<ParametriaUsuarioDelegado>) request.getSession().getAttribute("delegacionesActivas")) {
 			if (Integer.valueOf(id).equals(delegado.getId()) ) {
 				resp.put("delegado", delegado);
 				break;
 			}
 		}
-		
+
 		return writeJson(response, resp);
 	}
 
@@ -81,13 +81,13 @@ public class AbmDelegadoAction extends RestriccionTransaccionAction {
 			resp.put("success", true);
 			resp.put("delegado", delegado);
 		} catch (Exception e) {
-	        log.error("Usuario no encontrado", e);
-	        
-	        resp.put("success", false);
-	        resp.put("error", "Usuario no encontrado");
-	        resp.put("message", "No se encontró el usuario con legajo: " + legajo);
-	    }
-		
+			log.error("Usuario no encontrado", e);
+
+			resp.put("success", false);
+			resp.put("error", "Usuario no encontrado");
+			resp.put("message", "No se encontró el usuario con legajo: " + legajo);
+		}
+
 		return writeJson(response, resp);
 	}
 
@@ -97,7 +97,7 @@ public class AbmDelegadoAction extends RestriccionTransaccionAction {
 		ParametrosService service = new ParametrosService(samClient);
 		String message = service.abmDelegaciones(frm, this.sessionUser);
 		resp.put("message", message.equals("") ? ParamsConstants.MJE_MODIF_OK : message);
-		
+
 		return writeJson(response, resp);
 	}
 }
