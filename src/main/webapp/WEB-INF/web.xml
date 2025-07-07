@@ -135,27 +135,27 @@
 	<!-- <servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/static/*</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping-->
 	
-	<!-- Mapeo para archivos CSS -->
-	<servlet-mapping>
+
+	<!--servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/css/*</url-pattern>
 	</servlet-mapping>
 	
-	<!-- Mapeo para archivos JavaScript -->
+
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/js/*</url-pattern>
 	</servlet-mapping>
 	
-	<!-- Mapeo para archivos de imágenes -->
+
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/images/*</url-pattern>
 	</servlet-mapping>
 	
-	<!-- Mapeo para archivos de fuentes -->
+
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/fonts/*</url-pattern>
