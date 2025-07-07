@@ -132,7 +132,7 @@
 		del path 'html' separado que se creo para las aplicaciones WAS - Fin -->
 
 	<!-- Mapeo para recursos estáticos -->
-	<servlet-mapping>
+	<!-- <servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/static/*</url-pattern>
 	</servlet-mapping>
@@ -159,7 +159,7 @@
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/fonts/*</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 	
 	<!-- Asegúrate de que este mapeo esté DESPUÉS de los mapeos de recursos estáticos -->
 	<servlet-mapping>
