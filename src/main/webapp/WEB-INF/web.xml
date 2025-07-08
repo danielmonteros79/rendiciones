@@ -35,11 +35,11 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>ResponseOverrideFilter</filter-name>
-		<url-pattern>/rendiciones90/*.do</url-pattern>
+		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>ResponseOverrideFilter</filter-name>
-		<url-pattern>/rendiciones90/*.jsp</url-pattern>
+		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
 
 
