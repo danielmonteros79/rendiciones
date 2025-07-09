@@ -1,3 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+    "http://struts.apache.org/dtds/struts-config_1_3.dtd">
 <struts-config>
 <form-beans>
 <form-bean name="LoginForm" type="com.sa.form.LoginForm"/>
@@ -35,7 +39,7 @@
 <forward name="sessionTimeOut" path="timeOutSession"/>
 <!--  			contextRelative="true"> -->
 </global-forwards>
-<!--  ========== Users Forward Definitions ===============================  -->
+<!--  Users Forward Definitions  -->
 <action-mappings>
 <action path="/Login" type="com.sa.core.PuntoEntradaAction" name="LoginForm" className="com.sa.core.SecurityActionMapping" input="login.jsp">
 <set-property value="1" property="applicationZone"/>
@@ -139,7 +143,7 @@
 <forward name="success" path="resumenesAnteriores"/>
 <forward name="resumen" path="/pages/tarjetaCorporativa/dtResumenesAnteriores.jsp"/>
 </action>
-<action path="/imagenes" type="com.sa.action.ImagenesAction" name="ImagenesForm"> </action>
+<action path="/imagenes" type="com.sa.action.ImagenesAction" name="ImagenesForm"/>
 <!--  LISTADO ALERTAS -->
 <action path="/listadoAlertas" type="com.sa.action.alertas.ListadoAlertasAction" className="com.sa.core.SecurityActionMapping" name="AlertaForm">
 <forward name="success" path="listadoAlertas"/>
@@ -150,7 +154,7 @@
 <forward name="rendiciones90" path="/pages/alertas/dtDetalleAlerta.jsp"/>
 </action>
 <!--  DETALLE DE ALERTA  -->
-<!--  PARAMETRIA =============================================  -->
+<!--  PARAMETRIA  -->
 <action path="/parametrosMotivo" type="com.sa.action.parametros.ParametrosMotivoLoadAction" name="ParametrosMotivoFiltroForm">
 <forward name="success" path="parametrosMotivo"/>
 <forward name="parametrosMotivoFiltro" path="/pages/parametros/dtMotivos.jsp"/>
@@ -200,7 +204,7 @@
 <forward name="modificacion" path="parametrosExceptuadosModificacion"/>
 <forward name="baja" path="parametrosExceptuadosBaja"/>
 </action>
-<action path="/chequearCodigo" type="com.sa.action.parametros.CheckCodigoExceptuadosAction"> </action>
+<action path="/chequearCodigo" type="com.sa.action.parametros.CheckCodigoExceptuadosAction"/>
 <action path="/saveExcepcion" type="com.sa.action.parametros.ParametrosExceptuadosSaveAction" name="ParametrosExceptuadosForm">
 <forward name="success" path="/parametrosExceptuados.do"/>
 <forward name="fail" path="parametrosExceptuadosAlta"/>
@@ -232,26 +236,26 @@
 <forward name="fail" path="/cuadroGeneral.do"/>
 </action>
 <action path="/CuadroDetallado" type="com.sa.action.CuadroDetalladoLoadAction" name="CuadroFiltroForm">
-<forward name="success" path="CuadroDetallado"> </forward>
+<forward name="success" path="CuadroDetallado"/>
 </action>
 <action path="/FiltroCuadroDetallado" type="com.sa.action.CuadroDetalladoFiltroAction" name="CuadroFiltroForm">
-<forward name="ok" path="CuadroDetallado"> </forward>
+<forward name="ok" path="CuadroDetallado"/>
 </action>
 <!--  REDISTRIBUCION GASTOS  -->
 <action path="/distribucionGastosLoad" type="com.sa.action.redistribucion.DistribucionGastosLoadAction">
 <forward name="success" path="distribucionGastosPage"/>
 </action>
-<action path="/confirmDistribucionGasto" type="com.sa.action.redistribucion.DistribucionGastosConfirmAction"> </action>
-<action path="/checkGastosMotivoDistribucion" type="com.sa.action.redistribucion.ParamsDistribucionGastosAction"> </action>
-<action path="/obtenerDistribucionGasto" type="com.sa.action.redistribucion.BuscarGastosDistribuidosAction"> </action>
-<action path="/combos" type="com.sa.action.CombosAction" className="com.sa.core.SecurityActionMapping" name="LoginForm"> </action>
+<action path="/confirmDistribucionGasto" type="com.sa.action.redistribucion.DistribucionGastosConfirmAction"/>
+<action path="/checkGastosMotivoDistribucion" type="com.sa.action.redistribucion.ParamsDistribucionGastosAction"/>
+<action path="/obtenerDistribucionGasto" type="com.sa.action.redistribucion.BuscarGastosDistribuidosAction"/>
+<action path="/combos" type="com.sa.action.CombosAction" className="com.sa.core.SecurityActionMapping" name="LoginForm"/>
 </action-mappings>
-<!--  Controller Configuration =============================================  -->
+<!--  Controller Configuration  -->
 <controller processorClass="org.apache.struts.tiles.TilesRequestProcessor"/>
-<!--  ========== Message Resources Definitions ===========================  -->
+<!--  Message Resources Definitions  -->
 <message-resources parameter="config.i18n.MessageResources"/>
-<!--  Plug Ins Configuration ===============================================  -->
-<!--  Tiles plugin ========================================================  -->
+<!--  Plug Ins Configuration  -->
+<!--  Tiles plugin  -->
 <plug-in className="org.apache.struts.tiles.TilesPlugin">
 <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml"/>
 </plug-in>
