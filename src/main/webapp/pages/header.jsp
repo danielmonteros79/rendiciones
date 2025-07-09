@@ -51,7 +51,7 @@
 					<img src="./images/BBVA_WHITE.png" height="83px" alt="" >
                	</html:link>
             	<ul class="navbar-nav flex-xs-row mb-0 pb-0" style="align-items: flex-end; flex-wrap: nowrap;">
-            		<% if (userWorking.getTipoPerfil().getPantalla().contains("Rendiciones")) { %>
+            		<% if (userWorking != null && userWorking.getTipoPerfil() != null && userWorking.getTipoPerfil().getPantalla().contains("Rendiciones")) { %>
 	                <li class="nav-item pr-md-2 ">
 	                	<html:link action="listadoRendiciones.do" styleClass="nav-link nav-rendiciones">
 	                		<span>RENDICIONES</span>
@@ -59,7 +59,7 @@
 	                </li>
 					<% } %>
 					
-					<% if (userSession.getTipoPerfil().getPantalla().contains("Delegacion")) { %>
+					<% if (userSession != null && userSession.getTipoPerfil() != null && userSession.getTipoPerfil().getPantalla().contains("Delegacion")) { %>
 	                <li class="nav-item dropdown pr-md-2 px-xl-3">
 	                	<a class="nav-link dropdown-toggle nav-delegacion" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>DELEGACI&Oacute;N</span>
@@ -69,7 +69,7 @@
 								<span>ACCESO COMO DELEGADO</span>
 							</html:link>
 							
-							<% if(userWorking.getIdUser() == userSession.getIdUser()) { %>
+							<% if(userWorking != null && userSession != null && userWorking.getIdUser().equals(userSession.getIdUser())) { %>
 							<html:link action="abmDelegado.do" styleClass="dropdown-item bg-secondary text-white">
 								<span>FUNCIONES A TERCEROS</span>
 							</html:link>
@@ -78,28 +78,28 @@
 	                </li>
 					<% } %>
 					
-					<% if (userWorking.getTipoPerfil().getPantalla().contains("Aprobacion") && userWorking.getGlgAprobacion().size() > 0) { %>
+					<% if (userWorking != null && userWorking.getTipoPerfil() != null && userWorking.getTipoPerfil().getPantalla().contains("Aprobacion") && userWorking.getGlgAprobacion() != null && userWorking.getGlgAprobacion().size() > 0) { %>
 	                <li class="nav-item dropdown pr-md-2 ">
 	                    <a class="nav-link dropdown-toggle nav-aprobacion" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>APROBACI&Oacute;N</span>
 						</a>
 						<div class="dropdown-menu bg-secondary" aria-labelledby="navbarDropdown">
-							<% if (userWorking.getGlgAprobacion().contains(1)) { %>
+							<% if (userWorking != null && userWorking.getGlgAprobacion() != null && userWorking.getGlgAprobacion().contains(1)) { %>
 							<html:link action="listadoAprobaciones.do?glg=1" styleClass="dropdown-item bg-secondary text-white">
 								<span>SUPERVISOR</span>
 							</html:link>
 							<% } %>
-							<% if (userWorking.getGlgAprobacion().contains(2)) { %>
+							<% if (userWorking != null && userWorking.getGlgAprobacion() != null && userWorking.getGlgAprobacion().contains(2)) { %>
 							<html:link action="listadoAprobaciones.do?glg=2" styleClass="dropdown-item bg-secondary text-white">
 								<span>FIRMA</span>
 							</html:link>
 							<% } %>
-							<% if (userWorking.getGlgAprobacion().contains(4)) { %>
+							<% if (userWorking != null && userWorking.getGlgAprobacion() != null && userWorking.getGlgAprobacion().contains(4)) { %>
 							<html:link action="listadoAprobaciones.do?glg=4" styleClass="dropdown-item bg-secondary text-white">
 								<span>GLG (ENTRADA)</span>
 							</html:link>
 							<% } %>
-							<% if (userWorking.getGlgAprobacion().contains(3)) { %>
+							<% if (userWorking != null && userWorking.getGlgAprobacion() != null && userWorking.getGlgAprobacion().contains(3)) { %>
 							<html:link action="listadoAprobaciones.do?glg=3" styleClass="dropdown-item bg-secondary text-white">
 								<span>GLG</span>
 							</html:link>
@@ -109,7 +109,7 @@
 					<% } %>
 					
 
-	               <% if (userWorking.getTipoPerfil().getPantalla().contains("Parametros")) { %>
+	               <% if (userWorking != null && userWorking.getTipoPerfil() != null && userWorking.getTipoPerfil().getPantalla().contains("Parametros")) { %>
 
 	                
 
@@ -134,7 +134,7 @@
 	                </li>
 					<% } %> 
 					
-				<% if (userWorking.getTipoPerfil().getPantalla().contains("Cierre")) { %>
+				<% if (userWorking != null && userWorking.getTipoPerfil() != null && userWorking.getTipoPerfil().getPantalla().contains("Cierre")) { %>
 	                <li class="nav-item dropdown pr-md-2 ">
 	                    <a class="nav-link dropdown-toggle nav-cierre" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>CIERRE</span>
@@ -160,7 +160,7 @@
 	                </li>
 					<% } %> 
 					
-					<% if (userWorking.getTipoPerfil().getPantalla().contains("Resumen")) { %>
+					<% if (userWorking != null && userWorking.getTipoPerfil() != null && userWorking.getTipoPerfil().getPantalla().contains("Resumen")) { %>
 	                <li class="nav-item dropdown pr-md-2 ">
 	                    <a class="nav-link dropdown-toggle nav-tarjeta-corporativa" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>TARJETA CORPORATIVA</span>
@@ -176,7 +176,7 @@
 	                </li>
 					<% } %>
 										
-					<% if (userWorking.getTipoPerfil().getPantalla().contains("Aprobacion") || userWorking.getTipoPerfil().getPantalla().contains("Cierre")) { %>
+					<% if (userWorking != null && userWorking.getTipoPerfil() != null && (userWorking.getTipoPerfil().getPantalla().contains("Aprobacion") || userWorking.getTipoPerfil().getPantalla().contains("Cierre"))) { %>
 	                <li class="nav-item dropdown pr-md-2 ">
 	                    <a class="nav-link dropdown-toggle nav-reporteria" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span>REPORTER&Iacute;A</span>

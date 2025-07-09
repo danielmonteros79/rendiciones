@@ -2,7 +2,7 @@
 
 <!-- <!DOCTYPE log4j:configuration SYSTEM "jar:file:jakarta-log4j-1.2.8.jar!/org/apache/log4j/xml/log4j.dtd"> -->
 
-<log4j:configuration>
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
 	<appender name="LOG" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="file" value="${log4j.logPath}/${log4j.logFile}" />

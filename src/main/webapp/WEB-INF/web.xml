@@ -32,8 +32,7 @@
 	<filter>
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
-	</filter>
-	<filter-mapping>
+	</filter>	<filter-mapping>
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
