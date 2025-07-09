@@ -128,37 +128,51 @@
 
 	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para resolver localmente 
 		el tema de que el Tomcat pueda levantar los objetos estaticos (como las imagenes), 
-		del path 'html' separado que se creo para las aplicaciones WAS - Fin -->
-
-	<!-- Mapeo para recursos estáticos -->
-	<!-- <servlet-mapping>
+		del path 'html' separado que se creo para las aplicaciones WAS - Fin -->	<!-- Mapeo para recursos estáticos -->
+	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/static/*</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
 	
-
-	<!--servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/css/*</url-pattern>
 	</servlet-mapping>
 	
-
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/js/*</url-pattern>
 	</servlet-mapping>
 	
-
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/images/*</url-pattern>
 	</servlet-mapping>
 	
-
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>/fonts/*</url-pattern>
-	</servlet-mapping> -->
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/displaytag/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/ayuda/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>*.ico</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
 	
 	<!-- Asegúrate de que este mapeo esté DESPUÉS de los mapeos de recursos estáticos -->
 	<servlet-mapping>
