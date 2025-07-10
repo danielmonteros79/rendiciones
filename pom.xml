@@ -4,7 +4,6 @@
 	<artifactId>rendiciones90</artifactId>
 	<version>0.0.1</version>
 	<packaging>war</packaging>
-	<name>rendiciones90</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -465,7 +464,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>rendiciones</finalName>
+		<finalName>rendiciones90</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>
