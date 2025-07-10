@@ -7,7 +7,7 @@
    <auto-encode-requests value="false"/>
    <auto-encode-responses value="false"/>
    <enable-directory-browsing value="false"/>
-   <enable-file-serving value="true"/>
+   <enable-file-serving value="false"/>
    <pre-compile-jsps value="false"/>
    <enable-reloading value="true"/>
 </web-ext>

@@ -159,12 +159,23 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		rendicion.setUsuarioRendicion(this.sessionUserWorking.getIdUser());
 		rendicion.setId(Integer.parseInt(idRendicion));
 		rendicion.setCostosDestino(String.valueOf(this.sessionUserWorking.getCcostos()));
-
+	
+		
+//		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, "", rendicion.getUsuarioRendicion() != null ? rendicion.getUsuarioRendicion() : 
+//			this.sessionUserWorking.getIdUser(), rendicion.getCodMotivo());
+//		if (gastos.size() == 0)
+//			return writeError(response, "La rendici&oacute;n no tiene gastos cargados.");
+		
 		List<String> errores = thubanService.publicarDocumentos(thubanClaseDoc, thubanUser, thubanPass, rendicion, frm.getArchivosASubir());
 		
 		if (errores.size() == frm.getArchivosASubir().size())
 			return writeError(response, StringUtils.join(errores.toArray(), "<br><br>"));
-
+//		else if (rendicion.getEstado().equals("PENDI") || rendicion.getEstado().equals("OBSER")) {
+//			String idu = aprobacionesService.obtenerIDU(rendicion, this.sessionUserWorking.getIdUser(), WM95.DELIM_04_SIN_ADEA);
+//			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()), this.sessionUserWorking.getIdUser(), idu);
+//			if (aprobacionesService.getMsg() != null)
+//				message += "<br>" + aprobacionesService.getMsg();
+//		}
 		
 		if (errores.size() > 0)
 			message += "<br><br>" + StringUtils.join(errores.toArray(), "<br>");
@@ -176,5 +187,96 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 	}
 	
 	
-
+//	private void generateCaratula(HttpServletResponse response, RendicionAvisoForm frm, HttpServletRequest request,
+//			SAMWebClient samClient, AprobacionesService aprobacionesService, List<Gastos> gastos) throws Exception {
+//		try {
+//			String msg = "";
+//			
+//			// Verifica si ya tiene codigo adea la rendicion
+//			boolean isCaratula = frm.getRendicion().getAdea().equalsIgnoreCase("") ? false : true;
+//			String iduAdea = null;
+//			if (!isCaratula) {
+//				log.info("Se obtiene idu y adea para caratula");
+//				iduAdea = aprobacionesService.obtenerIDU(frm, WM95.DELIM_04_CON_ADEA);
+//			} else {
+//				log.info("Caratula ya generada se obtiene el idu y adea de la rendicion");
+//				iduAdea = frm.getRendicion().getIdu() + ";" + frm.getRendicion().getAdea();
+//			}
+//			if (iduAdea == null) {
+//				msg = "ERROR: Error al generar IDU y ADEA";
+//				request.setAttribute("msg", msg);
+//				return;
+//			}
+//
+//			CaratulaService servCaratula = new CaratulaService(samClient);
+//			String[] thubanCod = iduAdea.split(";");
+//
+//			log.info("Se obtiene template para caratula. ");
+//			String html = servCaratula.generarCaratulaTemplate(frm, thubanCod, gastos);
+//			log.info("Template obtenido: " + html);
+//			if (!isCaratula) {
+//				aprobacionesService.cambiarEscanRendicion(String.valueOf(frm.getRendicion().getId()), frm.getRendicion()
+//						.getUsuarioRendicion(), thubanCod[0], thubanCod[1]);
+//				frm.getRendicion().setIdu(thubanCod[0]);
+//				frm.getRendicion().setAdea(thubanCod[1]);
+//			}
+//			log.info("Se obtiene caratula pdf");
+//			
+//			String codigoBarraPath = (String) request.getSession().getServletContext().getAttribute("rendicion.image.idu");
+//			File codigoBarrasIdu = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getIdu());
+//			File codigoBarrasAdea = servCaratula.createBarcodeImg(codigoBarraPath, frm.getRendicion().getAdea());
+//			String imgIdu = "<img src='" + codigoBarrasIdu + "' width='245px' height='65px' />";
+//			String imgAdea = "<img src='" + codigoBarrasAdea + "' width='245px' height='65px'  />";
+//			html = html.replace(CaratulaTemplate.REPLACE_IDU, imgIdu);
+//			html = html.replace(CaratulaTemplate.REPLACE_ADEA, imgAdea);
+//
+//			String fileName = "caratulaRendicion_" + frm.getRendicion().getId();
+//			String fileType = "pdf";
+//
+//			response.setContentType("application/vnd.pdf");
+//			response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "." + fileType + "\"");
+//			OutputStream out = response.getOutputStream();
+//
+//			Document document = new Document(PageSize.A4);
+//			PdfWriter.getInstance(document, out);
+//			String img = (String) request.getSession().getServletContext().getAttribute("rendicion.image.caratula");
+//
+//			log.info("CARTULA - IMG:_ " + img);
+//			File fileImg = new File(img);
+//			String imgLogo = "<img src='" + img + "' height='45px' />";
+//			html = html.replace(CaratulaTemplate.REPLACE_BBVAIMAGEN, imgLogo);
+//
+//			String buffer = html;
+//			log.info("CARATULA - IMG FILE: " + fileImg.getAbsolutePath());
+//			log.info("CARATULA - IMG FILE EXIST? " + fileImg.exists());
+//			log.info("CARATULA - IMG IS FILE ? " + fileImg.isFile());
+//			byte[] imgByte = FileUtils.readFileToByteArray(fileImg);
+//
+//			Image imagen = Image.getInstance(imgByte);
+//
+//			document.open();
+//
+//			imagen.scaleAbsoluteWidth(100f);
+//
+//			// HTMLWorker
+//			HTMLWorker htmlWorker = new HTMLWorker(document);
+//			// String str =
+//			// "Este es el contenido HTML, bien en String o reemplazalo por el contenido del fichero del ejemplo anterior";
+//			htmlWorker.parse(new StringReader(buffer));
+//
+//			document.close();
+//			out.flush();
+//			out.close();
+//			codigoBarrasIdu.delete();
+//			codigoBarrasAdea.delete();
+//		} catch (Exception e) {
+//			request.setAttribute("msg", "ERROR: Error al generar car\u00e1tula");
+//			log.error(e);
+//			throw new Exception(e);
+//		}
+//	}
+	
+	
+	
+	
 }

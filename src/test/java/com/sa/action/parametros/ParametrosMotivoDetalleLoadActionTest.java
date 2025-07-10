@@ -4,9 +4,12 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 import com.sa.entities.OSCAR;
 import com.sa.entities.Usuario;
+import com.sa.entities.parametros.ParametroExceptuado;
 import com.sa.entities.parametros.ParametroMotivo;
+import com.sa.form.parametros.ParametrosExceptuadosForm;
 import com.sa.form.parametros.ParametrosMotivoForm;
-import java.io.ByteArrayOutputStream;
+import com.sa.services.ParametrosService;
+import org.apache.axis.utils.ByteArrayOutputStream;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.mock.MockHttpServletRequest;
@@ -32,6 +35,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 class ParametrosMotivoDetalleLoadActionTest {

@@ -23,11 +23,11 @@ class CodigoDeBarrasServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-//    @Test
-//    @DisplayName("Testeando createBarcodeImg")
-//    void createBarcodeImg() throws ServiceException {
-//        assertThrows(ServiceException.class,
-//                () -> (new CodigoDeBarrasService(new SAMWebClient())).createBarcodeImg("Codigo Barra"));
-//    }
+    @Test
+    @DisplayName("Testeando createBarcodeImg")
+    void createBarcodeImg() throws ServiceException {
+        assertThrows(ServiceException.class,
+                () -> (new CodigoDeBarrasService(new SAMWebClient())).createBarcodeImg("Codigo Barra"));
+    }
 
 }

@@ -75,12 +75,10 @@ function getArchivosASubir() {
         dataType: "json",
         success: function (data) {
             $.each(data, function (index) {
-                var nombreArchivo = "";
-                if (data[index] && data[index].nombre) {
-                    nombreArchivo = escapeHtml(data[index].nombre);
-                }
+                let nombreArchivo = escapeHtml(data[index]?.nombre || "");
                 agregarASubir(nombreArchivo);
             });
+
             checkUnsaved();
         },
         error: function (error) {
@@ -101,22 +99,25 @@ function checkUnsaved() {
 
 function cargar() {
     var fileName = $("#archivo").val();
+
     if (fileName == null || fileName === "") {
         $("#validacionArchivo").html("");
     } else {
         if (validarExtension(fileName, ['.pdf', '.tif'])) {
-            var file = $('#archivo')[0].files[0];
-            var fileSize = file && file.size ? file.size : 0;
-            var fileNameLowerCase = file && file.name ? file.name.toLowerCase() : "";
-            
+            let file = $('#archivo')[0].files[0];
+            let fileSize = file?.size || 0;
+            let fileNameLowerCase = file?.name?.toLowerCase() || "";
+
             if (fileSize > (1.2 * 1024 * 1024) && fileNameLowerCase.indexOf('.tif') !== -1) {
                 $("#validacionArchivo").text("El tamaño del archivo '.tif' no debe superar los 1.2 MB.");
             } else if (existe(fileName)) {
                 $("#validacionArchivo").text("Ya existe un archivo con ese nombre.");
             } else {
                 $("#validacionArchivo").text("");
+
                 var myFormData = new FormData();
                 myFormData.append("archivo", file);
+
                 $.ajax({
                     url: "rendicionAviso.do?action=cargarArchivo",
                     type: "POST",
@@ -125,9 +126,12 @@ function cargar() {
                     dataType: "json",
                     data: myFormData,
                     success: function (data) {
-                        var nombreArchivo = data && data.nombreArchivo ? escapeHtml(data.nombreArchivo) : "";
+                        let nombreArchivo = escapeHtml(data?.nombreArchivo || "");
+
                         agregarASubir(nombreArchivo);
+
                         $("#archivo").val(null);
+
                         $('#errores').hide();
                         checkUnsaved();
                     },
