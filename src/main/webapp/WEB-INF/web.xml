@@ -106,75 +106,52 @@
 
 
 
+	<!-- Servlet para servir archivos estáticos en WebSphere -->
+	<servlet>
+		<servlet-name>fileEnabler</servlet-name>
+		<servlet-class>com.sa.util.fileEnabler</servlet-class>
+	</servlet>
 
-	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para resolver localmente
-		el tema de que el Tomcat pueda levantar los objetos estaticos (como las imagenes), 
-		del path 'html' separado que se creo para las aplicaciones WAS - Comienzo -->
-	<!-- <servlet> <servlet-name>fileEnabler</servlet-name> <servlet-class>com.sa.util.fileEnabler</servlet-class> 
-		</servlet> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> <url-pattern>/images/iconos*</url-pattern> 
-		</servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>*.html</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>*.htm</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>*.gif</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>*.jpg</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>*.dtd</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>*.pdf</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>/css/*</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>/js/*</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>*.js</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
-		<url-pattern>/cabinets/*</url-pattern> </servlet-mapping> <servlet-mapping> 
-		<servlet-name>fileEnabler</servlet-name> <url-pattern>/upload/varios/*</url-pattern> 
-		</servlet-mapping> -->
-
-	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para resolver localmente 
-		el tema de que el Tomcat pueda levantar los objetos estaticos (como las imagenes), 
-		del path 'html' separado que se creo para las aplicaciones WAS - Fin -->	<!-- Mapeo para recursos estáticos -->
+	<!-- Mapeos del fileEnabler para recursos estáticos -->
 	<servlet-mapping>
-		<servlet-name>default</servlet-name>
+		<servlet-name>fileEnabler</servlet-name>
 		<url-pattern>/static/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>default</servlet-name>
+		<servlet-name>fileEnabler</servlet-name>
 		<url-pattern>/css/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>default</servlet-name>
+		<servlet-name>fileEnabler</servlet-name>
 		<url-pattern>/js/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>default</servlet-name>
+		<servlet-name>fileEnabler</servlet-name>
 		<url-pattern>/images/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>default</servlet-name>
+		<servlet-name>fileEnabler</servlet-name>
 		<url-pattern>/fonts/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/displaytag/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/ayuda/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
+		<servlet-name>fileEnabler</servlet-name>
 		<url-pattern>*.ico</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>default</servlet-name>
+		<servlet-name>fileEnabler</servlet-name>
 		<url-pattern>*.html</url-pattern>
 	</servlet-mapping>
 	
-	<!-- Asegúrate de que este mapeo esté DESPUÉS de los mapeos de recursos estáticos -->
+	<servlet-mapping>
+		<servlet-name>fileEnabler</servlet-name>
+		<url-pattern>*.js</url-pattern>
+	</servlet-mapping>	<!-- Asegúrate de que este mapeo esté DESPUÉS de los mapeos de recursos estáticos -->
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>
