@@ -518,6 +518,33 @@
 
 	<build>
 		<finalName>rendiciones90</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/webapp/static</directory>
+				<targetPath>../html/static</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/webapp/css</directory>
+				<targetPath>../html/css</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/webapp/js</directory>
+				<targetPath>../html/js</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/webapp/images</directory>
+				<targetPath>../html/images</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/webapp/fonts</directory>
+				<targetPath>../html/fonts</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/webapp/WEB-INF</directory>
+				<targetPath>WEB-INF</targetPath>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>
