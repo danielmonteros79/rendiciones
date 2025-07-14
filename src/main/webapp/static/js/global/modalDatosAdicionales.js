@@ -191,17 +191,16 @@ function readExcel(inputElement) {
     });
 }
 
-async function handleFile(inputElement) {
-    try {
-        legajosData = await readExcel(inputElement);
-        		setTimeout(() => {
-				        hayExcel=true;
-			}, 500);
-
+function handleFile(inputElement) {
+    readExcel(inputElement).then(function(data) {
+        legajosData = data;
+        setTimeout(function() {
+            hayExcel = true;
+        }, 500);
         // Do something with data
-    } catch (error) {
+    }).catch(function(error) {
         alert(error);
-    }
+    });
 }
 
 
@@ -449,23 +448,21 @@ function buscarInvitadoSuccess(data) {
     });
 }
 
-async function handleDataInvitados(data) {
-    try {
-        filteredData = await buscarInvitadoSuccess(data);
-        filteredData.forEach(e =>{
-			params.COD1 = e.codigo;
-			params.TXT1 = e.elemento
-  			callAjax('datosAdicionales.do', params, 'modalDatosAdicionalesGuardarSuccess', 'modalDatosAdicionalesGuardarError'); 
-		})
-			setTimeout(() => {
-				hayExcel=false;
-				filteredData=[]    	
-			}, 300);
-		
-	
-    } catch (error) {
+function handleDataInvitados(data) {
+    buscarInvitadoSuccess(data).then(function(result) {
+        filteredData = result;
+        filteredData.forEach(function(e) {
+            params.COD1 = e.codigo;
+            params.TXT1 = e.elemento;
+            callAjax('datosAdicionales.do', params, 'modalDatosAdicionalesGuardarSuccess', 'modalDatosAdicionalesGuardarError'); 
+        });
+        setTimeout(function() {
+            hayExcel = false;
+            filteredData = [];    	
+        }, 300);
+    }).catch(function(error) {
         console.error(error);
-    }
+    });
 }
 
 
