@@ -32,9 +32,7 @@
 </global-exceptions>
 <global-forwards>
 <forward name="login" path="/login.jsp"/>
-<!--  		<forward name="inicio" path="inicioApp"></forward>  -->
 <forward name="permisoDenegado" path="permisoDenegado"/>
-<!--  			contextRelative="true"> -->
 <forward name="errorService" path="errorService"/>
 <forward name="sessionTimeOut" path="timeOutSession"/>
 <!--  			contextRelative="true"> -->
