@@ -57,6 +57,18 @@ class fileEnablerTest {
     @Test
     void testDoGet() throws IOException, ServletException {
         fileEnabler fileEnabler = new fileEnabler();
+        
+        // Mock the servlet context to return a test path
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getRealPath("/")).thenReturn("C:\\temp\\test\\");
+        
+        // Mock the servlet config
+        ServletConfig mockConfig = mock(ServletConfig.class);
+        when(mockConfig.getServletContext()).thenReturn(mockContext);
+        
+        // Initialize the servlet
+        fileEnabler.init(mockConfig);
+        
         MockHttpServletRequest arg0 = mock(MockHttpServletRequest.class);
         when(arg0.getRequestURI()).thenReturn("https://example.org/example");
         MockHttpServletResponse arg1 = mock(MockHttpServletResponse.class);
@@ -70,6 +82,18 @@ class fileEnablerTest {
     @Test
     void testDoPost() throws IOException, ServletException {
         fileEnabler fileEnabler = new fileEnabler();
+        
+        // Mock the servlet context to return a test path
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getRealPath("/")).thenReturn("C:\\temp\\test\\");
+        
+        // Mock the servlet config
+        ServletConfig mockConfig = mock(ServletConfig.class);
+        when(mockConfig.getServletContext()).thenReturn(mockContext);
+        
+        // Initialize the servlet
+        fileEnabler.init(mockConfig);
+        
         MockHttpServletRequest arg0 = mock(MockHttpServletRequest.class);
         when(arg0.getRequestURI()).thenReturn("https://example.org/example");
         BufferedResponseWrapper13Impl arg1 = mock(BufferedResponseWrapper13Impl.class);
