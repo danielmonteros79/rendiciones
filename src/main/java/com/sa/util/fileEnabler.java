@@ -39,12 +39,10 @@ public class fileEnabler extends HttpServlet {
 		String s = "%20";
 		if (idx != 0)
 			arch = arch.substring(idx + 1);
-		String resultado = "F:\\Fpven1_e\\Usr\\Metodologia\\Intercambio FSW\\SSDD\\Para DyD\\Java\\Sia\\Project\\EsqueletoAppWeb\\sum_00001_3\\WebContent\\"+ arch.toString(); // String.valueOf(documentRoot)
 		
-		// +
-		// "/"
-		// +
-		// arch.toString();
+		// Use the properly initialized documentRoot instead of hardcoded path
+		String resultado = getServletContext().getRealPath("/") + arch.toString();
+		
 		log.info("Se resuelve:" + resultado);
 		f = new File(resultado);
 		if (!f.exists()) {
