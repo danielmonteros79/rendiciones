@@ -93,17 +93,21 @@ public class fileEnabler extends HttpServlet {
 		for (int idxBegin = strToReplace.indexOf("${"); idxBegin >= 0; idxBegin = strToReplace
 				.indexOf("${", idxEnd)) {
 			idxEnd = strToReplace.indexOf("}", idxBegin);
+			if (idxEnd == -1) {
+				// No closing bracket found, break to avoid infinite loop
+				break;
+			}
 			String var = strToReplace.substring(idxBegin + "${".length(),
 					idxEnd);
-			String value = sc.getAttribute(var).toString();
-
-			// (new StringBuilder("${")).append(var).append("}").toString(),
-			// value
-			if (strToReplace.indexOf(var) == strToReplace.lastIndexOf(var)) {
-				strToReplace = value + strToReplace.substring(var.length() + 3);
-			} else {
-				strToReplace = strToReplace.replaceAll("${" + var + "}", value);
-			}
+			Object attrValue = sc.getAttribute(var);
+			String value = (attrValue != null) ? attrValue.toString() : "";
+			
+			// Replace the variable placeholder with its value
+			String placeholder = "${" + var + "}";
+			strToReplace = strToReplace.replace(placeholder, value);
+			
+			// Continue searching from the beginning after replacement
+			idxEnd = 0;
 		}
 
 		return strToReplace;

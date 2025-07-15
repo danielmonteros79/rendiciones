@@ -7,6 +7,8 @@ import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -61,6 +63,22 @@ class fileEnablerTest {
         // Mock the servlet context to return a test path
         ServletContext mockContext = mock(ServletContext.class);
         when(mockContext.getRealPath("/")).thenReturn("C:\\temp\\test\\");
+        when(mockContext.getRealPath(".")).thenReturn("C:\\temp\\test");
+        when(mockContext.getInitParameter("extended-document-root")).thenReturn(null);
+        
+        // Use a stateful mock that tracks setAttribute calls
+        Map<String, Object> attributes = new HashMap<>();
+        doAnswer(invocation -> {
+            String key = invocation.getArgument(0);
+            Object value = invocation.getArgument(1);
+            attributes.put(key, value);
+            return null;
+        }).when(mockContext).setAttribute(anyString(), any());
+        
+        doAnswer(invocation -> {
+            String key = invocation.getArgument(0);
+            return attributes.get(key);
+        }).when(mockContext).getAttribute(anyString());
         
         // Mock the servlet config
         ServletConfig mockConfig = mock(ServletConfig.class);
@@ -69,10 +87,12 @@ class fileEnablerTest {
         // Initialize the servlet
         fileEnabler.init(mockConfig);
         
-        MockHttpServletRequest arg0 = mock(MockHttpServletRequest.class);
+        // Use servlet interfaces directly instead of Mock implementations
+        HttpServletRequest arg0 = mock(HttpServletRequest.class);
         when(arg0.getRequestURI()).thenReturn("https://example.org/example");
-        MockHttpServletResponse arg1 = mock(MockHttpServletResponse.class);
+        HttpServletResponse arg1 = mock(HttpServletResponse.class);
         doNothing().when(arg1).sendError(anyInt());
+        
         fileEnabler.doGet(arg0, arg1);
         verify(arg0).getRequestURI();
         verify(arg1).sendError(anyInt());
@@ -86,6 +106,22 @@ class fileEnablerTest {
         // Mock the servlet context to return a test path
         ServletContext mockContext = mock(ServletContext.class);
         when(mockContext.getRealPath("/")).thenReturn("C:\\temp\\test\\");
+        when(mockContext.getRealPath(".")).thenReturn("C:\\temp\\test");
+        when(mockContext.getInitParameter("extended-document-root")).thenReturn(null);
+        
+        // Use a stateful mock that tracks setAttribute calls
+        Map<String, Object> attributes = new HashMap<>();
+        doAnswer(invocation -> {
+            String key = invocation.getArgument(0);
+            Object value = invocation.getArgument(1);
+            attributes.put(key, value);
+            return null;
+        }).when(mockContext).setAttribute(anyString(), any());
+        
+        doAnswer(invocation -> {
+            String key = invocation.getArgument(0);
+            return attributes.get(key);
+        }).when(mockContext).getAttribute(anyString());
         
         // Mock the servlet config
         ServletConfig mockConfig = mock(ServletConfig.class);
@@ -94,10 +130,12 @@ class fileEnablerTest {
         // Initialize the servlet
         fileEnabler.init(mockConfig);
         
-        MockHttpServletRequest arg0 = mock(MockHttpServletRequest.class);
+        // Use servlet interfaces directly instead of Mock implementations
+        HttpServletRequest arg0 = mock(HttpServletRequest.class);
         when(arg0.getRequestURI()).thenReturn("https://example.org/example");
-        BufferedResponseWrapper13Impl arg1 = mock(BufferedResponseWrapper13Impl.class);
+        HttpServletResponse arg1 = mock(HttpServletResponse.class);
         doNothing().when(arg1).sendError(anyInt());
+        
         fileEnabler.doPost(arg0, arg1);
         verify(arg0).getRequestURI();
         verify(arg1).sendError(anyInt());
@@ -114,27 +152,34 @@ class fileEnablerTest {
 
     @Test
     void testReplaceVariablesInString() {
-
-        MockServletContext servletContext = new MockServletContext();
-        servletContext.setAttribute("test", "test");
+        // Mock the servlet context to return values for attributes
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getAttribute("test")).thenReturn("test");
+        
         fileEnabler fileEnabler = new fileEnabler();
         String valores = ("${test}");
-        fileEnabler.replaceVariablesInString(valores, servletContext);
+        String result = fileEnabler.replaceVariablesInString(valores, mockContext);
+        assertNotNull(result);
     }
 
     @Test
     void testReplaceVariablesInString2() {
         fileEnabler fileEnabler = new fileEnabler();
-        assertNull(fileEnabler.replaceVariablesInString(null, new MockServletContext()));
+        ServletContext mockContext = mock(ServletContext.class);
+        String result = fileEnabler.replaceVariablesInString(null, mockContext);
+        assertNull(result);
     }
 
     @Test
     void testReplaceVariablesInString3() {
-        MockServletContext servletContext = new MockServletContext();
-        servletContext.setAttribute("1", "1");
+        // Mock the servlet context to return values for attributes
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getAttribute("1")).thenReturn("1");
+        
         fileEnabler fileEnabler = new fileEnabler();
         String valores = ("${1}");
-        fileEnabler.replaceVariablesInString(valores, servletContext);
+        String result = fileEnabler.replaceVariablesInString(valores, mockContext);
+        assertNotNull(result);
     }
 }
 
