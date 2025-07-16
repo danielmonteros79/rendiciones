@@ -35,10 +35,21 @@ public class fileEnabler extends HttpServlet {
 		File f;
 		String arch = arg0.getRequestURI();
 		log.info("Se pide:" + arch.toString());
+		
+		// Extract the filename from the request URI
+		// For URIs like /context/servlet-mapping/filename, we want just the filename
 		int idx = arch.indexOf("/", 2);
-		String s = "%20";
-		if (idx != 0)
-			arch = arch.substring(idx + 1);
+		if (idx != -1) {
+			// Find the next slash after the context path
+			int nextIdx = arch.indexOf("/", idx + 1);
+			if (nextIdx != -1) {
+				// Extract everything after the servlet mapping
+				arch = arch.substring(nextIdx + 1);
+			} else {
+				// No additional path, extract from the current position
+				arch = arch.substring(idx + 1);
+			}
+		}
 		
 		// Use the properly initialized documentRoot instead of hardcoded path
 		String resultado = getServletContext().getRealPath("/") + arch.toString();

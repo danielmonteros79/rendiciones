@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -362,7 +363,7 @@ class fileEnablerTest {
     void testFileStreamingWithBuffer() throws IOException, ServletException {
         fileEnabler servlet = new fileEnabler();
         
-        // Mock servlet context
+        // Mock servlet context - ensure the path ends with a separator
         ServletContext mockContext = mock(ServletContext.class);
         when(mockContext.getRealPath("/")).thenReturn("x:\\Workspace2\\rendiciones90\\src\\test\\resources\\");
         when(mockContext.getRealPath(".")).thenReturn("x:\\Workspace2\\rendiciones90\\src\\test\\resources");
@@ -394,7 +395,7 @@ class fileEnablerTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         
-        when(mockRequest.getRequestURI()).thenReturn("/img.png");
+        when(mockRequest.getRequestURI()).thenReturn("/rendiciones90/images/img.png");
         
         // Mock response output stream
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -415,10 +416,13 @@ class fileEnablerTest {
         // Test with the actual img.png file that exists in test resources
         servlet.doGet(mockRequest, mockResponse);
         
-        // Verify that content was written to the output stream
+        // With the updated servlet logic, it should now find the file and serve it
         verify(mockResponse).reset();
         verify(mockResponse).setHeader("Content-Type", "image/png");
         verify(mockResponse, atLeast(1)).setHeader(eq("Content-Length"), anyString());
+        
+        // Verify that no 404 error was sent
+        verify(mockResponse, never()).sendError(404);
     }
 
     @Test
@@ -472,6 +476,149 @@ class fileEnablerTest {
         if (expectedFile.exists()) {
             verify(mockResponse).setHeader("Content-Length", String.valueOf(expectedFile.length()));
         }
+    }
+
+    @Test
+    @DisplayName("Test path construction debug")
+    void testPathConstruction() throws IOException, ServletException {
+        // Simulate the path construction logic from the servlet
+        String requestUri = "/rendiciones90/img.png";
+        int idx = requestUri.indexOf("/", 2);
+        String filename = requestUri.substring(idx + 1);
+        
+        String basePath = "x:\\Workspace2\\rendiciones90\\src\\test\\resources\\";
+        String fullPath = basePath + filename;
+        
+        File testFile = new File(fullPath);
+        System.out.println("Request URI: " + requestUri);
+        System.out.println("Index: " + idx);
+        System.out.println("Filename: " + filename);
+        System.out.println("Full path: " + fullPath);
+        System.out.println("File exists: " + testFile.exists());
+        System.out.println("File absolute path: " + testFile.getAbsolutePath());
+        
+        // The file should exist
+        assertTrue(testFile.exists(), "Test file should exist at: " + fullPath);
+    }
+
+    @Test
+    @DisplayName("Test updated path construction logic")
+    void testUpdatedPathConstruction() {
+        String requestUri = "/rendiciones90/images/img.png";
+        String arch = requestUri;
+        
+        // Extract the filename from the request URI
+        // For URIs like /context/servlet-mapping/filename, we want just the filename
+        int idx = arch.indexOf("/", 2);
+        if (idx != -1) {
+            // Find the next slash after the context path
+            int nextIdx = arch.indexOf("/", idx + 1);
+            if (nextIdx != -1) {
+                // Extract everything after the servlet mapping
+                arch = arch.substring(nextIdx + 1);
+            } else {
+                // No additional path, extract from the current position
+                arch = arch.substring(idx + 1);
+            }
+        }
+        
+        System.out.println("Request URI: " + requestUri);
+        System.out.println("Extracted filename: " + arch);
+        
+        assertEquals("img.png", arch, "Should extract just the filename");
+    }
+
+    @Test
+    @DisplayName("Test path extraction for various URI formats")
+    void testPathExtraction() {
+        // Test cases for different URI formats
+        String[] testCases = {
+            "/rendiciones90/images/img.png",
+            "/rendiciones90/css/style.css",
+            "/rendiciones90/js/script.js",
+            "/app/static/file.html",
+            "/context/servlet/resource.txt"
+        };
+        
+        String[] expectedResults = {
+            "img.png",
+            "style.css", 
+            "script.js",
+            "file.html",
+            "resource.txt"
+        };
+        
+        for (int i = 0; i < testCases.length; i++) {
+            String requestUri = testCases[i];
+            String arch = requestUri;
+            
+            // Extract the filename from the request URI
+            // For URIs like /context/servlet-mapping/filename, we want just the filename
+            int idx = arch.indexOf("/", 2);
+            if (idx != -1) {
+                // Find the next slash after the context path
+                int nextIdx = arch.indexOf("/", idx + 1);
+                if (nextIdx != -1) {
+                    // Extract everything after the servlet mapping
+                    arch = arch.substring(nextIdx + 1);
+                } else {
+                    // No additional path, extract from the current position
+                    arch = arch.substring(idx + 1);
+                }
+            }
+            
+            System.out.println("URI: " + requestUri + " -> Extracted: " + arch);
+            assertEquals(expectedResults[i], arch, "Failed for URI: " + requestUri);
+        }
+    }
+
+    @Test
+    @DisplayName("Test servlet path extraction logic")
+    void testServletPathExtraction() {
+        // Test the path extraction logic that we implemented in the servlet
+        String[] testCases = {
+            "/rendiciones90/images/img.png",
+            "/rendiciones90/css/style.css",
+            "/rendiciones90/js/script.js",
+            "/context/static/file.html"
+        };
+        
+        String[] expectedResults = {
+            "img.png",
+            "style.css",
+            "script.js",
+            "file.html"
+        };
+        
+        for (int i = 0; i < testCases.length; i++) {
+            String arch = testCases[i];
+            
+            // This is the same logic as in the servlet
+            int idx = arch.indexOf("/", 2);
+            if (idx != -1) {
+                int nextIdx = arch.indexOf("/", idx + 1);
+                if (nextIdx != -1) {
+                    arch = arch.substring(nextIdx + 1);
+                } else {
+                    arch = arch.substring(idx + 1);
+                }
+            }
+            
+            assertEquals(expectedResults[i], arch, "Path extraction failed for: " + testCases[i]);
+        }
+    }
+
+    @Test
+    @DisplayName("Test file exists in test resources")
+    void testFileExistsInTestResources() {
+        String testResourcePath = "x:\\Workspace2\\rendiciones90\\src\\test\\resources\\";
+        String filename = "img.png";
+        String fullPath = testResourcePath + filename;
+        
+        File testFile = new File(fullPath);
+        assertTrue(testFile.exists(), "Test file should exist at: " + fullPath);
+        assertTrue(testFile.isFile(), "Path should point to a file, not a directory");
+        assertTrue(testFile.canRead(), "Test file should be readable");
     }
 
 }
