@@ -363,10 +363,40 @@ class fileEnablerTest {
     void testFileStreamingWithBuffer() throws IOException, ServletException {
         fileEnabler servlet = new fileEnabler();
         
-        // Mock servlet context - ensure the path ends with a separator
+        // Mock servlet context - use portable path resolution
         ServletContext mockContext = mock(ServletContext.class);
-        when(mockContext.getRealPath("/")).thenReturn("x:\\Workspace2\\rendiciones90\\src\\test\\resources\\");
-        when(mockContext.getRealPath(".")).thenReturn("x:\\Workspace2\\rendiciones90\\src\\test\\resources");
+        
+        // Get the test resources path portably - try multiple approaches
+        String testResourcePath = getClass().getClassLoader().getResource("").getPath();
+        if (testResourcePath == null || testResourcePath.isEmpty()) {
+            // Fallback to system property approach
+            String userDir = System.getProperty("user.dir");
+            testResourcePath = userDir + "/src/test/resources/";
+        }
+        
+        if (testResourcePath.startsWith("file:")) {
+            testResourcePath = testResourcePath.substring(5);
+        }
+        // Ensure path ends with separator
+        if (!testResourcePath.endsWith("/") && !testResourcePath.endsWith("\\")) {
+            testResourcePath += "/";
+        }
+        
+        // Verify the test resource path has the img.png file
+        File testImg = new File(testResourcePath + "img.png");
+        if (!testImg.exists()) {
+            // Try alternative path construction
+            String userDir = System.getProperty("user.dir");
+            testResourcePath = userDir + "/src/test/resources/";
+            testImg = new File(testResourcePath + "img.png");
+            if (!testImg.exists()) {
+                fail("Cannot find img.png test resource. Tried paths: " + 
+                     getClass().getClassLoader().getResource("").getPath() + " and " + testResourcePath);
+            }
+        }
+        
+        when(mockContext.getRealPath("/")).thenReturn(testResourcePath);
+        when(mockContext.getRealPath(".")).thenReturn(testResourcePath.substring(0, testResourcePath.length() - 1));
         when(mockContext.getInitParameter("extended-document-root")).thenReturn(null);
         when(mockContext.getMimeType("img.png")).thenReturn("image/png");
         
@@ -414,6 +444,8 @@ class fileEnablerTest {
         when(mockResponse.getOutputStream()).thenReturn(mockOutputStream);
         
         // Test with the actual img.png file that exists in test resources
+        System.out.println("About to call servlet.doGet with URI: " + mockRequest.getRequestURI());
+        System.out.println("Mock context getRealPath(\"/\") will return: " + testResourcePath);
         servlet.doGet(mockRequest, mockResponse);
         
         // With the updated servlet logic, it should now find the file and serve it
@@ -482,17 +514,48 @@ class fileEnablerTest {
     @DisplayName("Test path construction debug")
     void testPathConstruction() throws IOException, ServletException {
         // Simulate the path construction logic from the servlet
-        String requestUri = "/rendiciones90/img.png";
-        int idx = requestUri.indexOf("/", 2);
-        String filename = requestUri.substring(idx + 1);
+        String requestUri = "/rendiciones90/images/img.png";
+        String arch = requestUri;
         
-        String basePath = "x:\\Workspace2\\rendiciones90\\src\\test\\resources\\";
-        String fullPath = basePath + filename;
+        // Use the updated servlet logic
+        int idx = arch.indexOf("/", 2);
+        if (idx != -1) {
+            int nextIdx = arch.indexOf("/", idx + 1);
+            if (nextIdx != -1) {
+                arch = arch.substring(nextIdx + 1);
+            } else {
+                arch = arch.substring(idx + 1);
+            }
+        }
+        
+        // Use portable path resolution
+        String basePath = getClass().getClassLoader().getResource("").getPath();
+        if (basePath == null || basePath.isEmpty()) {
+            String userDir = System.getProperty("user.dir");
+            basePath = userDir + "/src/test/resources/";
+        }
+        
+        if (basePath.startsWith("file:")) {
+            basePath = basePath.substring(5);
+        }
+        if (!basePath.endsWith("/") && !basePath.endsWith("\\")) {
+            basePath += "/";
+        }
+        
+        String fullPath = basePath + arch;
         
         File testFile = new File(fullPath);
+        
+        // If the first approach doesn't work, try the system property approach
+        if (!testFile.exists()) {
+            String userDir = System.getProperty("user.dir");
+            basePath = userDir + "/src/test/resources/";
+            fullPath = basePath + arch;
+            testFile = new File(fullPath);
+        }
         System.out.println("Request URI: " + requestUri);
-        System.out.println("Index: " + idx);
-        System.out.println("Filename: " + filename);
+        System.out.println("Extracted filename: " + arch);
+        System.out.println("Base path: " + basePath);
         System.out.println("Full path: " + fullPath);
         System.out.println("File exists: " + testFile.exists());
         System.out.println("File absolute path: " + testFile.getAbsolutePath());
@@ -611,14 +674,91 @@ class fileEnablerTest {
     @Test
     @DisplayName("Test file exists in test resources")
     void testFileExistsInTestResources() {
-        String testResourcePath = "x:\\Workspace2\\rendiciones90\\src\\test\\resources\\";
+        // Use a more portable way to get the test resources path
+        String testResourcePath = getClass().getClassLoader().getResource("").getPath();
+        if (testResourcePath == null || testResourcePath.isEmpty()) {
+            String userDir = System.getProperty("user.dir");
+            testResourcePath = userDir + "/src/test/resources/";
+        }
+        
         String filename = "img.png";
         String fullPath = testResourcePath + filename;
         
         File testFile = new File(fullPath);
+        
+        // If the first approach doesn't work, try the system property approach
+        if (!testFile.exists()) {
+            String userDir = System.getProperty("user.dir");
+            testResourcePath = userDir + "/src/test/resources/";
+            fullPath = testResourcePath + filename;
+            testFile = new File(fullPath);
+        }
+        
+        // Debug output to understand the path resolution
+        System.out.println("Test resource path: " + testResourcePath);
+        System.out.println("Full path: " + fullPath);
+        System.out.println("File exists: " + testFile.exists());
+        System.out.println("File absolute path: " + testFile.getAbsolutePath());
+        
         assertTrue(testFile.exists(), "Test file should exist at: " + fullPath);
         assertTrue(testFile.isFile(), "Path should point to a file, not a directory");
         assertTrue(testFile.canRead(), "Test file should be readable");
+    }
+
+    @Test
+    @DisplayName("Test class loader resource resolution")
+    void testClassLoaderResourceResolution() {
+        // Test that we can access the test resource using the class loader
+        ClassLoader classLoader = getClass().getClassLoader();
+        
+        // Try to get the img.png resource directly
+        java.net.URL resourceUrl = classLoader.getResource("img.png");
+        assertNotNull(resourceUrl, "Should be able to find img.png resource");
+        
+        // Try to get the resource path
+        String resourcePath = classLoader.getResource("").getPath();
+        assertNotNull(resourcePath, "Should be able to get resource path");
+        
+        System.out.println("Resource URL: " + resourceUrl);
+        System.out.println("Resource path: " + resourcePath);
+        
+        // Try to access the file directly
+        File imgFile = new File(resourcePath, "img.png");
+        System.out.println("File path: " + imgFile.getAbsolutePath());
+        System.out.println("File exists: " + imgFile.exists());
+    }
+
+    @Test
+    @DisplayName("Test alternative resource path resolution")
+    void testAlternativeResourcePathResolution() {
+        // Try multiple approaches to get the test resources path
+        
+        // Approach 1: Class loader
+        String classLoaderPath = getClass().getClassLoader().getResource("").getPath();
+        System.out.println("Class loader path: " + classLoaderPath);
+        
+        // Approach 2: System property
+        String userDir = System.getProperty("user.dir");
+        String testResourcePath = userDir + "/src/test/resources/";
+        System.out.println("System property path: " + testResourcePath);
+        
+        // Approach 3: Relative path
+        String relativePath = "./src/test/resources/";
+        System.out.println("Relative path: " + relativePath);
+        
+        // Test which approach works
+        File[] testFiles = {
+            new File(classLoaderPath, "img.png"),
+            new File(testResourcePath, "img.png"),
+            new File(relativePath, "img.png")
+        };
+        
+        for (int i = 0; i < testFiles.length; i++) {
+            File testFile = testFiles[i];
+            System.out.println("Approach " + (i + 1) + ": " + testFile.getAbsolutePath());
+            System.out.println("  Exists: " + testFile.exists());
+            System.out.println("  Can read: " + testFile.canRead());
+        }
     }
 
 }

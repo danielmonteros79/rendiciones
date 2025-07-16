@@ -52,7 +52,12 @@ public class fileEnabler extends HttpServlet {
 		}
 		
 		// Use the properly initialized documentRoot instead of hardcoded path
-		String resultado = getServletContext().getRealPath("/") + arch.toString();
+		String basePath = getServletContext().getRealPath("/");
+		// Ensure proper path separator
+		if (!basePath.endsWith("/") && !basePath.endsWith("\\")) {
+			basePath += File.separator;
+		}
+		String resultado = basePath + arch.toString();
 		
 		log.info("Se resuelve:" + resultado);
 		f = new File(resultado);
