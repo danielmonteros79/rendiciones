@@ -761,4 +761,317 @@ class fileEnablerTest {
         }
     }
 
+    @Test
+    @DisplayName("Test URI with no additional path after context - line 45, 50")
+    void testUriWithNoAdditionalPath() throws IOException, ServletException {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context
+        ServletContext mockContext = mock(ServletContext.class);
+        String testResourcePath = getTestResourcePath();
+        when(mockContext.getRealPath("/")).thenReturn(testResourcePath);
+        when(mockContext.getMimeType("archivo.txt")).thenReturn("text/plain");
+        
+        // Mock servlet config
+        ServletConfig mockConfig = mock(ServletConfig.class);
+        when(mockConfig.getServletContext()).thenReturn(mockContext);
+        
+        // Initialize servlet
+        servlet.init(mockConfig);
+        
+        // Mock request and response for URI with no additional path
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        
+        // This will trigger line 45 (idx != -1) and line 50 (else clause)
+        when(mockRequest.getRequestURI()).thenReturn("/context/archivo.txt");
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ServletOutputStream mockOutputStream = createMockOutputStream(baos);
+        when(mockResponse.getOutputStream()).thenReturn(mockOutputStream);
+        
+        servlet.doGet(mockRequest, mockResponse);
+        
+        // Verify successful serving
+        verify(mockResponse).reset();
+        verify(mockResponse).setHeader("Content-Type", "text/plain");
+        verify(mockResponse, never()).sendError(404);
+    }
+
+    @Test
+    @DisplayName("Test file not found scenario - line 57, 58")
+    void testFileNotFound() throws IOException, ServletException {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context
+        ServletContext mockContext = mock(ServletContext.class);
+        String testResourcePath = getTestResourcePath();
+        when(mockContext.getRealPath("/")).thenReturn(testResourcePath);
+        
+        // Mock servlet config
+        ServletConfig mockConfig = mock(ServletConfig.class);
+        when(mockConfig.getServletContext()).thenReturn(mockContext);
+        
+        // Initialize servlet
+        servlet.init(mockConfig);
+        
+        // Mock request and response
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        
+        // Request for non-existent file - will trigger lines 57, 58
+        when(mockRequest.getRequestURI()).thenReturn("/context/images/nonexistent.png");
+        
+        servlet.doGet(mockRequest, mockResponse);
+        
+        // Verify 404 error is sent (lines 57, 58)
+        verify(mockResponse).sendError(404);
+        verify(mockResponse, never()).reset();
+    }
+
+    @Test
+    @DisplayName("Test content type null scenario - line 70, 71")
+    void testContentTypeNull() throws IOException, ServletException {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context
+        ServletContext mockContext = mock(ServletContext.class);
+        String testResourcePath = getTestResourcePath();
+        when(mockContext.getRealPath("/")).thenReturn(testResourcePath);
+        // Return null for getMimeType to trigger lines 70, 71
+        when(mockContext.getMimeType("img.png")).thenReturn(null);
+        
+        // Mock servlet config
+        ServletConfig mockConfig = mock(ServletConfig.class);
+        when(mockConfig.getServletContext()).thenReturn(mockContext);
+        
+        // Initialize servlet
+        servlet.init(mockConfig);
+        
+        // Mock request and response
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        
+        when(mockRequest.getRequestURI()).thenReturn("/context/images/img.png");
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ServletOutputStream mockOutputStream = createMockOutputStream(baos);
+        when(mockResponse.getOutputStream()).thenReturn(mockOutputStream);
+        
+        servlet.doGet(mockRequest, mockResponse);
+        
+        // Verify default content type is set (lines 70, 71)
+        verify(mockResponse).setHeader("Content-Type", "application/octet-stream");
+        verify(mockResponse).reset();
+    }
+
+    @Test
+    @DisplayName("Test exception handling - line 82, 83")
+    void testExceptionHandling() throws IOException, ServletException {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context
+        ServletContext mockContext = mock(ServletContext.class);
+        String testResourcePath = getTestResourcePath();
+        when(mockContext.getRealPath("/")).thenReturn(testResourcePath);
+        when(mockContext.getMimeType("img.png")).thenReturn("image/png");
+        
+        // Mock servlet config
+        ServletConfig mockConfig = mock(ServletConfig.class);
+        when(mockConfig.getServletContext()).thenReturn(mockContext);
+        
+        // Initialize servlet
+        servlet.init(mockConfig);
+        
+        // Mock request and response
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        
+        when(mockRequest.getRequestURI()).thenReturn("/context/images/img.png");
+        
+        // Create a mock output stream that throws exception - triggers lines 82, 83
+        ServletOutputStream mockOutputStream = mock(ServletOutputStream.class);
+        doThrow(new IOException("Test exception")).when(mockOutputStream).write(any(byte[].class), anyInt(), anyInt());
+        when(mockResponse.getOutputStream()).thenReturn(mockOutputStream);
+        
+        servlet.doGet(mockRequest, mockResponse);
+        
+        // Verify that exception is caught and handled (lines 82, 83)
+        verify(mockResponse).reset();
+        verify(mockResponse).setHeader("Content-Type", "image/png");
+        // Exception should be logged, but servlet should not crash
+    }
+
+    @Test
+    @DisplayName("Test replaceVariablesInString with missing closing bracket - line 112, 114")
+    void testReplaceVariablesInStringMissingClosingBracket() throws Exception {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context with some attributes
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getAttribute("var1")).thenReturn("value1");
+        
+        // Test case 1: Variable with no closing bracket at all - triggers line 112, 114
+        String input1 = "This is a ${var1} and ${unclosed";
+        String result1 = servlet.replaceVariablesInString(input1, mockContext);
+        
+        // First ${var1} is processed and replaced with "value1"
+        // Then ${unclosed has no closing bracket, so method breaks (line 114)
+        assertEquals("This is a value1 and ${unclosed", result1);
+        
+        // Test case 2: Only unclosed variable - should break immediately
+        String input2 = "Start ${unclosed";
+        String result2 = servlet.replaceVariablesInString(input2, mockContext);
+        
+        // Should break out of loop when no closing bracket found (line 114)
+        assertEquals("Start ${unclosed", result2);
+    }
+
+    @Test
+    @DisplayName("Test replaceVariablesInString with null attribute value - line 119")
+    void testReplaceVariablesInStringNullAttribute() throws Exception {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context with null attribute
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getAttribute("nullVar")).thenReturn(null);
+        when(mockContext.getAttribute("existingVar")).thenReturn("existingValue");
+        
+        // String with variable that has null value - triggers line 119
+        String input = "Value: ${nullVar}, Other: ${existingVar}";
+        String result = servlet.replaceVariablesInString(input, mockContext);
+        
+        // Null attribute should be replaced with empty string (line 119)
+        assertEquals("Value: , Other: existingValue", result);
+    }
+
+    @Test
+    @DisplayName("Test replaceVariablesInString with multiple variables and replacement loop")
+    void testReplaceVariablesInStringMultipleVariables() throws Exception {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context with attributes
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getAttribute("baseDir")).thenReturn("/app");
+        when(mockContext.getAttribute("version")).thenReturn("1.0");
+        when(mockContext.getAttribute("env")).thenReturn("prod");
+        
+        // String with multiple variables to test loop continuation (line 126)
+        String input = "Path: ${baseDir}/v${version}/${env}/config";
+        String result = servlet.replaceVariablesInString(input, mockContext);
+        
+        // All variables should be replaced
+        assertEquals("Path: /app/v1.0/prod/config", result);
+    }
+
+    @Test
+    @DisplayName("Test replaceVariablesInString with nested variables")
+    void testReplaceVariablesInStringNestedVariables() throws Exception {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getAttribute("outer")).thenReturn("value");
+        when(mockContext.getAttribute("inner")).thenReturn("test");
+        
+        // String with variables close to each other
+        String input = "${outer}${inner}";
+        String result = servlet.replaceVariablesInString(input, mockContext);
+        
+        assertEquals("valuetest", result);
+    }
+
+    @Test
+    @DisplayName("Test replaceVariablesInString with empty string")
+    void testReplaceVariablesInStringEmpty() throws Exception {
+        fileEnabler servlet = new fileEnabler();
+        
+        ServletContext mockContext = mock(ServletContext.class);
+        
+        // Empty string should return empty string
+        String result = servlet.replaceVariablesInString("", mockContext);
+        assertEquals("", result);
+        
+        // String with no variables should return unchanged
+        String input = "No variables here";
+        result = servlet.replaceVariablesInString(input, mockContext);
+        assertEquals("No variables here", result);
+    }
+
+    @Test
+    @DisplayName("Test replaceVariablesInString basic functionality")
+    void testReplaceVariablesInStringBasic() throws Exception {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context with attributes
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getAttribute("test")).thenReturn("success");
+        
+        // Basic variable replacement
+        String input = "Result: ${test}";
+        String result = servlet.replaceVariablesInString(input, mockContext);
+        
+        assertEquals("Result: success", result);
+    }
+
+    @Test
+    @DisplayName("Debug replaceVariablesInString method behavior")
+    void testDebugReplaceVariablesInString() throws Exception {
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getAttribute("existing")).thenReturn("found");
+        
+        // Test various scenarios to understand the behavior
+        String[] inputs = {
+            "Simple ${existing}",
+            "Missing bracket ${missing",
+            "No variables",
+            "${existing} and ${missing"
+        };
+        
+        for (String input : inputs) {
+            String result = servlet.replaceVariablesInString(input, mockContext);
+            System.out.println("Input: '" + input + "' -> Output: '" + result + "'");
+        }
+        
+        // The actual test - this should trigger line 112, 114
+        String input = "Test ${missing";
+        String result = servlet.replaceVariablesInString(input, mockContext);
+        assertEquals("Test ${missing", result);
+    }
+
+    // Helper method to get test resource path
+    private String getTestResourcePath() {
+        String testResourcePath = getClass().getClassLoader().getResource("").getPath();
+        if (testResourcePath == null || testResourcePath.isEmpty()) {
+            String userDir = System.getProperty("user.dir");
+            testResourcePath = userDir + "/src/test/resources/";
+        }
+        
+        if (testResourcePath.startsWith("file:")) {
+            testResourcePath = testResourcePath.substring(5);
+        }
+        if (!testResourcePath.endsWith("/") && !testResourcePath.endsWith("\\")) {
+            testResourcePath += "/";
+        }
+        return testResourcePath;
+    }
+
+    // Helper method to create mock output stream
+    private ServletOutputStream createMockOutputStream(ByteArrayOutputStream baos) {
+        return new ServletOutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                baos.write(b);
+            }
+            
+            @Override
+            public void write(byte[] b, int off, int len) throws IOException {
+                baos.write(b, off, len);
+            }
+        };
+    }
+
 }
