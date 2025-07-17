@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
-	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" 
 	version="2.4">
 	<display-name>Rendiciones de Gastos</display-name>
-	<!-- Configuraci�n de listener de session, se encarga de detectar una nueva 
-		session e inyectarle el objeto IWebClient configurado en la aplicaci�n. Para 
+	<!-- Configuraciï¿½n de listener de session, se encarga de detectar una nueva 
+		session e inyectarle el objeto IWebClient configurado en la aplicaciï¿½n. Para 
 		aplicaciones que usen WebSphere >= 6.0 Para aplicaciones que hagan uso de 
-		los objetos IWebApplication e IWebClient provistos por la librer�a CNLS_BBVAWeb. -->
+		los objetos IWebApplication e IWebClient provistos por la librerï¿½a CNLS_BBVAWeb. -->
 	<listener>
 		<listener-class>ar.com.bbva.web.impl.WebSessionListener</listener-class>
 		<!-- <listener-class>com.sa.su.listener.MyWebSessionListener</listener-class> -->
 	</listener>
-	<!-- Configuraci�n de listener de session - Fin -->
+	<!-- Configuraciï¿½n de listener de session - Fin -->
 
 	<!-- Filtro de Seguridad para automatizar el control de usuarios logueados. 
-		S�lo si se usan los objetos IWebApplication e IWebClient provistos por la 
-		librer�a CNLS_BBVAWeb. -->
-	<!--<filter>
+		Sï¿½lo si se usan los objetos IWebApplication e IWebClient provistos por la 
+		librerï¿½a CNLS_BBVAWeb. -->
+	<filter>
 		<filter-name>WebSecurityFilter</filter-name>
 		<filter-class>ar.com.bbva.web.impl.WebSecurityFilter</filter-class>
 		<init-param>
@@ -26,13 +26,14 @@
 			<param-value>*/NL-*</param-value>
 		</init-param>
 	</filter>
-	-->
 
-	<!-- S� SUBIR ESTO AL AMBIENTE DE WebSphere y descomentarlo!!! -->
+
+	<!-- Sï¿½ SUBIR ESTO AL AMBIENTE DE WebSphere y descomentarlo!!! -->
 	<filter>
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
-	</filter>	<filter-mapping>
+	</filter>
+	<filter-mapping>
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
@@ -40,12 +41,12 @@
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
-
-
-
-
+	
+	
+	
+	
 	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para que se pueda resolver 
-		localmente bien el tema del contenido est�tico y que no lo derive a la p�gina 
+		localmente bien el tema del contenido estï¿½tico y que no lo derive a la pï¿½gina 
 		de login. -->
 
 	<!-- <filter-mapping> <filter-name>WebSecurityFilter</filter-name> <url-pattern>*.jsp</url-pattern> 
@@ -55,7 +56,7 @@
 	<!-- Filtro de Seguridad para el control de usuarios logueados - Fin -->
 
 
-	<!-- Configuarar páginas jsp en UTF-8 -->
+	<!-- Configuarar pÃ¡ginas jsp en UTF-8 -->
 	<jsp-config>
 		<jsp-property-group>
 			<url-pattern>*.jsp</url-pattern>
@@ -64,7 +65,7 @@
 	</jsp-config>
 
 
-	<!-- Configuraci�n del Servlet de arranque e inicializaci�n de la aplicaci�n 
+	<!-- Configuraciï¿½n del Servlet de arranque e inicializaciï¿½n de la aplicaciï¿½n 
 		y el archivo .properties inicial -->
 	<context-param>
 		<param-name>syscfgpath</param-name>
@@ -84,7 +85,7 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	<!-- Configuraci�n del Servlet de arranque e inicializaci�n de la aplicaci�n 
+	<!-- Configuraciï¿½n del Servlet de arranque e inicializaciï¿½n de la aplicaciï¿½n 
 		- Fin -->
 
 
@@ -101,62 +102,41 @@
 	<!-- Configuracion de servlet de struts - Fin -->
 
 
-	<!-- Si se van a exponer Web Services agregar ac� las cosas de Axis NOTA: 
-		No exponer los servlets de administraci�n de axis, etc. -->
+	<!-- Si se van a exponer Web Services agregar acï¿½ las cosas de Axis NOTA: 
+		No exponer los servlets de administraciï¿½n de axis, etc. -->
 
 
 
-	<!-- Servlet para servir archivos estáticos en WebSphere -->
-	<servlet>
-		<servlet-name>fileEnabler</servlet-name>
-		<servlet-class>com.sa.util.fileEnabler</servlet-class>
-	</servlet>
 
-	<!-- Mapeos del fileEnabler para recursos estáticos -->
-	<servlet-mapping>
-		<servlet-name>fileEnabler</servlet-name>
-		<url-pattern>/static/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>fileEnabler</servlet-name>
-		<url-pattern>/css/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>fileEnabler</servlet-name>
-		<url-pattern>/js/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>fileEnabler</servlet-name>
-		<url-pattern>/images/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>fileEnabler</servlet-name>
-		<url-pattern>/fonts/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>fileEnabler</servlet-name>
-		<url-pattern>*.ico</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>fileEnabler</servlet-name>
-		<url-pattern>*.html</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>fileEnabler</servlet-name>
-		<url-pattern>*.js</url-pattern>
-	</servlet-mapping>	<!-- Asegúrate de que este mapeo esté DESPUÉS de los mapeos de recursos estáticos -->
+	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para resolver localmente 
+		el tema de que el Tomcat pueda levantar los objetos estaticos (como las imagenes), 
+		del path 'html' separado que se creo para las aplicaciones WAS - Comienzo -->
+	<!-- <servlet> <servlet-name>fileEnabler</servlet-name> <servlet-class>com.sa.util.fileEnabler</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> <url-pattern>/images/iconos*</url-pattern> 
+		</servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>*.html</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>*.htm</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>*.gif</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>*.jpg</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>*.dtd</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>*.pdf</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>/css/*</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>/js/*</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>*.js</url-pattern> </servlet-mapping> <servlet-mapping> <servlet-name>fileEnabler</servlet-name> 
+		<url-pattern>/cabinets/*</url-pattern> </servlet-mapping> <servlet-mapping> 
+		<servlet-name>fileEnabler</servlet-name> <url-pattern>/upload/varios/*</url-pattern> 
+		</servlet-mapping> -->
+
+	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para resolver localmente 
+		el tema de que el Tomcat pueda levantar los objetos estaticos (como las imagenes), 
+		del path 'html' separado que se creo para las aplicaciones WAS - Fin -->
+
+	<!-- Configuraciï¿½n de mapping de struts -->
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
-	<!-- Configuraci�n de mapping de struts - Fin -->
+	<!-- Configuraciï¿½n de mapping de struts - Fin -->
 
 
 	<welcome-file-list>
