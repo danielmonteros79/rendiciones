@@ -27,7 +27,7 @@ public class fileEnabler extends HttpServlet {
 	private String documentRoot;
 
 	public fileEnabler() {
-		documentRoot = "/../html/";
+		documentRoot = "/";
 	}
 
 	protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1)
@@ -97,7 +97,7 @@ public class fileEnabler extends HttpServlet {
 		getServletContext().setAttribute("realpath",
 				getServletContext().getRealPath("."));
 		if (dr == null)
-			dr = "${realpath}/../html/";
+			dr = "${realpath}/";
 		documentRoot = replaceVariablesInString(dr, getServletContext());
 	}
 

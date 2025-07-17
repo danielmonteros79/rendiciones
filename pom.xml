@@ -523,22 +523,7 @@
 				<directory>src/main/webapp/static</directory>
 				<targetPath>WEB-INF/static</targetPath>
 			</resource>
-			<resource>
-				<directory>src/main/webapp/css</directory>
-				<targetPath>../html/css</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/webapp/js</directory>
-				<targetPath>../html/js</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/webapp/images</directory>
-				<targetPath>../html/images</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/webapp/fonts</directory>
-				<targetPath>../html/fonts</targetPath>
-			</resource>
+			<!-- CSS, JS, images y fonts se manejan ahora con maven-war-plugin -->
 		</resources>
 		<plugins>
 			<plugin>
@@ -576,6 +561,22 @@
 						<resource>
 							<directory>src/main/webapp/static</directory>
 							<targetPath>WEB-INF/static</targetPath>
+						</resource>
+						<resource>
+							<directory>src/main/webapp/css</directory>
+							<targetPath>css</targetPath>
+						</resource>
+						<resource>
+							<directory>src/main/webapp/js</directory>
+							<targetPath>js</targetPath>
+						</resource>
+						<resource>
+							<directory>src/main/webapp/images</directory>
+							<targetPath>images</targetPath>
+						</resource>
+						<resource>
+							<directory>src/main/webapp/fonts</directory>
+							<targetPath>fonts</targetPath>
 						</resource>
 					</webResources>
 				</configuration>
