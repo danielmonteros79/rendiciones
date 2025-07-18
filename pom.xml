@@ -574,10 +574,6 @@
 							<directory>src/main/webapp/images</directory>
 							<targetPath>images</targetPath>
 						</resource>
-						<resource>
-							<directory>src/main/webapp/fonts</directory>
-							<targetPath>fonts</targetPath>
-						</resource>
 					</webResources>
 				</configuration>
 			</plugin>

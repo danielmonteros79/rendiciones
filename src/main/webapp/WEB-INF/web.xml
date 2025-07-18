@@ -192,10 +192,6 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>fileEnabler</servlet-name>
-		<url-pattern>/fonts/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>fileEnabler</servlet-name>
 		<url-pattern>/static/*</url-pattern>
 	</servlet-mapping>
 
