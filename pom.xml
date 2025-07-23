@@ -562,20 +562,38 @@
 							<directory>src/main/webapp/static</directory>
 							<targetPath>WEB-INF/static</targetPath>
 						</resource>
-						<resource>
-							<directory>src/main/webapp/css</directory>
-							<targetPath>css</targetPath>
-						</resource>
-						<resource>
-							<directory>src/main/webapp/js</directory>
-							<targetPath>js</targetPath>
-						</resource>
-						<resource>
-							<directory>src/main/webapp/images</directory>
-							<targetPath>images</targetPath>
-						</resource>
 					</webResources>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
+			</plugin>
+			
+			<!-- Plugin adicional para copiar recursos que pueden no existir -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-static-resources</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy todir="${project.build.directory}/${project.build.finalName}/css" failonerror="false" quiet="true">
+									<fileset dir="${basedir}/src/main/webapp/css" erroronmissingdir="false"/>
+								</copy>
+								<copy todir="${project.build.directory}/${project.build.finalName}/js" failonerror="false" quiet="true">
+									<fileset dir="${basedir}/src/main/webapp/js" erroronmissingdir="false"/>
+								</copy>
+								<copy todir="${project.build.directory}/${project.build.finalName}/images" failonerror="false" quiet="true">
+									<fileset dir="${basedir}/src/main/webapp/images" erroronmissingdir="false"/>
+								</copy>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
