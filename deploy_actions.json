@@ -10,17 +10,17 @@
         {
             "script": {
                 "path": "/prod/apps/scripts/rendiciones90.sh",
-                "params": "presync",
-                "sudo": "true"
-            }
-        },
-         {
-            "script": {
-                "path": "/prod/apps/scripts/rendiciones90.sh",
                 "params": "borr_class",
                 "sudo": "true"
             }
         },
+        {
+            "script": {
+                "path": "/prod/apps/scripts/rendiciones90.sh",
+                "params": "presync",
+                "sudo": "true"
+            }
+        },         
         {
             "clean_directory": {
                 "app_name": "rendiciones90"

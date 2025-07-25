@@ -131,7 +131,6 @@
 		el tema de que el Tomcat pueda levantar los objetos estaticos (como las imagenes), 
 		del path 'html' separado que se creo para las aplicaciones WAS - Fin -->
 
-	<!-- Configuraciï¿½n de mapping de struts -->
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>
