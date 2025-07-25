@@ -518,13 +518,6 @@
 
 	<build>
 		<finalName>rendiciones90</finalName>
-		<resources>
-			<resource>
-				<directory>src/main/webapp/static</directory>
-				<targetPath>WEB-INF/static</targetPath>
-			</resource>
-			<!-- CSS, JS, images y fonts se manejan ahora con maven-war-plugin -->
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>
