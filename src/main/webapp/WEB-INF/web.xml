@@ -35,11 +35,11 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>ResponseOverrideFilter</filter-name>
-		<url-pattern>/rendiciones90/*.do</url-pattern>
+		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>ResponseOverrideFilter</filter-name>
-		<url-pattern>/rendiciones90/*.jsp</url-pattern>
+		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
 
 
@@ -131,37 +131,7 @@
 		el tema de que el Tomcat pueda levantar los objetos estaticos (como las imagenes), 
 		del path 'html' separado que se creo para las aplicaciones WAS - Fin -->
 
-	<!-- Mapeo para recursos estáticos -->
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/static/*</url-pattern>
-	</servlet-mapping>
-	
-	<!-- Mapeo para archivos CSS -->
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/css/*</url-pattern>
-	</servlet-mapping>
-	
-	<!-- Mapeo para archivos JavaScript -->
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/js/*</url-pattern>
-	</servlet-mapping>
-	
-	<!-- Mapeo para archivos de imágenes -->
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/images/*</url-pattern>
-	</servlet-mapping>
-	
-	<!-- Mapeo para archivos de fuentes -->
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/fonts/*</url-pattern>
-	</servlet-mapping>
-	
-	<!-- Asegúrate de que este mapeo esté DESPUÉS de los mapeos de recursos estáticos -->
+
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>

@@ -519,16 +519,6 @@
 
 	<build>
 		<finalName>rendiciones90</finalName>
-		<resources>
-			<resource>
-				<directory>src/main/resources/cfg</directory>
-				<targetPath>../cfg</targetPath>
-			</resource>
-			<resource>
-				<directory>src/main/resources/syscfg</directory>
-				<targetPath>../syscfg</targetPath>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>

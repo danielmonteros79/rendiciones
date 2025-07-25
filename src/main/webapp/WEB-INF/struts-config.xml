@@ -55,7 +55,7 @@
 </action>
 <action path="/listadoRendiciones" type="com.sa.action.rendiciones.ListadoRendicionesAction">
 <forward name="ok" path="listadoRendiciones"/>
-<forward name="rendiciones90" path="/pages/rendiciones/dtRendiciones.jsp"/>
+<forward name="rendiciones" path="/pages/rendiciones/dtRendiciones.jsp"/>
 </action>
 <action path="/altaRendicion" type="com.sa.action.rendiciones.RendicionLoadAction" name="RendicionForm">
 <forward name="success" path="rendicionDetalle"/>
@@ -143,11 +143,11 @@
 <!--  LISTADO ALERTAS -->
 <action path="/listadoAlertas" type="com.sa.action.alertas.ListadoAlertasAction" className="com.sa.core.SecurityActionMapping" name="AlertaForm">
 <forward name="success" path="listadoAlertas"/>
-<forward name="rendiciones90" path="/pages/alertas/dtListadoAlertas.jsp"/>
+<forward name="rendiciones" path="/pages/alertas/dtListadoAlertas.jsp"/>
 </action>
 <action path="/detalleAlerta" type="com.sa.action.alertas.DetalleAlertaAction" className="com.sa.core.SecurityActionMapping" name="AlertaForm">
 <forward name="success" path="detalleAlerta"/>
-<forward name="rendiciones90" path="/pages/alertas/dtDetalleAlerta.jsp"/>
+<forward name="rendiciones" path="/pages/alertas/dtDetalleAlerta.jsp"/>
 </action>
 <!--  DETALLE DE ALERTA  -->
 <!--  PARAMETRIA =============================================  -->
