@@ -35,16 +35,30 @@ public class fileEnabler extends HttpServlet {
 		File f;
 		String arch = arg0.getRequestURI();
 		log.info("Se pide:" + arch.toString());
-		int idx = arch.indexOf("/", 2);
-		String s = "%20";
-		if (idx != 0)
-			arch = arch.substring(idx + 1);
-		String resultado = "F:\\Fpven1_e\\Usr\\Metodologia\\Intercambio FSW\\SSDD\\Para DyD\\Java\\Sia\\Project\\EsqueletoAppWeb\\sum_00001_3\\WebContent\\"+ arch.toString(); // String.valueOf(documentRoot)
 		
-		// +
-		// "/"
-		// +
-		// arch.toString();
+		// Extract the filename from the request URI
+		// For URIs like /context/servlet-mapping/filename, we want just the filename
+		int idx = arch.indexOf("/", 2);
+		if (idx != -1) {
+			// Find the next slash after the context path
+			int nextIdx = arch.indexOf("/", idx + 1);
+			if (nextIdx != -1) {
+				// Extract everything after the servlet mapping
+				arch = arch.substring(nextIdx + 1);
+			} else {
+				// No additional path, extract from the current position
+				arch = arch.substring(idx + 1);
+			}
+		}
+		
+		// Use the properly initialized documentRoot instead of hardcoded path
+		String basePath = getServletContext().getRealPath("/");
+		// Ensure proper path separator
+		if (!basePath.endsWith("/") && !basePath.endsWith("\\")) {
+			basePath += File.separator;
+		}
+		String resultado = basePath + arch.toString();
+		
 		log.info("Se resuelve:" + resultado);
 		f = new File(resultado);
 		if (!f.exists()) {
@@ -95,17 +109,21 @@ public class fileEnabler extends HttpServlet {
 		for (int idxBegin = strToReplace.indexOf("${"); idxBegin >= 0; idxBegin = strToReplace
 				.indexOf("${", idxEnd)) {
 			idxEnd = strToReplace.indexOf("}", idxBegin);
+			if (idxEnd == -1) {
+				// No closing bracket found, break to avoid infinite loop
+				break;
+			}
 			String var = strToReplace.substring(idxBegin + "${".length(),
 					idxEnd);
-			String value = sc.getAttribute(var).toString();
-
-			// (new StringBuilder("${")).append(var).append("}").toString(),
-			// value
-			if (strToReplace.indexOf(var) == strToReplace.lastIndexOf(var)) {
-				strToReplace = value + strToReplace.substring(var.length() + 3);
-			} else {
-				strToReplace = strToReplace.replaceAll("${" + var + "}", value);
-			}
+			Object attrValue = sc.getAttribute(var);
+			String value = (attrValue != null) ? attrValue.toString() : "";
+			
+			// Replace the variable placeholder with its value
+			String placeholder = "${" + var + "}";
+			strToReplace = strToReplace.replace(placeholder, value);
+			
+			// Continue searching from the beginning after replacement
+			idxEnd = 0;
 		}
 
 		return strToReplace;
