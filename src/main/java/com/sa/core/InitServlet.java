@@ -55,7 +55,6 @@ public class InitServlet extends HttpServlet {
 		try {
 			inicializoLog(config);
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.out.println("SUM - " + e.getMessage());
 			listadoEx.add(e.getMessage());
 			excepciones.add(e);
@@ -68,7 +67,6 @@ public class InitServlet extends HttpServlet {
 					.println("SUM - Inicilizando configuracion de la aplicacion.");
 			XMLConfigReader.getXml();
 		} catch (ImposibleLeerXMLException e) {
-			e.printStackTrace();
 			System.out
 					.println("SUM - No se pudo inicializar la configuracion de la aplicacion");
 		}

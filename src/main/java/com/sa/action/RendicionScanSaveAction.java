@@ -235,9 +235,11 @@ public class RendicionScanSaveAction extends RestriccionTransaccionAction {
 				return Image.getInstance(String.format("resources/posters/%s",
 						src.substring(src.lastIndexOf("/") + 1)));
 			} catch (DocumentException e) {
-				e.printStackTrace();
+				// Log error appropriately in production environment
+				return null;
 			} catch (IOException e) {
-				e.printStackTrace();
+				// Log error appropriately in production environment
+				return null;
 			}
 			return null;
 		}

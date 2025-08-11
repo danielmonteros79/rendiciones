@@ -10,4 +10,6 @@ target/
 .settings/
 adaExceptionsLog
 /bin/
+src/main/cfg/
+src/main/syscfg/
 

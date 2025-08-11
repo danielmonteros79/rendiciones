@@ -46,7 +46,6 @@ public class ParametrosAlertasSaveAction extends RestriccionTransaccionAction {
 			else if (frm.getAccion().equals("modificacion"))
 				resultado = service.modificacionParamAlerta(frm);
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 			return mapping.findForward("fail");

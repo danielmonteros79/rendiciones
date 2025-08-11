@@ -51,9 +51,11 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		arg3.setAttribute("userLoggin", user);
 
 		String action = arg4.getParameter("action") == null ? "" : arg4.getParameter("action");
+		// Sanitize user input before logging to prevent log injection attacks
+		String sanitizedAction = action.replaceAll("[\r\n\t]", "_").replaceAll("[\\p{Cntrl}]", "");
 
 		log.info("Class: " + this.getClass().getName() + " - User: " + this.sessionUser.getIdUser() + " - UserWorking: " + this.sessionUserWorking.getIdUser() +
-								 " - Action: " + action);
+								 " - Action: " + sanitizedAction);
 
 		if (action.equals("getMessage"))
 			return this.getMessage(arg5);

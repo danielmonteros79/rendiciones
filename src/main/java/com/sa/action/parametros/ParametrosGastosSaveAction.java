@@ -53,7 +53,6 @@ public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
 			} else
 				request.setAttribute("message", service.getMsgAviso());
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 		}
@@ -73,7 +72,6 @@ public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
 			} else
 				request.setAttribute("message", service.getMsgAviso());
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 		}
@@ -93,7 +91,6 @@ public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
 			} else
 				request.setAttribute("message", service.getMsgAviso());
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 		}
