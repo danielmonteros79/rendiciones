@@ -143,7 +143,7 @@ class RendicionScanSaveActionTest {
     @DisplayName("Testeando get image document exception")
     void getImageDocumentException() throws Exception {
         try (MockedStatic<Image> imageMockedStatic = mockStatic(Image.class)) {
-            imageMockedStatic.when(() -> Image.getInstance(anyString())).thenThrow(new DocumentException(""));
+            imageMockedStatic.when(() -> Image.getInstance(anyString())).thenThrow(new IOException("IO processing error"));
 
             Image image = myImageFactory.getImage("a/",new HashMap<>(),new ChainedProperties(),new Document());
             Assertions.assertNull(image);

@@ -108,7 +108,7 @@ class CuadroDetalladoFiltroActionTest {
                     () -> assertNotNull(result, "ActionForward should not be null"),
                     () -> assertEquals("ok", result.getName(), "Forward name should be 'ok' even with exception"),
                     () -> assertEquals(estado, request.getAttribute("ComboEstado"), "ComboEstado should still be set"),
-                    () -> assertEquals(rendicion, request.getAttribute("CuadroDetallado"), "CuadroDetallado should be empty list"),
+                    () -> assertEquals(new ArrayList<>(), request.getAttribute("CuadroDetallado"), "CuadroDetallado should be empty list"),
                     () -> assertTrue(((String) request.getAttribute("message")).startsWith("ERROR: "), 
                         "Message should start with 'ERROR: '"),
                     () -> assertEquals(form.getComboGlg(), request.getAttribute("ComboGlg"), "ComboGlg should match"),
@@ -134,15 +134,14 @@ class CuadroDetalladoFiltroActionTest {
     @Test
     @DisplayName("Test executeAction - null user in session")
     void executeActionNullUser() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
         MockHttpSession session = new MockHttpSession();
+        MockHttpServletRequest request = new MockHttpServletRequest(session);
+        MockHttpServletResponse response = new MockHttpServletResponse();
         CuadroFiltroForm form = createTestForm();
         ActionMapping mapping = new ActionMapping();
         mapping.addForwardConfig(new ActionForward("ok", "test-path", false));
         
-        // Set session without user
-        request.setSession(session);
+        // Session is set via constructor, no user added to session
         
         assertThrows(Exception.class, () -> {
             cuadroDetalladoFiltroAction.executeAction(mapping, form, samWebApplication, samWebClient, request, response);
@@ -171,9 +170,9 @@ class CuadroDetalladoFiltroActionTest {
 
     private static Stream<Arguments> executeActionSource() {
         CuadroFiltroForm form = new CuadroFiltroForm();
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
         MockHttpSession session = new MockHttpSession();
+        MockHttpServletRequest request = new MockHttpServletRequest(session);
+        MockHttpServletResponse response = new MockHttpServletResponse();
         
         // Create a proper Usuario object
         Usuario usuario = new Usuario("testuser", "admin", "Test User", 1, "IT", new ArrayList<>());
@@ -190,9 +189,8 @@ class CuadroDetalladoFiltroActionTest {
         ActionMapping mapping = new ActionMapping();
         mapping.addForwardConfig(new ActionForward("ok", "/success.jsp", false));
 
-        // Setup session and request
+        // Setup session with user
         session.setAttribute("usuario", usuario);
-        request.setSession(session);
 
         // Setup form with valid test data
         form.setComboGlg(new ArrayList<>());
