@@ -29,7 +29,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAction {
 	
-	private ParametrosService parametrosService;
+	private volatile ParametrosService parametrosService;
 	
 	public ParametrosGastosDetalleLoadAction() {
 		
@@ -40,9 +40,9 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 	}
 	
 	private static final Log log = LogFactory.getLog(ParametrosGastosDetalleLoadAction.class);
-	List<ComboOpcion> cmbObservacion = new ArrayList<ComboOpcion>();
-	List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
-	List<ComboOpcion> cmbComprobante = new ArrayList<ComboOpcion>();
+	volatile List<ComboOpcion> cmbObservacion = new ArrayList<ComboOpcion>();
+	volatile List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
+	volatile List<ComboOpcion> cmbComprobante = new ArrayList<ComboOpcion>();
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {

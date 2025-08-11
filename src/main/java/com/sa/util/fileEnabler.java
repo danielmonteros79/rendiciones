@@ -24,7 +24,7 @@ public class fileEnabler extends HttpServlet {
 
 	private static final Log log = LogFactory.getLog(fileEnabler.class);
 
-	private String documentRoot;
+	private volatile String documentRoot;
 
 	public fileEnabler() {
 		documentRoot = "/";
@@ -72,13 +72,15 @@ public class fileEnabler extends HttpServlet {
 			arg1.reset();
 			arg1.setHeader("Content-Type", contentType);
 			arg1.setHeader("Content-Length", String.valueOf(f.length()));
-			FileInputStream fis = new FileInputStream(f);
-			byte b[] = new byte[1024];
-			OutputStream os = arg1.getOutputStream();
-			int cant;
-			while ((cant = fis.read(b)) >= 0)
-				os.write(b, 0, cant);
-			os.flush();
+			
+			try (FileInputStream fis = new FileInputStream(f);
+				 OutputStream os = arg1.getOutputStream()) {
+				byte b[] = new byte[1024];
+				int cant;
+				while ((cant = fis.read(b)) >= 0)
+					os.write(b, 0, cant);
+				os.flush();
+			}
 		} catch (Exception e) {
 			log.warn(e);
 		}
