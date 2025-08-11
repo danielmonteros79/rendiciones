@@ -241,7 +241,6 @@ public class RendicionScanSaveAction extends RestriccionTransaccionAction {
 				// Log error appropriately in production environment
 				return null;
 			}
-			return null;
 		}
 	}
 
