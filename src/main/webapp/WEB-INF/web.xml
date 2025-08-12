@@ -46,12 +46,17 @@
 	
 	
 	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! Solo para que se pueda resolver 
-		localmente bien el tema del contenido estï¿½tico y que no lo derive a la pï¿½gina 
+		localmente bien el tema del contenido estático y que no lo derive a la página 
 		de login. -->
 
-	<!-- <filter-mapping> <filter-name>WebSecurityFilter</filter-name> <url-pattern>*.jsp</url-pattern> 
-		</filter-mapping> <filter-mapping> <filter-name>WebSecurityFilter</filter-name> 
-		<url-pattern>*.do</url-pattern> </filter-mapping> -->
+	<filter-mapping>
+		<filter-name>WebSecurityFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>WebSecurityFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
 	<!-- NO SUBIR ESTO AL AMBIENTE DE WebSphere!!! - Fin -->
 	<!-- Filtro de Seguridad para el control de usuarios logueados - Fin -->
 
