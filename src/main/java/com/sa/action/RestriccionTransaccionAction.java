@@ -27,12 +27,9 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
-	
-	// Made these fields thread-safe by making them volatile and using proper initialization
-	protected volatile String message = "";
-	protected volatile Usuario sessionUser;
-	protected volatile Usuario sessionUserWorking;
-	
+	protected String message = "";
+	protected Usuario sessionUser;
+	protected Usuario sessionUserWorking;
 	private static final String ERROR = "error";
 	private static final String STATUS = "status";
 	private static final String USUARIO = "usuario";
@@ -158,6 +155,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	    } else {
 	        resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
 	    }
+	    this.message = "ERROR: " + resp.get(ERROR);
 
 	    writer.print(JSONObject.fromObject(resp));
 	    writer.flush();
@@ -187,6 +185,11 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	}
 
 
+	protected void setErrorMessage(Exception e) throws Exception {
+		this.message = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() :
+																		"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+	}
+
 	protected ActionForward getMessage(HttpServletResponse response) throws Exception {
 		PrintWriter writer = response.getWriter();
 
@@ -198,11 +201,6 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		writer.close();
 
 		return null;
-	}
-
-	protected void setErrorMessage(Exception e) throws Exception {
-		this.message = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() :
-																		"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
 	}
 
 	// Getters y Setters implementados por AWSoftware para facilitar el acceso a estas variables en pruebas unitarias.

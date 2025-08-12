@@ -78,6 +78,13 @@ class RendicionScanSaveActionTest {
     void executeAction(HttpServletRequest request,RendicionForm form, ActionMapping mapping) throws Exception {
         when(response.getOutputStream()).thenReturn(new SimpleServletOutputStream());
         try (MockedConstruction<AprobacionesService> aprobacionesServiceMC = Mockito.mockConstruction(AprobacionesService.class, (mockAprobacionesService, context) -> {
+            // Mock para simular una rendición existente
+            List<com.sa.entities.Rendicion> rendiciones = new ArrayList<>();
+            com.sa.entities.Rendicion rendicion = mock(com.sa.entities.Rendicion.class);
+            rendiciones.add(rendicion);
+            when(mockAprobacionesService.getAprobacionesPendientes(anyString(), any(), any(), any(), anyString())).thenReturn(rendiciones);
+            // Mock para retornar un IDU válido en el caso de éxito
+            when(mockAprobacionesService.obtenerIDU(any(com.sa.entities.Rendicion.class), anyString(), anyString())).thenReturn("23232323");
         })) {
             try (MockedConstruction<RendicionesService> rendicionesServiceMC = mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
             })) {
@@ -126,6 +133,44 @@ class RendicionScanSaveActionTest {
             Assertions.assertEquals(imageMock, image);
         }
 
+    }
+
+    @Test
+    @DisplayName("Testeando execute action cuando no se puede obtener IDU - retorna failure")
+    void executeActionFailureWhenIduIsNull() throws Exception {
+        // Arrange
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        Usuario usuario = new Usuario("testUser", "perfil", "nombre", 1, "sector", new ArrayList<>());
+        session.setAttribute("usuario", usuario);
+        request.setHttpSession(session);
+        request.addParameter("codigo", "12345");
+
+        RendicionForm form = new RendicionForm();
+        ActionMapping mapping = new ActionMapping();
+        ActionForward failureForward = new ActionForward("failure", "/error.jsp", false);
+        mapping.addForwardConfig(failureForward);
+
+        // Mock AprobacionesService to simulate no rendicion found and null IDU
+        try (MockedConstruction<AprobacionesService> aprobacionesServiceMC = mockConstruction(AprobacionesService.class, (mockAprobacionesService, context) -> {
+            // Simular que no se encuentra ninguna aprobación pendiente (lista vacía)
+            when(mockAprobacionesService.getAprobacionesPendientes(anyString(), any(), any(), any(), anyString())).thenReturn(new ArrayList<>());
+        })) {
+            try (MockedConstruction<RendicionesService> rendicionesServiceMC = mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
+                // No se necesita configuración específica para RendicionesService en este test
+            })) {
+                
+                // Act
+                ActionForward result = rendicionScanSaveAction.executeAction(mapping, form, null, client, request, response);
+                
+                // Assert
+                assertAll(
+                    () -> assertNotNull(result, "El resultado no debe ser null"),
+                    () -> assertEquals("failure", result.getName(), "Debe retornar el forward 'failure'"),
+                    () -> assertEquals("No se pudo obtener el IDU", request.getAttribute("error"), "Debe setear el mensaje de error correcto en el request")
+                );
+            }
+        }
     }
 
     @Test
@@ -179,8 +224,8 @@ class RendicionScanSaveActionTest {
         ActionMapping mapping = new ActionMapping();
 
         session.setAttribute("usuario", usuario);
-
         request.setHttpSession(session);
+        request.addParameter("codigo", "123456"); // Agregar el parámetro codigo necesario
 
         form.setNameFile("nameFile");
         form.setFileType("fileType");
