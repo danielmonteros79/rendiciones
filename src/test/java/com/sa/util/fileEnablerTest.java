@@ -1184,4 +1184,98 @@ class fileEnablerTest {
         verify(response).sendError(500, "Internal Server Error");
     }
 
+    @Test
+    @DisplayName("Should handle ServletException in doPost and send 500 error")
+    void testServletExceptionInDoPost() throws IOException, ServletException {
+        // Arrange
+        fileEnabler servlet = new fileEnabler() {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+                    throws ServletException, IOException {
+                throw new ServletException("Test ServletException");
+            }
+        };
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // Act
+        servlet.doPost(request, response);
+        
+        // Assert
+        verify(response).sendError(500, "Internal Server Error");
+    }
+
+    @Test
+    @DisplayName("Should handle IOException in doPost and send 500 error")
+    void testIOExceptionInDoPost() throws IOException, ServletException {
+        // Arrange
+        fileEnabler servlet = new fileEnabler() {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+                    throws ServletException, IOException {
+                throw new IOException("Test IOException");
+            }
+        };
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // Act
+        servlet.doPost(request, response);
+        
+        // Assert
+        verify(response).sendError(500, "Internal Server Error");
+    }
+
+    @Test
+    @DisplayName("Should handle ServletException with nested IOException in doPost")
+    void testServletExceptionWithNestedIOExceptionInDoPost() throws IOException, ServletException {
+        // Arrange
+        fileEnabler servlet = new fileEnabler() {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+                    throws ServletException, IOException {
+                throw new ServletException("Test ServletException");
+            }
+        };
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // Simulate IOException when trying to send error response
+        doThrow(new IOException("Cannot send response")).when(response).sendError(500, "Internal Server Error");
+        
+        // Act - Should handle both exceptions without propagating
+        assertDoesNotThrow(() -> servlet.doPost(request, response));
+        
+        // Assert
+        verify(response).sendError(500, "Internal Server Error");
+    }
+
+    @Test
+    @DisplayName("Should handle IOException with nested IOException in doPost")
+    void testIOExceptionWithNestedIOExceptionInDoPost() throws IOException, ServletException {
+        // Arrange
+        fileEnabler servlet = new fileEnabler() {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
+                    throws ServletException, IOException {
+                throw new IOException("Test IOException");
+            }
+        };
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // Simulate IOException when trying to send error response
+        doThrow(new IOException("Cannot send response")).when(response).sendError(500, "Internal Server Error");
+        
+        // Act - Should handle both exceptions without propagating
+        assertDoesNotThrow(() -> servlet.doPost(request, response));
+        
+        // Assert
+        verify(response).sendError(500, "Internal Server Error");
+    }
+
 }
