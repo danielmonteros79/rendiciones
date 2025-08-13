@@ -13,3 +13,13 @@ adaExceptionsLog
 src/main/cfg/
 src/main/syscfg/
 
+# Log files
+*.log
+*.log.*
+*Exception*.txt
+*exception*.txt
+logException*.txt
+*.log.txt
+logs/
+log/
+

@@ -27,9 +27,10 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
-	protected String message = "";
-	protected Usuario sessionUser;
-	protected Usuario sessionUserWorking;
+	protected volatile String message = "";
+	protected volatile Usuario sessionUser;
+	protected volatile Usuario sessionUserWorking;
+
 	private static final String ERROR = "error";
 	private static final String STATUS = "status";
 	private static final String USUARIO = "usuario";
