@@ -1074,4 +1074,114 @@ class fileEnablerTest {
         };
     }
 
+    @Test
+    @DisplayName("Should handle unexpected exception in doGet and send 500 error")
+    void testUnexpectedExceptionInDoGet() throws IOException, ServletException {
+        // Arrange
+        fileEnabler servlet = new fileEnabler();
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // Mock getRequestURI to throw an unexpected RuntimeException
+        when(request.getRequestURI()).thenThrow(new RuntimeException("Unexpected error"));
+        
+        // Act
+        servlet.doGet(request, response);
+        
+        // Assert
+        verify(response).sendError(500, "Internal Server Error");
+    }
+
+    @Test
+    @DisplayName("Should handle IOException when sending 500 error response")
+    void testIOExceptionWhenSending500Error() throws IOException, ServletException {
+        // Arrange
+        fileEnabler servlet = new fileEnabler();
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // Mock getRequestURI to throw an unexpected exception
+        when(request.getRequestURI()).thenThrow(new RuntimeException("Unexpected error"));
+        
+        // Mock sendError to throw IOException (simulating network issues)
+        doThrow(new IOException("Network error")).when(response).sendError(500, "Internal Server Error");
+        
+        // Act & Assert - Should not throw exception, should handle IOException gracefully
+        assertDoesNotThrow(() -> servlet.doGet(request, response));
+        
+        // Verify that sendError was attempted
+        verify(response).sendError(500, "Internal Server Error");
+    }
+
+    @Test
+    @DisplayName("Should handle ServletContext exception in doGet")
+    void testServletContextExceptionInDoGet() throws IOException, ServletException {
+        // Arrange
+        fileEnabler servlet = new fileEnabler();
+        
+        // Mock servlet context to throw exception
+        ServletContext mockContext = mock(ServletContext.class);
+        when(mockContext.getRealPath("/")).thenThrow(new RuntimeException("Context error"));
+        
+        ServletConfig mockConfig = mock(ServletConfig.class);
+        when(mockConfig.getServletContext()).thenReturn(mockContext);
+        
+        // Initialize with mocked config
+        servlet.init(mockConfig);
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        when(request.getRequestURI()).thenReturn("/test/file.txt");
+        
+        // Act
+        servlet.doGet(request, response);
+        
+        // Assert
+        verify(response).sendError(500, "Internal Server Error");
+    }
+
+    @Test
+    @DisplayName("Should handle null pointer exception and send 500 error")
+    void testNullPointerExceptionInDoGet() throws IOException, ServletException {
+        // Arrange
+        fileEnabler servlet = new fileEnabler();
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // Return null URI to cause NPE
+        when(request.getRequestURI()).thenReturn(null);
+        
+        // Act
+        servlet.doGet(request, response);
+        
+        // Assert
+        verify(response).sendError(500, "Internal Server Error");
+    }
+
+    @Test
+    @DisplayName("Should handle multiple nested exceptions gracefully")
+    void testMultipleNestedExceptions() throws IOException, ServletException {
+        // Arrange
+        fileEnabler servlet = new fileEnabler();
+        
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // First, cause the main exception
+        when(request.getRequestURI()).thenThrow(new IllegalStateException("State error"));
+        
+        // Then, cause IOException when trying to send error response
+        doThrow(new IOException("Cannot send response")).when(response).sendError(500, "Internal Server Error");
+        
+        // Act & Assert - Should handle both exceptions without propagating
+        assertDoesNotThrow(() -> servlet.doGet(request, response));
+        
+        // Verify the error response was attempted
+        verify(response).sendError(500, "Internal Server Error");
+    }
+
 }
