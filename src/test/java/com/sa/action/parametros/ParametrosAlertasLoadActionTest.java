@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -269,21 +268,14 @@ class ParametrosAlertasLoadActionTest {
 
   @ParameterizedTest
   @MethodSource("selectMotivoSource")
-  @DisplayName("Should check codMotivo")
+  @DisplayName("Should check codMotivo with empty collections")
   void shouldCheckCodMotivo(PrintWriter printWriter, MockHttpServletRequest request, List<ComboOpcion> comboOpcionList, Map<String, List<ComboOpcion>> motivoGastoHashMap) throws Exception {
-    //given
-    Field cmbGasto = ParametrosAlertasLoadAction.class.getDeclaredField("cmbGasto");
-    cmbGasto.setAccessible(true);
-    cmbGasto.set(parametrosAlertasLoadAction, comboOpcionList);
-
-    Field mapMotivoGastos = ParametrosAlertasLoadAction.class.getDeclaredField("mapMotivoGastos");
-    mapMotivoGastos.setAccessible(true);
-    mapMotivoGastos.set(parametrosAlertasLoadAction, motivoGastoHashMap);
-
-    //then
+    //given - static final fields are now immutable empty collections
+    //when
     Method selectMotivoMocked = ParametrosAlertasLoadAction.class.getDeclaredMethod("selectMotivo", PrintWriter.class, HttpServletRequest.class);
     selectMotivoMocked.setAccessible(true);
     selectMotivoMocked.invoke(parametrosAlertasLoadAction, printWriter, request);
+    //then - verify method executes without error with empty collections
     assertAll(() -> assertNotNull(printWriter),
         () -> assertNotNull(request),
         () -> assertNotNull(comboOpcionList),
@@ -292,16 +284,14 @@ class ParametrosAlertasLoadActionTest {
 
   @ParameterizedTest
   @MethodSource("selectGastoSource")
-  @DisplayName("Should check codGasto")
+  @DisplayName("Should check codGasto with empty collections")
   void shouldCheckCodGasto(PrintWriter printWriter, MockHttpServletRequest request, Map<String, List<ComboOpcion>> motivoGastoHashMap) throws Exception {
-    //given
-    Field mapMotivoGastos = ParametrosAlertasLoadAction.class.getDeclaredField("mapMotivoGastos");
-    mapMotivoGastos.setAccessible(true);
-    mapMotivoGastos.set(parametrosAlertasLoadAction, motivoGastoHashMap);
-    //then
+    //given - static final fields are now immutable empty collections
+    //when
     Method selectGastoMocked = ParametrosAlertasLoadAction.class.getDeclaredMethod("selectGasto", PrintWriter.class, HttpServletRequest.class);
     selectGastoMocked.setAccessible(true);
     selectGastoMocked.invoke(parametrosAlertasLoadAction, printWriter, request);
+    //then - verify method executes without error with empty collections
     assertAll(() -> assertNotNull(printWriter),
         () -> assertNotNull(request),
         () -> assertNotNull(motivoGastoHashMap));

@@ -31,7 +31,6 @@ import org.mockito.quality.Strictness;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,14 +75,7 @@ class CuadroGeneralLoadActionTest {
             when(mockRendicionesService.getGlgsUsuario(any(),any())).thenReturn(comboOpcion);
         })) {
 
-            Field cmbMotivo = CuadroGeneralLoadAction.class.getDeclaredField("cmbMotivo");
-            cmbMotivo.setAccessible(true);
-            cmbMotivo.set(cuadroGeneralLoadAction, motivo);
-
-            Field mapGlgMotivos1 = CuadroGeneralLoadAction.class.getDeclaredField("mapGlgMotivos");
-            mapGlgMotivos1.setAccessible(true);
-            mapGlgMotivos1.set(cuadroGeneralLoadAction, mapGlgMotivos);
-
+            // Fields are now local variables - no need for reflection
 
             ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, null, null, request,response);
             if(request.getParameter("accion").equals("selectGlg")){
@@ -111,14 +103,7 @@ class CuadroGeneralLoadActionTest {
             when(mockRendicionesService.getGlgsUsuario(any(),any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
         })) {
 
-            Field cmbMotivo = CuadroGeneralLoadAction.class.getDeclaredField("cmbMotivo");
-            cmbMotivo.setAccessible(true);
-            cmbMotivo.set(cuadroGeneralLoadAction, motivo);
-
-            Field mapGlgMotivos1 = CuadroGeneralLoadAction.class.getDeclaredField("mapGlgMotivos");
-            mapGlgMotivos1.setAccessible(true);
-            mapGlgMotivos1.set(cuadroGeneralLoadAction, mapGlgMotivos);
-
+            // Fields are now local variables - no need for reflection
 
             ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, null, null, request,response);
             if(request.getParameter("accion").equals("selectGlg")){
