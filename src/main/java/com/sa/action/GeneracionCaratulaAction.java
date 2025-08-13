@@ -12,8 +12,8 @@ import org.apache.struts.action.ActionMapping;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
-import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 import com.sa.entities.Usuario;
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
@@ -52,19 +52,14 @@ public class GeneracionCaratulaAction extends RestriccionTransaccionAction {
 //				document.addCreationDate();
 //				document.addTitle("Titulo del documento");
 				imagen.scaleAbsoluteWidth(100f);
-//				imagen.setAbsolutePosition(150f, 650f);
+				//				imagen.setAbsolutePosition(150f, 650f);
 				// document.add(parrafo);
 				document.add(imagen);
-				// HTMLWorker
-				HTMLWorker htmlWorker = new HTMLWorker(document);
-				// String str =
-				// "Este es el contenido HTML, bien en String o reemplazalo por el contenido del fichero del ejemplo anterior";
-				htmlWorker.parse(new StringReader(buffer));
+				// XMLWorkerHelper replaces deprecated HTMLWorker
+				XMLWorkerHelper.getInstance().parseXHtml(pdfWriter, document, new StringReader(buffer));
 				
 				document.close();
-				out.close();
-
-			} catch (Exception e) {
+				out.close();			} catch (Exception e) {
 				log.error(e);
 				throw new Exception(e);
 			}

@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 import com.sa.core.AccesoNoPermitidoException;
 import com.sa.core.SecurityActionMapping;
 import com.sa.entities.Usuario;
+import com.sa.exceptions.ActionExecutionException;
 import com.sa.services.LoggerSUM;
 
 public abstract class RestriccionAction extends Action {
@@ -22,7 +23,7 @@ public abstract class RestriccionAction extends Action {
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+			throws ActionExecutionException {
 		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
 		log.info("Entra al action RestriccionAction. Usuario ("+user.getIdUser()+")");
 
@@ -41,14 +42,14 @@ public abstract class RestriccionAction extends Action {
 	 * @param response
 	 * @param paramsSIA
 	 * @return
-	 * @throws Exception
+	 * @throws ActionExecutionException when action execution fails due to business logic errors, system errors, or validation failures
 	 */
 	public abstract ActionForward executeAction(ActionMapping mapping,
 			ActionForm form, HttpServletRequest request,
 			HttpServletResponse response
 			//ParametrosSUM paramsSIA
 			)
-			throws Exception;
+			throws ActionExecutionException;
 
 	protected void doRestriccion(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response,
