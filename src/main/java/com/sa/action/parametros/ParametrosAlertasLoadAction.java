@@ -2,7 +2,6 @@ package com.sa.action.parametros;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +31,10 @@ import com.sa.services.ParametrosService;
 
 public class ParametrosAlertasLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosAlertasLoadAction.class);
-	private static final Map<String, String> mapGastoMotivo = Collections.emptyMap();
-	private static final Map<String, List<ComboOpcion>> mapMotivoGastos = Collections.emptyMap();
-	private static final List<ComboOpcion> cmbGasto = Collections.emptyList();
-	private static final List<ComboOpcion> cmbMotivo = Collections.emptyList();
+	private volatile Map<String, String> mapGastoMotivo = new HashMap<String, String>();
+	private volatile Map<String, List<ComboOpcion>> mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
+	private volatile List<ComboOpcion> cmbGasto = new ArrayList<ComboOpcion>();
+	private volatile List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {

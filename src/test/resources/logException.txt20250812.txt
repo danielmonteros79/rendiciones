@@ -1,3 +1,0 @@
-12/08/25 08:34 <SIA> Excepcion: class java.lang.Exception - Causa: null - Mensaje: Error de prueba
-12/08/25 09:13 <SIA> Excepcion: class java.lang.Exception - Causa: null - Mensaje: Error de prueba
-12/08/25 10:06 <SIA> Excepcion: class java.lang.Exception - Causa: null - Mensaje: Error de prueba
