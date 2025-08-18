@@ -80,10 +80,12 @@ public class fileEnabler extends HttpServlet {
 				
 				try (FileInputStream fis = new FileInputStream(f);
 					 OutputStream os = arg1.getOutputStream()) {
-					byte b[] = new byte[1024];
-					int cant;
-					while ((cant = fis.read(b)) >= 0)
-						os.write(b, 0, cant);
+					
+					byte[] buffer = new byte[1024];
+					int bytesRead;
+					while ((bytesRead = fis.read(buffer)) != -1) {
+						os.write(buffer, 0, bytesRead);
+					}
 					os.flush();
 				}
 			} catch (Exception e) {
