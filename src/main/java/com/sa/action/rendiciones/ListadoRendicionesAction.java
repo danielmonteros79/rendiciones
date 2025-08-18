@@ -33,6 +33,19 @@ public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
+			// Verificar que sessionUserWorking no sea null
+			if (this.sessionUserWorking == null) {
+				log.error("sessionUserWorking es null en ListadoRendicionesAction");
+				return writeError(response, new Exception("Sesión de usuario no válida"));
+			}
+			
+			// Verificar que el ID de usuario no sea null o vacío
+			String userId = this.sessionUserWorking.getIdUser();
+			if (userId == null || userId.trim().isEmpty()) {
+				log.error("ID de usuario es null o vacío en ListadoRendicionesAction");
+				return writeError(response, new Exception("ID de usuario no válido"));
+			}
+			
 			String action = request.getParameter("action") == null ? "" : request.getParameter("action");
 
 			if (action.equals("filtrar"))

@@ -33,6 +33,13 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
+		
+		// Verificar que el usuario no sea null
+		if (u == null) {
+			log.error("Usuario userWorking es null en CuadroGeneralLoadAction");
+			return writeError(response, new Exception("Sesión de usuario no válida"));
+		}
+		
 		log.info("Entra al action CuadroGeneralLoadAction. Usuario ("+u.getIdUser()+")");
 		
 		CuadroFiltroForm frm = (CuadroFiltroForm) form;
@@ -57,9 +64,25 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 
 	private ActionForward handleMainAction(ActionMapping mapping, SAMWebClient samClient, 
 			HttpServletRequest request, CuadroFiltroForm frm) throws Exception {
+		// Verificar que samClient no sea null
+		if (samClient == null) {
+			log.error("SAMWebClient es null en handleMainAction");
+			throw new Exception("Cliente SAM no válido");
+		}
+		
 		RendicionesService service = new RendicionesService(samClient);
 		Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
 		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
+		
+		// Verificar que los usuarios no sean null
+		if (u == null) {
+			log.error("Usuario userWorking es null en handleMainAction");
+			throw new Exception("Sesión de usuario no válida");
+		}
+		if (user == null) {
+			log.error("Usuario es null en handleMainAction");
+			throw new Exception("Sesión de usuario no válida");
+		}
 		
 		List<ComboMotivo> motivo = new ArrayList<>();
 		String message = "";
@@ -157,8 +180,22 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 	@SuppressWarnings("unchecked")
 	private void selectGlg(PrintWriter writer, HttpServletRequest request, SAMWebClient samClient) {
 		try {
+			// Verificar que samClient no sea null
+			if (samClient == null) {
+				log.error("SAMWebClient es null en selectGlg");
+				writer.print("[]");
+				return;
+			}
+			
 			RendicionesService service = new RendicionesService(samClient);
 			Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
+			
+			// Verificar que el usuario no sea null
+			if (u == null) {
+				log.error("Usuario userWorking es null en selectGlg");
+				writer.print("[]");
+				return;
+			}
 			
 			List<ComboMotivo> motivo = service.getMotivoRendiciones("9", u.getIdUser(), "");
 			

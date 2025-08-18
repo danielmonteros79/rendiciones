@@ -61,6 +61,10 @@ class CuadroGeneralLoadActionTest {
     ActionServlet servlet;
     @Mock
     HttpServletResponse response;
+    @Mock
+    SAMWebClient samWebClient;
+    @Mock
+    ar.com.bbva.web.impl.SAMWebApplication samWebApplication;
     @InjectMocks
     CuadroGeneralLoadAction cuadroGeneralLoadAction;
 
@@ -73,8 +77,10 @@ class CuadroGeneralLoadActionTest {
     @MethodSource("executeActionSource")
     @DisplayName("Testeando execute action")
     void executeAction(MockHttpServletRequest request,CuadroFiltroForm form, ActionMapping mapping, List<ComboMotivo> motivo,Map<String, List<ComboMotivo>> mapGlgMotivos,List<ComboOpcion> comboOpcion, PrintWriter writer) throws Exception {
+        // Configure the response mock to return the writer
+        when(response.getWriter()).thenReturn(writer);
+        
         try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
-            when(response.getWriter()).thenReturn(writer);
             when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
             when(mockRendicionesService.getMsg()).thenReturn("msg");
             when(mockRendicionesService.getGlgsUsuario(any(),any())).thenReturn(comboOpcion);
@@ -82,7 +88,7 @@ class CuadroGeneralLoadActionTest {
 
             // Fields are now local variables - no need for reflection
 
-            ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, null, null, request,response);
+            ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, samWebClient, request,response);
             if(request.getParameter("accion").equals("selectGlg")){
                 assertEquals(null, result);
             } else {
@@ -101,8 +107,10 @@ class CuadroGeneralLoadActionTest {
     @MethodSource("executeActionSource")
     @DisplayName("Testeando execute action exception")
     void executeActionException(MockHttpServletRequest request,CuadroFiltroForm form, ActionMapping mapping, List<ComboMotivo> motivo,Map<String, List<ComboMotivo>> mapGlgMotivos,List<ComboOpcion> comboOpcion, PrintWriter writer) throws Exception {
+        // Configure the response mock to return the writer
+        when(response.getWriter()).thenReturn(writer);
+        
         try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class, (mockRendicionesService, context) -> {
-            when(response.getWriter()).thenReturn(writer);
             when(mockRendicionesService.getMotivoRendiciones(any(),any(), any())).thenReturn(motivo);
             when(mockRendicionesService.getMsg()).thenReturn("msg");
             when(mockRendicionesService.getGlgsUsuario(any(),any())).thenThrow(new TransactionException("TransactionException",new Throwable("TransactionException")));
@@ -110,7 +118,7 @@ class CuadroGeneralLoadActionTest {
 
             // Fields are now local variables - no need for reflection
 
-            ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, null, null, request,response);
+            ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, samWebClient, request,response);
             if(request.getParameter("accion").equals("selectGlg")){
                 assertEquals(null, result);
             } else {

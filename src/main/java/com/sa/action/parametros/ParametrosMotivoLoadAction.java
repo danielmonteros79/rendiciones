@@ -3,9 +3,7 @@ package com.sa.action.parametros;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.h        } catch (Exception e) {
-            manejarExcepcionBusqueda(parametrosBusqueda, request);
-            break;.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -98,11 +96,25 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    int paginado = 0;
 	    boolean pagina = true;
 	    
+	    // Verificar que sessionUserWorking no sea null
+	    if (this.sessionUserWorking == null) {
+	        log.error("sessionUserWorking es null en buscarMotivos");
+	        this.setMessage("Error: Sesión de usuario no válida", request);
+	        return motivosTotales; // Retornar lista vacía si no hay usuario
+	    }
+	    
+	    String userId = this.sessionUserWorking.getIdUser();
+	    if (userId == null || userId.trim().isEmpty()) {
+	        log.error("ID de usuario es null o vacío");
+	        this.setMessage("Error: ID de usuario no válido", request);
+	        return motivosTotales;
+	    }
+	    
 	    while (pagina) {
 	        try {
 	            List<ParametroMotivo> motivos = service.getMotivos(
 	                parametrosBusqueda.codMotivo, 
-	                this.sessionUserWorking.getIdUser(), 
+	                userId, 
 	                "0" + paginado
 	            );
 	            
@@ -115,7 +127,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	            }
 	            
 	        } catch (Exception e) {
-	            manejarExcepcionBusqueda(parametrosBusqueda);
+	            manejarExcepcionBusqueda(parametrosBusqueda, request);
 	            break;
 	        }
 	    }
@@ -165,32 +177,40 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	}
 
 	private void transformarCodSup(ParametroMotivo motivo) {
-	    String codSup = motivo.getCodSup().trim();
-	    if ("PSUP".equalsIgnoreCase(codSup) || "SUPER".equalsIgnoreCase(codSup)) {
-	        motivo.setCodSup("SI");
+	    if (motivo.getCodSup() != null) {
+	        String codSup = motivo.getCodSup().trim();
+	        if ("PSUP".equalsIgnoreCase(codSup) || "SUPER".equalsIgnoreCase(codSup)) {
+	            motivo.setCodSup("SI");
+	        }
 	    }
 	}
 
 	private void transformarCodAprobacionGlg(ParametroMotivo motivo) {
-	    String codAprobacion = motivo.getCodAprobacionGlg().trim();
-	    if ("MONTO".equalsIgnoreCase(codAprobacion) || "PGLG".equalsIgnoreCase(codAprobacion)) {
-	        motivo.setCodAprobacionGlg("SI");
+	    if (motivo.getCodAprobacionGlg() != null) {
+	        String codAprobacion = motivo.getCodAprobacionGlg().trim();
+	        if ("MONTO".equalsIgnoreCase(codAprobacion) || "PGLG".equalsIgnoreCase(codAprobacion)) {
+	            motivo.setCodAprobacionGlg("SI");
+	        }
 	    }
 	}
 
 	private void transformarCodFirma(ParametroMotivo motivo) {
-	    String codFirma = motivo.getCodFirma();
-	    if ("MONTO".equalsIgnoreCase(codFirma) || "PFIRM".equalsIgnoreCase(codFirma)) {
-	        motivo.setCodFirma("SI");
+	    if (motivo.getCodFirma() != null) {
+	        String codFirma = motivo.getCodFirma();
+	        if ("MONTO".equalsIgnoreCase(codFirma) || "PFIRM".equalsIgnoreCase(codFirma)) {
+	            motivo.setCodFirma("SI");
+	        }
 	    }
 	}
 
 	private void transformarEstado(ParametroMotivo motivo) {
-	    String estado = motivo.getEstado();
-	    if ("A".equalsIgnoreCase(estado)) {
-	        motivo.setEstado("ACTIVO");
-	    } else if ("I".equalsIgnoreCase(estado)) {
-	        motivo.setEstado("INACTIVO");
+	    if (motivo.getEstado() != null) {
+	        String estado = motivo.getEstado();
+	        if ("A".equalsIgnoreCase(estado)) {
+	            motivo.setEstado("ACTIVO");
+	        } else if ("I".equalsIgnoreCase(estado)) {
+	            motivo.setEstado("INACTIVO");
+	        }
 	    }
 	}
 
@@ -200,7 +220,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    }
 	    
 	    ParametroMotivo ultimo = motivos.get(motivos.size() - 1);
-	    return "N".equalsIgnoreCase(ultimo.getLastElement());
+	    return ultimo.getLastElement() != null && "N".equalsIgnoreCase(ultimo.getLastElement());
 	}
 
 	private void manejarExcepcionBusqueda(ParametrosBusqueda parametrosBusqueda, HttpServletRequest request) {
