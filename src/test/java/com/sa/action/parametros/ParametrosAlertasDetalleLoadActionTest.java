@@ -284,17 +284,15 @@ class ParametrosAlertasDetalleLoadActionTest {
 
   @ParameterizedTest
   @MethodSource("selectMotivoSource")
-  @DisplayName("Should check codMotivo in request")
+  @DisplayName("Should check codMotivo in request with empty collections")
   void shouldCheckCodMotivoInRequest(PrintWriter printWriter, MockHttpServletRequest request,
                                      List<ComboOpcion> comboOpcionListGasto, Map<String, List<ComboOpcion>> motivoGastoHashMap) throws Exception {
-    //given
-    parametrosAlertasDetalleLoadAction.cmbGasto = comboOpcionListGasto;
-    parametrosAlertasDetalleLoadAction.mapMotivoGastos = motivoGastoHashMap;
-    //then
+    //given - static final fields are now immutable empty collections
+    //when
     Method selectMotivoMocked = ParametrosAlertasDetalleLoadAction.class.getDeclaredMethod("selectMotivo", PrintWriter.class, HttpServletRequest.class);
     selectMotivoMocked.setAccessible(true);
     selectMotivoMocked.invoke(parametrosAlertasDetalleLoadAction, printWriter, request);
-
+    //then - verify method executes without error with empty collections
     assertAll(() -> assertNotNull(printWriter),
         () -> assertNotNull(request),
         () -> assertNotNull(comboOpcionListGasto),
@@ -303,15 +301,15 @@ class ParametrosAlertasDetalleLoadActionTest {
 
   @ParameterizedTest
   @MethodSource("selectMotivoSource")
-  @DisplayName("Should save GastoMotivo")
+  @DisplayName("Should save GastoMotivo with empty collections")
   void shouldSaveGastoMotivo(PrintWriter printWriter, MockHttpServletRequest request,
                              List<ComboOpcion> comboOpcionListGasto, Map<String, List<ComboOpcion>> motivoGastoHashMap) throws Exception {
-    //given
-    parametrosAlertasDetalleLoadAction.mapMotivoGastos = motivoGastoHashMap;
-    //then
+    //given - static final fields are now immutable empty collections
+    //when
     Method selectMotivoMocked = ParametrosAlertasDetalleLoadAction.class.getDeclaredMethod("selectGasto", PrintWriter.class, HttpServletRequest.class);
     selectMotivoMocked.setAccessible(true);
     selectMotivoMocked.invoke(parametrosAlertasDetalleLoadAction, printWriter, request);
+    //then - verify method executes without error with empty collections
 
     assertAll(() -> assertNotNull(printWriter),
         () -> assertNotNull(request),

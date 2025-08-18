@@ -51,12 +51,12 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
                 return this.aprobar(mapping, samClient, request, response);
             }
 
-            if (this.sessionUserWorking == null) {
-                log.error("sessionUserWorking es null");
+            if (this.getSessionUserWorking() == null) {
+                log.error("getSessionUserWorking() es null");
                 return writeError(response, new Exception("Sesión no iniciada"));
             }
             
-            String userId = this.sessionUserWorking.getIdUser();
+            String userId = this.getSessionUserWorking().getIdUser();
             
             if (this.aprobacionesService == null) {
                 System.out.println("⚠️ WARNING: `aprobacionesService` es NULL, creando una nueva instancia...");
@@ -77,7 +77,7 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 	}
 
 	protected ActionForward filtrar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
-	    if (this.sessionUserWorking == null) {
+	    if (this.getSessionUserWorking() == null) {
 	        return writeError(response, new Exception("Sesión no iniciada"));
 	    }
 	    
@@ -103,7 +103,7 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 	            supervisado,
 	            request.getParameter("motivo"),
 	            request.getParameter("glg"),
-	            this.sessionUserWorking.getIdUser()
+	            this.getSessionUserWorking().getIdUser()
 	        );
 	    } else {
 	        return service.getAprobacionesPendientes(
@@ -126,7 +126,7 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 
 	private String obtenerSupervisadoFinal(String supervisado, boolean hayFiltroSupervisado) {
 	    if (!hayFiltroSupervisado && (supervisado == null || supervisado.isEmpty())) {
-	        return this.sessionUserWorking.getIdUser();
+	        return this.getSessionUserWorking().getIdUser();
 	    }
 	    return supervisado;
 	}
@@ -154,7 +154,7 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
 	}
 
     private ActionForward aprobar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (this.sessionUserWorking == null) {
+        if (this.getSessionUserWorking() == null) {
             return writeError(response, new Exception("Sesión no iniciada"));
         }
 
@@ -170,7 +170,7 @@ public class ListadoAprobacionesAction extends RestriccionTransaccionAction {
         }
 
         String resultado = aprobacionesService.cambiarEstadoRendiciones(
-            this.sessionUserWorking.getIdUser(), idRendiciones, "APROB", null, request.getParameter("glg")
+            this.getSessionUserWorking().getIdUser(), idRendiciones, "APROB", null, request.getParameter("glg")
         );
 
         Map<String, Object> resp = new HashMap<>();

@@ -44,7 +44,7 @@ public class DistribucionGastosLoadAction extends RestriccionTransaccionAction {
 		// request.setAttribute("idRendicion", idRendicion);
 		// if (request.getParameter("usuarioRendicion") != null
 		// && !request.getParameter("usuarioRendicion").equals("")) {
-		usuarioRend = request.getParameter("usuarioRendicion").toString();
+		usuarioRend = request.getParameter("usuarioRendicion");
 		// }
 		// Service carga Listado de Rendiciones
 		log.info("Se llama al service para obtener los datos de la rendicion seleccionada y luego mapear los gastos");

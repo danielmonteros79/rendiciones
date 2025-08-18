@@ -36,10 +36,12 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 
 public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
+	private static final String LAST_ERROR_MESSAGE = "lastErrorMessage";
+	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		this.message= "";
-		Usuario u = this.sessionUserWorking;
+		StringBuilder messageBuilder = new StringBuilder();
+		Usuario u = this.getSessionUserWorking();
 		String action = request.getParameter("action") == null ? "" : request.getParameter("action");
 
 		if (action.equals("getRendicionGastos"))
@@ -76,16 +78,19 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			idRendicion = Integer.valueOf(request.getParameter("codigo"));
 
 		if (request.getParameter("usuarioRendicion") != null && !request.getParameter("usuarioRendicion").equals(""))
-			usuarioRend = request.getParameter("usuarioRendicion").toString();
+			usuarioRend = request.getParameter("usuarioRendicion");
 
 		try {
 			List<Rendicion> rendiciones = service.obtenerListadoRendiciones(usuarioRend, idRendicion.toString(), "", "", "");
 			if (rendiciones.size() == 0) {
 				request.setAttribute("Rendicion", new Rendicion());
-				this.message = "ERROR: RENDICION INEXISTENTE";
+				request.getSession().setAttribute(LAST_ERROR_MESSAGE, "ERROR: RENDICION INEXISTENTE");
 			} else {
 				Rendicion rendicion = rendiciones.get(0);
-				this.message = service.getMsg();
+				String serviceMessage = service.getMsg();
+				if (serviceMessage != null) {
+					messageBuilder.append(serviceMessage);
+				}
 
 				List<ComboMotivo> motivo = service.getMotivoRendiciones("4", usuarioRend,"");
 				for (ComboMotivo fila : motivo) {
@@ -197,7 +202,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			}
 		} catch (Exception e) {
 			log.error("", e);
-			this.setErrorMessage(e);
+			this.setErrorMessage(e, request);
 		}
 
 		return mapping.findForward("rendicionDetalleGastos");
@@ -205,10 +210,13 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 
 	private ActionForward getRendicionGastos(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
 		RendicionesService service = new RendicionesService(samClient);
-		String estadoRend = (String) request.getParameter("estadoRend");
+		String estadoRend = request.getParameter("estadoRend");
 		List<Gastos> gastos = service.getGastos(request.getParameter("idRendicion"), "", request.getParameter("usuarioRend"),
 				request.getParameter("codMotivo"));
-		this.message = service.getMsg();
+		String serviceMessage = service.getMsg();
+		if (serviceMessage != null) {
+			request.getSession().setAttribute(LAST_ERROR_MESSAGE, serviceMessage);
+		}
 		request.setAttribute("gastos", gastos);
 		request.setAttribute("showOpciones", true);
 		request.setAttribute("showEditar", estadoRend.equals("PENDI"));
@@ -228,8 +236,11 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 		String codMotivo = request.getParameter("codMotivo");
 		
 		
-		if(this.sessionUserWorking.isManejaFacultades()) consumosPendientes = service.getConsumos(this.sessionUserWorking.getIdUser(), fechaDesde, fechaHasta, codMotivo);
-		this.message = service.getMsg();
+		if(this.getSessionUserWorking().isManejaFacultades()) consumosPendientes = service.getConsumos(this.getSessionUserWorking().getIdUser(), fechaDesde, fechaHasta, codMotivo);
+		String serviceMessage = service.getMsg();
+		if (serviceMessage != null) {
+			request.getSession().setAttribute(LAST_ERROR_MESSAGE, serviceMessage);
+		}
 
 		request.setAttribute("consumosPendientes", consumosPendientes);
 
@@ -244,7 +255,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 
 			String idRendicion = request.getParameter("idRendicion");
 			String estado = request.getParameter("estado");
-			service.activaRechazaRendicion(estado, this.sessionUserWorking.getIdUser(), idRendicion);
+			service.activaRechazaRendicion(estado, this.getSessionUserWorking().getIdUser(), idRendicion);
 
 			if (service.getMsg() != null)
 				resp.put("message", "OK: " + service.getMsg());
@@ -270,7 +281,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			String descRendicion = request.getParameter("desc_rendicion");
 			String excepcion = request.getParameter("cod_estado_doc") != null ?request.getParameter("cod_estado_doc") : "" ;
 			
-			service.modificarRendicion(idRendicion, this.sessionUserWorking.getIdUser(), codMotivo, fechaDesde, fechaHasta, descRendicion, estadoRend,excepcion);
+			service.modificarRendicion(idRendicion, this.getSessionUserWorking().getIdUser(), codMotivo, fechaDesde, fechaHasta, descRendicion, estadoRend,excepcion);
 
 			if (service.getMsg() != null)
 				resp.put("message", "OK: " + service.getMsg());
@@ -313,7 +324,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			String idRendicion = request.getParameter("idRendicion");
 			String idu = request.getParameter("idu");
 			
-			service.cambiarEscanRendicion(idRendicion, this.sessionUserWorking.getIdUser(), idu);
+			service.cambiarEscanRendicion(idRendicion, this.getSessionUserWorking().getIdUser(), idu);
 
 			if (service.getMsg() != null)
 				resp.put("message", "OK: " + service.getMsg());

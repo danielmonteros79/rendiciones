@@ -48,7 +48,7 @@ public class AccesoDelegadoAction extends RestriccionTransaccionAction {
 				verificarAprobaciones(userWork, samClient);
 				request.getSession().setAttribute(USER_WORKING, userWork);
 			} else {
-				request.getSession().setAttribute(USER_WORKING, this.sessionUser);
+				request.getSession().setAttribute(USER_WORKING, this.getSessionUser());
 			}
 			return writeJson(response, resp);
 		} catch (Exception e) {
@@ -58,10 +58,10 @@ public class AccesoDelegadoAction extends RestriccionTransaccionAction {
 	}
 
 	private Usuario obtenerUsuarioTrabajo(String delegadoSel) {
-		for (Usuario u : this.sessionUser.getDelegadosAsignados()) {
+		for (Usuario u : this.getSessionUser().getDelegadosAsignados()) {
 			if (u.getIdUser().equalsIgnoreCase(delegadoSel)) {
-				if (u.getIdUser().equalsIgnoreCase(this.sessionUser.getIdUser())) {
-					u.setNombre(this.sessionUser.getNombre());
+				if (u.getIdUser().equalsIgnoreCase(this.getSessionUser().getIdUser())) {
+					u.setNombre(this.getSessionUser().getNombre());
 					return u;
 				} else {
 					return u;
@@ -73,7 +73,7 @@ public class AccesoDelegadoAction extends RestriccionTransaccionAction {
 
 	private void actualizarTipoPerfilDelegado(List<ParametriaUsuarioDelegado> usuarioDelegado, Usuario userWork) {
 		for (ParametriaUsuarioDelegado delegado : usuarioDelegado) {
-			if (this.sessionUser.getIdUser().equals(delegado.getDelegadoUser())) {
+			if (this.getSessionUser().getIdUser().equals(delegado.getDelegadoUser())) {
 				if (delegado.getDelegadoAccion().equals("A"))
 					userWork.setTipoPerfil("DELEG_APROB");
 				else if (delegado.getDelegadoAccion().equals("I"))

@@ -1,7 +1,7 @@
 package com.sa.action.parametros;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +31,10 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(ParametrosAlertasDetalleLoadAction.class);
-	Map<String, String> mapGastoMotivo = new HashMap<String, String>();
-	Map<String, List<ComboOpcion>> mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
-	List<ComboOpcion> cmbGasto = new ArrayList<ComboOpcion>();
-	private List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
+	private static final Map<String, String> mapGastoMotivo = Collections.emptyMap();
+	private static final Map<String, List<ComboOpcion>> mapMotivoGastos = Collections.emptyMap();
+	private static final List<ComboOpcion> cmbGasto = Collections.emptyList();
+	private static final List<ComboOpcion> cmbMotivo = Collections.emptyList();
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -83,10 +83,7 @@ public class ParametrosAlertasDetalleLoadAction extends RestriccionTransaccionAc
 			if (service.getMsgAviso() != null)
 				message += service.getMsgAviso();
 
-			mapGastoMotivo = new HashMap<String, String>();
-			mapMotivoGastos = new HashMap<String, List<ComboOpcion>>();
-			cmbGasto = new ArrayList<ComboOpcion>();
-			cmbMotivo = new ArrayList<ComboOpcion>();
+			// Collections are now static final immutable - no longer need to reinitialize
 
 //			for (String fila : combos) {
 //				String combo = fila.substring(0, 2);

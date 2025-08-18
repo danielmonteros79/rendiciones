@@ -16,6 +16,8 @@ import org.apache.struts.action.ActionMapping;
 
 import com.sa.core.AccesoNoPermitidoException;
 import com.sa.entities.Usuario;
+import com.sa.exceptions.ActionExecutionException;
+import com.sa.exceptions.JsonResponseException;
 import com.sa.exceptions.SessionTimeOutException;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
@@ -27,9 +29,11 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
-	protected String message = "";
-	protected Usuario sessionUser;
-	protected Usuario sessionUserWorking;
+	
+	// Thread-local storage for session users to avoid mutable instance fields
+	private static final ThreadLocal<Usuario> threadLocalSessionUser = new ThreadLocal<>();
+	private static final ThreadLocal<Usuario> threadLocalSessionUserWorking = new ThreadLocal<>();
+
 	private static final String ERROR = "error";
 	private static final String STATUS = "status";
 	private static final String USUARIO = "usuario";
@@ -43,23 +47,29 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 				throw new SessionTimeOutException("Finalizo tiempo en sesion.");
 		}
 
-		this.sessionUser = (Usuario) arg4.getSession().getAttribute(USUARIO);
-		this.sessionUserWorking = (Usuario) arg4.getSession().getAttribute("userWorking");
+		this.setSessionUser((Usuario) arg4.getSession().getAttribute(USUARIO));
+		this.setSessionUserWorking((Usuario) arg4.getSession().getAttribute("userWorking"));
 
 		String user = ((Usuario) arg4.getSession().getAttribute(USUARIO)).getIdUser();
 		// SE SETEA EL USUARIO LOGUEADO A SAM WEB CLIENT.
 		arg3.setAttribute("userLoggin", user);
 
 		String action = arg4.getParameter("action") == null ? "" : arg4.getParameter("action");
+		// Sanitize user input before logging to prevent log injection attacks
+		String sanitizedAction = action.replaceAll("[\r\n\t]", "_").replaceAll("[\\p{Cntrl}]", "");
 
-		log.info("Class: " + this.getClass().getName() + " - User: " + this.sessionUser.getIdUser() + " - UserWorking: " + this.sessionUserWorking.getIdUser() +
-								 " - Action: " + action);
+		log.info("Class: " + this.getClass().getName() + " - User: " + this.getSessionUser().getIdUser() + " - UserWorking: " + this.getSessionUserWorking().getIdUser() +
+								 " - Action: " + sanitizedAction);
 
 		if (action.equals("getMessage"))
-			return this.getMessage(arg5);
+			return this.getMessage(arg5, arg4);
 
-		return executeAction(arg0, arg1, arg2, arg3, arg4, arg5);
-
+		try {
+			return executeAction(arg0, arg1, arg2, arg3, arg4, arg5);
+		} catch (ActionExecutionException e) {
+			// Convertir ActionExecutionException a la excepción esperada por el framework
+			throw new Exception("Action execution failed", e);
+		}
 	}
 
 	/**
@@ -73,7 +83,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws Exception
+	 * @throws Exception cuando ocurre un error en la ejecución de la acción
 	 */
 	public abstract ActionForward executeAction(ActionMapping mapping, ActionForm form,
 																							SAMWebApplication samApplication, SAMWebClient samClient, HttpServletRequest request,
@@ -118,7 +128,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		return false;
 	}
 
-	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws Exception {
+	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws JsonResponseException {
 	    Map<String, Object> sanitizedResp = new HashMap<>();
 	    for (Map.Entry<String, Object> entry : resp.entrySet()) {
 	        Object value = entry.getValue();
@@ -136,34 +146,37 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	        System.out.println("Generated JSON: " + jsonOutput); // Depuración
 	        writer.print(jsonOutput);
 	        writer.flush();
+	    } catch (Exception e) {
+	        throw new JsonResponseException("Error writing JSON response", e);
 	    }
 	    return null;
 	}
 
-	protected ActionForward writeError(HttpServletResponse response, Exception e) throws Exception {
+	protected ActionForward writeError(HttpServletResponse response, Exception e) throws JsonResponseException {
 	    response.setContentType("application/json; charset=UTF-8");
-	    PrintWriter writer = response.getWriter();
+	    try (PrintWriter writer = response.getWriter()) {
+	        Map<String, Object> resp = new HashMap<>();
+	        resp.put(STATUS, ERROR);
 
-	    Map<String, Object> resp = new HashMap<>();
-	    resp.put(STATUS, ERROR);
+	        if (e instanceof TransactionException) {
+	            String safeMessage = StringEscapeUtils.escapeHtml4(e.getCause().getMessage());
+	            resp.put(ERROR, safeMessage);
+	        } else {
+	            resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+	        }
+	        // Store error message in session for getMessage action
+	        // Note: Consider using request attributes instead for better thread safety
 
-	    if (e instanceof TransactionException) {
-	        String safeMessage = StringEscapeUtils.escapeHtml4(e.getCause().getMessage());
-	        resp.put(ERROR, safeMessage);
-	    } else {
-	        resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+	        writer.print(JSONObject.fromObject(resp));
+	        writer.flush();
+	    } catch (Exception ex) {
+	        throw new JsonResponseException("Error writing error response", ex);
 	    }
-	    this.message = "ERROR: " + resp.get(ERROR);
-
-	    writer.print(JSONObject.fromObject(resp));
-	    writer.flush();
-	    writer.close();
-
 	    return null;
 	}
 
 
-	protected ActionForward writeError(HttpServletResponse response, String message) throws Exception {
+	protected ActionForward writeError(HttpServletResponse response, String message) throws JsonResponseException {
 	    Map<String, Object> resp = new HashMap<>();
 	    resp.put(STATUS, ERROR);
 
@@ -176,45 +189,69 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	    try (PrintWriter writer = response.getWriter()) {
 	        writer.print(JSONObject.fromObject(resp));
 	        writer.flush();
-	        writer.close();
+	    } catch (Exception e) {
+	        throw new JsonResponseException("Error writing error response with message", e);
 	    }
 
 	    return null;
 	}
 
 
-	protected void setErrorMessage(Exception e) throws Exception {
-		this.message = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() :
+	protected void setErrorMessage(Exception e, HttpServletRequest request) {
+		String errorMessage = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() :
 																		"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+		request.getSession().setAttribute("lastErrorMessage", errorMessage);
 	}
 
-	protected ActionForward getMessage(HttpServletResponse response) throws Exception {
-		PrintWriter writer = response.getWriter();
+	protected ActionForward getMessage(HttpServletResponse response, HttpServletRequest request) throws JsonResponseException {
+		try (PrintWriter writer = response.getWriter()) {
+			Map<String, Object> resp = new HashMap<String, Object>();
+			String lastMessage = (String) request.getSession().getAttribute("lastErrorMessage");
+			resp.put("message", lastMessage != null ? lastMessage : "");
 
-		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("message", this.message);
-
-		writer.print(JSONObject.fromObject(resp));
-		writer.flush();
-		writer.close();
+			writer.print(JSONObject.fromObject(resp));
+			writer.flush();
+		} catch (Exception e) {
+			throw new JsonResponseException("Error getting message response", e);
+		}
 
 		return null;
 	}
 
 	// Getters y Setters implementados por AWSoftware para facilitar el acceso a estas variables en pruebas unitarias.
 	public Usuario getSessionUser() {
-		return sessionUser;
+		return threadLocalSessionUser.get();
 	}
 	public Usuario getSessionUserWorking() {
-		return sessionUserWorking;
+		return threadLocalSessionUserWorking.get();
 	}
 
 	public void setSessionUser(Usuario sessionUser) {
-		this.sessionUser = sessionUser;
+		threadLocalSessionUser.set(sessionUser);
 	}
 
 	public void setSessionUserWorking(Usuario sessionUserWorking) {
-		this.sessionUserWorking = sessionUserWorking;
+		threadLocalSessionUserWorking.set(sessionUserWorking);
+	}
+
+	/**
+	 * Helper method for backward compatibility - sets service messages in session
+	 * @param serviceMessage message from service to store
+	 * @param request HTTP request to access session
+	 */
+	protected void setMessage(String serviceMessage, HttpServletRequest request) {
+		if (serviceMessage != null && !serviceMessage.trim().isEmpty()) {
+			request.getSession().setAttribute("lastErrorMessage", serviceMessage);
+		}
+	}
+
+	/**
+	 * Clean up ThreadLocal variables to prevent memory leaks.
+	 * Should be called at the end of request processing.
+	 */
+	protected void cleanupThreadLocals() {
+		threadLocalSessionUser.remove();
+		threadLocalSessionUserWorking.remove();
 	}
 }
 

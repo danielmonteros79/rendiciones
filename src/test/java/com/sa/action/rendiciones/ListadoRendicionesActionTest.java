@@ -6,6 +6,7 @@ import ar.org.bbva.util.DateUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
@@ -58,6 +59,8 @@ class ListadoRendicionesActionTest {
   HttpServletResponse httpServletResponseMocked;
   @Mock
   HttpServletRequest httpServletRequestMocked;
+  @Mock
+  javax.servlet.http.HttpSession httpSessionMocked;
   @InjectMocks
   ListadoRendicionesAction listadoRendicionesAction;
 
@@ -77,7 +80,7 @@ class ListadoRendicionesActionTest {
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    Usuario usuario = new Usuario("", "", "", 0, "", new ArrayList<>());
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
     listadoRendicionesAction.setSessionUser(usuario);
     listadoRendicionesAction.setSessionUserWorking(usuario);
   }
@@ -132,6 +135,11 @@ class ListadoRendicionesActionTest {
   @Test
   @DisplayName("Should filter with empty date filters")
   void shouldFilterWithEmptyDateFilters() throws Exception {
+    //given
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuario);
+    //when
     when(httpServletRequestMocked.getParameter("action")).thenReturn("filtrar");
     when(httpServletRequestMocked.getParameter("id")).thenReturn("0");
     when(httpServletRequestMocked.getParameter("fechaDesde")).thenReturn("");
@@ -158,6 +166,11 @@ class ListadoRendicionesActionTest {
   @Test
   @DisplayName("Should filter and exclude out-of-range rendicion")
   void shouldFilterAndExcludeOutOfRangeRendicion() throws Exception {
+    //given
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuario);
+    //when
     when(httpServletRequestMocked.getParameter("action")).thenReturn("filtrar");
     when(httpServletRequestMocked.getParameter("id")).thenReturn("0");
     when(httpServletRequestMocked.getParameter("fechaDesde")).thenReturn("17/08/2023");

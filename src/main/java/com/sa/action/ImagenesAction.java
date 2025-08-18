@@ -152,13 +152,13 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 		
 		Rendicion rendicion = null;
 		if (esAprobacion)
-			rendicion = aprobacionesService.getAprobacionesPendientes(idRendicion, null, null, glg, this.sessionUserWorking.getIdUser()).get(0);
+			rendicion = aprobacionesService.getAprobacionesPendientes(idRendicion, null, null, glg, this.getSessionUserWorking().getIdUser()).get(0);
 		else
-			rendicion = rendicionesService.obtenerListadoRendiciones(this.sessionUserWorking.getIdUser(), idRendicion, null, null, null).get(0);
+			rendicion = rendicionesService.obtenerListadoRendiciones(this.getSessionUserWorking().getIdUser(), idRendicion, null, null, null).get(0);
 	
-		rendicion.setUsuarioRendicion(this.sessionUserWorking.getIdUser());
+		rendicion.setUsuarioRendicion(this.getSessionUserWorking().getIdUser());
 		rendicion.setId(Integer.parseInt(idRendicion));
-		rendicion.setCostosDestino(String.valueOf(this.sessionUserWorking.getCcostos()));
+		rendicion.setCostosDestino(String.valueOf(this.getSessionUserWorking().getCcostos()));
 
 		List<String> errores = thubanService.publicarDocumentos(thubanClaseDoc, thubanUser, thubanPass, rendicion, frm.getArchivosASubir());
 		

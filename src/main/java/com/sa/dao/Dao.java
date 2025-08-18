@@ -45,7 +45,6 @@ public abstract class Dao {
 			try {
 				stmt.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
 				log.error(e);
 			}
 		}
@@ -54,7 +53,6 @@ public abstract class Dao {
 				rs.close();
 			} catch (SQLException e) {
 				log.error(e);
-				e.printStackTrace();
 			}
 		}
 	}

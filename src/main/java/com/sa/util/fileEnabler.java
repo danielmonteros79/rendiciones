@@ -24,7 +24,7 @@ public class fileEnabler extends HttpServlet {
 
 	private static final Log log = LogFactory.getLog(fileEnabler.class);
 
-	private String documentRoot;
+	private volatile String documentRoot;
 
 	public fileEnabler() {
 		documentRoot = "/";
@@ -32,62 +32,95 @@ public class fileEnabler extends HttpServlet {
 
 	protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1)
 			throws ServletException, IOException {
-		File f;
-		String arch = arg0.getRequestURI();
-		log.info("Se pide:" + arch.toString());
-		
-		// Extract the filename from the request URI
-		// For URIs like /context/servlet-mapping/filename, we want just the filename
-		int idx = arch.indexOf("/", 2);
-		if (idx != -1) {
-			// Find the next slash after the context path
-			int nextIdx = arch.indexOf("/", idx + 1);
-			if (nextIdx != -1) {
-				// Extract everything after the servlet mapping
-				arch = arch.substring(nextIdx + 1);
-			} else {
-				// No additional path, extract from the current position
-				arch = arch.substring(idx + 1);
-			}
-		}
-		
-		// Use the properly initialized documentRoot instead of hardcoded path
-		String basePath = getServletContext().getRealPath("/");
-		// Ensure proper path separator
-		if (!basePath.endsWith("/") && !basePath.endsWith("\\")) {
-			basePath += File.separator;
-		}
-		String resultado = basePath + arch.toString();
-		
-		log.info("Se resuelve:" + resultado);
-		f = new File(resultado);
-		if (!f.exists()) {
-			arg1.sendError(404);
-			return;
-		}
 		try {
-			String contentType = getServletContext().getMimeType(f.getName());
-			if (contentType == null)
-				contentType = "application/octet-stream";
-			arg1.reset();
-			arg1.setHeader("Content-Type", contentType);
-			arg1.setHeader("Content-Length", String.valueOf(f.length()));
-			FileInputStream fis = new FileInputStream(f);
-			byte b[] = new byte[1024];
-			OutputStream os = arg1.getOutputStream();
-			int cant;
-			while ((cant = fis.read(b)) >= 0)
-				os.write(b, 0, cant);
-			os.flush();
+			File f;
+			String arch = arg0.getRequestURI();
+			log.info("Se pide:" + arch.toString());
+			
+			// Extract the filename from the request URI
+			// For URIs like /context/servlet-mapping/filename, we want just the filename
+			int idx = arch.indexOf("/", 2);
+			if (idx != -1) {
+				// Find the next slash after the context path
+				int nextIdx = arch.indexOf("/", idx + 1);
+				if (nextIdx != -1) {
+					// Extract everything after the servlet mapping
+					arch = arch.substring(nextIdx + 1);
+				} else {
+					// No additional path, extract from the current position
+					arch = arch.substring(idx + 1);
+				}
+			}
+			
+			// Use the properly initialized documentRoot instead of hardcoded path
+			String basePath = getServletContext().getRealPath("/");
+			// Ensure proper path separator
+			if (!basePath.endsWith("/") && !basePath.endsWith("\\")) {
+				basePath += File.separator;
+			}
+			String resultado = basePath + arch.toString();
+			
+			log.info("Se resuelve:" + resultado);
+			f = new File(resultado);
+			if (!f.exists()) {
+				try {
+					arg1.sendError(404);
+				} catch (IOException e) {
+					log.error("Error sending 404 response", e);
+				}
+				return;
+			}
+			try {
+				String contentType = getServletContext().getMimeType(f.getName());
+				if (contentType == null)
+					contentType = "application/octet-stream";
+				arg1.reset();
+				arg1.setHeader("Content-Type", contentType);
+				arg1.setHeader("Content-Length", String.valueOf(f.length()));
+				
+				try (FileInputStream fis = new FileInputStream(f);
+					 OutputStream os = arg1.getOutputStream()) {
+					
+					byte[] buffer = new byte[1024];
+					int bytesRead;
+					while ((bytesRead = fis.read(buffer)) != -1) {
+						os.write(buffer, 0, bytesRead);
+					}
+					os.flush();
+				}
+			} catch (Exception e) {
+				log.warn(e);
+			}
 		} catch (Exception e) {
-			log.warn(e);
+			log.error("Unexpected error in doGet", e);
+			try {
+				arg1.sendError(500, "Internal Server Error");
+			} catch (IOException ioException) {
+				log.error("Error sending 500 response", ioException);
+			}
 		}
 		return;
 	}
 
 	protected void doPost(HttpServletRequest arg0, HttpServletResponse arg1)
 			throws ServletException, IOException {
-		doGet(arg0, arg1);
+		try {
+			doGet(arg0, arg1);
+		} catch (ServletException e) {
+			log.error("ServletException in doPost", e);
+			try {
+				arg1.sendError(500, "Internal Server Error");
+			} catch (IOException ioException) {
+				log.error("Error sending 500 response", ioException);
+			}
+		} catch (IOException e) {
+			log.error("IOException in doPost", e);
+			try {
+				arg1.sendError(500, "Internal Server Error");
+			} catch (IOException ioException) {
+				log.error("Error sending 500 response", ioException);
+			}
+		}
 	}
 
 	public void init() throws ServletException {

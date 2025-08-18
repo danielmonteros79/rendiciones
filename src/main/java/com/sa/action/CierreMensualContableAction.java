@@ -53,7 +53,7 @@ public class CierreMensualContableAction extends RestriccionTransaccionAction {
 			log.error(e);
 			
 			request.setAttribute("messageModifTCJP",
-					"ERROR AL COLOCAR MARCA: " + e.getMessage().toString().replace("java.lang.Exception:", ""));
+					"ERROR AL COLOCAR MARCA: " + e.getMessage().replace("java.lang.Exception:", ""));
 		}
 		
 		return mapping.findForward("success");

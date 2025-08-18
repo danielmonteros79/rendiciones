@@ -44,7 +44,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    String codigoParam = request.getParameter("codigo");
 	    
 	    ParametrosBusqueda parametrosBusqueda = analizarParametrosBusqueda(codigoParam);
-	    List<ParametroMotivo> motivosTotales = buscarMotivos(service, parametrosBusqueda);
+	    List<ParametroMotivo> motivosTotales = buscarMotivos(service, parametrosBusqueda, request);
 	    
 	    configurarRespuesta(request, parametrosBusqueda, motivosTotales, service);
 	    return mapping.findForward("parametrosMotivoFiltro");
@@ -91,16 +91,30 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    return params;
 	}
 
-	private List<ParametroMotivo> buscarMotivos(ParametrosService service, ParametrosBusqueda parametrosBusqueda) {
+	private List<ParametroMotivo> buscarMotivos(ParametrosService service, ParametrosBusqueda parametrosBusqueda, HttpServletRequest request) {
 	    List<ParametroMotivo> motivosTotales = new ArrayList<>();
 	    int paginado = 0;
 	    boolean pagina = true;
+	    
+	    // Verificar que sessionUserWorking no sea null
+	    if (this.getSessionUserWorking() == null) {
+	        log.error("sessionUserWorking es null en buscarMotivos");
+	        this.setMessage("Error: Sesión de usuario no válida", request);
+	        return motivosTotales; // Retornar lista vacía si no hay usuario
+	    }
+	    
+	    String userId = this.getSessionUserWorking().getIdUser();
+	    if (userId == null || userId.trim().isEmpty()) {
+	        log.error("ID de usuario es null o vacío");
+	        this.setMessage("Error: ID de usuario no válido", request);
+	        return motivosTotales;
+	    }
 	    
 	    while (pagina) {
 	        try {
 	            List<ParametroMotivo> motivos = service.getMotivos(
 	                parametrosBusqueda.codMotivo, 
-	                this.sessionUserWorking.getIdUser(), 
+	                userId, 
 	                "0" + paginado
 	            );
 	            
@@ -113,7 +127,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	            }
 	            
 	        } catch (Exception e) {
-	            manejarExcepcionBusqueda(parametrosBusqueda);
+	            manejarExcepcionBusqueda(parametrosBusqueda, request);
 	            break;
 	        }
 	    }
@@ -163,32 +177,40 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	}
 
 	private void transformarCodSup(ParametroMotivo motivo) {
-	    String codSup = motivo.getCodSup().trim();
-	    if ("PSUP".equalsIgnoreCase(codSup) || "SUPER".equalsIgnoreCase(codSup)) {
-	        motivo.setCodSup("SI");
+	    if (motivo.getCodSup() != null) {
+	        String codSup = motivo.getCodSup().trim();
+	        if ("PSUP".equalsIgnoreCase(codSup) || "SUPER".equalsIgnoreCase(codSup)) {
+	            motivo.setCodSup("SI");
+	        }
 	    }
 	}
 
 	private void transformarCodAprobacionGlg(ParametroMotivo motivo) {
-	    String codAprobacion = motivo.getCodAprobacionGlg().trim();
-	    if ("MONTO".equalsIgnoreCase(codAprobacion) || "PGLG".equalsIgnoreCase(codAprobacion)) {
-	        motivo.setCodAprobacionGlg("SI");
+	    if (motivo.getCodAprobacionGlg() != null) {
+	        String codAprobacion = motivo.getCodAprobacionGlg().trim();
+	        if ("MONTO".equalsIgnoreCase(codAprobacion) || "PGLG".equalsIgnoreCase(codAprobacion)) {
+	            motivo.setCodAprobacionGlg("SI");
+	        }
 	    }
 	}
 
 	private void transformarCodFirma(ParametroMotivo motivo) {
-	    String codFirma = motivo.getCodFirma();
-	    if ("MONTO".equalsIgnoreCase(codFirma) || "PFIRM".equalsIgnoreCase(codFirma)) {
-	        motivo.setCodFirma("SI");
+	    if (motivo.getCodFirma() != null) {
+	        String codFirma = motivo.getCodFirma();
+	        if ("MONTO".equalsIgnoreCase(codFirma) || "PFIRM".equalsIgnoreCase(codFirma)) {
+	            motivo.setCodFirma("SI");
+	        }
 	    }
 	}
 
 	private void transformarEstado(ParametroMotivo motivo) {
-	    String estado = motivo.getEstado();
-	    if ("A".equalsIgnoreCase(estado)) {
-	        motivo.setEstado("ACTIVO");
-	    } else if ("I".equalsIgnoreCase(estado)) {
-	        motivo.setEstado("INACTIVO");
+	    if (motivo.getEstado() != null) {
+	        String estado = motivo.getEstado();
+	        if ("A".equalsIgnoreCase(estado)) {
+	            motivo.setEstado("ACTIVO");
+	        } else if ("I".equalsIgnoreCase(estado)) {
+	            motivo.setEstado("INACTIVO");
+	        }
 	    }
 	}
 
@@ -198,12 +220,12 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    }
 	    
 	    ParametroMotivo ultimo = motivos.get(motivos.size() - 1);
-	    return "N".equalsIgnoreCase(ultimo.getLastElement());
+	    return ultimo.getLastElement() != null && "N".equalsIgnoreCase(ultimo.getLastElement());
 	}
 
-	private void manejarExcepcionBusqueda(ParametrosBusqueda parametrosBusqueda) {
+	private void manejarExcepcionBusqueda(ParametrosBusqueda parametrosBusqueda, HttpServletRequest request) {
 	    if (!parametrosBusqueda.isTextSearch) {
-	        this.message = "No se encontró el motivo con código: " + parametrosBusqueda.codMotivo;
+	        this.setMessage("No se encontró el motivo con código: " + parametrosBusqueda.codMotivo, request);
 	    }
 	}
 
@@ -213,8 +235,9 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    configurarMensajeNoResultados(request, parametrosBusqueda, motivosTotales);
 	    request.setAttribute("motivos", motivosTotales);
 	    
-	    if (this.message == null || this.message.isEmpty()) {
-	        this.message = service.getMsgAviso();
+	    String currentMessage = (String) request.getSession().getAttribute("lastErrorMessage");
+	    if (currentMessage == null || currentMessage.isEmpty()) {
+	        this.setMessage(service.getMsgAviso(), request);
 	    }
 	}
 
@@ -228,7 +251,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    if (noResultadosEnBusquedaTexto) {
 	        request.setAttribute("noResultados", true);
 	        request.setAttribute("terminoBuscado", parametrosBusqueda.terminoBuscado);
-	        this.message = "No se encontraron motivos que contengan '" + parametrosBusqueda.terminoBuscado + "'";
+	        this.setMessage("No se encontraron motivos que contengan '" + parametrosBusqueda.terminoBuscado + "'", request);
 	    }
 	}
 

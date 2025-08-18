@@ -54,15 +54,12 @@ class ParametrosGastosDetalleLoadActionTest {
   @Mock
   ManagerTransaction managerTransaction;
 
-  @InjectMocks
-  ParametrosGastosDetalleLoadAction parametrosGastosDetalleLoadAction;
-  
-  
   @Mock private HttpServletResponse response;
   @Mock private ParametrosService parametrosService;
   @Mock private ParametroGasto mockGasto;
   
-  @InjectMocks private ParametrosGastosDetalleLoadAction action;
+  // Manual creation with constructor instead of @InjectMocks due to final field
+  private ParametrosGastosDetalleLoadAction action;
 
   private MockHttpServletRequest request;
   private MockHttpSession session;
@@ -73,6 +70,9 @@ class ParametrosGastosDetalleLoadActionTest {
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
+    
+    // Create action instance with mock service using constructor
+    action = new ParametrosGastosDetalleLoadAction(parametrosService);
     
     request = new MockHttpServletRequest();
     session = new MockHttpSession();
@@ -448,7 +448,7 @@ class ParametrosGastosDetalleLoadActionTest {
               })) {
 
           // 🔹 Ejecutar la acción
-          ActionForward actionForwardToAssert = parametrosGastosDetalleLoadAction.executeAction(
+          ActionForward actionForwardToAssert = action.executeAction(
                   actionMapping, parametrosGastosForm, samApplication, samClient, request, httpServletResponse);
 
           // 🔹 Validar el resultado
@@ -471,7 +471,7 @@ class ParametrosGastosDetalleLoadActionTest {
     //given
     Method cargarCombosMocked = ParametrosGastosDetalleLoadAction.class.getDeclaredMethod("cargarCombos", HttpServletRequest.class, List.class);
     cargarCombosMocked.setAccessible(true);
-    cargarCombosMocked.invoke(parametrosGastosDetalleLoadAction, request, combosList);
+    cargarCombosMocked.invoke(action, request, combosList);
     //when
     try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class,
         (mockParametrosService, context) -> {
@@ -484,7 +484,7 @@ class ParametrosGastosDetalleLoadActionTest {
           when(httpServletResponse.getWriter()).thenReturn(printWriter);
         })) {
       //then
-      ActionForward actionForwardToAssert = parametrosGastosDetalleLoadAction.executeAction(actionMapping, parametrosGastosForm, samApplication, samClient,
+      ActionForward actionForwardToAssert = action.executeAction(actionMapping, parametrosGastosForm, samApplication, samClient,
           request, httpServletResponse);
       assertNotNull(actionForwardToAssert);
     }
@@ -498,7 +498,7 @@ class ParametrosGastosDetalleLoadActionTest {
     //given
     Method gastoToFormMocked = ParametrosGastosDetalleLoadAction.class.getDeclaredMethod("gastoToForm", ParametrosGastosForm.class, HttpServletRequest.class, ManagerTransaction.class);
     gastoToFormMocked.setAccessible(true);
-    gastoToFormMocked.invoke(parametrosGastosDetalleLoadAction, parametrosGastosForm, request, managerTransaction);
+    gastoToFormMocked.invoke(action, parametrosGastosForm, request, managerTransaction);
     //then
     assertAll(() -> assertNotNull(parametrosGastosForm),
         () -> assertNotNull(request),
@@ -513,7 +513,7 @@ class ParametrosGastosDetalleLoadActionTest {
     //given
     Method cargarCombosMocked = ParametrosGastosDetalleLoadAction.class.getDeclaredMethod("cargarCombos", HttpServletRequest.class, List.class);
     cargarCombosMocked.setAccessible(true);
-    cargarCombosMocked.invoke(parametrosGastosDetalleLoadAction, request, combosList);
+    cargarCombosMocked.invoke(action, request, combosList);
     //then
     assertAll(() -> assertNotNull(request),
         () -> assertNotNull(combosList));
@@ -527,7 +527,7 @@ class ParametrosGastosDetalleLoadActionTest {
     Method borrarCentroCostoMocked = ParametrosGastosDetalleLoadAction.class.getDeclaredMethod("borrarCentroCosto", ParametrosGastosForm.class, int.class);
     borrarCentroCostoMocked.setAccessible(true);
     //then
-    ActionForward actionForwardToAssert = (ActionForward) borrarCentroCostoMocked.invoke(parametrosGastosDetalleLoadAction, parametrosGastosForm , index);
+    ActionForward actionForwardToAssert = (ActionForward) borrarCentroCostoMocked.invoke(action, parametrosGastosForm , index);
     assertNull(actionForwardToAssert);
   }
 
@@ -540,7 +540,7 @@ class ParametrosGastosDetalleLoadActionTest {
     //then
     Method agregarCentroCostoMocked = ParametrosGastosDetalleLoadAction.class.getDeclaredMethod("agregarCentroCosto", ParametrosGastosForm.class, HttpServletResponse.class);
     agregarCentroCostoMocked.setAccessible(true);
-    ActionForward actionForwardToAssert = (ActionForward) agregarCentroCostoMocked.invoke(parametrosGastosDetalleLoadAction, parametrosGastosForm, httpServletResponse);
+    ActionForward actionForwardToAssert = (ActionForward) agregarCentroCostoMocked.invoke(action, parametrosGastosForm, httpServletResponse);
     assertNull(actionForwardToAssert);
   }
   

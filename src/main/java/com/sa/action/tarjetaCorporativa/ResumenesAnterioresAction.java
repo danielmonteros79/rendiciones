@@ -36,9 +36,9 @@ public class ResumenesAnterioresAction extends RestriccionTransaccionAction {
 			throws Exception {
 		ResumenService service = new ResumenService(samClient);
 
-		List<Resumen> resumen = service.getResumenes(this.sessionUserWorking.getIdUser(), request.getParameter("fecha"));
+		List<Resumen> resumen = service.getResumenes(this.getSessionUserWorking().getIdUser(), request.getParameter("fecha"));
 		request.setAttribute("resumen", resumen);
-		this.message = service.getMsg();
+		this.setMessage(service.getMsg(), request);
 
 		return mapping.findForward("resumen");
 	}

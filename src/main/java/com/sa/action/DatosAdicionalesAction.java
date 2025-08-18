@@ -181,8 +181,8 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		String txt1 = request.getParameter("TXT1") == null ? "" : request.getParameter("TXT1");
 		String txt2 = request.getParameter("TXT2") == null ? "" : request.getParameter("TXT2");
 		String txt250 = request.getParameter("TXT250") == null ? "" : request.getParameter("TXT250");
-		String num1 = request.getParameter("NUM1") == null ? "" : request.getParameter("NUM1").toString();
-		String num2 = request.getParameter("NUM2") == null ? "" : request.getParameter("NUM2").toString();
+		String num1 = request.getParameter("NUM1") == null ? "" : request.getParameter("NUM1");
+		String num2 = request.getParameter("NUM2") == null ? "" : request.getParameter("NUM2");
 		String cod1 = request.getParameter("COD1") == null ? "" : StringUtils.leftPad(request.getParameter("COD1"), 5, "0");
 		String cod2 = request.getParameter("COD2") == null ? "" : StringUtils.leftPad(request.getParameter("COD2"), 5, "0");
 		String fecha1 = request.getParameter("FEC1") == null || request.getParameter("FEC1").equals("") ? "" :

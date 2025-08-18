@@ -66,7 +66,7 @@ class AprobacionDetalleActionTest {
     Rendicion rendicion = new Rendicion();
     List<Rendicion> rendicionList = new ArrayList<>();
 
-    Usuario usuario = new Usuario("", "", "", 1, "", new ArrayList<>());
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
 
     rendicion.setUsuarioRendicion("");
     rendicion.setFechaDesde(new Date());
@@ -87,7 +87,7 @@ class AprobacionDetalleActionTest {
     List<Rendicion> rendicionList = new ArrayList<>();
     List<Rendicion> rendicionEmptyList = new ArrayList<>();
 
-    Usuario usuario = new Usuario("", "", "", 1, "", new ArrayList<>());
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
 
     rendicion.setUsuarioRendicion("");
     rendicion.setFechaDesde(new Date());
@@ -118,9 +118,9 @@ class AprobacionDetalleActionTest {
     MockHttpServletRequest requestActionRechazar = new MockHttpServletRequest();
     MockHttpServletRequest requestActionObservar = new MockHttpServletRequest();
     List<Usuario> usuarioList = new ArrayList<>();
-    Usuario user = new Usuario("", "", "", 1, "", new ArrayList<>());
+    Usuario user = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
     usuarioList.add(user);
-    Usuario usuario = new Usuario("", "", "", 1, "", usuarioList);
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", usuarioList);
 
     httpSession.setAttribute("rendicion.link.thuban", "");
     httpSession.setAttribute("userWorking", usuario);
@@ -178,7 +178,7 @@ class AprobacionDetalleActionTest {
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    Usuario usuario = new Usuario("", "", "", 1, "", new ArrayList<>());
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
     aprobacionDetalleAction.setSessionUserWorking(usuario);
   }
 
@@ -259,6 +259,10 @@ class AprobacionDetalleActionTest {
   @Test
   @DisplayName("Should catch an exception")
   void shouldCatchAnException() throws Exception {
+    //given
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuario);
     //when
     when(httpServletRequestMocked.getParameter("action")).thenReturn("gastos");
     when(actionMappingMock.findForward(anyString())).thenReturn(actionForwardMock);

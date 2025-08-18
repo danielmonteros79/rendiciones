@@ -21,6 +21,7 @@ import com.sa.action.RestriccionTransaccionAction;
 import com.sa.entities.ComboOpcion;
 import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametroGasto;
+import com.sa.exceptions.ActionExecutionException;
 import com.sa.form.parametros.ParametrosGastosForm;
 import com.sa.manager.ManagerTransaction;
 import com.sa.services.AprobacionesService;
@@ -29,10 +30,17 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAction {
 	
-	private ParametrosService parametrosService;
+	// Service field made final to comply with SonarQube S2226
+	private final ParametrosService parametrosService;
+	
+	// Thread-local storage for mutable list fields to avoid instance field issues
+	private static final ThreadLocal<List<ComboOpcion>> threadLocalCmbObservacion = new ThreadLocal<>();
+	private static final ThreadLocal<List<ComboOpcion>> threadLocalCmbMotivo = new ThreadLocal<>();
+	private static final ThreadLocal<List<ComboOpcion>> threadLocalCmbComprobante = new ThreadLocal<>();
 	
 	public ParametrosGastosDetalleLoadAction() {
-		
+		// Default constructor for framework usage - service will be null and created on demand
+		this.parametrosService = null;
 	}
 	
 	public ParametrosGastosDetalleLoadAction(ParametrosService parametrosService) {
@@ -40,14 +48,39 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 	}
 	
 	private static final Log log = LogFactory.getLog(ParametrosGastosDetalleLoadAction.class);
-	List<ComboOpcion> cmbObservacion = new ArrayList<ComboOpcion>();
-	List<ComboOpcion> cmbMotivo = new ArrayList<ComboOpcion>();
-	List<ComboOpcion> cmbComprobante = new ArrayList<ComboOpcion>();
+
+	// Getters for ThreadLocal list fields
+	
+	private List<ComboOpcion> getCmbObservacion() {
+		List<ComboOpcion> list = threadLocalCmbObservacion.get();
+		if (list == null) {
+			list = new ArrayList<>();
+			threadLocalCmbObservacion.set(list);
+		}
+		return list;
+	}
+	
+	private List<ComboOpcion> getCmbMotivo() {
+		List<ComboOpcion> list = threadLocalCmbMotivo.get();
+		if (list == null) {
+			list = new ArrayList<>();
+			threadLocalCmbMotivo.set(list);
+		}
+		return list;
+	}
+	
+	private List<ComboOpcion> getCmbComprobante() {
+		List<ComboOpcion> list = threadLocalCmbComprobante.get();
+		if (list == null) {
+			list = new ArrayList<>();
+			threadLocalCmbComprobante.set(list);
+		}
+		return list;
+	}
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response) throws ActionExecutionException {
 		ParametrosGastosForm frm = (ParametrosGastosForm) form;
-		ParametrosService service =  this.parametrosService != null ? this.parametrosService : new ParametrosService(samClient);
 		String descripcionMotivo = frm.getDescripcionMotivo();
 		String sanitizedDescripcionMotivo = (descripcionMotivo != null) ? StringEscapeUtils.escapeHtml4(descripcionMotivo) : "";
 		request.getSession().setAttribute("desc_motivo", sanitizedDescripcionMotivo);
@@ -56,17 +89,29 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 
 		String accionJson = request.getParameter("accionJson");
 		if ("borrarCentroCosto".equals(accionJson))
-			return this.borrarCentroCosto(frm, Integer.parseInt(request.getParameter("index")));
+			try {
+				return this.borrarCentroCosto(frm, Integer.parseInt(request.getParameter("index")));
+			} catch (Exception e) {
+				throw new ActionExecutionException("Error removing centro costo", e);
+			}
 		else if ("agregarCentroCosto".equals(accionJson))
-			return this.agregarCentroCosto(frm, response);
+			try {
+				return this.agregarCentroCosto(frm, response);
+			} catch (Exception e) {
+				throw new ActionExecutionException("Error adding centro costo", e);
+			}
 		
 		if (!frm.isBack()) {
-			cmbObservacion = new ArrayList<ComboOpcion>();
-			cmbMotivo = new ArrayList<ComboOpcion>();
-			cmbComprobante = new ArrayList<ComboOpcion>();
+			// Initialize ThreadLocal lists
+			this.getCmbObservacion().clear();
+			this.getCmbMotivo().clear();
+			this.getCmbComprobante().clear();
 			
 			
 			try {
+				// Get or create service instance  
+				ParametrosService service = this.parametrosService != null ? this.parametrosService : new ParametrosService(samClient);
+				
 				if (frm.getAccion().equals("alta")) {
 					frm.clear();
 					frm.setEstado("A");
@@ -82,9 +127,9 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 			}
 		}
 		
-		request.setAttribute("cmbMotivo", cmbMotivo);
-		request.setAttribute("cmbComprobante", cmbComprobante);
-		request.setAttribute("cmbObservacion", cmbObservacion);
+		request.setAttribute("cmbMotivo", this.getCmbMotivo());
+		request.setAttribute("cmbComprobante", this.getCmbComprobante());
+		request.setAttribute("cmbObservacion", this.getCmbObservacion());
 
 		return mapping.findForward(frm.getAccion());
 	}
@@ -136,14 +181,14 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 		for (String fila : combos) {
 			if (fila.substring(0, 2).equals("MD")) {
 				String codigo = fila.substring(2, 6).trim();
-				cmbMotivo.add(new ComboOpcion(codigo, codigo + " - " + fila.substring(6)));
+				this.getCmbMotivo().add(new ComboOpcion(codigo, codigo + " - " + fila.substring(6)));
 			}
 			if (fila.substring(0, 2).equals("TC")) {
 				String codigo = fila.substring(52).trim();
-				cmbComprobante.add(new ComboOpcion(codigo, fila.substring(2, 52).trim()));
+				this.getCmbComprobante().add(new ComboOpcion(codigo, fila.substring(2, 52).trim()));
 			}
 			if (fila.substring(0, 2).equals("OB")) {
-				cmbObservacion.add(new ComboOpcion(fila.substring(2).trim()));
+				this.getCmbObservacion().add(new ComboOpcion(fila.substring(2).trim()));
 			}
 		}
 	}
@@ -166,5 +211,17 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 		
 		out.close();
 		return null;
+	}
+
+	/**
+	 * Clean up ThreadLocal variables to prevent memory leaks.
+	 * Should be called at the end of request processing.
+	 */
+	@Override
+	protected void cleanupThreadLocals() {
+		super.cleanupThreadLocals(); // Clean up inherited ThreadLocals
+		threadLocalCmbObservacion.remove();
+		threadLocalCmbMotivo.remove();
+		threadLocalCmbComprobante.remove();
 	}
 }

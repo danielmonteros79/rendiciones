@@ -65,28 +65,28 @@ public class AvanzarRendicionAction extends RestriccionTransaccionAction {
 		Rendicion rendicion = null;
 		if (esAprobacion)
 			rendicion = aprobacionesService
-					.getAprobacionesPendientes(idRendicion, null, null, glg, this.sessionUserWorking.getIdUser())
+					.getAprobacionesPendientes(idRendicion, null, null, glg, this.getSessionUserWorking().getIdUser())
 					.get(0);
 		else
 			rendicion = rendicionesService
-					.obtenerListadoRendiciones(this.sessionUserWorking.getIdUser(), idRendicion, null, null, null)
+					.obtenerListadoRendiciones(this.getSessionUserWorking().getIdUser(), idRendicion, null, null, null)
 					.get(0);
 
-		rendicion.setUsuarioRendicion(this.sessionUserWorking.getIdUser());
+		rendicion.setUsuarioRendicion(this.getSessionUserWorking().getIdUser());
 		rendicion.setId(Integer.parseInt(idRendicion));
-		rendicion.setCostosDestino(String.valueOf(this.sessionUserWorking.getCcostos()));
+		rendicion.setCostosDestino(String.valueOf(this.getSessionUserWorking().getCcostos()));
 
 
 		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, "", rendicion.getUsuarioRendicion() != null
-				? rendicion.getUsuarioRendicion() : this.sessionUserWorking.getIdUser(), rendicion.getCodMotivo());
+				? rendicion.getUsuarioRendicion() : this.getSessionUserWorking().getIdUser(), rendicion.getCodMotivo());
 		if (gastos.size() == 0)
 			return writeError(response, "La rendici&oacute;n no tiene gastos cargados.");
 
 		else if (rendicion.getEstado().equals("PENDI") || rendicion.getEstado().equals("OBSER")) {
-			String idu = aprobacionesService.obtenerIDU(rendicion, this.sessionUserWorking.getIdUser(),
+			String idu = aprobacionesService.obtenerIDU(rendicion, this.getSessionUserWorking().getIdUser(),
 					WM95.DELIM_04_SIN_ADEA);
 			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()),
-					this.sessionUserWorking.getIdUser(), idu);
+					this.getSessionUserWorking().getIdUser(), idu);
 			if (aprobacionesService.getMsg() != null)
 				message += "<br>" + aprobacionesService.getMsg();
 		}

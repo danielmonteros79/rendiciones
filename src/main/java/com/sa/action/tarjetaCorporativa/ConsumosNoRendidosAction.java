@@ -37,9 +37,9 @@ public class ConsumosNoRendidosAction extends RestriccionTransaccionAction {
 			throws Exception {
 		ResumenService service = new ResumenService(samClient);
 		List<Resumen> consumos;
-		 consumos = service.getConsumos(this.sessionUserWorking.getIdUser(), null, null, null);
+		 consumos = service.getConsumos(this.getSessionUserWorking().getIdUser(), null, null, null);
 		request.setAttribute("consumos", consumos);
-		this.message = service.getMsg();
+		this.setMessage(service.getMsg(), request);
 
 		return mapping.findForward("consumos");
 	}

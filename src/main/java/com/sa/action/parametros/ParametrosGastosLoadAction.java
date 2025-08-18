@@ -47,7 +47,7 @@ public class ParametrosGastosLoadAction extends RestriccionTransaccionAction {
 		ParametrosService service = new ParametrosService(samClient);
 		System.out.println(request.getParameter("gasto") + " Codigo aaah");
 		String codGasto = "";
-		String codMotivo = (String) request.getParameter("motivo");
+		String codMotivo = request.getParameter("motivo");
 
 		//String codMotivo = "";
 		if (request.getParameter("gasto") != null && !request.getParameter("gasto").trim().equals(""))
@@ -55,7 +55,7 @@ public class ParametrosGastosLoadAction extends RestriccionTransaccionAction {
 		
 		List<ParametroGasto> gastos = new ArrayList<ParametroGasto>();
 		try {
-			gastos = service.getGastos(this.sessionUserWorking.getIdUser(),codGasto, codMotivo);
+			gastos = service.getGastos(this.getSessionUserWorking().getIdUser(),codGasto, codMotivo);
 		}catch(Exception e) {
 			System.out.println("PASOPORACA: " + e.getMessage());
 		}
@@ -75,7 +75,7 @@ public class ParametrosGastosLoadAction extends RestriccionTransaccionAction {
 		
 			request.setAttribute("gastos", gastos);
 		}
-		this.message = service.getMsgAviso();
+		this.setMessage(service.getMsgAviso(), request);
 		
 		return mapping.findForward("parametrosGastoFiltro");
 	}

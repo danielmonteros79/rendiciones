@@ -49,8 +49,8 @@ public class AbmDelegadoAction extends RestriccionTransaccionAction {
 
 	private ActionForward getDelegados(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
 		ParametrosService service = new ParametrosService(samClient);
-		List<ParametriaUsuarioDelegado> usuarioDelegados = service.getDelegaciones(this.sessionUser.getIdUser());
-		this.message = service.getMsgAviso();
+		List<ParametriaUsuarioDelegado> usuarioDelegados = service.getDelegaciones(this.getSessionUser().getIdUser());
+		this.setMessage(service.getMsgAviso(), request);
 		request.setAttribute("delegados", usuarioDelegados);
 		request.getSession().setAttribute("delegacionesActivas", usuarioDelegados);
 
@@ -95,7 +95,7 @@ public class AbmDelegadoAction extends RestriccionTransaccionAction {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		AbmDelegadoForm frm = (AbmDelegadoForm) form;
 		ParametrosService service = new ParametrosService(samClient);
-		String message = service.abmDelegaciones(frm, this.sessionUser);
+		String message = service.abmDelegaciones(frm, this.getSessionUser());
 		resp.put("message", message.equals("") ? ParamsConstants.MJE_MODIF_OK : message);
 
 		return writeJson(response, resp);
