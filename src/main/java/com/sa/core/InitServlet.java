@@ -22,7 +22,7 @@ public class InitServlet extends HttpServlet {
 	private static String pathConfig;
 
 	private static final long serialVersionUID = 1L;
-
+	@Override
 	public void init(ServletConfig config) throws ServletException {
 
 		super.init(config);
@@ -165,7 +165,7 @@ public class InitServlet extends HttpServlet {
 		}
 
 	}
-
+	@Override
 	public void destroy() {
 		super.destroy();
 	}

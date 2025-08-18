@@ -35,7 +35,6 @@ public class ParametrosAlertasLoadAction extends RestriccionTransaccionAction {
 	private static final Map<String, String> mapGastoMotivo = Collections.emptyMap();
 	private static final Map<String, List<ComboOpcion>> mapMotivoGastos = Collections.emptyMap();
 	private static final List<ComboOpcion> cmbGasto = Collections.emptyList();
-	private static final List<ComboOpcion> cmbMotivo = Collections.emptyList();
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -47,7 +47,7 @@ public class ParametrosGastosLoadAction extends RestriccionTransaccionAction {
 		ParametrosService service = new ParametrosService(samClient);
 		System.out.println(request.getParameter("gasto") + " Codigo aaah");
 		String codGasto = "";
-		String codMotivo = (String) request.getParameter("motivo");
+		String codMotivo = request.getParameter("motivo");
 
 		//String codMotivo = "";
 		if (request.getParameter("gasto") != null && !request.getParameter("gasto").trim().equals(""))

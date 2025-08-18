@@ -21,7 +21,7 @@ import com.sa.form.parametros.ParametrosGastosForm;
 import com.sa.services.ParametrosService;
 
 public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
-	private static final Log log = LogFactory.getLog(ParametrosMotivoSaveAction.class);
+	private static final Log log = LogFactory.getLog(ParametrosGastosSaveAction.class);
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {

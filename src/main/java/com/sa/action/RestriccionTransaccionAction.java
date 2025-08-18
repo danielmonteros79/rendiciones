@@ -16,6 +16,8 @@ import org.apache.struts.action.ActionMapping;
 
 import com.sa.core.AccesoNoPermitidoException;
 import com.sa.entities.Usuario;
+import com.sa.exceptions.ActionExecutionException;
+import com.sa.exceptions.JsonResponseException;
 import com.sa.exceptions.SessionTimeOutException;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
@@ -62,8 +64,12 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		if (action.equals("getMessage"))
 			return this.getMessage(arg5, arg4);
 
-		return executeAction(arg0, arg1, arg2, arg3, arg4, arg5);
-
+		try {
+			return executeAction(arg0, arg1, arg2, arg3, arg4, arg5);
+		} catch (ActionExecutionException e) {
+			// Convertir ActionExecutionException a la excepción esperada por el framework
+			throw new Exception("Action execution failed", e);
+		}
 	}
 
 	/**
@@ -77,7 +83,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws Exception
+	 * @throws Exception cuando ocurre un error en la ejecución de la acción
 	 */
 	public abstract ActionForward executeAction(ActionMapping mapping, ActionForm form,
 																							SAMWebApplication samApplication, SAMWebClient samClient, HttpServletRequest request,
@@ -122,7 +128,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		return false;
 	}
 
-	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws Exception {
+	protected ActionForward writeJson(HttpServletResponse response, Map<String, Object> resp) throws JsonResponseException {
 	    Map<String, Object> sanitizedResp = new HashMap<>();
 	    for (Map.Entry<String, Object> entry : resp.entrySet()) {
 	        Object value = entry.getValue();
@@ -140,35 +146,37 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	        System.out.println("Generated JSON: " + jsonOutput); // Depuración
 	        writer.print(jsonOutput);
 	        writer.flush();
+	    } catch (Exception e) {
+	        throw new JsonResponseException("Error writing JSON response", e);
 	    }
 	    return null;
 	}
 
-	protected ActionForward writeError(HttpServletResponse response, Exception e) throws Exception {
+	protected ActionForward writeError(HttpServletResponse response, Exception e) throws JsonResponseException {
 	    response.setContentType("application/json; charset=UTF-8");
-	    PrintWriter writer = response.getWriter();
+	    try (PrintWriter writer = response.getWriter()) {
+	        Map<String, Object> resp = new HashMap<>();
+	        resp.put(STATUS, ERROR);
 
-	    Map<String, Object> resp = new HashMap<>();
-	    resp.put(STATUS, ERROR);
+	        if (e instanceof TransactionException) {
+	            String safeMessage = StringEscapeUtils.escapeHtml4(e.getCause().getMessage());
+	            resp.put(ERROR, safeMessage);
+	        } else {
+	            resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+	        }
+	        // Store error message in session for getMessage action
+	        // Note: Consider using request attributes instead for better thread safety
 
-	    if (e instanceof TransactionException) {
-	        String safeMessage = StringEscapeUtils.escapeHtml4(e.getCause().getMessage());
-	        resp.put(ERROR, safeMessage);
-	    } else {
-	        resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+	        writer.print(JSONObject.fromObject(resp));
+	        writer.flush();
+	    } catch (Exception ex) {
+	        throw new JsonResponseException("Error writing error response", ex);
 	    }
-	    // Store error message in session for getMessage action
-	    // Note: Consider using request attributes instead for better thread safety
-
-	    writer.print(JSONObject.fromObject(resp));
-	    writer.flush();
-	    writer.close();
-
 	    return null;
 	}
 
 
-	protected ActionForward writeError(HttpServletResponse response, String message) throws Exception {
+	protected ActionForward writeError(HttpServletResponse response, String message) throws JsonResponseException {
 	    Map<String, Object> resp = new HashMap<>();
 	    resp.put(STATUS, ERROR);
 
@@ -181,29 +189,31 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	    try (PrintWriter writer = response.getWriter()) {
 	        writer.print(JSONObject.fromObject(resp));
 	        writer.flush();
-	        writer.close();
+	    } catch (Exception e) {
+	        throw new JsonResponseException("Error writing error response with message", e);
 	    }
 
 	    return null;
 	}
 
 
-	protected void setErrorMessage(Exception e, HttpServletRequest request) throws Exception {
+	protected void setErrorMessage(Exception e, HttpServletRequest request) {
 		String errorMessage = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() :
 																		"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
 		request.getSession().setAttribute("lastErrorMessage", errorMessage);
 	}
 
-	protected ActionForward getMessage(HttpServletResponse response, HttpServletRequest request) throws Exception {
-		PrintWriter writer = response.getWriter();
+	protected ActionForward getMessage(HttpServletResponse response, HttpServletRequest request) throws JsonResponseException {
+		try (PrintWriter writer = response.getWriter()) {
+			Map<String, Object> resp = new HashMap<String, Object>();
+			String lastMessage = (String) request.getSession().getAttribute("lastErrorMessage");
+			resp.put("message", lastMessage != null ? lastMessage : "");
 
-		Map<String, Object> resp = new HashMap<String, Object>();
-		String lastMessage = (String) request.getSession().getAttribute("lastErrorMessage");
-		resp.put("message", lastMessage != null ? lastMessage : "");
-
-		writer.print(JSONObject.fromObject(resp));
-		writer.flush();
-		writer.close();
+			writer.print(JSONObject.fromObject(resp));
+			writer.flush();
+		} catch (Exception e) {
+			throw new JsonResponseException("Error getting message response", e);
+		}
 
 		return null;
 	}

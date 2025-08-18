@@ -21,6 +21,7 @@ import com.sa.action.RestriccionTransaccionAction;
 import com.sa.entities.ComboOpcion;
 import com.sa.entities.Usuario;
 import com.sa.entities.parametros.ParametroGasto;
+import com.sa.exceptions.ActionExecutionException;
 import com.sa.form.parametros.ParametrosGastosForm;
 import com.sa.manager.ManagerTransaction;
 import com.sa.services.AprobacionesService;
@@ -29,8 +30,8 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAction {
 	
-	// Service field for dependency injection (non-final to work with @InjectMocks)
-	private ParametrosService parametrosService;
+	// Service field made final to comply with SonarQube S2226
+	private final ParametrosService parametrosService;
 	
 	// Thread-local storage for mutable list fields to avoid instance field issues
 	private static final ThreadLocal<List<ComboOpcion>> threadLocalCmbObservacion = new ThreadLocal<>();
@@ -38,7 +39,8 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 	private static final ThreadLocal<List<ComboOpcion>> threadLocalCmbComprobante = new ThreadLocal<>();
 	
 	public ParametrosGastosDetalleLoadAction() {
-		// Default constructor for framework usage
+		// Default constructor for framework usage - service will be null and created on demand
+		this.parametrosService = null;
 	}
 	
 	public ParametrosGastosDetalleLoadAction(ParametrosService parametrosService) {
@@ -77,7 +79,7 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 	}
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
-			HttpServletRequest request, HttpServletResponse response) throws Exception {
+			HttpServletRequest request, HttpServletResponse response) throws ActionExecutionException {
 		ParametrosGastosForm frm = (ParametrosGastosForm) form;
 		String descripcionMotivo = frm.getDescripcionMotivo();
 		String sanitizedDescripcionMotivo = (descripcionMotivo != null) ? StringEscapeUtils.escapeHtml4(descripcionMotivo) : "";
@@ -87,9 +89,17 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 
 		String accionJson = request.getParameter("accionJson");
 		if ("borrarCentroCosto".equals(accionJson))
-			return this.borrarCentroCosto(frm, Integer.parseInt(request.getParameter("index")));
+			try {
+				return this.borrarCentroCosto(frm, Integer.parseInt(request.getParameter("index")));
+			} catch (Exception e) {
+				throw new ActionExecutionException("Error removing centro costo", e);
+			}
 		else if ("agregarCentroCosto".equals(accionJson))
-			return this.agregarCentroCosto(frm, response);
+			try {
+				return this.agregarCentroCosto(frm, response);
+			} catch (Exception e) {
+				throw new ActionExecutionException("Error adding centro costo", e);
+			}
 		
 		if (!frm.isBack()) {
 			// Initialize ThreadLocal lists
@@ -207,6 +217,7 @@ public class ParametrosGastosDetalleLoadAction extends RestriccionTransaccionAct
 	 * Clean up ThreadLocal variables to prevent memory leaks.
 	 * Should be called at the end of request processing.
 	 */
+	@Override
 	protected void cleanupThreadLocals() {
 		super.cleanupThreadLocals(); // Clean up inherited ThreadLocals
 		threadLocalCmbObservacion.remove();

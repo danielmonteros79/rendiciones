@@ -29,6 +29,7 @@ import ar.com.bbva.web.impl.SAMWebClient;
 
 public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(AprobacionDetalleAction.class);
+	private static final String LAST_ERROR_MESSAGE = "lastErrorMessage";
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -74,7 +75,7 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 						this.getSessionUserWorking().getIdUser());
 				if (aprobaciones.size() == 0) {
 					request.setAttribute("Rendicion", new Rendicion());
-					request.getSession().setAttribute("lastErrorMessage", "ERROR: APROBACION INEXISTENTE");
+					request.getSession().setAttribute(LAST_ERROR_MESSAGE, "ERROR: APROBACION INEXISTENTE");
 					return mapping.findForward("success");
 				}
 				
@@ -86,7 +87,7 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			List<Rendicion> rendiciones = service.obtenerListadoRendiciones(idUsuarioRendicion, idRendicion, "", "", "");
 			if (rendiciones.size() == 0) {
 				request.setAttribute("Rendicion", new Rendicion());
-				request.getSession().setAttribute("lastErrorMessage", "ERROR: RENDICION INEXISTENTE");
+				request.getSession().setAttribute(LAST_ERROR_MESSAGE, "ERROR: RENDICION INEXISTENTE");
 				return mapping.findForward("success");
 			}
 			
@@ -139,7 +140,7 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 		List<Gastos> gastos = service.getGastos(request.getParameter("idRendicion"), "", request.getParameter("usuarioRend"), request.getParameter("codMotivo"));
 		String serviceMessage = service.getMsg();
 		if (serviceMessage != null) {
-			request.getSession().setAttribute("lastErrorMessage", serviceMessage);
+			request.getSession().setAttribute(LAST_ERROR_MESSAGE, serviceMessage);
 		}
 		request.setAttribute("gastos", gastos);
 		request.setAttribute("showOpciones", true);

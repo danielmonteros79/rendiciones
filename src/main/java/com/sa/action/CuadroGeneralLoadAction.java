@@ -23,21 +23,27 @@ import ar.com.bbva.web.impl.SAMWebClient;
 
 import com.sa.entities.ComboMotivo;
 import com.sa.entities.Usuario;
+import com.sa.exceptions.ActionExecutionException;
 import com.sa.form.CuadroFiltroForm;
 import com.sa.services.RendicionesService;
 
 public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 	private static final Log log = LogFactory.getLog(CuadroGeneralLoadAction.class);
 	private static final String COD_GLG = "codGlg";
+	private static final String USER_WORKING = "userWorking";
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
-			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
+			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws ActionExecutionException {
+		Usuario u = ((Usuario) request.getSession().getAttribute(USER_WORKING));
 		
 		// Verificar que el usuario no sea null
 		if (u == null) {
-			log.error("Usuario userWorking es null en CuadroGeneralLoadAction");
-			return writeError(response, new Exception("Sesión de usuario no válida"));
+			log.error("Usuario " + USER_WORKING + " es null en CuadroGeneralLoadAction");
+			try {
+				return writeError(response, new Exception("Sesión de usuario no válida"));
+			} catch (Exception e) {
+				throw new ActionExecutionException("Error writing error response", e);
+			}
 		}
 		
 		log.info("Entra al action CuadroGeneralLoadAction. Usuario ("+u.getIdUser()+")");
@@ -47,10 +53,18 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 
 		String accion = request.getParameter("accion");
 		if ("selectGlg".equals(accion)) {
-			return handleSelectGlgAction(response, request, samClient);
+			try {
+				return handleSelectGlgAction(response, request, samClient);
+			} catch (Exception e) {
+				throw new ActionExecutionException("Error handling selectGlg action", e);
+			}
 		}
 
-		return handleMainAction(mapping, samClient, request, frm);
+		try {
+			return handleMainAction(mapping, samClient, request, frm);
+		} catch (Exception e) {
+			throw new ActionExecutionException("Error in main action execution", e);
+		}
 	}
 
 	private ActionForward handleSelectGlgAction(HttpServletResponse response, HttpServletRequest request, 
@@ -71,12 +85,12 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 		}
 		
 		RendicionesService service = new RendicionesService(samClient);
-		Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
+		Usuario u = ((Usuario) request.getSession().getAttribute(USER_WORKING));
 		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
 		
 		// Verificar que los usuarios no sean null
 		if (u == null) {
-			log.error("Usuario userWorking es null en handleMainAction");
+			log.error("Usuario " + USER_WORKING + " es null en handleMainAction");
 			throw new Exception("Sesión de usuario no válida");
 		}
 		if (user == null) {
@@ -191,11 +205,11 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 			}
 			
 			RendicionesService service = new RendicionesService(samClient);
-			Usuario u = ((Usuario) request.getSession().getAttribute("userWorking"));
+			Usuario u = ((Usuario) request.getSession().getAttribute(USER_WORKING));
 			
 			// Verificar que el usuario no sea null
 			if (u == null) {
-				log.error("Usuario userWorking es null en selectGlg");
+				log.error("Usuario " + USER_WORKING + " es null en selectGlg");
 				writer.print("[]");
 				return;
 			}
