@@ -44,6 +44,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -465,6 +466,358 @@ class CuadroGeneralLoadActionTest {
                     () -> verify(response.getWriter()).flush(),
                     () -> verify(response.getWriter()).close()
             );
+        }
+    }
+
+    @Test
+    @DisplayName("Should handle null user and return writeError result")
+    void testExecuteActionWithNullUser() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        request.setHttpSession(session);
+        
+        // No se establece userWorking en la sesión, por lo que será null
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        PrintWriter writer = mock(PrintWriter.class);
+        when(response.getWriter()).thenReturn(writer);
+        
+        // When
+        ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, samWebClient, request, response);
+        
+        // Then - writeError should return null (according to RestriccionTransaccionAction implementation)
+        assertNull(result);
+        
+        // Verify that response was configured as JSON
+        verify(response).setContentType("application/json; charset=UTF-8");
+        verify(writer).flush();
+    }
+
+    @Test
+    @DisplayName("Should handle null user with successful error writing")
+    void testExecuteActionWithNullUserSuccessfulErrorWrite() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        request.setHttpSession(session);
+        
+        // No userWorking in session (null)
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        PrintWriter writer = mock(PrintWriter.class);
+        when(response.getWriter()).thenReturn(writer);
+        
+        // Mock the writeError method to return a successful ActionForward
+        ActionForward errorForward = new ActionForward("error", false);
+        CuadroGeneralLoadAction spyAction = spy(cuadroGeneralLoadAction);
+        doReturn(errorForward).when(spyAction).writeError(eq(response), any(Exception.class));
+        
+        // When
+        ActionForward result = spyAction.executeAction(mapping, form, samWebApplication, samWebClient, request, response);
+        
+        // Then
+        assertEquals(errorForward, result);
+        verify(spyAction).writeError(eq(response), any(Exception.class));
+    }
+
+    @Test
+    @DisplayName("Should throw ActionExecutionException when writeError fails")
+    void testExecuteActionWithNullUserWriteErrorThrowsException() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        request.setHttpSession(session);
+        
+        // No userWorking in session (null)
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        PrintWriter writer = mock(PrintWriter.class);
+        when(response.getWriter()).thenThrow(new RuntimeException("IO Error"));
+        
+        // When & Then - The action should throw ActionExecutionException when writeError fails
+        com.sa.exceptions.ActionExecutionException exception = 
+            org.junit.jupiter.api.Assertions.assertThrows(
+                com.sa.exceptions.ActionExecutionException.class,
+                () -> cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, samWebClient, request, response)
+            );
+        
+        // Verify the exception message and cause
+        assertEquals("Error writing error response", exception.getMessage());
+        Assertions.assertNotNull(exception.getCause());
+        Assertions.assertTrue(exception.getCause() instanceof Exception);
+    }
+
+    @Test
+    @DisplayName("Should handle exception in selectGlg action and throw ActionExecutionException")
+    void testExecuteActionSelectGlgException() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        Usuario usuario = new Usuario("testUser", "ADMIN", "Test User", 123, "Sector", new ArrayList<>());
+        session.setAttribute("userWorking", usuario);
+        request.setHttpSession(session);
+        request.addParameter("accion", "selectGlg");
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        PrintWriter writer = mock(PrintWriter.class);
+        when(response.getWriter()).thenThrow(new RuntimeException("IO Error"));
+        
+        // When & Then
+        com.sa.exceptions.ActionExecutionException exception = 
+            org.junit.jupiter.api.Assertions.assertThrows(
+                com.sa.exceptions.ActionExecutionException.class,
+                () -> cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, samWebClient, request, response)
+            );
+        
+        // Verify the exception message and cause
+        assertEquals("Error handling selectGlg action", exception.getMessage());
+        Assertions.assertNotNull(exception.getCause());
+        Assertions.assertTrue(exception.getCause() instanceof RuntimeException);
+    }
+
+    @Test
+    @DisplayName("Should handle exception in main action and throw ActionExecutionException")
+    void testExecuteActionMainActionException() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        when(mapping.findForward("success")).thenThrow(new RuntimeException("Mapping error"));
+        
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        Usuario usuario = new Usuario("testUser", "ADMIN", "Test User", 123, "Sector", new ArrayList<>());
+        Usuario userSession = new Usuario("sessionUser", "ADMIN", "Session User", 456, "Sector", new ArrayList<>());
+        session.setAttribute("userWorking", usuario);
+        session.setAttribute("usuario", userSession);
+        request.setHttpSession(session);
+        // No se establece parámetro "accion", por lo que va por el flujo principal
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // When & Then
+        com.sa.exceptions.ActionExecutionException exception = 
+            org.junit.jupiter.api.Assertions.assertThrows(
+                com.sa.exceptions.ActionExecutionException.class,
+                () -> cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, samWebClient, request, response)
+            );
+        
+        // Verify the exception message and cause
+        assertEquals("Error in main action execution", exception.getMessage());
+        Assertions.assertNotNull(exception.getCause());
+        Assertions.assertTrue(exception.getCause() instanceof RuntimeException);
+    }
+
+    @Test
+    @DisplayName("Should successfully handle selectGlg action")
+    void testExecuteActionSelectGlgSuccess() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        Usuario usuario = new Usuario("testUser", "ADMIN", "Test User", 123, "Sector", new ArrayList<>());
+        session.setAttribute("userWorking", usuario);
+        request.setHttpSession(session);
+        request.addParameter("accion", "selectGlg");
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        PrintWriter writer = mock(PrintWriter.class);
+        when(response.getWriter()).thenReturn(writer);
+        
+        try (MockedConstruction<RendicionesService> serviceMock = 
+                Mockito.mockConstruction(RendicionesService.class, (mockService, context) -> {
+                    when(mockService.getMotivoRendiciones(any(), any(), any())).thenReturn(new ArrayList<>());
+                })) {
+            
+            // When
+            ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, samWebClient, request, response);
+            
+            // Then
+            assertNull(result);
+            verify(response).setContentType("application/json");
+            verify(writer).flush();
+            verify(writer).close();
+        }
+    }
+
+    @Test
+    @DisplayName("Should successfully handle main action")
+    void testExecuteActionMainActionSuccess() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        ActionForward successForward = new ActionForward("success", false);
+        when(mapping.findForward("success")).thenReturn(successForward);
+        
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        Usuario usuario = new Usuario("testUser", "ADMIN", "Test User", 123, "Sector", new ArrayList<>());
+        Usuario userSession = new Usuario("sessionUser", "ADMIN", "Session User", 456, "Sector", new ArrayList<>());
+        
+        session.setAttribute("userWorking", usuario);
+        session.setAttribute("usuario", userSession);
+        request.setHttpSession(session);
+        // No se establece parámetro "accion", por lo que va por el flujo principal
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        List<ComboMotivo> motivos = new ArrayList<>();
+        motivos.add(new ComboMotivo("001", "Motivo 1"));
+        
+        List<ComboOpcion> opciones = new ArrayList<>();
+        opciones.add(new ComboOpcion("GLG1", "GLG 1"));
+        
+        try (MockedConstruction<RendicionesService> serviceMock = 
+                Mockito.mockConstruction(RendicionesService.class, (mockService, context) -> {
+                    when(mockService.getMotivoRendiciones(any(), any(), any())).thenReturn(motivos);
+                    when(mockService.getMsg()).thenReturn("Service message");
+                    when(mockService.getGlgsUsuario(any(), any())).thenReturn(opciones);
+                })) {
+            
+            // When
+            ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, samWebClient, request, response);
+            
+            // Then
+            assertEquals(successForward, result);
+            assertEquals("Test User", form.getNombreUsuario());
+            assertEquals(123, form.getCostos());
+            assertEquals(motivos, form.getComboMotivo());
+            assertEquals(opciones, form.getComboGlg());
+            assertEquals("Service message<br>Service message", request.getAttribute("message"));
+            assertEquals(motivos, request.getAttribute("ComboMotivo"));
+            assertEquals(opciones, request.getAttribute("ComboGlg"));
+            assertEquals("f", request.getAttribute("Tabla"));
+        }
+    }
+
+    @Test
+    @DisplayName("Should throw ActionExecutionException when samClient is null in main action")
+    void testExecuteActionMainActionWithNullSamClient() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        Usuario usuario = new Usuario("testUser", "ADMIN", "Test User", 123, "Sector", new ArrayList<>());
+        session.setAttribute("userWorking", usuario);
+        request.setHttpSession(session);
+        // No se establece parámetro "accion", por lo que va por el flujo principal
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // samClient será null
+        SAMWebClient nullSamClient = null;
+        
+        // When & Then
+        com.sa.exceptions.ActionExecutionException exception = 
+            org.junit.jupiter.api.Assertions.assertThrows(
+                com.sa.exceptions.ActionExecutionException.class,
+                () -> cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, nullSamClient, request, response)
+            );
+        
+        // Verify the exception message and cause
+        assertEquals("Error in main action execution", exception.getMessage());
+        Assertions.assertNotNull(exception.getCause());
+        Assertions.assertTrue(exception.getCause() instanceof Exception);
+        assertEquals("Cliente SAM no válido", exception.getCause().getMessage());
+    }
+
+    @Test
+    @DisplayName("Should handle null samClient in handleMainAction with proper error message")
+    void testHandleMainActionWithNullSamClient() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        Usuario usuario = new Usuario("testUser", "ADMIN", "Test User", 123, "Sector", new ArrayList<>());
+        session.setAttribute("userWorking", usuario);
+        request.setHttpSession(session);
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // Use reflection to test the private handleMainAction method directly
+        try {
+            java.lang.reflect.Method handleMainActionMethod = CuadroGeneralLoadAction.class.getDeclaredMethod(
+                "handleMainAction", ActionMapping.class, SAMWebClient.class, HttpServletRequest.class, CuadroFiltroForm.class);
+            handleMainActionMethod.setAccessible(true);
+            
+            // When & Then
+            Exception exception = org.junit.jupiter.api.Assertions.assertThrows(
+                Exception.class,
+                () -> handleMainActionMethod.invoke(cuadroGeneralLoadAction, mapping, null, request, form)
+            );
+            
+            // The reflection throws InvocationTargetException, so we need to get the cause
+            Throwable cause = exception.getCause();
+            Assertions.assertNotNull(cause);
+            Assertions.assertTrue(cause instanceof Exception);
+            assertEquals("Cliente SAM no válido", cause.getMessage());
+            
+        } catch (NoSuchMethodException e) {
+            Assertions.fail("handleMainAction method not found: " + e.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Should execute successfully when samClient is not null in main action")
+    void testExecuteActionMainActionWithValidSamClient() throws Exception {
+        // Given
+        ActionMapping mapping = mock(ActionMapping.class);
+        ActionForward successForward = new ActionForward("success", false);
+        when(mapping.findForward("success")).thenReturn(successForward);
+        
+        CuadroFiltroForm form = new CuadroFiltroForm();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        Usuario usuario = new Usuario("testUser", "ADMIN", "Test User", 123, "Sector", new ArrayList<>());
+        Usuario userSession = new Usuario("sessionUser", "ADMIN", "Session User", 456, "Sector", new ArrayList<>());
+        
+        session.setAttribute("userWorking", usuario);
+        session.setAttribute("usuario", userSession);
+        request.setHttpSession(session);
+        // No se establece parámetro "accion", por lo que va por el flujo principal
+        
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        
+        // samClient is valid (not null)
+        SAMWebClient validSamClient = mock(SAMWebClient.class);
+        
+        List<ComboMotivo> motivos = new ArrayList<>();
+        motivos.add(new ComboMotivo("001", "Motivo 1"));
+        
+        List<ComboOpcion> opciones = new ArrayList<>();
+        opciones.add(new ComboOpcion("GLG1", "GLG 1"));
+        
+        try (MockedConstruction<RendicionesService> serviceMock = 
+                Mockito.mockConstruction(RendicionesService.class, (mockService, context) -> {
+                    when(mockService.getMotivoRendiciones(any(), any(), any())).thenReturn(motivos);
+                    when(mockService.getMsg()).thenReturn("Service message");
+                    when(mockService.getGlgsUsuario(any(), any())).thenReturn(opciones);
+                })) {
+            
+            // When
+            ActionForward result = cuadroGeneralLoadAction.executeAction(mapping, form, samWebApplication, validSamClient, request, response);
+            
+            // Then
+            assertEquals(successForward, result);
+            assertEquals("Test User", form.getNombreUsuario());
+            assertEquals(123, form.getCostos());
+            assertEquals(motivos, form.getComboMotivo());
+            assertEquals(opciones, form.getComboGlg());
+            assertEquals("Service message<br>Service message", request.getAttribute("message"));
+            assertEquals(motivos, request.getAttribute("ComboMotivo"));
+            assertEquals(opciones, request.getAttribute("ComboGlg"));
+            assertEquals("f", request.getAttribute("Tabla"));
         }
     }
 }
