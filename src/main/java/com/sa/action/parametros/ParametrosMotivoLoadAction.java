@@ -3,7 +3,9 @@ package com.sa.action.parametros;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.h        } catch (Exception e) {
+            manejarExcepcionBusqueda(parametrosBusqueda, request);
+            break;.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -44,7 +46,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    String codigoParam = request.getParameter("codigo");
 	    
 	    ParametrosBusqueda parametrosBusqueda = analizarParametrosBusqueda(codigoParam);
-	    List<ParametroMotivo> motivosTotales = buscarMotivos(service, parametrosBusqueda);
+	    List<ParametroMotivo> motivosTotales = buscarMotivos(service, parametrosBusqueda, request);
 	    
 	    configurarRespuesta(request, parametrosBusqueda, motivosTotales, service);
 	    return mapping.findForward("parametrosMotivoFiltro");
@@ -91,7 +93,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    return params;
 	}
 
-	private List<ParametroMotivo> buscarMotivos(ParametrosService service, ParametrosBusqueda parametrosBusqueda) {
+	private List<ParametroMotivo> buscarMotivos(ParametrosService service, ParametrosBusqueda parametrosBusqueda, HttpServletRequest request) {
 	    List<ParametroMotivo> motivosTotales = new ArrayList<>();
 	    int paginado = 0;
 	    boolean pagina = true;
@@ -201,9 +203,9 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    return "N".equalsIgnoreCase(ultimo.getLastElement());
 	}
 
-	private void manejarExcepcionBusqueda(ParametrosBusqueda parametrosBusqueda) {
+	private void manejarExcepcionBusqueda(ParametrosBusqueda parametrosBusqueda, HttpServletRequest request) {
 	    if (!parametrosBusqueda.isTextSearch) {
-	        this.message = "No se encontró el motivo con código: " + parametrosBusqueda.codMotivo;
+	        this.setMessage("No se encontró el motivo con código: " + parametrosBusqueda.codMotivo, request);
 	    }
 	}
 
@@ -213,8 +215,9 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    configurarMensajeNoResultados(request, parametrosBusqueda, motivosTotales);
 	    request.setAttribute("motivos", motivosTotales);
 	    
-	    if (this.message == null || this.message.isEmpty()) {
-	        this.message = service.getMsgAviso();
+	    String currentMessage = (String) request.getSession().getAttribute("lastErrorMessage");
+	    if (currentMessage == null || currentMessage.isEmpty()) {
+	        this.setMessage(service.getMsgAviso(), request);
 	    }
 	}
 
@@ -228,7 +231,7 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    if (noResultadosEnBusquedaTexto) {
 	        request.setAttribute("noResultados", true);
 	        request.setAttribute("terminoBuscado", parametrosBusqueda.terminoBuscado);
-	        this.message = "No se encontraron motivos que contengan '" + parametrosBusqueda.terminoBuscado + "'";
+	        this.setMessage("No se encontraron motivos que contengan '" + parametrosBusqueda.terminoBuscado + "'", request);
 	    }
 	}
 

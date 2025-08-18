@@ -104,7 +104,7 @@ public class RestriccionTransaccionActionTest {
         // Arrange
         when(request.getParameter("action")).thenReturn("getMessage");
         when(response.getWriter()).thenReturn(printWriter);
-        action.message = "Test message";
+        when(session.getAttribute("lastErrorMessage")).thenReturn("Test message");
         
         // Act
         ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
@@ -268,7 +268,7 @@ public class RestriccionTransaccionActionTest {
         // Arrange
         when(request.getParameter("action")).thenReturn("getMessage");
         when(response.getWriter()).thenReturn(printWriter);
-        action.message = "Custom test message";
+        when(session.getAttribute("lastErrorMessage")).thenReturn("Custom test message");
         
         // Act
         ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);

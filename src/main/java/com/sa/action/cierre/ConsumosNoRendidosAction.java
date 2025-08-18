@@ -62,7 +62,7 @@ public class ConsumosNoRendidosAction extends RestriccionTransaccionAction {
 
 		List<CierreTarjeta> rendiciones = service.obtenerCuponesPendientes(fechaCierre, usuario, montoMin, montoMax, moneda);
 		request.setAttribute("consumosSinRendir", rendiciones);
-		this.message = service.getMsg();
+		this.setMessage(service.getMsg(), request);
 
 		return mapping.findForward("consumosSinRendir");
 	}

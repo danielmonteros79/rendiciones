@@ -78,7 +78,10 @@ public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 			.collect(Collectors.toList());
 
 		request.setAttribute("rendiciones", rendicionesFiltradas);
-		this.message = service.getMsg();
+		String serviceMessage = service.getMsg();
+		if (serviceMessage != null) {
+			request.getSession().setAttribute("lastErrorMessage", serviceMessage);
+		}
 
 		return mapping.findForward("rendiciones");
 	}

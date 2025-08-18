@@ -28,7 +28,7 @@ public class CierreDetalleAction extends RestriccionTransaccionAction {
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		this.message = "";
+		StringBuilder messageBuilder = new StringBuilder();
 		String action = request.getParameter("action") == null ? "" : request.getParameter("action");
 		
 		if (action.equals("getRendicionGastos"))
@@ -45,17 +45,17 @@ public class CierreDetalleAction extends RestriccionTransaccionAction {
 			List<Rendicion> rendiciones = service.obtenerListadoRendiciones(usuarioRend, idRendicion, "", "", "");
 			if (rendiciones.size() == 0) {
 				request.setAttribute("Rendicion", new Rendicion());
-				this.message = "ERROR: RENDICION INEXISTENTE";
+				request.getSession().setAttribute("lastErrorMessage", "ERROR: RENDICION INEXISTENTE");
 				return mapping.findForward("success");
 			}
 			
 			Rendicion rendicion = rendiciones.get(0);
 			if (service.getMsg() != null)
-				this.message = service.getMsg() + "<br>";
+				messageBuilder.append(service.getMsg()).append("<br>");
 			
 			Usuario usuarioRendicion = usuarioService.obtenerDelegadosUsuario(usuarioRend);
 			if (usuarioService.getMsg() != null)
-				this.message += service.getMsg();
+				messageBuilder.append(service.getMsg());
 	
 			String dateD = DateUtils.dfDDMMYYYY.format(rendicion.getFechaDesde());
 			String dateH = DateUtils.dfDDMMYYYY.format(rendicion.getFechaHasta());
@@ -78,11 +78,12 @@ public class CierreDetalleAction extends RestriccionTransaccionAction {
 			
 			renForm.setLinkThuban((String) request.getSession().getServletContext().getAttribute("rendicion.link.thuban") + idRendicion);
 			
-			if (!message.equals(""))
-				request.setAttribute("message", message);
+			String finalMessage = messageBuilder.toString();
+			if (!finalMessage.equals(""))
+				request.setAttribute("message", finalMessage);
 		} catch (Exception e) {
 			log.error("", e);
-			this.setErrorMessage(e);
+			this.setErrorMessage(e, request);
 		}
 
 		return mapping.findForward("success");
@@ -91,7 +92,10 @@ public class CierreDetalleAction extends RestriccionTransaccionAction {
 	private ActionForward getRendicionGastos(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
 		RendicionesService service = new RendicionesService(samClient);
 		List<Gastos> gastos = service.getGastos(request.getParameter("idRendicion"), "", request.getParameter("usuarioRend"), request.getParameter("codMotivo"));
-		this.message = service.getMsg();
+		String serviceMessage = service.getMsg();
+		if (serviceMessage != null) {
+			request.getSession().setAttribute("lastErrorMessage", serviceMessage);
+		}
 		request.setAttribute("gastos", gastos);
 		request.setAttribute("showOpciones", false);
 		request.setAttribute("readOnlyDatosAdicionales", true);

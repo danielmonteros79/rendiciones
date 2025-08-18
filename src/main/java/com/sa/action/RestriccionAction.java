@@ -52,8 +52,7 @@ public abstract class RestriccionAction extends Action {
 			throws ActionExecutionException;
 
 	protected void doRestriccion(ActionMapping mapping, ActionForm form,
-			HttpServletRequest request, HttpServletResponse response,
-			LoggerSUM logger) throws AccesoNoPermitidoException {
+			HttpServletRequest request, HttpServletResponse response) throws AccesoNoPermitidoException {
 
 		HttpSession session = request.getSession();
 		Usuario usuario = (Usuario) session.getAttribute("usuario");

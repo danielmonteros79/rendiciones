@@ -46,7 +46,7 @@ public class CierreTarjetaAction extends RestriccionTransaccionAction {
 		
 		List<CierreTarjeta> cierreTarjeta = service.getCierreTarjeta("F", request.getParameter("usuario"), this.sessionUserWorking.getIdUser());
 		request.setAttribute("cierreTarjeta", cierreTarjeta);
-		this.message = service.getMsg();
+		this.setMessage(service.getMsg(), request);
 
 		return mapping.findForward("cierreTarjeta");
 	}
@@ -64,9 +64,9 @@ public class CierreTarjetaAction extends RestriccionTransaccionAction {
 		service.generarCierreTarjeta(request.getParameter("usuario"), this.sessionUserWorking.getIdUser(), idConsumos, 
 				Double.parseDouble(request.getParameter("totalPesos")), Double.parseDouble(request.getParameter("totalDolares")),
 				request.getParameter("motivo"),request.getParameter("tipoGasto"));
-		this.message = service.getMsg();
+		String serviceMessage = service.getMsg();
 
-		resp.put("message", this.message);
+		resp.put("message", serviceMessage);
 		return writeJson(response, resp);
 	}
 }

@@ -50,7 +50,7 @@ public class AbmDelegadoAction extends RestriccionTransaccionAction {
 	private ActionForward getDelegados(SAMWebClient samClient, ActionMapping mapping, HttpServletRequest request) throws Exception {
 		ParametrosService service = new ParametrosService(samClient);
 		List<ParametriaUsuarioDelegado> usuarioDelegados = service.getDelegaciones(this.sessionUser.getIdUser());
-		this.message = service.getMsgAviso();
+		this.setMessage(service.getMsgAviso(), request);
 		request.setAttribute("delegados", usuarioDelegados);
 		request.getSession().setAttribute("delegacionesActivas", usuarioDelegados);
 

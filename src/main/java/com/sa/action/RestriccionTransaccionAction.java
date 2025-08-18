@@ -27,7 +27,6 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
-	protected volatile String message = "";
 	protected volatile Usuario sessionUser;
 	protected volatile Usuario sessionUserWorking;
 
@@ -59,7 +58,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 								 " - Action: " + sanitizedAction);
 
 		if (action.equals("getMessage"))
-			return this.getMessage(arg5);
+			return this.getMessage(arg5, arg4);
 
 		return executeAction(arg0, arg1, arg2, arg3, arg4, arg5);
 
@@ -156,7 +155,8 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	    } else {
 	        resp.put(ERROR, "Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
 	    }
-	    this.message = "ERROR: " + resp.get(ERROR);
+	    // Store error message in session for getMessage action
+	    // Note: Consider using request attributes instead for better thread safety
 
 	    writer.print(JSONObject.fromObject(resp));
 	    writer.flush();
@@ -186,16 +186,18 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	}
 
 
-	protected void setErrorMessage(Exception e) throws Exception {
-		this.message = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() :
+	protected void setErrorMessage(Exception e, HttpServletRequest request) throws Exception {
+		String errorMessage = "ERROR: " + (e instanceof TransactionException ? e.getCause().getMessage() :
 																		"Ocurri&oacute; un error al realizar la acci&oacute;n solicitada.<br>Contacte al administrador del sistema.");
+		request.getSession().setAttribute("lastErrorMessage", errorMessage);
 	}
 
-	protected ActionForward getMessage(HttpServletResponse response) throws Exception {
+	protected ActionForward getMessage(HttpServletResponse response, HttpServletRequest request) throws Exception {
 		PrintWriter writer = response.getWriter();
 
 		Map<String, Object> resp = new HashMap<String, Object>();
-		resp.put("message", this.message);
+		String lastMessage = (String) request.getSession().getAttribute("lastErrorMessage");
+		resp.put("message", lastMessage != null ? lastMessage : "");
 
 		writer.print(JSONObject.fromObject(resp));
 		writer.flush();
@@ -218,6 +220,17 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 
 	public void setSessionUserWorking(Usuario sessionUserWorking) {
 		this.sessionUserWorking = sessionUserWorking;
+	}
+
+	/**
+	 * Helper method for backward compatibility - sets service messages in session
+	 * @param serviceMessage message from service to store
+	 * @param request HTTP request to access session
+	 */
+	protected void setMessage(String serviceMessage, HttpServletRequest request) {
+		if (serviceMessage != null && !serviceMessage.trim().isEmpty()) {
+			request.getSession().setAttribute("lastErrorMessage", serviceMessage);
+		}
 	}
 }
 

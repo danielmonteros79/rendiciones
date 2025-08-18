@@ -71,8 +71,8 @@ class RestriccionActionTest {
     when(httpSessionMocked.getAttribute("usuario")).thenReturn(usuarioMocked);
     when(usuarioMocked.getPerfil()).thenReturn(1);
     //then
-    restriccionAction.doRestriccion(securityActionMappingMocked, actionFormMocked, httpServletRequestMocked, httpServletResponseMocked, loggerMocked);
-    verify(restriccionAction).doRestriccion(securityActionMappingMocked, actionFormMocked, httpServletRequestMocked, httpServletResponseMocked, loggerMocked);
+    restriccionAction.doRestriccion(securityActionMappingMocked, actionFormMocked, httpServletRequestMocked, httpServletResponseMocked);
+    verify(restriccionAction).doRestriccion(securityActionMappingMocked, actionFormMocked, httpServletRequestMocked, httpServletResponseMocked);
   }
 
   @Test

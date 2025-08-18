@@ -45,7 +45,7 @@ public class ParametrosMotivoFiltroAction extends RestriccionTransaccionAction {
 		List<ParametroMotivo> motivos = service.getMotivos(codMotivo, this.sessionUserWorking.getIdUser(), "");
 		
 		request.setAttribute("motivos", motivos);
-		this.message = service.getMsgAviso();
+		this.setMessage(service.getMsgAviso(), request);
 		
 		return mapping.findForward("parametrosMotivoFiltro");
 	}

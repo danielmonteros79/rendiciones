@@ -54,8 +54,8 @@ public class ReasignarBandejaAction extends RestriccionTransaccionAction {
         String tipoBandeja = request.getParameter("tipoBandeja");
 
         try {
-            this.message = cierreService.reasignarBandeja(userOrigen, userDestino, tipoBandeja);
-            resp.put("message", this.message);
+            String serviceMessage = cierreService.reasignarBandeja(userOrigen, userDestino, tipoBandeja);
+            resp.put("message", serviceMessage);
         } catch (Exception e) {
             log.error("Error al reasignar la bandeja", e);
             throw new Exception("Error en reasignación: " + e.getMessage(), e);

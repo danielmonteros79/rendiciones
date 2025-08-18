@@ -38,7 +38,7 @@ import ar.com.bbva.web.impl.SAMWebClient;
 public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
-		this.message= "";
+		StringBuilder messageBuilder = new StringBuilder();
 		Usuario u = this.sessionUserWorking;
 		String action = request.getParameter("action") == null ? "" : request.getParameter("action");
 
@@ -82,10 +82,13 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			List<Rendicion> rendiciones = service.obtenerListadoRendiciones(usuarioRend, idRendicion.toString(), "", "", "");
 			if (rendiciones.size() == 0) {
 				request.setAttribute("Rendicion", new Rendicion());
-				this.message = "ERROR: RENDICION INEXISTENTE";
+				request.getSession().setAttribute("lastErrorMessage", "ERROR: RENDICION INEXISTENTE");
 			} else {
 				Rendicion rendicion = rendiciones.get(0);
-				this.message = service.getMsg();
+				String serviceMessage = service.getMsg();
+				if (serviceMessage != null) {
+					messageBuilder.append(serviceMessage);
+				}
 
 				List<ComboMotivo> motivo = service.getMotivoRendiciones("4", usuarioRend,"");
 				for (ComboMotivo fila : motivo) {
@@ -197,7 +200,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			}
 		} catch (Exception e) {
 			log.error("", e);
-			this.setErrorMessage(e);
+			this.setErrorMessage(e, request);
 		}
 
 		return mapping.findForward("rendicionDetalleGastos");
@@ -208,7 +211,10 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 		String estadoRend = (String) request.getParameter("estadoRend");
 		List<Gastos> gastos = service.getGastos(request.getParameter("idRendicion"), "", request.getParameter("usuarioRend"),
 				request.getParameter("codMotivo"));
-		this.message = service.getMsg();
+		String serviceMessage = service.getMsg();
+		if (serviceMessage != null) {
+			request.getSession().setAttribute("lastErrorMessage", serviceMessage);
+		}
 		request.setAttribute("gastos", gastos);
 		request.setAttribute("showOpciones", true);
 		request.setAttribute("showEditar", estadoRend.equals("PENDI"));
@@ -229,7 +235,10 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 		
 		
 		if(this.sessionUserWorking.isManejaFacultades()) consumosPendientes = service.getConsumos(this.sessionUserWorking.getIdUser(), fechaDesde, fechaHasta, codMotivo);
-		this.message = service.getMsg();
+		String serviceMessage = service.getMsg();
+		if (serviceMessage != null) {
+			request.getSession().setAttribute("lastErrorMessage", serviceMessage);
+		}
 
 		request.setAttribute("consumosPendientes", consumosPendientes);
 

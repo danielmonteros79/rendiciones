@@ -75,7 +75,7 @@ public class ParametrosGastosLoadAction extends RestriccionTransaccionAction {
 		
 			request.setAttribute("gastos", gastos);
 		}
-		this.message = service.getMsgAviso();
+		this.setMessage(service.getMsgAviso(), request);
 		
 		return mapping.findForward("parametrosGastoFiltro");
 	}

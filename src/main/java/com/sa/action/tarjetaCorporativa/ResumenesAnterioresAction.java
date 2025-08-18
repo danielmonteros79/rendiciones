@@ -38,7 +38,7 @@ public class ResumenesAnterioresAction extends RestriccionTransaccionAction {
 
 		List<Resumen> resumen = service.getResumenes(this.sessionUserWorking.getIdUser(), request.getParameter("fecha"));
 		request.setAttribute("resumen", resumen);
-		this.message = service.getMsg();
+		this.setMessage(service.getMsg(), request);
 
 		return mapping.findForward("resumen");
 	}

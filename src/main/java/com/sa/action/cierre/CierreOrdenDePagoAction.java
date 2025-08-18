@@ -57,7 +57,7 @@ public class CierreOrdenDePagoAction extends RestriccionTransaccionAction {
 
 		List<Rendicion> rendiciones = service.getDatosRendicion(this.sessionUserWorking.getIdUser(), idRendicion, motivo, user, fechaDesde, fechaHasta);
 		request.setAttribute("rendiciones", rendiciones);
-		this.message = service.getMsg();
+		this.setMessage(service.getMsg(), request);
 
 		return mapping.findForward("cierreOrdenDePago");
 	}
@@ -74,9 +74,9 @@ public class CierreOrdenDePagoAction extends RestriccionTransaccionAction {
 		}
 
 		service.crearOrdenDePago("ORDPG", idRendiciones, this.sessionUserWorking.getIdUser(), null, null);
-		this.message = service.getMsg();
+		String serviceMessage = service.getMsg();
 
-		resp.put("message", this.message);
+		resp.put("message", serviceMessage);
 		return writeJson(response, resp);
 	}
 
@@ -92,9 +92,9 @@ public class CierreOrdenDePagoAction extends RestriccionTransaccionAction {
 		}
 
 		service.crearOrdenDePago("SUSPE",idRendiciones, this.sessionUserWorking.getIdUser(), request.getParameter("descripcion"), request.getParameter("codMotivo"));
-		this.message = service.getMsg();
+		String serviceMessage = service.getMsg();
 
-		resp.put("message", this.message);
+		resp.put("message", serviceMessage);
 		return writeJson(response, resp);
 	}
 }

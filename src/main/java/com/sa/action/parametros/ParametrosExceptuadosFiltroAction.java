@@ -43,7 +43,7 @@ public class ParametrosExceptuadosFiltroAction extends RestriccionTransaccionAct
 
 		List<ParametroExceptuado> exceptuados = service.getExceptuado(request.getParameter("marca"),request.getParameter("motivoUsuario"), this.sessionUserWorking.getIdUser());
 		request.setAttribute("exceptuados", exceptuados);
-		this.message = service.getMsgAviso();
+		this.setMessage(service.getMsgAviso(), request);
 		
 		return mapping.findForward("exceptuados");
 	}
