@@ -39,7 +39,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		StringBuilder messageBuilder = new StringBuilder();
-		Usuario u = this.sessionUserWorking;
+		Usuario u = this.getSessionUserWorking();
 		String action = request.getParameter("action") == null ? "" : request.getParameter("action");
 
 		if (action.equals("getRendicionGastos"))
@@ -234,7 +234,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 		String codMotivo = request.getParameter("codMotivo");
 		
 		
-		if(this.sessionUserWorking.isManejaFacultades()) consumosPendientes = service.getConsumos(this.sessionUserWorking.getIdUser(), fechaDesde, fechaHasta, codMotivo);
+		if(this.getSessionUserWorking().isManejaFacultades()) consumosPendientes = service.getConsumos(this.getSessionUserWorking().getIdUser(), fechaDesde, fechaHasta, codMotivo);
 		String serviceMessage = service.getMsg();
 		if (serviceMessage != null) {
 			request.getSession().setAttribute("lastErrorMessage", serviceMessage);
@@ -253,7 +253,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 
 			String idRendicion = request.getParameter("idRendicion");
 			String estado = request.getParameter("estado");
-			service.activaRechazaRendicion(estado, this.sessionUserWorking.getIdUser(), idRendicion);
+			service.activaRechazaRendicion(estado, this.getSessionUserWorking().getIdUser(), idRendicion);
 
 			if (service.getMsg() != null)
 				resp.put("message", "OK: " + service.getMsg());
@@ -279,7 +279,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			String descRendicion = request.getParameter("desc_rendicion");
 			String excepcion = request.getParameter("cod_estado_doc") != null ?request.getParameter("cod_estado_doc") : "" ;
 			
-			service.modificarRendicion(idRendicion, this.sessionUserWorking.getIdUser(), codMotivo, fechaDesde, fechaHasta, descRendicion, estadoRend,excepcion);
+			service.modificarRendicion(idRendicion, this.getSessionUserWorking().getIdUser(), codMotivo, fechaDesde, fechaHasta, descRendicion, estadoRend,excepcion);
 
 			if (service.getMsg() != null)
 				resp.put("message", "OK: " + service.getMsg());
@@ -322,7 +322,7 @@ public class RendicionDetalleGastosAction extends RestriccionTransaccionAction {
 			String idRendicion = request.getParameter("idRendicion");
 			String idu = request.getParameter("idu");
 			
-			service.cambiarEscanRendicion(idRendicion, this.sessionUserWorking.getIdUser(), idu);
+			service.cambiarEscanRendicion(idRendicion, this.getSessionUserWorking().getIdUser(), idu);
 
 			if (service.getMsg() != null)
 				resp.put("message", "OK: " + service.getMsg());

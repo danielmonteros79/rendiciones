@@ -34,13 +34,13 @@ public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
 			// Verificar que sessionUserWorking no sea null
-			if (this.sessionUserWorking == null) {
+			if (this.getSessionUserWorking() == null) {
 				log.error("sessionUserWorking es null en ListadoRendicionesAction");
 				return writeError(response, new Exception("Sesión de usuario no válida"));
 			}
 			
 			// Verificar que el ID de usuario no sea null o vacío
-			String userId = this.sessionUserWorking.getIdUser();
+			String userId = this.getSessionUserWorking().getIdUser();
 			if (userId == null || userId.trim().isEmpty()) {
 				log.error("ID de usuario es null o vacío en ListadoRendicionesAction");
 				return writeError(response, new Exception("ID de usuario no válido"));
@@ -73,7 +73,7 @@ public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 				dfYYYY_MM_DD.format(DateUtils.dfDDMMYYYY.parse(fechaHastaStr));
 
 		List<Rendicion> rendiciones = service.obtenerListadoRendiciones(
-				this.sessionUserWorking.getIdUser(), id, null, "", "");
+				this.getSessionUserWorking().getIdUser(), id, null, "", "");
 
 		LocalDate filtroDesde = fechaDesdeFormatted.isEmpty() ? null : toLocalDate(dfYYYY_MM_DD.parse(fechaDesdeFormatted));
 		LocalDate filtroHasta = fechaHastaFormatted.isEmpty() ? null : toLocalDate(dfYYYY_MM_DD.parse(fechaHastaFormatted));
@@ -105,7 +105,7 @@ public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 		RendicionesService service = new RendicionesService(samClient);
 	
 		String idRendicion = request.getParameter("idRendicion");
-		service.bajaRendicion(this.sessionUser.getIdUser(), idRendicion);
+		service.bajaRendicion(this.getSessionUser().getIdUser(), idRendicion);
 		resp.put("message", service.getMsg());
 		
 		return writeJson(response, resp);

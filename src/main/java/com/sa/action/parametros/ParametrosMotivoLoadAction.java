@@ -97,13 +97,13 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 	    boolean pagina = true;
 	    
 	    // Verificar que sessionUserWorking no sea null
-	    if (this.sessionUserWorking == null) {
+	    if (this.getSessionUserWorking() == null) {
 	        log.error("sessionUserWorking es null en buscarMotivos");
 	        this.setMessage("Error: Sesión de usuario no válida", request);
 	        return motivosTotales; // Retornar lista vacía si no hay usuario
 	    }
 	    
-	    String userId = this.sessionUserWorking.getIdUser();
+	    String userId = this.getSessionUserWorking().getIdUser();
 	    if (userId == null || userId.trim().isEmpty()) {
 	        log.error("ID de usuario es null o vacío");
 	        this.setMessage("Error: ID de usuario no válido", request);

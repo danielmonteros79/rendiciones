@@ -125,8 +125,11 @@ public class CuadroGeneralLoadAction extends RestriccionTransaccionAction {
 	private List<String> transformMotivosList(List<ComboMotivo> motivo) {
 		List<String> motivos = new ArrayList<>(motivo.size());
 		for (ComboMotivo motivoItem : motivo) {
-			String mot = "3" + motivoItem.getDescripcion();
-			motivos.add(mot != null ? mot : null);
+			String descripcion = motivoItem.getDescripcion();
+			if (descripcion != null) {
+				String mot = "3" + descripcion;
+				motivos.add(mot);
+			}
 		}
 		return motivos;
 	}

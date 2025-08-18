@@ -34,13 +34,13 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		// Verificar que sessionUserWorking no sea null
-		if (this.sessionUserWorking == null) {
+		if (this.getSessionUserWorking() == null) {
 			log.error("sessionUserWorking es null en AprobacionDetalleAction");
 			return writeError(response, new Exception("Sesión de usuario no válida"));
 		}
 		
 		// Verificar que el ID de usuario no sea null o vacío
-		String userId = this.sessionUserWorking.getIdUser();
+		String userId = this.getSessionUserWorking().getIdUser();
 		if (userId == null || userId.trim().isEmpty()) {
 			log.error("ID de usuario es null o vacío en AprobacionDetalleAction");
 			return writeError(response, new Exception("ID de usuario no válido"));
@@ -71,7 +71,7 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 				AprobacionesService aprobacionesService = new AprobacionesService(samClient);
 	
 				List<Rendicion> aprobaciones = aprobacionesService.getAprobacionesPendientes(idRendicion, "", "", request.getParameter("glg"),
-						this.sessionUserWorking.getIdUser());
+						this.getSessionUserWorking().getIdUser());
 				if (aprobaciones.size() == 0) {
 					request.setAttribute("Rendicion", new Rendicion());
 					request.getSession().setAttribute("lastErrorMessage", "ERROR: APROBACION INEXISTENTE");
@@ -156,7 +156,7 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			Map<String, Object> resp = new HashMap<String, Object>();
 
 			AprobacionesService service = new AprobacionesService(samClient);
-			String serviceMessage = service.cambiarEstadoDeUnaRendicion(this.sessionUserWorking.getIdUser(), request.getParameter("idRendicion"), "APROB", 
+			String serviceMessage = service.cambiarEstadoDeUnaRendicion(this.getSessionUserWorking().getIdUser(), request.getParameter("idRendicion"), "APROB", 
 					request.getParameter("comentario"), request.getParameter("glg"));
 	
 			if (serviceMessage != null && serviceMessage.equalsIgnoreCase("OPERACION EFECTUADA"))
@@ -176,7 +176,7 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			Map<String, Object> resp = new HashMap<String, Object>();
 
 			AprobacionesService service = new AprobacionesService(samClient);
-			String serviceMessage = service.cambiarEstadoDeUnaRendicion(this.sessionUserWorking.getIdUser(), request.getParameter("idRendicion"), "RECHA", 
+			String serviceMessage = service.cambiarEstadoDeUnaRendicion(this.getSessionUserWorking().getIdUser(), request.getParameter("idRendicion"), "RECHA", 
 					request.getParameter("motivo") + " - " + request.getParameter("descripcion"), request.getParameter("glg"));
 			if (serviceMessage != null && serviceMessage.equalsIgnoreCase("OPERACION EFECTUADA"))
 				serviceMessage = "OK: RECHAZO CORRECTAMENTE LA RENDICION";
@@ -195,7 +195,7 @@ public class AprobacionDetalleAction extends RestriccionTransaccionAction {
 			Map<String, Object> resp = new HashMap<String, Object>();
 
 			AprobacionesService service = new AprobacionesService(samClient);
-			String serviceMessage = service.cambiarEstadoDeUnaRendicion(this.sessionUserWorking.getIdUser(), request.getParameter("idRendicion"), "OBSER", 
+			String serviceMessage = service.cambiarEstadoDeUnaRendicion(this.getSessionUserWorking().getIdUser(), request.getParameter("idRendicion"), "OBSER", 
 					request.getParameter("motivo") + " - " + request.getParameter("descripcion"), request.getParameter("glg"));
 			if (serviceMessage != null && serviceMessage.equalsIgnoreCase("OPERACION EFECTUADA"))
 				serviceMessage = "OK: OBSERVACION DADA DE ALTA CORRECTAMENTE";

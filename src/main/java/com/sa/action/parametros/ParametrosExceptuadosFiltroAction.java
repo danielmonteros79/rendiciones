@@ -41,7 +41,7 @@ public class ParametrosExceptuadosFiltroAction extends RestriccionTransaccionAct
 	private ActionForward filtrar(ActionMapping mapping, SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ParametrosService service = new ParametrosService(samClient);
 
-		List<ParametroExceptuado> exceptuados = service.getExceptuado(request.getParameter("marca"),request.getParameter("motivoUsuario"), this.sessionUserWorking.getIdUser());
+		List<ParametroExceptuado> exceptuados = service.getExceptuado(request.getParameter("marca"),request.getParameter("motivoUsuario"), this.getSessionUserWorking().getIdUser());
 		request.setAttribute("exceptuados", exceptuados);
 		this.setMessage(service.getMsgAviso(), request);
 		

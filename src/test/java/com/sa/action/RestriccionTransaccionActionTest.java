@@ -299,11 +299,11 @@ public class RestriccionTransaccionActionTest {
         
         // Make these fields accessible for testing
         public Usuario getSessionUser() {
-            return this.sessionUser;
+            return super.getSessionUser();
         }
         
         public Usuario getSessionUserWorking() {
-            return this.sessionUserWorking;
+            return super.getSessionUserWorking();
         }
         
         @Override

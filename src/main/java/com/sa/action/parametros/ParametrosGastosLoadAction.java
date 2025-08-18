@@ -55,7 +55,7 @@ public class ParametrosGastosLoadAction extends RestriccionTransaccionAction {
 		
 		List<ParametroGasto> gastos = new ArrayList<ParametroGasto>();
 		try {
-			gastos = service.getGastos(this.sessionUserWorking.getIdUser(),codGasto, codMotivo);
+			gastos = service.getGastos(this.getSessionUserWorking().getIdUser(),codGasto, codMotivo);
 		}catch(Exception e) {
 			System.out.println("PASOPORACA: " + e.getMessage());
 		}

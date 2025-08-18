@@ -42,7 +42,7 @@ public class ParametrosMotivoFiltroAction extends RestriccionTransaccionAction {
 		if (request.getParameter("codigo") != null && !request.getParameter("codigo").trim().equals(""))
 			codMotivo = String.format("%04d", Integer.parseInt(request.getParameter("codigo")));
 		
-		List<ParametroMotivo> motivos = service.getMotivos(codMotivo, this.sessionUserWorking.getIdUser(), "");
+		List<ParametroMotivo> motivos = service.getMotivos(codMotivo, this.getSessionUserWorking().getIdUser(), "");
 		
 		request.setAttribute("motivos", motivos);
 		this.setMessage(service.getMsgAviso(), request);

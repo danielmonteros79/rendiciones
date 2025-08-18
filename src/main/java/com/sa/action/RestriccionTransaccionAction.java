@@ -27,8 +27,10 @@ import org.apache.commons.text.StringEscapeUtils;
 
 public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
-	protected volatile Usuario sessionUser;
-	protected volatile Usuario sessionUserWorking;
+	
+	// Thread-local storage for session users to avoid mutable instance fields
+	private static final ThreadLocal<Usuario> threadLocalSessionUser = new ThreadLocal<>();
+	private static final ThreadLocal<Usuario> threadLocalSessionUserWorking = new ThreadLocal<>();
 
 	private static final String ERROR = "error";
 	private static final String STATUS = "status";
@@ -43,8 +45,8 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 				throw new SessionTimeOutException("Finalizo tiempo en sesion.");
 		}
 
-		this.sessionUser = (Usuario) arg4.getSession().getAttribute(USUARIO);
-		this.sessionUserWorking = (Usuario) arg4.getSession().getAttribute("userWorking");
+		this.setSessionUser((Usuario) arg4.getSession().getAttribute(USUARIO));
+		this.setSessionUserWorking((Usuario) arg4.getSession().getAttribute("userWorking"));
 
 		String user = ((Usuario) arg4.getSession().getAttribute(USUARIO)).getIdUser();
 		// SE SETEA EL USUARIO LOGUEADO A SAM WEB CLIENT.
@@ -54,7 +56,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		// Sanitize user input before logging to prevent log injection attacks
 		String sanitizedAction = action.replaceAll("[\r\n\t]", "_").replaceAll("[\\p{Cntrl}]", "");
 
-		log.info("Class: " + this.getClass().getName() + " - User: " + this.sessionUser.getIdUser() + " - UserWorking: " + this.sessionUserWorking.getIdUser() +
+		log.info("Class: " + this.getClass().getName() + " - User: " + this.getSessionUser().getIdUser() + " - UserWorking: " + this.getSessionUserWorking().getIdUser() +
 								 " - Action: " + sanitizedAction);
 
 		if (action.equals("getMessage"))
@@ -208,18 +210,18 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 
 	// Getters y Setters implementados por AWSoftware para facilitar el acceso a estas variables en pruebas unitarias.
 	public Usuario getSessionUser() {
-		return sessionUser;
+		return threadLocalSessionUser.get();
 	}
 	public Usuario getSessionUserWorking() {
-		return sessionUserWorking;
+		return threadLocalSessionUserWorking.get();
 	}
 
 	public void setSessionUser(Usuario sessionUser) {
-		this.sessionUser = sessionUser;
+		threadLocalSessionUser.set(sessionUser);
 	}
 
 	public void setSessionUserWorking(Usuario sessionUserWorking) {
-		this.sessionUserWorking = sessionUserWorking;
+		threadLocalSessionUserWorking.set(sessionUserWorking);
 	}
 
 	/**
@@ -231,6 +233,15 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		if (serviceMessage != null && !serviceMessage.trim().isEmpty()) {
 			request.getSession().setAttribute("lastErrorMessage", serviceMessage);
 		}
+	}
+
+	/**
+	 * Clean up ThreadLocal variables to prevent memory leaks.
+	 * Should be called at the end of request processing.
+	 */
+	protected void cleanupThreadLocals() {
+		threadLocalSessionUser.remove();
+		threadLocalSessionUserWorking.remove();
 	}
 }
 

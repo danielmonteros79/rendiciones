@@ -210,6 +210,35 @@ class CuadroGeneralLoadActionTest {
     }
 
     @Test
+    @DisplayName("Test transformMotivosList method with null descriptions")
+    void testTransformMotivosListWithNullDescriptions() throws Exception {
+        // given
+        List<ComboMotivo> motivos = new ArrayList<>();
+        ComboMotivo motivo1 = new ComboMotivo();
+        motivo1.setDescripcion("ValidDescription");
+        ComboMotivo motivo2 = new ComboMotivo();
+        motivo2.setDescripcion(null); // null description should be filtered out
+        ComboMotivo motivo3 = new ComboMotivo();
+        motivo3.setDescripcion("AnotherValid");
+        motivos.add(motivo1);
+        motivos.add(motivo2);
+        motivos.add(motivo3);
+
+        // when
+        Method method = CuadroGeneralLoadAction.class.getDeclaredMethod("transformMotivosList", List.class);
+        method.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        List<String> result = (List<String>) method.invoke(cuadroGeneralLoadAction, motivos);
+
+        // then
+        assertAll(
+                () -> assertEquals(2, result.size()), // Only non-null descriptions should be included
+                () -> assertEquals("3ValidDescription", result.get(0)),
+                () -> assertEquals("3AnotherValid", result.get(1))
+        );
+    }
+
+    @Test
     @DisplayName("Test buildMessageFromService method")
     void testBuildMessageFromService() throws Exception {
         // given

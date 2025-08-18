@@ -44,7 +44,7 @@ public class CierreTarjetaAction extends RestriccionTransaccionAction {
 			throws Exception {
 		CierreService service = new CierreService(samClient);
 		
-		List<CierreTarjeta> cierreTarjeta = service.getCierreTarjeta("F", request.getParameter("usuario"), this.sessionUserWorking.getIdUser());
+		List<CierreTarjeta> cierreTarjeta = service.getCierreTarjeta("F", request.getParameter("usuario"), this.getSessionUserWorking().getIdUser());
 		request.setAttribute("cierreTarjeta", cierreTarjeta);
 		this.setMessage(service.getMsg(), request);
 
@@ -61,7 +61,7 @@ public class CierreTarjetaAction extends RestriccionTransaccionAction {
 		for (Object object : idConsumosJSON) {
 			idConsumos.add(Integer.parseInt((String) object));
 		}
-		service.generarCierreTarjeta(request.getParameter("usuario"), this.sessionUserWorking.getIdUser(), idConsumos, 
+		service.generarCierreTarjeta(request.getParameter("usuario"), this.getSessionUserWorking().getIdUser(), idConsumos, 
 				Double.parseDouble(request.getParameter("totalPesos")), Double.parseDouble(request.getParameter("totalDolares")),
 				request.getParameter("motivo"),request.getParameter("tipoGasto"));
 		String serviceMessage = service.getMsg();
