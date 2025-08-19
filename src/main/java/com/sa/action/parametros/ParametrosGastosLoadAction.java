@@ -35,7 +35,8 @@ public class ParametrosGastosLoadAction extends RestriccionTransaccionAction {
 			
 
 		} catch (Exception e) {
-			request.setAttribute("message", "ERROR: " + e.getCause().getMessage());
+			String errorMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			request.setAttribute("message", "ERROR: " + errorMessage);
 		}
 		
 		
