@@ -116,5 +116,10 @@ public class ListadoRendicionesAction extends RestriccionTransaccionAction {
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
+	@Override
+    public ActionForward writeError(HttpServletResponse response, Exception e) throws com.sa.exceptions.JsonResponseException {
+        return super.writeError(response, e);
+    }
+
 
 }

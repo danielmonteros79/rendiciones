@@ -152,7 +152,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	    return null;
 	}
 
-	protected ActionForward writeError(HttpServletResponse response, Exception e) throws JsonResponseException {
+	public ActionForward writeError(HttpServletResponse response, Exception e) throws JsonResponseException {
 	    response.setContentType("application/json; charset=UTF-8");
 	    try (PrintWriter writer = response.getWriter()) {
 	        Map<String, Object> resp = new HashMap<>();
