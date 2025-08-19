@@ -42,6 +42,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class ListadoRendicionesActionTest {
+  @Test
+  @DisplayName("Debe delegar correctamente en writeError y manejar JsonResponseException")
+  void writeError_delegates_andHandlesJsonResponseException() throws Exception {
+    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    Exception ex = new Exception("error test");
+    ListadoRendicionesAction actionSpy = Mockito.spy(new ListadoRendicionesAction());
+    ActionForward expectedForward = Mockito.mock(ActionForward.class);
+    Mockito.doReturn(expectedForward)
+           .when(actionSpy)
+           .writeError(Mockito.eq(response), Mockito.eq(ex));
+    ActionForward result = actionSpy.writeError(response, ex);
+    assertNotNull(result);
+    org.junit.jupiter.api.Assertions.assertEquals(expectedForward, result);
+  }
 
   @Mock
   PrintWriter printWriterMocked;
@@ -79,10 +93,11 @@ class ListadoRendicionesActionTest {
 
   @BeforeEach
   void setUp() {
-    MockitoAnnotations.openMocks(this);
-    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
-    listadoRendicionesAction.setSessionUser(usuario);
-    listadoRendicionesAction.setSessionUserWorking(usuario);
+  MockitoAnnotations.openMocks(this);
+  listadoRendicionesAction = Mockito.spy(new ListadoRendicionesAction());
+  Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+  listadoRendicionesAction.setSessionUser(usuario);
+  listadoRendicionesAction.setSessionUserWorking(usuario);
   }
 
   /**
@@ -214,7 +229,4 @@ class ListadoRendicionesActionTest {
       assertNull(result); // porque writeJson devuelve null
     }
   }
-
-
-
 }

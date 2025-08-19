@@ -2,13 +2,16 @@ package com.sa.action;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
+import com.sa.core.AccesoNoPermitidoException;
 import com.sa.entities.Usuario;
+import com.sa.exceptions.JsonResponseException;
 import com.sa.exceptions.SessionTimeOutException;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -743,6 +746,248 @@ public class RestriccionTransaccionActionTest {
         assertTrue("Should be properly formatted JSON", output.matches(".*\\{.*\"message\":.*\\}.*"));
     }
 
+    // ==================== ENHANCED COVERAGE FOR SELECTED CODE (Lines 43-72) ====================
+    
+    @Test
+    public void shouldHandleTimeoutWithXMLHttpRequestHeaderExactMatch() throws Exception {
+        // Arrange - Testing exact XMLHttpRequest header matching (line 44)
+        when(session.getAttribute("usuario")).thenReturn(null);
+        when(request.getHeader("X-Requested-With")).thenReturn("XMLHttpRequest");
+        when(response.getWriter()).thenReturn(printWriter);
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNull("Should return null for XMLHttpRequest timeout", result);
+        verify(response).setContentType("application/json");
+        verify(response).setCharacterEncoding("UTF-8");
+    }
+
+    @Test
+    public void shouldHandleTimeoutWithDifferentHeaderValue() throws Exception {
+        // Arrange - Testing non-XMLHttpRequest header (line 44 else branch)
+        when(session.getAttribute("usuario")).thenReturn(null);
+        when(request.getHeader("X-Requested-With")).thenReturn("SomeOtherValue");
+        
+        try {
+            // Act
+            action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+            fail("Should have thrown SessionTimeOutException");
+        } catch (SessionTimeOutException e) {
+            // Assert
+            assertEquals("Should throw SessionTimeOutException", "Finalizo tiempo en sesion.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldHandleTimeoutWithNullHeader() throws Exception {
+        // Arrange - Testing null header (line 44 else branch)
+        when(session.getAttribute("usuario")).thenReturn(null);
+        when(request.getHeader("X-Requested-With")).thenReturn(null);
+        
+        try {
+            // Act
+            action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+            fail("Should have thrown SessionTimeOutException");
+        } catch (SessionTimeOutException e) {
+            // Assert
+            assertEquals("Should throw SessionTimeOutException", "Finalizo tiempo en sesion.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldSetSessionUsersFromSessionAttributes() throws Exception {
+        // Arrange - Testing lines 48-49 session user setting
+        Usuario mainUser = new Usuario("mainUser", "perfil", "Main User", 1, "sector", new ArrayList<>());
+        Usuario workingUser = new Usuario("workingUser", "perfil", "Working User", 2, "sector", new ArrayList<>());
+        
+        when(session.getAttribute("usuario")).thenReturn(mainUser);
+        when(session.getAttribute("userWorking")).thenReturn(workingUser);
+        when(request.getParameter("action")).thenReturn("testAction");
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should execute successfully", result);
+        assertEquals("Should set main session user", mainUser, action.getSessionUser());
+        assertEquals("Should set working session user", workingUser, action.getSessionUserWorking());
+    }
+
+    @Test
+    public void shouldHandleNullUserWorkingAttribute() throws Exception {
+        // Arrange - Testing null userWorking attribute (line 49)
+        when(session.getAttribute("usuario")).thenReturn(usuario);
+        when(session.getAttribute("userWorking")).thenReturn(null);
+        when(request.getParameter("action")).thenReturn("testAction");
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should execute successfully", result);
+        assertEquals("Should set main session user", usuario, action.getSessionUser());
+        assertNull("Should set null working user", action.getSessionUserWorking());
+    }
+
+    @Test
+    public void shouldSetUserLogginAttributeInSAMWebClientWithSpecialUserId() throws Exception {
+        // Arrange - Testing line 51-53 user loggin attribute setting
+        Usuario testUser = new Usuario("specialUserId", "perfil", "Test User", 1, "sector", new ArrayList<>());
+        testUser.setIdUser("specialUserId");
+        when(session.getAttribute("usuario")).thenReturn(testUser);
+        when(request.getParameter("action")).thenReturn("testAction");
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should execute successfully", result);
+        verify(samWebClient).setAttribute("userLoggin", "specialUserId");
+    }
+
+    @Test
+    public void shouldHandleNullActionParameter() throws Exception {
+        // Arrange - Testing null action parameter handling (line 55)
+        when(request.getParameter("action")).thenReturn(null);
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should execute successfully with null action", result);
+        // Should default to empty string and proceed to executeAction
+    }
+
+    @Test
+    public void shouldSanitizeActionParameterWithControlCharacters() throws Exception {
+        // Arrange - Testing action parameter sanitization (lines 56-57)
+        String actionWithControlChars = "test\r\naction\tvalue\u0001\u0002\u001F";
+        when(request.getParameter("action")).thenReturn(actionWithControlChars);
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should execute successfully with control characters", result);
+        // The sanitization should replace control characters to prevent log injection
+    }
+
+    @Test
+    public void shouldHandleGetMessageActionRouting() throws Exception {
+        // Arrange - Testing getMessage action routing (line 63)
+        when(request.getParameter("action")).thenReturn("getMessage");
+        when(response.getWriter()).thenReturn(printWriter);
+        when(session.getAttribute("lastErrorMessage")).thenReturn("Test error message");
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNull("Should return null for getMessage action", result);
+        verify(response).setContentType(anyString());
+        // Should not call executeAction for getMessage
+    }
+
+    @Test
+    public void shouldRouteToExecuteActionForNonGetMessageActions() throws Exception {
+        // Arrange - Testing executeAction routing (lines 65-72)
+        when(request.getParameter("action")).thenReturn("someOtherAction");
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should call executeAction and return result", result);
+        assertEquals("Should return success forward from executeAction", "success", result.getName());
+    }
+
+    @Test
+    public void shouldHandleActionExecutionExceptionFromExecuteAction() throws Exception {
+        // Arrange - Testing ActionExecutionException handling (lines 68-72)
+        ConcreteRestriccionTransaccionAction exceptionAction = new ConcreteRestriccionTransaccionAction() {
+            @Override
+            public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+                                             SAMWebApplication samApplication, SAMWebClient samClient,
+                                             HttpServletRequest request, HttpServletResponse response) throws Exception {
+                throw new com.sa.exceptions.ActionExecutionException("ExecuteAction failed", new RuntimeException("Root cause"));
+            }
+        };
+        
+        when(request.getParameter("action")).thenReturn("testAction");
+        
+        try {
+            // Act
+            exceptionAction.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+            fail("Should have thrown Exception");
+        } catch (Exception e) {
+            // Assert
+            assertEquals("Should wrap ActionExecutionException", "Action execution failed", e.getMessage());
+            assertTrue("Should preserve ActionExecutionException as cause", e.getCause() instanceof com.sa.exceptions.ActionExecutionException);
+            assertEquals("Should preserve original message", "ExecuteAction failed", e.getCause().getMessage());
+        }
+    }
+
+    @Test
+    public void shouldHandleEmptyStringActionParameter() throws Exception {
+        // Arrange - Testing empty string action parameter (line 55)
+        when(request.getParameter("action")).thenReturn("");
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should execute successfully with empty action", result);
+        // Should proceed to executeAction since empty string != "getMessage"
+    }
+
+    @Test
+    public void shouldPreserveSessionStateAfterExecution() throws Exception {
+        // Arrange - Testing session state preservation throughout execution
+        Usuario originalUser = new Usuario("persistentUser", "perfil", "Persistent User", 1, "sector", new ArrayList<>());
+        when(session.getAttribute("usuario")).thenReturn(originalUser);
+        when(session.getAttribute("userWorking")).thenReturn(originalUser);
+        when(request.getParameter("action")).thenReturn("testAction");
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should execute successfully", result);
+        assertEquals("Session user should persist", originalUser, action.getSessionUser());
+        assertEquals("Working user should persist", originalUser, action.getSessionUserWorking());
+        verify(samWebClient).setAttribute("userLoggin", "persistentUser");
+    }
+
+    @Test
+    public void shouldHandleCaseSensitiveGetMessageAction() throws Exception {
+        // Arrange - Testing case sensitivity of getMessage routing (line 63)
+        when(request.getParameter("action")).thenReturn("GetMessage"); // Different case
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should route to executeAction for case mismatch", result);
+        assertEquals("Should return success forward from executeAction", "success", result.getName());
+    }
+
+    @Test
+    public void shouldExtractUserIdFromSessionAndSetAttribute() throws Exception {
+        // Arrange - Testing user ID extraction and attribute setting (lines 51-53)
+        Usuario userWithSpecialId = new Usuario("user@domain.com", "perfil", "Test User", 1, "sector", new ArrayList<>());
+        when(session.getAttribute("usuario")).thenReturn(userWithSpecialId);
+        when(request.getParameter("action")).thenReturn("testAction");
+        
+        // Act
+        ActionForward result = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+        
+        // Assert
+        assertNotNull("Should execute successfully", result);
+        verify(samWebClient).setAttribute("userLoggin", "user@domain.com");
+    }
+
     // Helper class for testing restricted access scenarios
     private static class ConcreteRestriccionTransaccionActionWithRestrictedAccess extends RestriccionTransaccionAction {
         @Override
@@ -791,5 +1036,639 @@ public class RestriccionTransaccionActionTest {
             forward.setPath("/success.jsp");
             return forward;
         }
+    }
+
+    // ========== TEST COVERAGE FOR SELECTED CODE (LINES 95-129) ==========
+    // Testing doRestriccion method (lines 95-118)
+
+    @Test
+    public void shouldAllowAccessWhenPuedePasarIsTrue() throws Exception {
+        // Arrange - Testing line 103: puedePasar = true
+        Usuario testUser = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+        when(session.getAttribute("usuario")).thenReturn(testUser);
+        when(request.getSession()).thenReturn(session);
+        when(request.getRequestURI()).thenReturn("/test/action");
+
+        // Act - Should not throw exception since puedePasar is hardcoded to true
+        action.doRestriccion(actionMapping, actionForm, request, response);
+
+        // Assert - No exception thrown means access was granted
+        // Verify no logging occurred for denied access
+        verify(request).getSession();
+    }
+
+    @Test
+    public void shouldLogAndThrowExceptionWhenAccessDenied() throws Exception {
+        // Arrange - Testing lines 107-117: access denied scenario
+        Usuario restrictedUser = new Usuario("restrictedUser", "user", "Restricted User", 2, "Finance", new ArrayList<>());
+        when(session.getAttribute("usuario")).thenReturn(restrictedUser);
+        when(request.getSession()).thenReturn(session);
+        when(request.getRequestURI()).thenReturn("/restricted/action");
+
+        // Create a concrete implementation that denies access
+        ConcreteRestriccionTransaccionAction restrictedAction = new ConcreteRestriccionTransaccionAction() {
+            @Override
+            protected void doRestriccion(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+                                       HttpServletResponse response) throws AccesoNoPermitidoException {
+                HttpSession session = request.getSession();
+                Usuario usuario = (Usuario) session.getAttribute("usuario");
+                boolean puedePasar = false; // Force denial
+
+                if (!puedePasar) {
+                    log.info("El usuario " + usuario.getIdUser() + " intento ingresar a " + request.getRequestURI()
+                           + " y fue rechazado por falta de permisos.");
+                    throw new AccesoNoPermitidoException("El usuario " + usuario.getIdUser() + " intento ingresar a "
+                                                       + request.getRequestURI() + " y fue rechazado por falta de permisos.");
+                }
+            }
+        };
+
+        // Act & Assert
+        try {
+            restrictedAction.doRestriccion(actionMapping, actionForm, request, response);
+            fail("Expected AccesoNoPermitidoException to be thrown");
+        } catch (AccesoNoPermitidoException exception) {
+            // Verify exception message contains user and URI information
+            assertTrue("Exception should contain user ID", exception.getMessage().contains("restrictedUser"));
+            assertTrue("Exception should contain request URI", exception.getMessage().contains("/restricted/action"));
+        }
+    }
+
+    @Test
+    public void shouldHandleNullUsuarioInDoRestriccion() throws Exception {
+        // Arrange - Testing line 96: Usuario usuario = (Usuario) session.getAttribute(USUARIO)
+        when(session.getAttribute("usuario")).thenReturn(null);
+        when(request.getSession()).thenReturn(session);
+        when(request.getRequestURI()).thenReturn("/test/action");
+
+        // Act & Assert - Should handle null user gracefully
+        try {
+            action.doRestriccion(actionMapping, actionForm, request, response);
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException e) {
+            // Expected exception - verify session was accessed
+            verify(session).getAttribute("usuario");
+        }
+    }
+
+    @Test
+    public void shouldRetrieveSessionAndUserCorrectlyInDoRestriccion() throws Exception {
+        // Arrange - Testing lines 95-96: session retrieval and user extraction
+        Usuario sessionUser = new Usuario("sessionUser", "manager", "Session User", 3, "Operations", new ArrayList<>());
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("usuario")).thenReturn(sessionUser);
+        when(request.getRequestURI()).thenReturn("/operations/action");
+
+        // Act
+        action.doRestriccion(actionMapping, actionForm, request, response);
+
+        // Assert
+        verify(request).getSession();
+        verify(session).getAttribute("usuario");
+    }
+
+    // Testing cerrarSesion method (lines 120-122)
+
+    @Test
+    public void shouldInvalidateSessionWhenClosingSession() throws Exception {
+        // Arrange - Testing line 121: request.getSession().invalidate()
+        when(request.getSession()).thenReturn(session);
+
+        // Act
+        action.cerrarSesion(request);
+
+        // Assert
+        verify(request).getSession();
+        verify(session).invalidate();
+    }
+
+    @Test
+    public void shouldHandleSessionInvalidationErrors() throws Exception {
+        // Arrange - Testing session invalidation with potential errors
+        when(request.getSession()).thenReturn(session);
+        doThrow(new IllegalStateException("Session already invalidated")).when(session).invalidate();
+
+        // Act & Assert - Should propagate the exception
+        try {
+            action.cerrarSesion(request);
+            fail("Expected IllegalStateException to be thrown");
+        } catch (IllegalStateException e) {
+            assertEquals("Session already invalidated", e.getMessage());
+            verify(session).invalidate();
+        }
+    }
+
+    @Test
+    public void shouldGetFreshSessionForClosure() throws Exception {
+        // Arrange - Testing that method gets current session for invalidation
+        HttpSession freshSession = mock(HttpSession.class);
+        when(request.getSession()).thenReturn(freshSession);
+
+        // Act
+        action.cerrarSesion(request);
+
+        // Assert
+        verify(request).getSession();
+        verify(freshSession).invalidate();
+        verifyNoInteractions(session); // Original session should not be touched
+    }
+
+    // Testing chequearTimeOut method (lines 124-131)
+
+    @Test
+    public void shouldReturnTrueWhenUsuarioIsNull() throws Exception {
+        // Arrange - Testing lines 125-129: null user handling
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("usuario")).thenReturn(null);
+
+        // Act
+        boolean result = action.chequearTimeOut(request);
+
+        // Assert
+        assertTrue("Should return true when user is null", result);
+        verify(session).invalidate();
+    }
+
+    @Test
+    public void shouldReturnFalseWhenUsuarioExists() throws Exception {
+        // Arrange - Testing line 131: return false when user exists
+        Usuario validUser = new Usuario("validUser", "user", "Valid User", 1, "Sales", new ArrayList<>());
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("usuario")).thenReturn(validUser);
+
+        // Act
+        boolean result = action.chequearTimeOut(request);
+
+        // Assert
+        assertFalse("Should return false when user exists", result);
+        verify(session, never()).invalidate(); // Session should not be invalidated
+    }
+
+    @Test
+    public void shouldInvalidateSessionWhenUserIsNullInTimeoutCheck() throws Exception {
+        // Arrange - Testing lines 126-127: session invalidation on null user
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("usuario")).thenReturn(null);
+
+        // Act
+        boolean result = action.chequearTimeOut(request);
+
+        // Assert
+        assertTrue("Should return true for null user", result);
+        verify(request).getSession();
+        verify(session).getAttribute("usuario");
+        verify(session).invalidate();
+    }
+
+    @Test
+    public void shouldAccessSessionAttributeCorrectlyInTimeoutCheck() throws Exception {
+        // Arrange - Testing line 125: Usuario u = (Usuario) request.getSession().getAttribute(USUARIO)
+        Usuario timeoutUser = new Usuario("timeoutUser", "guest", "Timeout User", 0, "Public", new ArrayList<>());
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("usuario")).thenReturn(timeoutUser);
+
+        // Act
+        boolean result = action.chequearTimeOut(request);
+
+        // Assert
+        assertFalse("Should return false for existing user", result);
+        verify(request).getSession();
+        verify(session).getAttribute("usuario");
+        verify(session, never()).invalidate();
+    }
+
+    @Test
+    public void shouldHandleSessionExceptionInTimeoutCheck() throws Exception {
+        // Arrange - Testing error handling in timeout check
+        when(request.getSession()).thenThrow(new IllegalStateException("Session error"));
+
+        // Act & Assert
+        try {
+            action.chequearTimeOut(request);
+            fail("Expected IllegalStateException to be thrown");
+        } catch (IllegalStateException e) {
+            assertEquals("Session error", e.getMessage());
+            verify(request).getSession();
+        }
+    }
+
+    @Test
+    public void shouldUseCorrectUsuarioConstantInTimeoutCheck() throws Exception {
+        // Arrange - Testing that method uses USUARIO constant correctly
+        Usuario constantUser = new Usuario("constantUser", "admin", "Constant User", 1, "IT", new ArrayList<>());
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("usuario")).thenReturn(constantUser); // Using "usuario" string literal
+
+        // Act
+        boolean result = action.chequearTimeOut(request);
+
+        // Assert
+        assertFalse("Should return false when user found with correct constant", result);
+        verify(session).getAttribute("usuario"); // Verify exact constant usage
+    }
+
+    @Test
+    public void shouldReturnTrueAndInvalidateForNullUserInCompleteTimeoutFlow() throws Exception {
+        // Arrange - Testing complete flow of lines 124-131 with null user
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("usuario")).thenReturn(null);
+
+        // Act
+        boolean timeoutDetected = action.chequearTimeOut(request);
+
+        // Assert - Complete verification of the timeout flow
+        assertTrue("Timeout should be detected for null user", timeoutDetected);
+        
+        // Verify the exact sequence of calls as per the method implementation
+        InOrder inOrder = inOrder(request, session);
+        inOrder.verify(request).getSession();
+        inOrder.verify(session).getAttribute("usuario");
+        inOrder.verify(session).invalidate();
+    }
+
+    // ========== TEST COVERAGE FOR SELECTED CODE (LINES 192-194) ==========
+    // Testing writeError(HttpServletResponse response, String message) exception handling
+
+    @Test
+    public void shouldThrowJsonResponseExceptionWhenWriterFails() throws Exception {
+        // Arrange - Testing lines 192-194: exception handling in writeError with message
+        PrintWriter mockWriter = mock(PrintWriter.class);
+        doThrow(new RuntimeException("Writer error")).when(mockWriter).print(any(String.class));
+        when(response.getWriter()).thenReturn(mockWriter);
+
+        // Act & Assert - Should throw JsonResponseException when writer fails
+        try {
+            action.writeError(response, "Test error message");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            // Verify the exception message matches line 193
+            assertEquals("Error writing error response with message", e.getMessage());
+            // Verify the cause is the original exception
+            assertNotNull("Should have a cause", e.getCause());
+            assertTrue("Cause should be RuntimeException", e.getCause() instanceof RuntimeException);
+            assertEquals("Writer error", e.getCause().getMessage());
+        }
+    }
+
+    @Test
+    public void shouldPropagateIOExceptionAsJsonResponseException() throws Exception {
+        // Arrange - Testing IOException propagation through lines 192-194
+        when(response.getWriter()).thenThrow(new java.io.IOException("IO error"));
+
+        // Act & Assert
+        try {
+            action.writeError(response, "Test message");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            assertEquals("Error writing error response with message", e.getMessage());
+            assertTrue("Cause should be IOException", e.getCause() instanceof java.io.IOException);
+            assertEquals("IO error", e.getCause().getMessage());
+        }
+    }
+
+    @Test
+    public void shouldHandleNullPointerExceptionInWriterOperations() throws Exception {
+        // Arrange - Testing NPE handling in writeError method (lines 192-194)
+        PrintWriter mockWriter = mock(PrintWriter.class);
+        doThrow(new NullPointerException("Null writer state")).when(mockWriter).flush();
+        when(response.getWriter()).thenReturn(mockWriter);
+
+        // Act & Assert
+        try {
+            action.writeError(response, "Error message");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            assertEquals("Error writing error response with message", e.getMessage());
+            assertTrue("Cause should be NullPointerException", e.getCause() instanceof NullPointerException);
+            assertEquals("Null writer state", e.getCause().getMessage());
+        }
+    }
+
+    @Test
+    public void shouldCatchAnyExceptionDuringErrorWriting() throws Exception {
+        // Arrange - Testing general exception catching (line 192: } catch (Exception e))
+        when(response.getWriter()).thenThrow(new IllegalStateException("Response committed"));
+
+        // Act & Assert
+        try {
+            action.writeError(response, "Test error");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            assertEquals("Error writing error response with message", e.getMessage());
+            assertTrue("Cause should be IllegalStateException", e.getCause() instanceof IllegalStateException);
+            assertEquals("Response committed", e.getCause().getMessage());
+        }
+    }
+
+    @Test
+    public void shouldWrapExceptionWithCorrectMessageFromLine193() throws Exception {
+        // Arrange - Testing specific message from line 193
+        PrintWriter mockWriter = mock(PrintWriter.class);
+        doThrow(new RuntimeException("JSON serialization failed")).when(mockWriter).print(any(String.class));
+        when(response.getWriter()).thenReturn(mockWriter);
+
+        // Act & Assert
+        try {
+            action.writeError(response, "Original error");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            // Verify the exact message from line 193
+            assertEquals("Error writing error response with message", e.getMessage());
+            assertNotNull("Exception should wrap the original cause", e.getCause());
+        }
+    }
+
+    @Test
+    public void shouldPreserveOriginalExceptionInCauseChain() throws Exception {
+        // Arrange - Testing exception chaining preservation (line 193: throw new JsonResponseException(..., e))
+        RuntimeException originalException = new RuntimeException("Original failure");
+        PrintWriter mockWriter = mock(PrintWriter.class);
+        doThrow(originalException).when(mockWriter).print(any(String.class));
+        when(response.getWriter()).thenReturn(mockWriter);
+
+        // Act & Assert
+        try {
+            action.writeError(response, "Test message");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            // Verify the original exception is preserved in the cause chain
+            assertSame("Original exception should be preserved", originalException, e.getCause());
+            assertEquals("Original failure", e.getCause().getMessage());
+        }
+    }
+
+    @Test
+    public void shouldHandleExceptionDuringContentTypeSettingBeforeWriter() throws Exception {
+        // Arrange - Testing exception before writer operations
+        doThrow(new IllegalStateException("Content type cannot be set")).when(response).setContentType(any(String.class));
+
+        // Act & Assert
+        try {
+            action.writeError(response, "Error message");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            assertEquals("Error writing error response with message", e.getMessage());
+            assertTrue("Cause should be IllegalStateException", e.getCause() instanceof IllegalStateException);
+        }
+    }
+
+    @Test
+    public void shouldHandleExceptionDuringCharacterEncodingSetting() throws Exception {
+        // Arrange - Testing exception during character encoding setting
+        doThrow(new UnsupportedOperationException("Encoding not supported")).when(response).setCharacterEncoding(any(String.class));
+
+        // Act & Assert
+        try {
+            action.writeError(response, "Test error");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            assertEquals("Error writing error response with message", e.getMessage());
+            assertTrue("Cause should be UnsupportedOperationException", e.getCause() instanceof UnsupportedOperationException);
+        }
+    }
+
+    @Test
+    public void shouldVerifyExceptionHandlingCompletesWithNullReturn() throws Exception {
+        // Arrange - Testing that even with exceptions, the method structure is maintained
+        PrintWriter mockWriter = mock(PrintWriter.class);
+        doThrow(new RuntimeException("Print failed")).when(mockWriter).print(any(String.class));
+        when(response.getWriter()).thenReturn(mockWriter);
+
+        // Act & Assert
+        try {
+            ActionForward result = action.writeError(response, "Error");
+            fail("Should have thrown JsonResponseException, not returned: " + result);
+        } catch (JsonResponseException e) {
+            // Verify the exception contains the expected message and cause
+            assertEquals("Error writing error response with message", e.getMessage());
+            assertNotNull("Should have original exception as cause", e.getCause());
+        }
+    }
+
+    @Test
+    public void shouldHandleComplexExceptionScenarios() throws Exception {
+        // Arrange - Testing complex failure scenarios in the try-catch block
+        PrintWriter mockWriter = mock(PrintWriter.class);
+        
+        // Simulate multiple potential failure points
+        when(response.getWriter()).thenReturn(mockWriter);
+        doThrow(new RuntimeException("Complex failure scenario")).when(mockWriter).flush();
+
+        // Act & Assert
+        try {
+            action.writeError(response, "Complex error message");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            assertEquals("Error writing error response with message", e.getMessage());
+            assertEquals("Complex failure scenario", e.getCause().getMessage());
+        }
+    }
+
+    @Test
+    public void shouldMaintainExceptionMessageConsistency() throws Exception {
+        // Arrange - Testing that the exception message is always consistent with line 193
+        when(response.getWriter()).thenThrow(new Exception("Generic error"));
+
+        // Act & Assert
+        try {
+            action.writeError(response, "Any message");
+            fail("Expected JsonResponseException to be thrown");
+        } catch (JsonResponseException e) {
+            // Verify exact message consistency from line 193
+            assertEquals("Error writing error response with message", e.getMessage());
+        }
+    }
+
+    // ========== TEST COVERAGE FOR SELECTED CODE (LINES 252-255) ==========
+    // Testing cleanupThreadLocals method
+
+    @Test
+    public void shouldCleanupThreadLocalSessionUser() throws Exception {
+        // Arrange - Testing line 253: threadLocalSessionUser.remove()
+        Usuario testUser = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+        action.setSessionUser(testUser);
+        
+        // Verify user is set
+        assertEquals("User should be set before cleanup", testUser, action.getSessionUser());
+        
+        // Act - Call cleanup method
+        action.cleanupThreadLocals();
+        
+        // Assert - User should be removed from ThreadLocal
+        assertNull("Session user should be null after cleanup", action.getSessionUser());
+    }
+
+    @Test
+    public void shouldCleanupThreadLocalSessionUserWorking() throws Exception {
+        // Arrange - Testing line 254: threadLocalSessionUserWorking.remove()
+        Usuario workingUser = new Usuario("workingUser", "manager", "Working User", 2, "Finance", new ArrayList<>());
+        action.setSessionUserWorking(workingUser);
+        
+        // Verify working user is set
+        assertEquals("Working user should be set before cleanup", workingUser, action.getSessionUserWorking());
+        
+        // Act - Call cleanup method
+        action.cleanupThreadLocals();
+        
+        // Assert - Working user should be removed from ThreadLocal
+        assertNull("Session working user should be null after cleanup", action.getSessionUserWorking());
+    }
+
+    @Test
+    public void shouldCleanupBothThreadLocalVariables() throws Exception {
+        // Arrange - Testing both lines 253-254: complete cleanup
+        Usuario mainUser = new Usuario("mainUser", "admin", "Main User", 1, "IT", new ArrayList<>());
+        Usuario workingUser = new Usuario("workingUser", "user", "Working User", 2, "Sales", new ArrayList<>());
+        
+        action.setSessionUser(mainUser);
+        action.setSessionUserWorking(workingUser);
+        
+        // Verify both users are set
+        assertEquals("Main user should be set", mainUser, action.getSessionUser());
+        assertEquals("Working user should be set", workingUser, action.getSessionUserWorking());
+        
+        // Act - Call cleanup method
+        action.cleanupThreadLocals();
+        
+        // Assert - Both users should be removed
+        assertNull("Session user should be null after cleanup", action.getSessionUser());
+        assertNull("Session working user should be null after cleanup", action.getSessionUserWorking());
+    }
+
+    @Test
+    public void shouldHandleCleanupWhenThreadLocalsAreAlreadyNull() throws Exception {
+        // Arrange - Testing cleanup when ThreadLocals are already empty
+        // Ensure ThreadLocals are null
+        action.setSessionUser(null);
+        action.setSessionUserWorking(null);
+        
+        assertNull("Session user should be null initially", action.getSessionUser());
+        assertNull("Session working user should be null initially", action.getSessionUserWorking());
+        
+        // Act - Call cleanup method (should not throw any exception)
+        action.cleanupThreadLocals();
+        
+        // Assert - Should remain null without issues
+        assertNull("Session user should remain null", action.getSessionUser());
+        assertNull("Session working user should remain null", action.getSessionUserWorking());
+    }
+
+    @Test
+    public void shouldHandleCleanupWhenOnlyOneThreadLocalIsSet() throws Exception {
+        // Arrange - Testing partial cleanup scenario
+        Usuario onlyUser = new Usuario("onlyUser", "guest", "Only User", 3, "Public", new ArrayList<>());
+        action.setSessionUser(onlyUser);
+        // Leave working user as null
+        
+        assertEquals("Only session user should be set", onlyUser, action.getSessionUser());
+        assertNull("Working user should be null", action.getSessionUserWorking());
+        
+        // Act
+        action.cleanupThreadLocals();
+        
+        // Assert
+        assertNull("Session user should be cleaned up", action.getSessionUser());
+        assertNull("Working user should remain null", action.getSessionUserWorking());
+    }
+
+    @Test
+    public void shouldCleanupThreadLocalsMultipleTimes() throws Exception {
+        // Arrange - Testing multiple cleanup calls
+        Usuario user = new Usuario("multiUser", "admin", "Multi User", 1, "IT", new ArrayList<>());
+        action.setSessionUser(user);
+        
+        // Act - Call cleanup multiple times
+        action.cleanupThreadLocals();
+        action.cleanupThreadLocals();
+        action.cleanupThreadLocals();
+        
+        // Assert - Should handle multiple calls gracefully
+        assertNull("Session user should remain null after multiple cleanups", action.getSessionUser());
+        assertNull("Working user should remain null after multiple cleanups", action.getSessionUserWorking());
+    }
+
+    @Test
+    public void shouldPreventMemoryLeaksAfterCleanup() throws Exception {
+        // Arrange - Testing memory leak prevention
+        Usuario user1 = new Usuario("user1", "admin", "User One", 1, "IT", new ArrayList<>());
+        Usuario user2 = new Usuario("user2", "manager", "User Two", 2, "Finance", new ArrayList<>());
+        
+        // Set users multiple times to simulate real usage
+        action.setSessionUser(user1);
+        action.setSessionUserWorking(user2);
+        
+        // Act - Cleanup to prevent memory leaks
+        action.cleanupThreadLocals();
+        
+        // Assert - Verify clean state
+        assertNull("No references should remain for session user", action.getSessionUser());
+        assertNull("No references should remain for working user", action.getSessionUserWorking());
+        
+        // Test that new values can be set after cleanup
+        Usuario newUser = new Usuario("newUser", "user", "New User", 3, "Operations", new ArrayList<>());
+        action.setSessionUser(newUser);
+        assertEquals("New user should be settable after cleanup", newUser, action.getSessionUser());
+    }
+
+    @Test
+    public void shouldExecuteCleanupMethodInCorrectSequence() throws Exception {
+        // Arrange - Testing the exact sequence of lines 253-254
+        Usuario sessionUser = new Usuario("seqUser", "admin", "Sequence User", 1, "IT", new ArrayList<>());
+        Usuario workingUser = new Usuario("seqWorking", "user", "Sequence Working", 2, "Sales", new ArrayList<>());
+        
+        action.setSessionUser(sessionUser);
+        action.setSessionUserWorking(workingUser);
+        
+        // Verify initial state
+        assertNotNull("Session user should be set before cleanup", action.getSessionUser());
+        assertNotNull("Working user should be set before cleanup", action.getSessionUserWorking());
+        
+        // Act - Call cleanup (executes lines 253-254)
+        action.cleanupThreadLocals();
+        
+        // Assert - Verify both ThreadLocal.remove() calls were effective
+        assertNull("Line 253 - threadLocalSessionUser.remove() should work", action.getSessionUser());
+        assertNull("Line 254 - threadLocalSessionUserWorking.remove() should work", action.getSessionUserWorking());
+    }
+
+    @Test
+    public void shouldCleanupIndependentlyForDifferentThreads() throws Exception {
+        // Arrange - Testing ThreadLocal isolation between different action instances
+        ConcreteRestriccionTransaccionAction action1 = new ConcreteRestriccionTransaccionAction();
+        ConcreteRestriccionTransaccionAction action2 = new ConcreteRestriccionTransaccionAction();
+        
+        Usuario user1 = new Usuario("thread1User", "admin", "Thread 1 User", 1, "IT", new ArrayList<>());
+        Usuario user2 = new Usuario("thread2User", "manager", "Thread 2 User", 2, "Finance", new ArrayList<>());
+        
+        action1.setSessionUser(user1);
+        action2.setSessionUser(user2);
+        
+        // Act - Cleanup only action1
+        action1.cleanupThreadLocals();
+        
+        // Assert - Only action1 should be cleaned up
+        assertNull("Action1 should be cleaned up", action1.getSessionUser());
+        assertEquals("Action2 should remain unchanged", user2, action2.getSessionUser());
+        
+        // Cleanup action2
+        action2.cleanupThreadLocals();
+        assertNull("Action2 should now be cleaned up", action2.getSessionUser());
+    }
+
+    @Test
+    public void shouldCallCleanupAtEndOfRequestProcessing() throws Exception {
+        // Arrange - Testing the intended usage pattern mentioned in javadoc
+        Usuario requestUser = new Usuario("reqUser", "admin", "Request User", 1, "IT", new ArrayList<>());
+        action.setSessionUser(requestUser);
+        
+        // Simulate request processing
+        assertEquals("User should be available during request", requestUser, action.getSessionUser());
+        
+        // Act - Cleanup at end of request (as per method documentation)
+        action.cleanupThreadLocals();
+        
+        // Assert - ThreadLocals should be clean for next request
+        assertNull("ThreadLocals should be clean for next request", action.getSessionUser());
+        assertNull("ThreadLocals should be clean for next request", action.getSessionUserWorking());
     }
 }

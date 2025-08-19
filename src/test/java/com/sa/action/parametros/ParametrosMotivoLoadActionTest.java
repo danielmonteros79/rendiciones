@@ -27,9 +27,9 @@ import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -106,6 +106,15 @@ class ParametrosMotivoLoadActionTest {
     parametrosMotivoLoadAction.setSessionUser(usuarioMock);
     parametrosMotivoLoadAction.setSessionUserWorking(usuarioMock);
 
+  }
+
+  /**
+   * Helper method to setup mock user session for tests
+   */
+  private void setupMockUserSession() {
+    Usuario testUser = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+    parametrosMotivoLoadAction.setSessionUser(testUser);
+    parametrosMotivoLoadAction.setSessionUserWorking(testUser);
   }
 
   /*@ParameterizedTest
@@ -356,6 +365,454 @@ class ParametrosMotivoLoadActionTest {
           ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
           assertNotNull(forward);
           assertEquals("parametrosMotivoFiltro", forward.getName());
+      }
+  }
+
+  // ========== TEST COVERAGE FOR SELECTED CODE (LINES 79-89) ==========
+  // Testing procesarBusquedaNumerica method range validation and formatting
+
+  @Test
+  @DisplayName("Should handle negative numbers as text search - line 79 condition")
+  void shouldHandleNegativeNumbersAsTextSearch() throws Exception {
+      // Arrange - Testing line 79: if (codInt < 0 || codInt > 9999)
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "-5");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq(""), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should trigger text search (lines 80-81)
+          assertNotNull(forward);
+          assertEquals("parametrosMotivoFiltro", forward.getName());
+          
+          // Verify that empty code was used (indicating text search mode)
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq(""), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should handle numbers above 9999 as text search - line 79 condition")
+  void shouldHandleNumbersAbove9999AsTextSearch() throws Exception {
+      // Arrange - Testing line 79: codInt > 9999
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "10000");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq(""), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should trigger text search (lines 80-81)
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq(""), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should format valid numbers with leading zeros - lines 83-84")
+  void shouldFormatValidNumbersWithLeadingZeros() throws Exception {
+      // Arrange - Testing lines 83-84: String.format("%04d", codInt) and isTextSearch = false
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "123");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq("0123"), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should format with leading zeros
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq("0123"), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should handle NumberFormatException - lines 86-88")
+  void shouldHandleNumberFormatException() throws Exception {
+      // Arrange - Testing lines 86-88: catch (NumberFormatException e)
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "abc123"); // This will cause NumberFormatException
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq(""), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should trigger text search (lines 87-88)
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq(""), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should handle boundary value 0 correctly - line 83-84")
+  void shouldHandleBoundaryValueZero() throws Exception {
+      // Arrange - Testing boundary case: codInt = 0
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "0");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq("0000"), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should format as "0000"
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq("0000"), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should handle boundary value 9999 correctly - line 83-84")
+  void shouldHandleBoundaryValue9999() throws Exception {
+      // Arrange - Testing boundary case: codInt = 9999
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "9999");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq("9999"), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should keep as "9999"
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq("9999"), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should handle boundary edge case -1 as text search - line 79")
+  void shouldHandleBoundaryValueNegativeOne() throws Exception {
+      // Arrange - Testing edge case: codInt = -1
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "-1");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq(""), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should trigger text search
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq(""), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should handle boundary edge case 10000 as text search - line 79")
+  void shouldHandleBoundaryValue10000() throws Exception {
+      // Arrange - Testing edge case: codInt = 10000
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "10000");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq(""), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should trigger text search
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq(""), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should format single digit numbers correctly - line 83")
+  void shouldFormatSingleDigitNumbers() throws Exception {
+      // Arrange - Testing String.format("%04d", codInt) for single digits
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "5");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq("0005"), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should format as "0005"
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq("0005"), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should handle complex NumberFormatException scenarios - lines 86-88")
+  void shouldHandleComplexNumberFormatExceptions() throws Exception {
+      // Arrange - Testing various invalid number formats
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "2147483648"); // Larger than Integer.MAX_VALUE
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq(""), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          // Act
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+
+          // Assert - Should handle overflow as text search
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq(""), anyString(), anyString());
+      }
+  }
+
+  // ========== ADDITIONAL COVERAGE FOR RANGE VALIDATION EDGE CASES ==========
+
+  @Test
+  @DisplayName("Should test range validation case 1 - 0001")
+  void shouldTestRangeValidationCase1() throws Exception {
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "1");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq("0001"), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq("0001"), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should test range validation case 99 - 0099")
+  void shouldTestRangeValidationCase99() throws Exception {
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "99");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq("0099"), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq("0099"), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should test range validation case 999 - 0999")
+  void shouldTestRangeValidationCase999() throws Exception {
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "999");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq("0999"), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq("0999"), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should test range validation case 1234 already 4 digits")
+  void shouldTestRangeValidationCase1234() throws Exception {
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "1234");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq("1234"), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq("1234"), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should test invalid range -100 triggers text search")
+  void shouldTestInvalidRangeNegative100() throws Exception {
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "-100");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq(""), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq(""), anyString(), anyString());
+      }
+  }
+
+  @Test
+  @DisplayName("Should test invalid range 15000 triggers text search")
+  void shouldTestInvalidRange15000() throws Exception {
+      MockHttpServletRequest request = new MockHttpServletRequest();
+      MockHttpSession session = new MockHttpSession();
+      Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+      session.setAttribute("userWorking", usuario);
+      session.setAttribute("usuario", usuario);
+      request.setHttpSession(session);
+      
+      request.addParameter("action", "filtrar");
+      request.addParameter("codigo", "15000");
+      when(actionMappingMock.findForward("parametrosMotivoFiltro")).thenReturn(new ActionForward("parametrosMotivoFiltro", "/path", false));
+
+      try (MockedConstruction<ParametrosService> mock = mockConstruction(ParametrosService.class, (serviceMock, context) -> {
+          when(serviceMock.getMotivos(eq(""), anyString(), anyString())).thenReturn(Collections.emptyList());
+          when(serviceMock.getMsgAviso()).thenReturn("Test message");
+      })) {
+          ActionForward forward = parametrosMotivoLoadAction.executeAction(actionMappingMock, formMock, samWebApplicationMock, samWebClientMock, request, httpServletResponse);
+          assertNotNull(forward);
+          ParametrosService serviceInstance = mock.constructed().get(0);
+          verify(serviceInstance).getMotivos(eq(""), anyString(), anyString());
       }
   }
 
