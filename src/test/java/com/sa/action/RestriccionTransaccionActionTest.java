@@ -4,8 +4,10 @@ import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
 import com.sa.core.AccesoNoPermitidoException;
 import com.sa.entities.Usuario;
+import com.sa.exceptions.ActionExecutionException;
 import com.sa.exceptions.JsonResponseException;
 import com.sa.exceptions.SessionTimeOutException;
+import net.sf.json.JSONObject;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -1670,5 +1672,77 @@ public class RestriccionTransaccionActionTest {
         // Assert - ThreadLocals should be clean for next request
         assertNull("ThreadLocals should be clean for next request", action.getSessionUser());
         assertNull("ThreadLocals should be clean for next request", action.getSessionUserWorking());
+    }
+    @Test
+    public void testExecute_SessionTimeout_AjaxRequest() throws Exception {
+        when(session.getAttribute("usuario")).thenReturn(null);
+        when(request.getHeader("X-Requested-With")).thenReturn("XMLHttpRequest");
+
+        ActionForward forward = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+
+        assertNull(forward);
+        verify(response).setContentType("application/json");
+        verify(response).setCharacterEncoding("UTF-8");
+
+        String jsonResponse = stringWriter.toString();
+        JSONObject json = JSONObject.fromObject(jsonResponse);
+
+        assertEquals("error", json.getString("status"));
+        assertEquals("Finaliz&oacute; el tiempo de la sesi&oacute;n.", json.getString("error"));
+    }
+
+    @Test(expected = SessionTimeOutException.class)
+    public void testExecute_SessionTimeout_NonAjaxRequest() throws Exception {
+        when(session.getAttribute("usuario")).thenReturn(null);
+        when(request.getHeader("X-Requested-With")).thenReturn(null);
+
+        action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+    }
+
+    @Test
+    public void testExecute_GetMessageAction() throws Exception {
+        when(request.getParameter("action")).thenReturn("getMessage");
+        when(session.getAttribute("userWorking")).thenReturn(usuario);
+
+        ActionForward forward = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+
+        assertNull(forward);
+        verify(response).getWriter();
+        verify(samWebClient, never()).setAttribute(anyString(), any());
+    }
+
+    @Test
+    public void testExecute_SuccessfulAction() throws Exception {
+        when(request.getParameter("action")).thenReturn("someAction");
+        when(session.getAttribute("userWorking")).thenReturn(usuario);
+
+        ActionForward forward = action.execute(actionMapping, actionForm, samWebApplication, samWebClient, request, response);
+
+        assertNotNull(forward);
+        assertEquals("success", forward.getName());
+        verify(samWebClient).setAttribute("userLoggin", "testUser");
+    }
+
+    @Test
+    public void testExecute_ActionExecutionException() throws Exception {
+        RestriccionTransaccionAction failingAction = new RestriccionTransaccionAction() {
+            @Override
+            public ActionForward executeAction(ActionMapping mapping, ActionForm form,
+                                               SAMWebApplication samApplication, SAMWebClient samClient,
+                                               HttpServletRequest request, HttpServletResponse response) throws Exception {
+                throw new ActionExecutionException("Test Exception");
+            }
+        };
+
+        when(request.getParameter("action")).thenReturn("failingAction");
+        when(session.getAttribute("userWorking")).thenReturn(usuario);
+
+        try {
+            failingAction.execute(actionMapping,actionForm , samWebApplication, samWebClient, request, response);
+            fail("Expected an Exception to be thrown");
+        } catch (Exception e) {
+            assertEquals("Action execution failed", e.getMessage());
+            assertEquals(ActionExecutionException.class, e.getCause().getClass());
+        }
     }
 }
