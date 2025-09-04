@@ -175,7 +175,6 @@ public class ImagenesAction extends RestriccionTransaccionAction {
 			if (aprobacionesService.getMsg() != null)
 				message += "<br>" + aprobacionesService.getMsg();
 		} catch (Exception ex) {
-			message += "<br>No se pudo actualizar el estado de la rendicion.";
 			log.error("Error actualizando estado a ESCAN luego de publicar documentos", ex);
 		}
         
