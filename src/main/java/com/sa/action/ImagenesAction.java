@@ -171,13 +171,12 @@ public class ImagenesAction extends RestriccionTransaccionAction {
         
 
         try {
-            rendicionesService.activaRechazaRendicion("ESCAN", this.getSessionUserWorking().getIdUser(), String.valueOf(rendicion.getId()));
-            if (rendicionesService.getMsg() != null)
-                message += "<br>" + rendicionesService.getMsg();
-        } catch (Exception ex) {
-            message += "<br>No se pudo actualizar el estado de la rendicion.";
-            log.error("Error actualizando estado a ESCAN luego de publicar documentos", ex);
-        }
+			aprobacionesService.cambiarEscanRendicion(String.valueOf(rendicion.getId()), this.getSessionUserWorking().getIdUser(), "");
+			if (aprobacionesService.getMsg() != null)
+				message += "<br>" + aprobacionesService.getMsg();
+		} catch (Exception ex) {
+			log.error("Error actualizando estado a ESCAN luego de publicar documentos", ex);
+		}
         
         resp.put("message", message);
 
