@@ -72,7 +72,7 @@ if (userSession.getTipoPerfil() == TipoPerfil.VIEW_ALL
 					<div class="has-float-label">
 						<html:text property="codigo" styleId="codigo"
 							styleClass="form-control text-uppercase" maxlength="20"
-							onkeypress="return numericOnly(event);" />
+							onkeypress="return alphanumericOnly(event);" />
 						<label>Motivo</label>
 						<div class="invalid-feedback"></div>
 					</div>

@@ -55,9 +55,9 @@ public class CuponesAction extends RestriccionTransaccionAction {
 			String fechaDesde = DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(request.getParameter("fechaDesde")));
 			String fechaHasta = DateUtil.dfYYYYMMDD.format(DateUtil.dfDDMMYYYY.parse(request.getParameter("fechaHasta")));
 
-			cupones = service.getCupones("USU", "MOP", "SU", this.sessionUserWorking.getIdUser(), fechaDesde, fechaHasta, idRendicion, codMotivo, montoMin, moneda);
+			cupones = service.getCupones("USU", "MOP", "SU", this.getSessionUserWorking().getIdUser(), fechaDesde, fechaHasta, idRendicion, codMotivo, montoMin, moneda);
 		} else
-			cupones = service.getCuponUnico(idRendicion, idGasto, this.sessionUserWorking.getIdUser(), codMotivo);
+			cupones = service.getCuponUnico(idRendicion, idGasto, this.getSessionUserWorking().getIdUser(), codMotivo);
 
 		resp.put("filas", cupones);
 		resp.put("message", service.getMsg());
@@ -80,13 +80,13 @@ public class CuponesAction extends RestriccionTransaccionAction {
 		String descCupon = request.getParameter("descCupon");
 		String fechaPresentacion = request.getParameter("fechaPresentacion");
 
-		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, idGasto, this.sessionUserWorking.getIdUser(), codMotivo);
+		List<Gastos> gastos = rendicionesService.getGastos(idRendicion, idGasto, this.getSessionUserWorking().getIdUser(), codMotivo);
 		if (gastos.size() == 0)
 			return writeError(response, "Gasto inexistente");
 
 		Gastos gasto = gastos.get(0);
 
-		pagosService.asignarCupon(SU56.OPCION_MODIFICAR, idRendicion, idGasto, this.sessionUserWorking.getIdUser(), gasto.getMonto(), nroTarjeta, cupon, cupDeb,
+		pagosService.asignarCupon(SU56.OPCION_MODIFICAR, idRendicion, idGasto, this.getSessionUserWorking().getIdUser(), gasto.getMonto(), nroTarjeta, cupon, cupDeb,
 				cupCred, descCupon, gasto.getMoneda(), fechaPresentacion);
 		resp.put("message", pagosService.getMsg());
 

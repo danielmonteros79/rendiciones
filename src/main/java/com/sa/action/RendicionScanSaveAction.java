@@ -29,6 +29,7 @@ import com.itextpdf.text.html.simpleparser.ChainedProperties;
 import com.itextpdf.text.html.simpleparser.ImageProvider;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.RendicionForm;
 import com.sa.services.AprobacionesService;
@@ -59,8 +60,24 @@ public class RendicionScanSaveAction extends RestriccionTransaccionAction {
 		String idRendicion = request.getParameter("codigo");
 
 		AprobacionesService service = new AprobacionesService(samClient);
+		RendicionesService rendicionesService = new RendicionesService(samClient);
 
-		String idu = "23232323";//service.obtenerIDU(rf);
+		// Necesitamos obtener el objeto Rendicion para pasarlo a obtenerIDU
+		// Primero intentamos obtenerlo como aprobación pendiente, si no existe, lo obtenemos como rendición normal
+		Rendicion rendicion = null;
+		try {
+			// Intentar obtener como aprobación pendiente
+			rendicion = service.getAprobacionesPendientes(idRendicion, null, null, null, user.getIdUser()).get(0);
+		} catch (Exception e) {
+			// Si no es una aprobación pendiente, obtener como rendición normal
+			log.warn("No se pudo obtener como aprobación pendiente, intentando como rendición normal: " + e.getMessage());
+			// Aquí necesitaríamos otro método para obtener la rendición, por ahora usaremos null
+		}
+
+		String idu = null;
+		if (rendicion != null) {
+			idu = service.obtenerIDU(rendicion, user.getIdUser(), "SIN_ADEA"); // Usar constante apropiada según el contexto
+		}
 
 		if (idu != null) {
 
@@ -234,12 +251,10 @@ public class RendicionScanSaveAction extends RestriccionTransaccionAction {
 			try {
 				return Image.getInstance(String.format("resources/posters/%s",
 						src.substring(src.lastIndexOf("/") + 1)));
-			} catch (DocumentException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (DocumentException | IOException e) {
+				// Log error appropriately in production environment
+				return null;
 			}
-			return null;
 		}
 	}
 

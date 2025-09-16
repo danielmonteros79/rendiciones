@@ -59,7 +59,6 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		String gastoMonto = request.getParameter("gastoMonto");
 		String codMotivo = request.getParameter("codMotivo");
 		String codGasto = request.getParameter("codGasto");
-		System.out.println("CODGASTO: " + codGasto);
 		String moneda = request.getParameter("moneda");
 		String tipoComprobante = request.getParameter("tipoComprobante");
 		
@@ -103,22 +102,14 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 	            }
 	        }
 	    }
-
-	    System.out.println("COD1 limpio = " + cod1);
-	    System.out.println("KM recorridos (NUM1) = " + num1);
-	    System.out.println("Precio por litro (NUM2) = " + num2);
 	    
 	    double gastoCalculado = num1 * num2;
-	    System.out.println("GastoCalculado: " + gastoCalculado);
 
 	    if ("00002".equals(cod1)) {
 	        gastoCalculado *= 0.22; // Vehículo propio
 	    }
 	    
 	    gastoMonto = String.valueOf(gastoCalculado);
-	    System.out.println(">>>> gastoMonto enviado a altaModifGasto = " + gastoMonto);
-	    
-	    System.out.println("Gasto calculado final = " + gastoMonto);
 	    
 		service.altaModifGasto("MODI", idGasto, idRendicion, moneda, tipoComprobante, null,
 				null, null, codGasto, gastoMonto, null, codMotivo, null,
@@ -190,8 +181,8 @@ public class DatosAdicionalesAction extends RestriccionTransaccionAction {
 		String txt1 = request.getParameter("TXT1") == null ? "" : request.getParameter("TXT1");
 		String txt2 = request.getParameter("TXT2") == null ? "" : request.getParameter("TXT2");
 		String txt250 = request.getParameter("TXT250") == null ? "" : request.getParameter("TXT250");
-		String num1 = request.getParameter("NUM1") == null ? "" : request.getParameter("NUM1").toString();
-		String num2 = request.getParameter("NUM2") == null ? "" : request.getParameter("NUM2").toString();
+		String num1 = request.getParameter("NUM1") == null ? "" : request.getParameter("NUM1");
+		String num2 = request.getParameter("NUM2") == null ? "" : request.getParameter("NUM2");
 		String cod1 = request.getParameter("COD1") == null ? "" : StringUtils.leftPad(request.getParameter("COD1"), 5, "0");
 		String cod2 = request.getParameter("COD2") == null ? "" : StringUtils.leftPad(request.getParameter("COD2"), 5, "0");
 		String fecha1 = request.getParameter("FEC1") == null || request.getParameter("FEC1").equals("") ? "" :

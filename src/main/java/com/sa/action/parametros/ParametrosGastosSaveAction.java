@@ -21,7 +21,7 @@ import com.sa.form.parametros.ParametrosGastosForm;
 import com.sa.services.ParametrosService;
 
 public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
-	private static final Log log = LogFactory.getLog(ParametrosMotivoSaveAction.class);
+	private static final Log log = LogFactory.getLog(ParametrosGastosSaveAction.class);
 
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication, SAMWebClient samClient,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -53,7 +53,6 @@ public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
 			} else
 				request.setAttribute("message", service.getMsgAviso());
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 		}
@@ -73,7 +72,6 @@ public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
 			} else
 				request.setAttribute("message", service.getMsgAviso());
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 		}
@@ -93,7 +91,6 @@ public class ParametrosGastosSaveAction extends RestriccionTransaccionAction {
 			} else
 				request.setAttribute("message", service.getMsgAviso());
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 		}

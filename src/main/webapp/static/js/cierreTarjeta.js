@@ -122,19 +122,16 @@ function selectMotivo() {
         data: "codMotivo=" + encodeURIComponent($("#motivo").val()),
         dataType: "json",
         success: function (data) {
-            let gastoElement = $("#gasto");
+            var gastoElement = $("#gasto");
             gastoElement.empty();
             gastoElement.append("<option value=''></option>");
-
             $.each(data, function (index) {
-                let id = encodeHTML(data[index]?.id || "");
-                let descripcion = encodeHTML(data[index]?.descripcion || "");
-
-                let option = $("<option>", {
+                var id = data[index] && data[index].id ? encodeHTML(data[index].id) : "";
+                var descripcion = data[index] && data[index].descripcion ? encodeHTML(data[index].descripcion) : "";
+                var option = $("<option>", {
                     value: id,
                     text: descripcion
                 });
-
                 gastoElement.append(option);
             });
         },

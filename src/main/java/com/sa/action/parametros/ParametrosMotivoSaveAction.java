@@ -55,7 +55,6 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 			request.setAttribute("message", "OK: " + msg);
 			ret = "success";
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 		}
@@ -71,7 +70,6 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 			request.setAttribute("message", "OK: " + msg);
 			ret = "success";
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 		}
@@ -88,7 +86,6 @@ public class ParametrosMotivoSaveAction extends RestriccionTransaccionAction {
 			request.setAttribute("message", "OK: " + msg);
 			ret = "success";
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", e.getCause().getMessage());
 		}

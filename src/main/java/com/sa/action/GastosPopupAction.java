@@ -8,11 +8,12 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.sa.entities.Usuario;
+import com.sa.exceptions.ActionExecutionException;
 
 public class GastosPopupAction extends RestriccionAction {
 	
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+			HttpServletResponse response) throws ActionExecutionException {
 		Usuario user = ((Usuario) request.getSession().getAttribute("usuario"));
 		log.info("Entra al action GastosPopupAction. Usuario ("+user.getIdUser()+")");
 		return mapping.findForward("success");

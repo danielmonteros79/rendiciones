@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,7 +67,7 @@ class AprobacionDetalleActionTest {
     Rendicion rendicion = new Rendicion();
     List<Rendicion> rendicionList = new ArrayList<>();
 
-    Usuario usuario = new Usuario("", "", "", 1, "", new ArrayList<>());
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
 
     rendicion.setUsuarioRendicion("");
     rendicion.setFechaDesde(new Date());
@@ -87,7 +88,7 @@ class AprobacionDetalleActionTest {
     List<Rendicion> rendicionList = new ArrayList<>();
     List<Rendicion> rendicionEmptyList = new ArrayList<>();
 
-    Usuario usuario = new Usuario("", "", "", 1, "", new ArrayList<>());
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
 
     rendicion.setUsuarioRendicion("");
     rendicion.setFechaDesde(new Date());
@@ -100,10 +101,10 @@ class AprobacionDetalleActionTest {
     rendicionList.add(rendicion);
 
     return Stream.of(
-        Arguments.of(rendicionEmptyList, rendicionList, usuario), // Ok
-        Arguments.of(rendicionList, rendicionEmptyList, usuario),
-        Arguments.of(rendicionList, rendicionList, usuario)
-                    );
+            Arguments.of(rendicionEmptyList, rendicionList, usuario), // Ok
+            Arguments.of(rendicionList, rendicionEmptyList, usuario),
+            Arguments.of(rendicionList, rendicionList, usuario)
+    );
   }
 
   public static Stream<Arguments> executeActionIfElseBlockSource() {
@@ -118,9 +119,9 @@ class AprobacionDetalleActionTest {
     MockHttpServletRequest requestActionRechazar = new MockHttpServletRequest();
     MockHttpServletRequest requestActionObservar = new MockHttpServletRequest();
     List<Usuario> usuarioList = new ArrayList<>();
-    Usuario user = new Usuario("", "", "", 1, "", new ArrayList<>());
+    Usuario user = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
     usuarioList.add(user);
-    Usuario usuario = new Usuario("", "", "", 1, "", usuarioList);
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", usuarioList);
 
     httpSession.setAttribute("rendicion.link.thuban", "");
     httpSession.setAttribute("userWorking", usuario);
@@ -155,11 +156,11 @@ class AprobacionDetalleActionTest {
     requestActionObservar.addParameter("descripcion", "descripcion");
 
     return Stream.of(
-        Arguments.of(requestActionGastos, actionGastos, usuario),
-        Arguments.of(requestActionAprobar, actionAprobar, usuario),
-        Arguments.of(requestActionRechazar, actionRechazar, usuario),
-        Arguments.of(requestActionObservar, actionObservar, usuario)
-                    );
+            Arguments.of(requestActionGastos, actionGastos, usuario),
+            Arguments.of(requestActionAprobar, actionAprobar, usuario),
+            Arguments.of(requestActionRechazar, actionRechazar, usuario),
+            Arguments.of(requestActionObservar, actionObservar, usuario)
+    );
   }
 
   public static Stream<Arguments> aprobarRechazarObservarSource() {
@@ -169,18 +170,74 @@ class AprobacionDetalleActionTest {
     String methodObservar = "observar";
 
     return Stream.of(
-        Arguments.of(methodAprobar),
-        Arguments.of(methodRechazar),
-        Arguments.of(methodObservar)
-                    );
+            Arguments.of(methodAprobar),
+            Arguments.of(methodRechazar),
+            Arguments.of(methodObservar)
+    );
   }
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    Usuario usuario = new Usuario("", "", "", 1, "", new ArrayList<>());
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
     aprobacionDetalleAction.setSessionUserWorking(usuario);
   }
+
+  // ==================== NUEVOS TESTS PARA COBERTURA DE executeAction ====================
+
+  @Test
+  @DisplayName("Debe retornar un error si sessionUserWorking es nulo")
+  void executeAction_conSessionUserWorkingNulo_debeRetornarError() throws Exception {
+    // Arrange
+    aprobacionDetalleAction.setSessionUserWorking(null); // Condición a probar
+    when(httpServletResponseMocked.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+
+    // Act
+    ActionForward result = aprobacionDetalleAction.executeAction(actionMappingMock, rendicionFormMock, samWebApplicationMocked,
+            samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+
+    // Assert
+    assertNull(result, "El método debe retornar null al escribir una respuesta de error.");
+    verify(httpServletResponseMocked).getWriter(); // Se verifica que se intentó escribir una respuesta.
+  }
+
+  @Test
+  @DisplayName("Debe retornar un error si el ID del usuario es nulo")
+  void executeAction_conUserIdNulo_debeRetornarError() throws Exception {
+    // Arrange
+    Usuario usuarioSinId = mock(Usuario.class);
+    when(usuarioSinId.getIdUser()).thenReturn(null); // Condición a probar
+    aprobacionDetalleAction.setSessionUserWorking(usuarioSinId);
+    when(httpServletResponseMocked.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+
+    // Act
+    ActionForward result = aprobacionDetalleAction.executeAction(actionMappingMock, rendicionFormMock, samWebApplicationMocked,
+            samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+
+    // Assert
+    assertNull(result);
+    verify(httpServletResponseMocked).getWriter();
+  }
+
+  @Test
+  @DisplayName("Debe retornar un error si el ID del usuario está vacío")
+  void executeAction_conUserIdVacio_debeRetornarError() throws Exception {
+    // Arrange
+    Usuario usuarioIdVacio = mock(Usuario.class);
+    when(usuarioIdVacio.getIdUser()).thenReturn("   "); // Condición a probar
+    aprobacionDetalleAction.setSessionUserWorking(usuarioIdVacio);
+    when(httpServletResponseMocked.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+
+    // Act
+    ActionForward result = aprobacionDetalleAction.executeAction(actionMappingMock, rendicionFormMock, samWebApplicationMocked,
+            samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+
+    // Assert
+    assertNull(result);
+    verify(httpServletResponseMocked).getWriter();
+  }
+
+  // ===================================================================================
 
   @ParameterizedTest
   @MethodSource("executeActionHappyTrailSource")
@@ -202,18 +259,18 @@ class AprobacionDetalleActionTest {
       doReturn("").when(mockAprobacionesService).getMsg();
     })) {
       try (MockedConstruction<RendicionesService> rendicionesServiceMC = mockConstruction(RendicionesService.class,
-          (mockRendicionesService, context) -> {
-            when(mockRendicionesService.obtenerListadoRendiciones(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(rendicionList);
-            doReturn("").when(mockRendicionesService).getMsg();
-          })) {
+              (mockRendicionesService, context) -> {
+                when(mockRendicionesService.obtenerListadoRendiciones(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(rendicionList);
+                doReturn("").when(mockRendicionesService).getMsg();
+              })) {
         try (MockedConstruction<UsuarioService> usuarioServiceMC = mockConstruction(UsuarioService.class,
-            (mockUsuarioService, context) -> {
-              when(mockUsuarioService.obtenerDelegadosUsuario(anyString())).thenReturn(usuario);
-              doReturn("").when(mockUsuarioService).getMsg();
-            })) {
+                (mockUsuarioService, context) -> {
+                  when(mockUsuarioService.obtenerDelegadosUsuario(anyString())).thenReturn(usuario);
+                  doReturn("").when(mockUsuarioService).getMsg();
+                })) {
           //then
           ActionForward actionForwardToAssert = aprobacionDetalleAction.executeAction(actionMappingMock, rendicionFormMock, samWebApplicationMocked,
-              samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+                  samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
           assertNotNull(actionForwardToAssert);
         }
       }
@@ -239,17 +296,17 @@ class AprobacionDetalleActionTest {
       when(mockAprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(rendicionList);
     })) {
       try (MockedConstruction<RendicionesService> rendicionesServiceMC = mockConstruction(RendicionesService.class,
-          (mockRendicionesService, context) -> {
-            when(mockRendicionesService.obtenerListadoRendiciones(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(rendicionList2 );
-          })) {
+              (mockRendicionesService, context) -> {
+                when(mockRendicionesService.obtenerListadoRendiciones(anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(rendicionList2 );
+              })) {
         try (MockedConstruction<ManagerTransaction> managerTransactionMC = mockConstruction(ManagerTransaction.class,
-            (mockManagerTransaction, context) -> {
-              doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
-              when(mockManagerTransaction.getDataReturn()).thenReturn(null);
-            })) {
+                (mockManagerTransaction, context) -> {
+                  doNothing().when(mockManagerTransaction).executeTrx(any(), anyMap());
+                  when(mockManagerTransaction.getDataReturn()).thenReturn(null);
+                })) {
           //then
           ActionForward actionForwardToAssert = aprobacionDetalleAction.executeAction(actionMappingMock, rendicionFormMock, samWebApplicationMocked,
-              samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+                  samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
           assertNotNull(actionForwardToAssert);
         }
       }
@@ -259,12 +316,16 @@ class AprobacionDetalleActionTest {
   @Test
   @DisplayName("Should catch an exception")
   void shouldCatchAnException() throws Exception {
+    //given
+    Usuario usuario = new Usuario("testUser", "admin", "Test User", 1, "IT", new ArrayList<>());
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getAttribute("userWorking")).thenReturn(usuario);
     //when
     when(httpServletRequestMocked.getParameter("action")).thenReturn("gastos");
     when(actionMappingMock.findForward(anyString())).thenReturn(actionForwardMock);
     //then
     ActionForward actionForwardToAssert = aprobacionDetalleAction.executeAction(actionMappingMock, rendicionFormMock, samWebApplicationMocked,
-        samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+            samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
     assertNotNull(actionForwardToAssert);
   }
 
@@ -282,7 +343,7 @@ class AprobacionDetalleActionTest {
     })) {
       //then
       ActionForward actionForwardToAssert = aprobacionDetalleAction.executeAction(actionMappingMock, rendicionFormMock, samWebApplicationMocked,
-          samWebClientMocked, request, httpServletResponseMocked);
+              samWebClientMocked, request, httpServletResponseMocked);
       if (action.equals("aprobar") || action.equals("rechazar") || action.equals("observar")) {
         assertNull(actionForwardToAssert);
       } else {
@@ -299,7 +360,7 @@ class AprobacionDetalleActionTest {
     when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
     //then
     Method aprobarMocked = AprobacionDetalleAction.class.getDeclaredMethod(method, SAMWebClient.class, ActionMapping.class, HttpServletRequest.class,
-        HttpServletResponse.class);
+            HttpServletResponse.class);
     aprobarMocked.setAccessible(true);
     ActionForward actionForwardToAssert = (ActionForward) aprobarMocked.invoke(aprobacionDetalleAction, samWebClientMocked, actionMappingMock, httpServletRequestMocked, httpServletResponseMocked);
     assertNull(actionForwardToAssert);

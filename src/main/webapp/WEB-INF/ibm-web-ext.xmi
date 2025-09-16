@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<com.ibm.ejs.models.base.extensions.webappext:WebAppExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.ejs.models.base.extensions.webappext="webappext.xmi" xmi:id="WebAppExtension_1466541591663" contextRoot="/rendiciones" reloadInterval="3" reloadingEnabled="true" fileServingEnabled="false" directoryBrowsingEnabled="false" serveServletsByClassnameEnabled="false" preCompileJSPs="false" >
+<com.ibm.ejs.models.base.extensions.webappext:WebAppExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.ejs.models.base.extensions.webappext="webappext.xmi" xmi:id="WebAppExtension_1466541591663" contextRoot="/rendiciones90" reloadInterval="3" reloadingEnabled="true" fileServingEnabled="true" directoryBrowsingEnabled="false" serveServletsByClassnameEnabled="false" preCompileJSPs="false" >
   <webApp href="WEB-INF/web.xml#WebApp_1466541591663"/>
 </com.ibm.ejs.models.base.extensions.webappext:WebAppExtension>

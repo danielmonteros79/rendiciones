@@ -5,8 +5,9 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@page import="java.util.*"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 
-<html>
+<html lang="es" xml:lang="es">
 <head>
 <title>Log-in</title>
 <link rel="stylesheet" type="text/css" href="css/main.css">
@@ -15,11 +16,11 @@
 	href="./css/jquery-ui.structure.css" />
 <link rel="stylesheet" type='text/css' href="./css/jquery-ui.theme.css" />
 
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/jquery-ui.js"></script>
+<script type="text/javascript" src="static/js/jquery.js"></script>
+<script type="text/javascript" src="static/js/jquery-ui.js"></script>
 <script type="text/javascript">
 window.onload = function(){
-	if(document.getElementById("userIv").value != null){
+	if(document.getElementById("userIv").value != null && document.getElementById("userIv").value != ""){
 		window.location.href ="Login.do";
 	}
 }
@@ -28,10 +29,18 @@ window.onload = function(){
 <body>
 <%
 	String ivUser = request.getHeader("iv-user");
+	// Validate and sanitize user input to prevent XSS
+	if (ivUser != null) {
+		// Allow only alphanumeric characters and basic symbols, remove potential XSS vectors
+		ivUser = ivUser.replaceAll("[^a-zA-Z0-9._@-]", "");
+		// Limit length to prevent abuse
+		if (ivUser.length() > 50) {
+			ivUser = ivUser.substring(0, 50);
+		}
+	}
 	request.getSession().setAttribute("ivUser", ivUser);
-	 %>
-	<input type="hidden" id="userIv" value="<%= request.getSession().getAttribute("ivUser")
-		 %>"/>
+	%>
+	<input type="hidden" id="userIv" value="<%= ivUser != null ? StringEscapeUtils.escapeHtml(ivUser) : "" %>"/>
 	<div id="capa_madre">
 
 		<div id="headerTop">

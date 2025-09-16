@@ -8,6 +8,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.sa.core.ParametrosSUM;
 import com.sa.entities.Usuario;
+import com.sa.exceptions.ActionExecutionException;
 
 
 public class EmptyAction extends RestriccionAction{
@@ -18,7 +19,7 @@ public class EmptyAction extends RestriccionAction{
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response
 			//ParametrosSUM paramsSIA
-			) throws Exception {
+			) throws ActionExecutionException {
 		Usuario user = (Usuario) request.getSession().getAttribute("usuario");
 		log.info("Entra al action EmptyAction. Usuario ("+user.getIdUser()+")");
 		return mapping.findForward("success");

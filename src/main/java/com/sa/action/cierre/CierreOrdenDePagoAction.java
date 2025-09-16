@@ -55,9 +55,9 @@ public class CierreOrdenDePagoAction extends RestriccionTransaccionAction {
 		fechaDesde = fechaDesde == null || fechaDesde.equalsIgnoreCase("") ? "" : DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(fechaDesde));
 		fechaHasta = fechaHasta == null || fechaHasta.equalsIgnoreCase("") ? "" : DateUtils.dfYYYYMMDD.format(DateUtils.dfDDMMYYYY.parse(fechaHasta));
 
-		List<Rendicion> rendiciones = service.getDatosRendicion(this.sessionUserWorking.getIdUser(), idRendicion, motivo, user, fechaDesde, fechaHasta);
+		List<Rendicion> rendiciones = service.getDatosRendicion(this.getSessionUserWorking().getIdUser(), idRendicion, motivo, user, fechaDesde, fechaHasta);
 		request.setAttribute("rendiciones", rendiciones);
-		this.message = service.getMsg();
+		this.setMessage(service.getMsg(), request);
 
 		return mapping.findForward("cierreOrdenDePago");
 	}
@@ -73,10 +73,10 @@ public class CierreOrdenDePagoAction extends RestriccionTransaccionAction {
 			idRendiciones.add(Integer.parseInt((String) object));
 		}
 
-		service.crearOrdenDePago("ORDPG", idRendiciones, this.sessionUserWorking.getIdUser(), null, null);
-		this.message = service.getMsg();
+		service.crearOrdenDePago("ORDPG", idRendiciones, this.getSessionUserWorking().getIdUser(), null, null);
+		String serviceMessage = service.getMsg();
 
-		resp.put("message", this.message);
+		resp.put("message", serviceMessage);
 		return writeJson(response, resp);
 	}
 
@@ -91,10 +91,10 @@ public class CierreOrdenDePagoAction extends RestriccionTransaccionAction {
 			idRendiciones.add(Integer.parseInt((String) object));
 		}
 
-		service.crearOrdenDePago("SUSPE",idRendiciones, this.sessionUserWorking.getIdUser(), request.getParameter("descripcion"), request.getParameter("codMotivo"));
-		this.message = service.getMsg();
+		service.crearOrdenDePago("SUSPE",idRendiciones, this.getSessionUserWorking().getIdUser(), request.getParameter("descripcion"), request.getParameter("codMotivo"));
+		String serviceMessage = service.getMsg();
 
-		resp.put("message", this.message);
+		resp.put("message", serviceMessage);
 		return writeJson(response, resp);
 	}
 }

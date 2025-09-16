@@ -62,7 +62,7 @@ public class ConsumosNoRendidosAction extends RestriccionTransaccionAction {
 
 		List<CierreTarjeta> rendiciones = service.obtenerCuponesPendientes(fechaCierre, usuario, montoMin, montoMax, moneda);
 		request.setAttribute("consumosSinRendir", rendiciones);
-		this.message = service.getMsg();
+		this.setMessage(service.getMsg(), request);
 
 		return mapping.findForward("consumosSinRendir");
 	}
@@ -77,7 +77,7 @@ public class ConsumosNoRendidosAction extends RestriccionTransaccionAction {
 		
 		String idRend = service.altaRendicion(usuario, motivo, fecha, fecha, descripcion, false);
 		
-		if (idRend.equalsIgnoreCase("") || idRend.equalsIgnoreCase(null)) {
+		if (idRend == null || idRend.trim().isEmpty()) {
 			request.setAttribute("validarTrx", 1);
 			return mapping.findForward("failure");
 		}

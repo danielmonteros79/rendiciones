@@ -637,20 +637,28 @@ let cantidadPdfs = 0;
 
 
 
-async function loadAndCombinePDFs(pdfDataArray) {
-  const combinedPDF = await PDFLib.PDFDocument.create();
-
-  for (const pdfBytes of pdfDataArray) {
-    const externalPDF = await PDFLib.PDFDocument.load(pdfBytes);
-    const copiedPages = await combinedPDF.copyPages(externalPDF, externalPDF.getPageIndices());
-    copiedPages.forEach((page) => combinedPDF.addPage(page));
-  }
-
-  const combinedPDFBytes = await combinedPDF.save();
-  const combinedPDFBlob = new Blob([combinedPDFBytes], { type: 'application/pdf' });
-  combinedPDFUrl = URL.createObjectURL(combinedPDFBlob);
- 	abrirVentanaEmergente();
-
+function loadAndCombinePDFs(pdfDataArray) {
+  return PDFLib.PDFDocument.create().then(function(combinedPDF) {
+    var promises = pdfDataArray.map(function(pdfBytes) {
+      return PDFLib.PDFDocument.load(pdfBytes).then(function(externalPDF) {
+        return combinedPDF.copyPages(externalPDF, externalPDF.getPageIndices()).then(function(copiedPages) {
+          copiedPages.forEach(function(page) {
+            combinedPDF.addPage(page);
+          });
+        });
+      });
+    });
+    
+    return Promise.all(promises).then(function() {
+      return combinedPDF.save();
+    });
+  }).then(function(combinedPDFBytes) {
+    var combinedPDFBlob = new Blob([combinedPDFBytes], { type: 'application/pdf' });
+    combinedPDFUrl = URL.createObjectURL(combinedPDFBlob);
+    abrirVentanaEmergente();
+  }).catch(function(error) {
+    console.error("Error al combinar PDFs:", error);
+  });
 }
 
 function abrirVentanaEmergente() {

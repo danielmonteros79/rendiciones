@@ -105,15 +105,15 @@ class ListadoAprobacionesActionTest {
     }
 
     @Test
-    @DisplayName("Debe filtrar correctamente las aprobaciones")
-    void filtrar_Success() throws Exception {
+    @DisplayName("Debe filtrar correctamente las aprobaciones SIN filtro de supervisado")
+    void filtrar_SinFiltroSupervisado_Success() throws Exception {
 
     	when(httpServletRequest.getParameter("action")).thenReturn("filtrar");
         when(httpServletRequest.getParameter("idRendicion")).thenReturn("123");
         when(httpServletRequest.getParameter("usuario")).thenReturn("pepe");
         when(httpServletRequest.getParameter("motivo")).thenReturn("test");
         when(httpServletRequest.getParameter("glg")).thenReturn("04");
-        when(httpServletRequest.getParameter("supervisado")).thenReturn("1234");
+        when(httpServletRequest.getParameter("supervisado")).thenReturn(""); // Sin filtro supervisado
         when(httpServletRequest.getParameter("nroAlerta")).thenReturn("1");
 
         Rendicion rendicion1 = mock(Rendicion.class);
@@ -139,6 +139,127 @@ class ListadoAprobacionesActionTest {
                 e.printStackTrace();
                 fail("❌ Error inesperado en `executeAction()`: " + e.getMessage());
             }
+    }
+    
+    @Test
+    @DisplayName("Debe filtrar correctamente CON filtro de supervisado")
+    void filtrar_ConFiltroSupervisado_Success() throws Exception {
+
+    	when(httpServletRequest.getParameter("action")).thenReturn("filtrar");
+        when(httpServletRequest.getParameter("idRendicion")).thenReturn("123");
+        when(httpServletRequest.getParameter("usuario")).thenReturn("pepe");
+        when(httpServletRequest.getParameter("motivo")).thenReturn("test");
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+        when(httpServletRequest.getParameter("supervisado")).thenReturn("O002464"); // CON filtro supervisado
+        when(httpServletRequest.getParameter("nroAlerta")).thenReturn("1");
+
+        Rendicion rendicion1 = mock(Rendicion.class);
+        when(rendicion1.getAdea()).thenReturn("9000000000");
+
+        List<Rendicion> rendicionesMock = Collections.singletonList(rendicion1);
+        when(aprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(rendicionesMock);
+        when(aprobacionesService.getCantRendiciones()).thenReturn("1");
+
+        when(actionMapping.findForward("aprobaciones")).thenReturn(new ActionForward("success", "/successPath", false));
+
+        try {
+            ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient , httpServletRequest, httpServletResponse);
+            
+            assertNotNull(result);
+            assertEquals("success", result.getName());
+            
+            verify(aprobacionesService, times(1)).getAprobacionesPendientes(
+                    eq("123"), eq("O002464"), eq("test"), eq("04"), eq("1234")
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail("❌ Error inesperado en `executeAction()`: " + e.getMessage());
+            }
+    }
+    
+    @Test
+    @DisplayName("Debe manejar parámetro usuario null sin filtro supervisado")
+    void filtrar_UsuarioNullSinFiltroSupervisado() throws Exception {
+        when(httpServletRequest.getParameter("action")).thenReturn("filtrar");
+        when(httpServletRequest.getParameter("idRendicion")).thenReturn("123");
+        when(httpServletRequest.getParameter("usuario")).thenReturn(null); // Usuario null
+        when(httpServletRequest.getParameter("motivo")).thenReturn("test");
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+        when(httpServletRequest.getParameter("supervisado")).thenReturn(""); // Sin filtro supervisado
+        when(httpServletRequest.getParameter("nroAlerta")).thenReturn("");
+
+        List<Rendicion> rendicionesMock = Collections.singletonList(new Rendicion());
+        when(aprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(rendicionesMock);
+        when(aprobacionesService.getCantRendiciones()).thenReturn("1");
+
+        when(actionMapping.findForward("aprobaciones")).thenReturn(new ActionForward("aprobaciones", "/aprobacionesPath", false));
+
+        ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse);
+
+        assertNotNull(result);
+        assertEquals("aprobaciones", result.getName());
+        
+        verify(aprobacionesService, times(1)).getAprobacionesPendientes(
+                eq("123"), eq(null), eq("test"), eq("04"), eq("1234")
+            );
+    }
+    
+    @Test
+    @DisplayName("Debe manejar parámetro usuario null con filtro supervisado")
+    void filtrar_UsuarioNullConFiltroSupervisado() throws Exception {
+        when(httpServletRequest.getParameter("action")).thenReturn("filtrar");
+        when(httpServletRequest.getParameter("idRendicion")).thenReturn("123");
+        when(httpServletRequest.getParameter("usuario")).thenReturn(null); // Usuario null
+        when(httpServletRequest.getParameter("motivo")).thenReturn("test");
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+        when(httpServletRequest.getParameter("supervisado")).thenReturn("O002464"); // CON filtro supervisado
+        when(httpServletRequest.getParameter("nroAlerta")).thenReturn("");
+
+        List<Rendicion> rendicionesMock = Collections.singletonList(new Rendicion());
+        when(aprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(rendicionesMock);
+        when(aprobacionesService.getCantRendiciones()).thenReturn("1");
+
+        when(actionMapping.findForward("aprobaciones")).thenReturn(new ActionForward("aprobaciones", "/aprobacionesPath", false));
+
+        ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse);
+
+        assertNotNull(result);
+        assertEquals("aprobaciones", result.getName());
+        
+        verify(aprobacionesService, times(1)).getAprobacionesPendientes(
+                eq("123"), eq("O002464"), eq("test"), eq("04"), eq("1234")
+            );
+    }
+    
+    @Test
+    @DisplayName("Debe manejar parámetro usuario vacío con filtro supervisado")
+    void filtrar_UsuarioVacioConFiltroSupervisado() throws Exception {
+        when(httpServletRequest.getParameter("action")).thenReturn("filtrar");
+        when(httpServletRequest.getParameter("idRendicion")).thenReturn("123");
+        when(httpServletRequest.getParameter("usuario")).thenReturn("   "); // Usuario con espacios vacíos
+        when(httpServletRequest.getParameter("motivo")).thenReturn("test");
+        when(httpServletRequest.getParameter("glg")).thenReturn("04");
+        when(httpServletRequest.getParameter("supervisado")).thenReturn("O002464"); // CON filtro supervisado
+        when(httpServletRequest.getParameter("nroAlerta")).thenReturn("");
+
+        List<Rendicion> rendicionesMock = Collections.singletonList(new Rendicion());
+        when(aprobacionesService.getAprobacionesPendientes(anyString(), anyString(), anyString(), anyString(), anyString()))
+            .thenReturn(rendicionesMock);
+        when(aprobacionesService.getCantRendiciones()).thenReturn("1");
+
+        when(actionMapping.findForward("aprobaciones")).thenReturn(new ActionForward("aprobaciones", "/aprobacionesPath", false));
+
+        ActionForward result = listadoAprobacionesAction.executeAction(actionMapping, actionForm, samWebApplication, samWebClient, httpServletRequest, httpServletResponse);
+
+        assertNotNull(result);
+        assertEquals("aprobaciones", result.getName());
+        
+        verify(aprobacionesService, times(1)).getAprobacionesPendientes(
+                eq("123"), eq("O002464"), eq("test"), eq("04"), eq("1234")
+            );
     }
     
     @Test

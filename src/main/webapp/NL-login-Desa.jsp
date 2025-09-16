@@ -22,8 +22,8 @@
 	href="./css/jquery-ui.structure.css" />
 <link rel="stylesheet" type='text/css' href="./css/jquery-ui.theme.css" />
 
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/jquery-ui.js"></script>
+<script type="text/javascript" src="static/js/jquery.js"></script>
+<script type="text/javascript" src="static/js/jquery-ui.js"></script>
 <script type="text/javascript">
 
 	

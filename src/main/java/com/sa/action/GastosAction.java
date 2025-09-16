@@ -78,7 +78,7 @@ public class GastosAction extends RestriccionTransaccionAction {
 	private ActionForward baja(HttpServletResponse response, RendicionDetalleForm renForm, SAMWebClient samClient) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		PagosService pagosService = new PagosService(samClient);
-		pagosService.bajaGasto(renForm.getIdGasto(), this.sessionUserWorking.getIdUser(), renForm.getIdRendicion());
+		pagosService.bajaGasto(renForm.getIdGasto(), this.getSessionUserWorking().getIdUser(), renForm.getIdRendicion());
 		resp.put("message", pagosService.getMsg());
 
 		response.setContentType("text/html; charset=UTF-8");
@@ -88,7 +88,7 @@ public class GastosAction extends RestriccionTransaccionAction {
 	private ActionForward consulta(HttpServletResponse response, RendicionDetalleForm renForm, SAMWebClient samClient) throws Exception {
 		Map<String, Object> resp = new HashMap<String, Object>();
 		RendicionesService serviceCombos = new RendicionesService(samClient);
-		List<Gastos> gastos = serviceCombos.getGastos(renForm.getIdRendicion(), renForm.getIdGasto(), this.sessionUserWorking.getIdUser(), renForm.getCodMotivo());
+		List<Gastos> gastos = serviceCombos.getGastos(renForm.getIdRendicion(), renForm.getIdGasto(), this.getSessionUserWorking().getIdUser(), renForm.getCodMotivo());
 		if (gastos.size() == 0)
 			return writeError(response, "Gasto inexistente");
 		resp.put("gasto", gastos.get(0));

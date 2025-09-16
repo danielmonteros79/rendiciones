@@ -22,7 +22,7 @@ public class InitServlet extends HttpServlet {
 	private static String pathConfig;
 
 	private static final long serialVersionUID = 1L;
-
+	@Override
 	public void init(ServletConfig config) throws ServletException {
 
 		super.init(config);
@@ -55,7 +55,6 @@ public class InitServlet extends HttpServlet {
 		try {
 			inicializoLog(config);
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.out.println("SUM - " + e.getMessage());
 			listadoEx.add(e.getMessage());
 			excepciones.add(e);
@@ -68,7 +67,6 @@ public class InitServlet extends HttpServlet {
 					.println("SUM - Inicilizando configuracion de la aplicacion.");
 			XMLConfigReader.getXml();
 		} catch (ImposibleLeerXMLException e) {
-			e.printStackTrace();
 			System.out
 					.println("SUM - No se pudo inicializar la configuracion de la aplicacion");
 		}
@@ -167,7 +165,7 @@ public class InitServlet extends HttpServlet {
 		}
 
 	}
-
+	@Override
 	public void destroy() {
 		super.destroy();
 	}

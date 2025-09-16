@@ -8,6 +8,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -23,7 +25,10 @@ import com.sa.form.CuadroFiltroForm;
 import com.sa.services.RendicionesService;
 import com.sa.util.ParamsConstants;
 
+
 public class CuadroDetalladoFiltroAction extends RestriccionTransaccionAction {
+	private static final Log log = LogFactory.getLog(CuadroDetalladoFiltroAction.class);
+
 	public ActionForward executeAction(ActionMapping mapping, ActionForm form, SAMWebApplication samApplication,
 			SAMWebClient samClient, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		CuadroFiltroForm frm = (CuadroFiltroForm) form;
@@ -60,7 +65,6 @@ public class CuadroDetalladoFiltroAction extends RestriccionTransaccionAction {
 			if (!message.equals(""))
 				request.setAttribute("message", message);
 		} catch (TransactionException e) {
-			e.printStackTrace();
 			log.error(e);
 			request.setAttribute("message", "ERROR: " + e.getCause().getMessage());
 		}

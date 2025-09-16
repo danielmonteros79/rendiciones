@@ -7,7 +7,7 @@
 <%@page import="java.util.*"%>
 <%@page import="com.sa.entities.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html lang="es" xml:lang="es">
 <head>
 <script type="text/javascript">
 	jQuery(document).ready(function() {

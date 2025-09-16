@@ -72,7 +72,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		List<String> jsonCombo = new ArrayList<String>();
 		PagosService service = new PagosService(samClient);
 
-		List<ComboGasto> tiposGasto = service.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION, sessionUserWorking.getIdUser(), request.getParameter("codMotivo"));
+		List<ComboGasto> tiposGasto = service.getComboGasto(ParamsConstants.TIPO_GASTO_OPCION, getSessionUserWorking().getIdUser(), request.getParameter("codMotivo"));
 		for (ComboGasto tipoGasto : tiposGasto) {
 			jsonCombo.add(gson.toJson(tipoGasto));
 		}
@@ -135,7 +135,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		Gson gson = new Gson();
 		List<String> jsonCombo = new ArrayList<String>();
 		RendicionesService service = new RendicionesService(samClient);
-		String userActual = this.sessionUserWorking.getIdUser();
+		String userActual = this.getSessionUserWorking().getIdUser();
 		if(request.getParameter(USER_ACTUAL) != null && request.getParameter(USER_ACTUAL).length() > 2 ) {
 			userActual = request.getParameter(USER_ACTUAL);
 		}
@@ -161,16 +161,16 @@ public class CombosAction extends RestriccionTransaccionAction {
 		Gson gson = new Gson();
 		List<String> jsonCombo = new ArrayList<String>();
 		
-		for (Usuario u : this.sessionUser.getDelegadosAsignados()) {
-			if (u.getIdUser().equalsIgnoreCase(this.sessionUser.getIdUser()))
-				jsonCombo.add(gson.toJson(new ComboDelegado(this.sessionUser.getIdUser(), "Yo mismo")));
+		for (Usuario u : this.getSessionUser().getDelegadosAsignados()) {
+			if (u.getIdUser().equalsIgnoreCase(this.getSessionUser().getIdUser()))
+				jsonCombo.add(gson.toJson(new ComboDelegado(this.getSessionUser().getIdUser(), "Yo mismo")));
 			else
 				jsonCombo.add(gson.toJson(new ComboDelegado(u.getIdUser(), u.getIdUser() + " - " + u.getNombre())));
 		}
 		
 		Map<String, Object> resp = new HashMap<String, Object>();
 		resp.put(COMBO, jsonCombo);
-		resp.put("selected", this.sessionUserWorking.getIdUser());
+		resp.put("selected", this.getSessionUserWorking().getIdUser());
 		
 		writeJson(response, resp);
 	}
@@ -180,7 +180,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		List<String> jsonCombo = new ArrayList<String>();
 		ResumenService service = new ResumenService(samClient);
 		
-		List<ComboOpcion> fechas = (List<ComboOpcion>) service.getFechasResumenes(this.sessionUserWorking.getIdUser());
+		List<ComboOpcion> fechas = (List<ComboOpcion>) service.getFechasResumenes(this.getSessionUserWorking().getIdUser());
 		
 		for (ComboOpcion fecha : fechas) {
 			jsonCombo.add(gson.toJson(fecha));
@@ -196,7 +196,7 @@ public class CombosAction extends RestriccionTransaccionAction {
 		Gson gson = new Gson();
 		List<String> jsonCombo = new ArrayList<String>();
 		UsuarioService service = new UsuarioService(samClient);
-		List<Usuario> supervisados = service.obtenerSupervisadosUsuario(this.sessionUserWorking.getIdUser(), request.getParameter("sector") );
+		List<Usuario> supervisados = service.obtenerSupervisadosUsuario(this.getSessionUserWorking().getIdUser(), request.getParameter("sector") );
 
 		for (Usuario supervisado : supervisados) {
 			jsonCombo.add(gson.toJson( new ComboSupervisor(supervisado.getIdUser(), (supervisado.getIdUser() + " - " + supervisado.getNombre()))));
