@@ -546,18 +546,32 @@
 				<version>3.1.2</version>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.3.2</version>
-				<configuration>
-					<webResources>
-						<resource>
-							<directory>src/main/webapp/static</directory>
-							<targetPath>WEB-INF/static</targetPath>
-						</resource>
-					</webResources>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-war-plugin</artifactId>
+			  <version>3.3.2</version>
+			  <configuration>
+			    <webResources>
+			      <resource>
+			        <directory>src/main/webapp/static</directory>
+			        <targetPath>WEB-INF/static</targetPath>
+			      </resource>
+			      <resource>
+			        <directory>src/main/resources/cfg</directory>
+			        <targetPath>WEB-INF/cfg</targetPath>
+			        <includes>
+			          <include>**/*</include>
+			        </includes>
+			      </resource>
+			      <resource>
+			        <directory>src/main/resources/syscfg</directory>
+			        <targetPath>WEB-INF/syscfg</targetPath>
+			        <includes>
+			          <include>**/*</include>
+			        </includes>
+			      </resource>
+			    </webResources>
+			    <failOnMissingWebXml>false</failOnMissingWebXml>
+			  </configuration>
 			</plugin>
 			
 			<!-- Plugin adicional para copiar recursos que pueden no existir -->
