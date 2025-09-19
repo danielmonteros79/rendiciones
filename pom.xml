@@ -546,34 +546,47 @@
 				<version>3.1.2</version>
 			</plugin>
 			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-war-plugin</artifactId>
-			  <version>3.3.2</version>
-			  <configuration>
-			    <webResources>
-			      <resource>
-			        <directory>src/main/webapp/static</directory>
-			        <targetPath>WEB-INF/static</targetPath>
-			      </resource>
-			      <resource>
-			        <directory>src/main/resources/cfg</directory>
-			        <targetPath>WEB-INF/cfg</targetPath>
-			        <includes>
-			          <include>**/*</include>
-			        </includes>
-			      </resource>
-			      <resource>
-			        <directory>src/main/resources/syscfg</directory>
-			        <targetPath>WEB-INF/syscfg</targetPath>
-			        <includes>
-			          <include>**/*</include>
-			        </includes>
-			      </resource>
-			    </webResources>
-			    <failOnMissingWebXml>false</failOnMissingWebXml>
-			  </configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.3.2</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>src/main/webapp/static</directory>
+							<targetPath>WEB-INF/static</targetPath>
+						</resource>
+					</webResources>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
 			</plugin>
-			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources/cfg</directory>
+									<targetPath>${project.build.directory}/cfg</targetPath>
+								</resource>
+								<resource>
+									<directory>src/main/resources/syscfg</directory>
+									<targetPath>${project.build.directory}/syscfg</targetPath>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- Plugin adicional para copiar recursos que pueden no existir -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
