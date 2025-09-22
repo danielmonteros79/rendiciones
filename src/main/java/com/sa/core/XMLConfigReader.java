@@ -226,8 +226,10 @@ public class XMLConfigReader {
 			cantidadLineas = xpath.evaluate("Config/Altamira/cantidadLineas",
 					confFile);
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error(e);
+			if (log.isDebugEnabled()) {
+				log.debug("Error al inicializar XML en desarrollo", e);
+			}
+			log.error("No se pudo leer el archivo de configuracion en entorno de desarrollo", e);
 			throw new ImposibleLeerXMLException(
 					"No se pudo leer el archivo de configuracion", e);
 		}
@@ -288,10 +290,12 @@ public class XMLConfigReader {
 			puertodns = xpath.evaluate("Config/Altamira/puertodns", confFile);
 			cantidadLineas = xpath.evaluate("Config/Altamira/cantidadLineas",
 					confFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error(e);
-			throw new ImposibleLeerXMLException(e);
+		}  catch (Exception e) {
+			if (log.isDebugEnabled()) {
+				log.debug("Error al inicializar XML en produccion", e);
+			}
+			log.error("No se pudo leer el archivo de configuracion en entorno de produccion", e);
+			throw new ImposibleLeerXMLException("No se pudo leer el archivo de configuracion", e);
 		}
 	}
 

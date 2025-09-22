@@ -68,7 +68,7 @@ public class SUCuadroDetallado extends Transaction {
 				
 				dataReturnList.add(datos);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("", e);
 			}
 			}
 			
@@ -80,7 +80,7 @@ public class SUCuadroDetallado extends Transaction {
 //		    dataReturnList.add(datos);
 
 		}
-		
+
 	}
 
 	@Override

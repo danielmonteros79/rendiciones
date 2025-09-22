@@ -102,7 +102,8 @@ public class SU59 extends Transaction {
 					columnas.add("FEC1=" + DateUtils.formatearFecha(str.substring(137, 147), DateUtils.dfYYYYMMDD, DateUtils.dfDDMMYYYY));
 				} catch (Exception e) {
 					columnas.add("FEC1=" + str.substring(137, 147));
-					e.printStackTrace();
+					log.error("Error procesando fecha", e);
+
 				}
 
 			if (this.headers.contains("FEC2"))
@@ -110,7 +111,7 @@ public class SU59 extends Transaction {
 					columnas.add("FEC2=" + DateUtils.formatearFecha(str.substring(147, 157), DateUtils.dfYYYYMMDD, DateUtils.dfDDMMYYYY));
 				} catch (Exception e) {
 					columnas.add("FEC2=" + str.substring(147, 157));
-					e.printStackTrace();
+					log.error("Error procesando fecha", e);
 				}
 
 			if (this.headers.contains("TXT250"))
@@ -119,7 +120,7 @@ public class SU59 extends Transaction {
 			this.filas.add(columnas);
 		}
 	}
-	
+
 	@Override
 	public List getDataReturnList() {
 		return filas;

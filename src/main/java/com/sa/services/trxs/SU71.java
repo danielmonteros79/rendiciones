@@ -27,7 +27,7 @@ public class SU71 extends Transaction {
 			execute(client, this.PARAMETER_TRX, parametersExecute);
 			mapData(parametersExecute);
  		} catch (Exception e) {
-			log.error("", e);
+			log.error(e);
  			throw new TransactionException(e);
 		}
 	}
@@ -49,7 +49,7 @@ public class SU71 extends Transaction {
 				
 				dataReturnList.add(cg);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Error en mapData SU71", e);
 			}
 		}
 	}

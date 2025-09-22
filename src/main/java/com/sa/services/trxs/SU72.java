@@ -58,7 +58,10 @@ public class SU72 extends Transaction {
 	
 					dataReturnList.add(cd);
 				} catch (Exception e) {
-					e.printStackTrace();
+					if (log.isDebugEnabled()) {
+						log.debug("Error en mapData al procesar un elemento de lista", e);
+					}
+					log.error("Error en mapData: " + e.getMessage());
 				}
 			}
 		}

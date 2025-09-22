@@ -29,7 +29,10 @@ public class SUCuadroGral extends Transaction {
 //			execute(client, this.PARAMETER_TRX, parametersExecute);
 			mapData(parametersExecute);
  		} catch (Exception e) {
-			e.printStackTrace();
+		if (log.isDebugEnabled()) {
+			log.debug("Error en executeTrx", e);
+		}
+		log.error("Error en executeTrx: " + e.getMessage());
 		}
 		
 	}
@@ -81,10 +84,10 @@ public class SUCuadroGral extends Transaction {
 						dataReturnList.add(datos);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.error("Error en mapData SUCuadroGral", e);
 				}
 	}
-		
+
 	}
 
 	@Override
