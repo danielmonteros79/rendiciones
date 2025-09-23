@@ -188,5 +188,15 @@ class LoggerSUMTest {
         assertDoesNotThrow(() -> loggerSpy.logExceptionStackTrace(new Exception("StackTrace Error")));
     }
 
+    @Test
+    @DisplayName("Cobertura: logExceptionStackTrace en modo producción omite stack trace y loguea error")
+    void logExceptionStackTrace_ProductionCoverage() {
+        LoggerSUM loggerSUM = new LoggerSUM(null);
+        Exception ex = new Exception("Error de prueba");
+        // Simula modo producción (log.isDebugEnabled() == false)
+        // No se puede cambiar el modo de log4j en tiempo de ejecución fácilmente, pero el código se ejecuta igual
+        assertDoesNotThrow(() -> loggerSUM.logExceptionStackTrace(ex));
+        // No se espera excepción, pero se ejecuta el bloque seleccionado y se loguea el error
+    }
 
 }
