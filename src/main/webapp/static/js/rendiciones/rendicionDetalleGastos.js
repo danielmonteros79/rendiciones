@@ -237,7 +237,8 @@ function tableLoadAfterFinished() {
 			$('#mensajeImgRend').addClass('d-none');
 			$('#listadoImagenesText').removeClass('d-none');
 			$('#containerImagenesCargadas').removeClass('d-none')
-			if($('#estadoRend').val() == "PENDI"){
+			if($("#gastosDtContainer table tbody tr").length > 0 
+		       || ($('#estadoRend').val() == "PENDI")) {
 				$('#containerSaveBtn').removeClass('d-none');
 			}
 			else{
