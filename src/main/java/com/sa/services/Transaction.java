@@ -262,4 +262,14 @@ public abstract class Transaction {
 	public String getAviso() {
 		return aviso;
 	}
+
+	protected void ejecutarTransaccion(IWebClient client, String parameterTrx, Map<String, Object> parametersExecute) throws TransactionException {
+	    try {
+	        execute(client, parameterTrx, parametersExecute);
+	        mapData(parametersExecute);
+	    } catch (Exception e) {
+	        log.error(e);
+	        throw new TransactionException(e);
+	    }
+	}
 }
