@@ -306,4 +306,89 @@ class SU59Test {
         String result = (String) m.invoke(su59, null, 10, 20);
         assertEquals("", result);
     }
+
+    @Test
+    void testExecuteTrx_caminoNormal() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) {
+                // No hace nada, simula éxito
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                // No hace nada, simula éxito
+            }
+        };
+        assertDoesNotThrow(() -> su59.executeTrx(client, new HashMap<String, Object>()));
+    }
+
+    @Test
+    void testExecuteTrx_excepcionEnExecute() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) {
+                throw new RuntimeException("Fallo en execute");
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                // No hace nada
+            }
+        };
+        TransactionException ex = assertThrows(TransactionException.class, () -> su59.executeTrx(client, new HashMap<String, Object>()));
+        assertTrue(ex.getMessage().contains("Error de mapeo"));
+    }
+
+    @Test
+    void testExecuteTrx_excepcionEnMapData() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) {
+                // No hace nada
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                throw new RuntimeException("Fallo en mapData");
+            }
+        };
+        TransactionException ex = assertThrows(TransactionException.class, () -> su59.executeTrx(client, new HashMap<String, Object>()));
+        assertTrue(ex.getMessage().contains("Error de mapeo"));
+    }
+
+    @Test
+    void testExecuteTrx_excepcionTransactionExceptionConMensajeEsperado() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        TransactionException te = new TransactionException("Error de mapeo: algo malo");
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) throws TransactionException {
+                throw te;
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                // No hace nada
+            }
+        };
+        TransactionException ex = assertThrows(TransactionException.class, () -> su59.executeTrx(client, new HashMap<String, Object>()));
+        assertSame(te, ex);
+    }
+
+    @Test
+    void testExecuteTrx_excepcionGenerica() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) {
+                throw new IllegalArgumentException("otro error");
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                // No hace nada
+            }
+        };
+        TransactionException ex = assertThrows(TransactionException.class, () -> su59.executeTrx(client, new HashMap<String, Object>()));
+        assertTrue(ex.getMessage().contains("Error de mapeo"));
+    }
 }
