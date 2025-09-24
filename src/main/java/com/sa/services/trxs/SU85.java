@@ -57,7 +57,7 @@ private void handleInsertMode(Map<String, Object> parametersExecute) {
                 String str = getStrLista(obj);
                 this.getDataReturnList().add(str);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Error en mapData SU85", e);
             }
         }
     }

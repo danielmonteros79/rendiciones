@@ -181,6 +181,26 @@ public class XMLConfigReader {
 		return puertodns;
 	}
 
+	private void inicializarParametrosAplicacion(Document confFile, String ambiente) throws Exception {
+	    XPathFactory xpathFactory = XPathFactory.newInstance();
+	    XPath xpath = xpathFactory.newXPath();
+	    logsPath = xpath.evaluate("Config/Archivos/" + ambiente + "/LogsPath", confFile);
+	    applicationLogFileName = xpath.evaluate("Config/Archivos/" + ambiente + "/ApplicationFileName", confFile);
+	    exceptionsLogFileName = xpath.evaluate("Config/Archivos/" + ambiente + "/ExceptionsFileName", confFile);
+	    dbDriver = xpath.evaluate("Config/Database/" + ambiente + "/Driver", confFile);
+	    dbURL = xpath.evaluate("Config/Database/" + ambiente + "/URL", confFile);
+	    dbUser = xpath.evaluate("Config/Database/" + ambiente + "/User", confFile);
+	    dbPassword = xpath.evaluate("Config/Database/" + ambiente + "/Password", confFile);
+	    dbDriverOracle = xpath.evaluate("Config/Database/" + ambiente + "/DriverOracle", confFile);
+	    dbURLOracle = xpath.evaluate("Config/Database/" + ambiente + "/URLOracle", confFile);
+	    dbUserOracle = xpath.evaluate("Config/Database/" + ambiente + "/UserOracle", confFile);
+	    dbPasswordOracle = xpath.evaluate("Config/Database/" + ambiente + "/PasswordOracle", confFile);
+	    dnsIp = xpath.evaluate("Config/Altamira/dnsIp", confFile);
+	    pool = xpath.evaluate("Config/Altamira/pool", confFile);
+	    puertodns = xpath.evaluate("Config/Altamira/puertodns", confFile);
+	    cantidadLineas = xpath.evaluate("Config/Altamira/cantidadLineas", confFile);
+	}
+
 	private void inicilizarXMLDesarrollo() throws ImposibleLeerXMLException {
 		try {
 			InputStream is = getClass().getResourceAsStream(
@@ -192,42 +212,12 @@ public class XMLConfigReader {
 			Document confFile = domBuilder.parse(is);
 
 			System.out.println("Antes de inicializar XML");
-			XPathFactory xpathFactory = XPathFactory.newInstance();
-			XPath xpath = xpathFactory.newXPath();
-
-			// parametros aplicacion
-
-			// logs
-			logsPath = xpath.evaluate("Config/Archivos/SA/LogsPath", confFile);
-			applicationLogFileName = xpath.evaluate(
-					"Config/Archivos/SA/ApplicationFileName", confFile);
-			exceptionsLogFileName = xpath.evaluate(
-					"Config/Archivos/SA/ExceptionsFileName", confFile);
-
-			// sybase
-			dbDriver = xpath.evaluate("Config/Database/SA/Driver", confFile);
-			dbURL = xpath.evaluate("Config/Database/SA/URL", confFile);
-			dbUser = xpath.evaluate("Config/Database/SA/User", confFile);
-			dbPassword = xpath
-					.evaluate("Config/Database/SA/Password", confFile);
-			// Oracle
-			dbDriverOracle = xpath.evaluate("Config/Database/SA/DriverOracle",
-					confFile);
-			dbURLOracle = xpath.evaluate("Config/Database/SA/URLOracle",
-					confFile);
-			dbUserOracle = xpath.evaluate("Config/Database/SA/UserOracle",
-					confFile);
-			dbPasswordOracle = xpath.evaluate(
-					"Config/Database/SA/PasswordOracle", confFile);
-			// ALTAMIRA
-			dnsIp = xpath.evaluate("Config/Altamira/dnsIp", confFile);
-			pool = xpath.evaluate("Config/Altamira/pool", confFile);
-			puertodns = xpath.evaluate("Config/Altamira/puertodns", confFile);
-			cantidadLineas = xpath.evaluate("Config/Altamira/cantidadLineas",
-					confFile);
+			inicializarParametrosAplicacion(confFile, "SA");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error(e);
+			if (log.isDebugEnabled()) {
+				log.debug("Error al inicializar XML en desarrollo", e);
+			}
+			log.error("No se pudo leer el archivo de configuracion en entorno de desarrollo", e);
 			throw new ImposibleLeerXMLException(
 					"No se pudo leer el archivo de configuracion", e);
 		}
@@ -243,55 +233,20 @@ public class XMLConfigReader {
 			File f2 = f.getParentFile().getParentFile();
 			String pathfinal = f2.getAbsolutePath()
 					+ "/syscfg/applicationConfig.xml";
-//			String pathfinal = 
-//			"/var/lib/tomcat6/webapps/sia" //f2.getAbsolutePath()
-//			+ "/syscfg/applicationConfig.xml";
 			File f3 = new File(pathfinal);
 
 			DocumentBuilderFactory domFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder domBuilder = domFactory.newDocumentBuilder();
-			// Document confFile = domBuilder
-			// .parse("/src/main/resources/applicationConfig.xml");
 			Document confFile = domBuilder.parse(f3);
 
-			XPathFactory xpathFactory = XPathFactory.newInstance();
-			XPath xpath = xpathFactory.newXPath();
-
-			// parametros aplicacion
-
-			// logs
-			logsPath = xpath.evaluate("Config/Archivos/WAS/LogsPath", confFile);
-			applicationLogFileName = xpath.evaluate(
-					"Config/Archivos/WAS/ApplicationFileName", confFile);
-			exceptionsLogFileName = xpath.evaluate(
-					"Config/Archivos/WAS/ExceptionsFileName", confFile);
-
-			// sybase
-			dbDriver = xpath.evaluate("Config/Database/WAS/Driver", confFile);
-			dbURL = xpath.evaluate("Config/Database/WAS/URL", confFile);
-			dbUser = xpath.evaluate("Config/Database/WAS/User", confFile);
-			dbPassword = xpath.evaluate("Config/Database/WAS/Password",
-					confFile);
-			// Oracle
-			dbDriverOracle = xpath.evaluate("Config/Database/WAS/DriverOracle",
-					confFile);
-			dbURLOracle = xpath.evaluate("Config/Database/WAS/URLOracle",
-					confFile);
-			dbUserOracle = xpath.evaluate("Config/Database/WAS/UserOracle",
-					confFile);
-			dbPasswordOracle = xpath.evaluate(
-					"Config/Database/WAS/PasswordOracle", confFile);
-			// ALTAMIRA
-			dnsIp = xpath.evaluate("Config/Altamira/dnsIp", confFile);
-			pool = xpath.evaluate("Config/Altamira/pool", confFile);
-			puertodns = xpath.evaluate("Config/Altamira/puertodns", confFile);
-			cantidadLineas = xpath.evaluate("Config/Altamira/cantidadLineas",
-					confFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error(e);
-			throw new ImposibleLeerXMLException(e);
+			inicializarParametrosAplicacion(confFile, "WAS");
+		}  catch (Exception e) {
+			if (log.isDebugEnabled()) {
+				log.debug("Error al inicializar XML en produccion", e);
+			}
+			log.error("No se pudo leer el archivo de configuracion en entorno de produccion", e);
+			throw new ImposibleLeerXMLException("No se pudo leer el archivo de configuracion", e);
 		}
 	}
 

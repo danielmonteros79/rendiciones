@@ -24,21 +24,13 @@ public class SU72 extends Transaction {
 
 	@Override
 	public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
-		try {
- 			execute(client, this.PARAMETER_TRX, parametersExecute);
-			mapData(parametersExecute);
-		} catch (Exception e) {
-			log.error(e);
-			throw new TransactionException(e);
-		}
+		ejecutarTransaccion(client, this.PARAMETER_TRX, parametersExecute);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) {
-		// List <String> list = new ArrayList<String>();
-		// list.add("000000000000000100020000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400005000000000000000000000000000006000000072017-02-1200000000000000009");
-		
+
 		if (parametersExecute.get("lista") != null) {
 			for (Object obj : (List) parametersExecute.get("lista")) {
 				try {
@@ -58,7 +50,10 @@ public class SU72 extends Transaction {
 	
 					dataReturnList.add(cd);
 				} catch (Exception e) {
-					e.printStackTrace();
+					if (log.isDebugEnabled()) {
+						log.debug("Error en mapData al procesar un elemento de lista", e);
+					}
+					log.error("Error en mapData: " + e.getMessage());
 				}
 			}
 		}

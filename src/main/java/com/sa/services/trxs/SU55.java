@@ -124,7 +124,6 @@ public class SU55 extends Transaction {
 			}
 		} catch (Exception e) {
 			log.error("Error mapeo de datos SU55", e);
-			e.printStackTrace();
 		}
 	}
 

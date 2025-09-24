@@ -203,5 +203,192 @@ class SU59Test {
         su59.mapData(new HashMap<>());
         verify(datosPantallaDinamica, atLeast(1)).getTipoCampo();
     }
-}
 
+    @Test
+    void testExecuteTrx_mapDataExceptionCoverage() {
+        // Preparamos un SU59 con headers para forzar error en mapData
+        DatosPantallaDinamica campo = new DatosPantallaDinamica();
+        campo.setTipoCampo("TXT1");
+        campo.setOpcionesCombo(new ArrayList<>());
+        List<DatosPantallaDinamica> fieldsScreen = new ArrayList<>();
+        fieldsScreen.add(campo);
+        SU59 su59 = new SU59(fieldsScreen);
+        // Preparamos un string demasiado corto para forzar StringIndexOutOfBoundsException
+        List<String> lista = new ArrayList<>();
+        lista.add("123"); // muy corto para substring(19, 69)
+        Map<String, Object> params = new HashMap<>();
+        params.put("lista", lista);
+        // Ejecutamos y verificamos que se lanza TransactionException con mensaje de mapeo
+        IWebClient client = mock(IWebClient.class);
+        TransactionException ex = assertThrows(TransactionException.class, () -> su59.executeTrx(client, params));
+        assertTrue(ex.getMessage().contains("Error de mapeo"));
+    }
+
+    @Test
+    void testMapData_catchFEC1Exception_coverage() {
+        // Crear header con FEC1
+        DatosPantallaDinamica datosPantallaDinamica = new DatosPantallaDinamica();
+        datosPantallaDinamica.setTipoCampo("FEC1");
+        List<DatosPantallaDinamica> fieldsScreen = new ArrayList<>();
+        fieldsScreen.add(datosPantallaDinamica);
+        SU59 su59 = new SU59(fieldsScreen);
+
+        // String más corto de lo esperado para forzar excepción en substring(137, 147)
+        String strCorto = "1234567890"; // menos de 147 caracteres
+        List<String> lista = new ArrayList<>();
+        lista.add(strCorto);
+        Map<String, Object> params = new HashMap<>();
+        params.put("lista", lista);
+
+        // Ejecutar mapData y verificar que no lanza excepción
+        assertDoesNotThrow(() -> su59.mapData(params));
+        List result = su59.getDataReturnList();
+        assertFalse(result.isEmpty());
+        List<String> columnas = (List<String>) result.get(0);
+        // Verificar que la columna FEC1 se agregó con el substring disponible
+        assertTrue(columnas.stream().anyMatch(s -> s.startsWith("FEC1=")));
+    }
+
+    @Test
+    void testMapData_catchFEC2Exception_coverage() {
+        // Crear header con FEC2
+        DatosPantallaDinamica datosPantallaDinamica = new DatosPantallaDinamica();
+        datosPantallaDinamica.setTipoCampo("FEC2");
+        List<DatosPantallaDinamica> fieldsScreen = new ArrayList<>();
+        fieldsScreen.add(datosPantallaDinamica);
+        SU59 su59 = new SU59(fieldsScreen);
+
+        // String más corto de lo esperado para forzar excepción en substring(147, 157)
+        String strCorto = "1234567890"; // menos de 157 caracteres
+        List<String> lista = new ArrayList<>();
+        lista.add(strCorto);
+        Map<String, Object> params = new HashMap<>();
+        params.put("lista", lista);
+
+        // Ejecutar mapData y verificar que no lanza excepción
+        assertDoesNotThrow(() -> su59.mapData(params));
+        List result = su59.getDataReturnList();
+        assertFalse(result.isEmpty());
+        List<String> columnas = (List<String>) result.get(0);
+        // Verificar que la columna FEC2 se agregó con el substring disponible
+        assertTrue(columnas.stream().anyMatch(s -> s.startsWith("FEC2=")));
+    }
+
+    @Test
+    void testSafeSubstring_endMayorQueLength_coverage() throws Exception {
+        // Caso: str.length() > start pero end > str.length()
+        String str = "ABCDEFGHIJKLMN"; // length = 14
+        // start = 10, end = 20
+        // Esperado: retorna substring(10, 14) => "KLMN"
+        SU59 su59 = new SU59(new ArrayList<>());
+        java.lang.reflect.Method m = SU59.class.getDeclaredMethod("safeSubstring", String.class, int.class, int.class);
+        m.setAccessible(true);
+        String result = (String) m.invoke(su59, str, 10, 20);
+        assertEquals("KLMN", result);
+    }
+
+    @Test
+    void testSafeSubstring_startMayorQueLength_coverage() throws Exception {
+        // Caso: str.length() <= start
+        String str = "ABCDE"; // length = 5
+        SU59 su59 = new SU59(new ArrayList<>());
+        java.lang.reflect.Method m = su59.getClass().getDeclaredMethod("safeSubstring", String.class, int.class, int.class);
+        m.setAccessible(true);
+        String result = (String) m.invoke(su59, str, 10, 20);
+        assertEquals("", result);
+    }
+
+    @Test
+    void testSafeSubstring_strNull_coverage() throws Exception {
+        SU59 su59 = new SU59(new ArrayList<>());
+        java.lang.reflect.Method m = su59.getClass().getDeclaredMethod("safeSubstring", String.class, int.class, int.class);
+        m.setAccessible(true);
+        String result = (String) m.invoke(su59, null, 10, 20);
+        assertEquals("", result);
+    }
+
+    @Test
+    void testExecuteTrx_caminoNormal() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) {
+                // No hace nada, simula éxito
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                // No hace nada, simula éxito
+            }
+        };
+        assertDoesNotThrow(() -> su59.executeTrx(client, new HashMap<String, Object>()));
+    }
+
+    @Test
+    void testExecuteTrx_excepcionEnExecute() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) {
+                throw new RuntimeException("Fallo en execute");
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                // No hace nada
+            }
+        };
+        TransactionException ex = assertThrows(TransactionException.class, () -> su59.executeTrx(client, new HashMap<String, Object>()));
+        assertTrue(ex.getMessage().contains("Error de mapeo"));
+    }
+
+    @Test
+    void testExecuteTrx_excepcionEnMapData() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) {
+                // No hace nada
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                throw new RuntimeException("Fallo en mapData");
+            }
+        };
+        TransactionException ex = assertThrows(TransactionException.class, () -> su59.executeTrx(client, new HashMap<String, Object>()));
+        assertTrue(ex.getMessage().contains("Error de mapeo"));
+    }
+
+    @Test
+    void testExecuteTrx_excepcionTransactionExceptionConMensajeEsperado() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        TransactionException te = new TransactionException("Error de mapeo: algo malo");
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) throws TransactionException {
+                throw te;
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                // No hace nada
+            }
+        };
+        TransactionException ex = assertThrows(TransactionException.class, () -> su59.executeTrx(client, new HashMap<String, Object>()));
+        assertSame(te, ex);
+    }
+
+    @Test
+    void testExecuteTrx_excepcionGenerica() throws Exception {
+        IWebClient client = mock(IWebClient.class);
+        SU59 su59 = new SU59(new ArrayList<>()) {
+            @Override
+            protected void execute(IWebClient client, String trx, Map<String, Object> params, String user) {
+                throw new IllegalArgumentException("otro error");
+            }
+            @Override
+            protected void mapData(Map<String, Object> params) {
+                // No hace nada
+            }
+        };
+        TransactionException ex = assertThrows(TransactionException.class, () -> su59.executeTrx(client, new HashMap<String, Object>()));
+        assertTrue(ex.getMessage().contains("Error de mapeo"));
+    }
+}
