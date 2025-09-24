@@ -581,10 +581,6 @@
 									<directory>src/main/resources/syscfg</directory>
 									<targetPath>${project.build.directory}/syscfg</targetPath>
 								</resource>
-								<resource>
-									<directory>src/main/resources/transfer</directory>
-									<targetPath>${project.build.directory}/transfer</targetPath>
-								</resource>
 							</resources>
 						</configuration>
 					</execution>
