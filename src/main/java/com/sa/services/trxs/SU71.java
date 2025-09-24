@@ -23,13 +23,7 @@ public class SU71 extends Transaction {
 
 	@Override
 	public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
-		try {
-			execute(client, this.PARAMETER_TRX, parametersExecute);
-			mapData(parametersExecute);
- 		} catch (Exception e) {
-			log.error("", e);
- 			throw new TransactionException(e);
-		}
+		ejecutarTransaccion(client, this.PARAMETER_TRX, parametersExecute);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -49,7 +43,7 @@ public class SU71 extends Transaction {
 				
 				dataReturnList.add(cg);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Error en mapData SU71", e);
 			}
 		}
 	}

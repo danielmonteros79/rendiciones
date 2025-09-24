@@ -42,17 +42,21 @@ public class SU59 extends Transaction {
 	@Override
 	public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
 		try {
-			execute(client, this.PARAMETER_TRX, parametersExecute);
-			try {
-				mapData(parametersExecute);
-			} catch (Exception e) {
-				log.error("", e);
-				throw new TransactionException("Error de mapeo " + this.CURRENT_TRX);
-			}
- 		} catch (Exception e) {
-			log.error("", e);
-			throw new TransactionException(e);
-		}
+            execute(client, this.PARAMETER_TRX, parametersExecute); // coverage: camino normal y excepción en execute
+            try {
+                mapData(parametersExecute); // coverage: camino normal y excepción en mapData
+            } catch (Exception e) { // coverage: excepción en mapData
+                log.error("", e);
+                throw new TransactionException("Error de mapeo: " + (e.getMessage() != null ? e.getMessage() : "") );
+            }
+        } catch (Exception e) { // coverage: excepción en execute o propagada desde mapData
+            log.error("", e);
+            if (e instanceof TransactionException && e.getMessage() != null && e.getMessage().contains("Error de mapeo")) { // coverage: TransactionException con mensaje esperado
+                throw (TransactionException) e;
+            } else { // coverage: cualquier otra excepción
+                throw new TransactionException("Error de mapeo: " + (e.getMessage() != null ? e.getMessage() : ""), e);
+            }
+        }
 	}
 	
 	
@@ -101,16 +105,16 @@ public class SU59 extends Transaction {
 				try {
 					columnas.add("FEC1=" + DateUtils.formatearFecha(str.substring(137, 147), DateUtils.dfYYYYMMDD, DateUtils.dfDDMMYYYY));
 				} catch (Exception e) {
-					columnas.add("FEC1=" + str.substring(137, 147));
-					e.printStackTrace();
+					columnas.add("FEC1=" + safeSubstring(str, 137, 147));
+					log.error("Error procesando fecha", e);
 				}
 
 			if (this.headers.contains("FEC2"))
 				try {
 					columnas.add("FEC2=" + DateUtils.formatearFecha(str.substring(147, 157), DateUtils.dfYYYYMMDD, DateUtils.dfDDMMYYYY));
 				} catch (Exception e) {
-					columnas.add("FEC2=" + str.substring(147, 157));
-					e.printStackTrace();
+					columnas.add("FEC2=" + safeSubstring(str, 147, 157));
+					log.error("Error procesando fecha", e);
 				}
 
 			if (this.headers.contains("TXT250"))
@@ -119,7 +123,7 @@ public class SU59 extends Transaction {
 			this.filas.add(columnas);
 		}
 	}
-	
+
 	@Override
 	public List getDataReturnList() {
 		return filas;
@@ -129,4 +133,9 @@ public class SU59 extends Transaction {
 	protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
 		//metodo eliminado
 	}
+
+	private String safeSubstring(String str, int start, int end) {
+        if (str == null || str.length() <= start) return "";
+        return str.substring(start, Math.min(str.length(), end));
+    }
 }

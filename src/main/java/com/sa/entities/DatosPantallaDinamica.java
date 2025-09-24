@@ -51,4 +51,8 @@ public class DatosPantallaDinamica {
 		this.combo.add(combo);
 	}
 
+	public void setOpcionesCombo(List<ComboGenerico> opcionesCombo) {
+		this.combo = opcionesCombo;
+	}
+
 }
