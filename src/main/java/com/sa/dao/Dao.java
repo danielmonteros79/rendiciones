@@ -4,9 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-//import servicios.LoggerSIA;
 import com.sa.core.XMLConfigReader;
 
 /**
@@ -16,7 +16,7 @@ import com.sa.core.XMLConfigReader;
  */
 public abstract class Dao {
 
-	public static final Logger log = Logger.getLogger(Dao.class);
+	private static final Logger log = LogManager.getLogger(Dao.class);
 //	private LoggerSIA logger;
 	private XMLConfigReader xml;
 

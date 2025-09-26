@@ -214,7 +214,9 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 					
 					<div class="col-sm-12 col-lg-12 pt-2  has-float-label scroll-err">
 						<div class="has-float-label">
-							<html:textarea styleId="txAviso" styleClass="form-control bg-light" property="txAviso" />
+							<textarea id="txAviso" name="txAviso" class="form-control bg-light">
+            <c:out value="${txAviso}" />
+        </textarea>
 							<label for="txAviso">Aviso</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>

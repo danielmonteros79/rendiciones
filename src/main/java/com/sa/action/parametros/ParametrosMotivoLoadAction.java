@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.commons.text.StringEscapeUtils;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
@@ -243,15 +244,14 @@ public class ParametrosMotivoLoadAction extends RestriccionTransaccionAction {
 
 	private void configurarMensajeNoResultados(HttpServletRequest request, ParametrosBusqueda parametrosBusqueda, 
 	                                          List<ParametroMotivo> motivosTotales) {
-	    
 	    boolean noResultadosEnBusquedaTexto = parametrosBusqueda.isTextSearch && 
 	                                         motivosTotales.isEmpty() && 
 	                                         !parametrosBusqueda.terminoBuscado.isEmpty();
-	    
 	    if (noResultadosEnBusquedaTexto) {
+	        String terminoEscapado = StringEscapeUtils.escapeHtml4(parametrosBusqueda.terminoBuscado);
 	        request.setAttribute("noResultados", true);
-	        request.setAttribute("terminoBuscado", parametrosBusqueda.terminoBuscado);
-	        this.setMessage("No se encontraron motivos que contengan '" + parametrosBusqueda.terminoBuscado + "'", request);
+	        request.setAttribute("terminoBuscado", terminoEscapado);
+	        this.setMessage("No se encontraron motivos que contengan '" + terminoEscapado + "'", request);
 	    }
 	}
 

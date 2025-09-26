@@ -12,6 +12,8 @@ adaExceptionsLog
 /bin/
 src/main/cfg/
 src/main/syscfg/
+src/main/resources/cfg
+src/main/resources/syscfg
 
 # Log files
 *.log

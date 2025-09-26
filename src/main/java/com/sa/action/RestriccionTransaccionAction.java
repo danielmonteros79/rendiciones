@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -28,7 +29,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.text.StringEscapeUtils;
 
 public abstract class RestriccionTransaccionAction extends ISAMWebAction {
-	protected static final Logger log = Logger.getLogger(RestriccionTransaccionAction.class);
+	protected static final Logger log = LogManager.getLogger(RestriccionTransaccionAction.class);
 	
 	// Thread-local storage for session users to avoid mutable instance fields
 	private static final ThreadLocal<Usuario> threadLocalSessionUser = new ThreadLocal<>();
@@ -76,7 +77,7 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 	 * Los Action clientes deben utilizar este metodo en lugar del execute()
 	 * regular.
 	 *
-	 * @param actionMapping
+	 * @param mapping
 	 * @param form
 	 * @param samApplication
 	 * @param samClient
@@ -254,4 +255,3 @@ public abstract class RestriccionTransaccionAction extends ISAMWebAction {
 		threadLocalSessionUserWorking.remove();
 	}
 }
-
