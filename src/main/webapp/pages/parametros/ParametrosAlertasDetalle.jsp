@@ -214,40 +214,49 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 					
 					<div class="col-sm-12 col-lg-12 pt-2  has-float-label scroll-err">
 						<div class="has-float-label">
-							<textarea id="txAviso" name="txAviso" class="form-control bg-light">
-            <c:out value="${txAviso}" />
-        </textarea>
+							<!-- Use c:out to escape before inserting into the textarea value attribute
+								 and enforce maxlength to prevent client-side overflows. -->
+							<textarea id="txAviso" name="txAviso" class="form-control bg-light" maxlength="50"><c:out value="${txAviso}"/></textarea>
 							<label for="txAviso">Aviso</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
 					</div>
-					
+
 					<script>
-					    const textarea = document.getElementById('txAviso');
-					    const errorDiv = document.getElementById('avisoError');
-					    const counter = document.getElementById('contadorAviso');
-					    const max = 50;
-					
-					    textarea.addEventListener('input', () => {
-					        let value = textarea.value;
-					
-					        if (value.length > max) {
-					            // Recorta el texto automaticamente
-					            textarea.value = value.substring(0, max);
-					            errorDiv.style.display = 'block';
-					            textarea.classList.add('is-invalid');
-					        } else {
-					            errorDiv.style.display = 'none';
-					            textarea.classList.remove('is-invalid');
-					        }
-					
-					        counter.textContent = `${textarea.value.length} / ${max}`;
-					    });
-					
-					    window.addEventListener('DOMContentLoaded', () => {
-					        errorDiv.style.display = 'none';
-					        counter.textContent = `${textarea.value.length} / ${max}`;
-					    });
+						(function(){
+							const textarea = document.getElementById('txAviso');
+							const errorDiv = document.getElementById('avisoError');
+							const counter = document.getElementById('contadorAviso');
+							const max = 50;
+
+							// Ensure elements exist before accessing them
+							if(!textarea) return;
+							if(!errorDiv){
+								// create a hidden error container if missing
+								const d = document.createElement('div'); d.id='avisoError'; d.style.display='none'; textarea.parentNode.appendChild(d);
+							}
+							if(!counter){
+								const c = document.createElement('div'); c.id='contadorAviso'; c.style.marginTop='4px'; textarea.parentNode.appendChild(c);
+							}
+
+							const updateState = function(){
+								// use textContent only (no HTML injection)
+								counter.textContent = textarea.value.length + ' / ' + max;
+								if(textarea.value.length > max){
+									textarea.value = textarea.value.substring(0, max);
+									document.getElementById('avisoError').style.display = 'block';
+									textarea.classList.add('is-invalid');
+								} else {
+									document.getElementById('avisoError').style.display = 'none';
+									textarea.classList.remove('is-invalid');
+								}
+							};
+
+							textarea.addEventListener('input', updateState, false);
+							window.addEventListener('DOMContentLoaded', updateState, false);
+							// run once now
+							updateState();
+						})();
 					</script>
 					
 					<div class="col-sm-12 col-lg-3 pt-2  has-float-label">
