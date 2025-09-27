@@ -1,6 +1,7 @@
 package com.sa.entities;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,7 +35,7 @@ public class Cupones {
 	private String cuponCheck;
 	private List<Cupones> cupones;
 	private boolean adelanto;
-	private static final Logger log = Logger.getLogger(Cupones.class);
+	private static final Logger log = LogManager.getLogger(Cupones.class);
 
 	public Cupones() {
 	
