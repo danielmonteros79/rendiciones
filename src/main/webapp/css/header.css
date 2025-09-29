@@ -1,0 +1,131 @@
+div#headerTop {
+	background: rgba(76,76,76,1);
+	background: #474747;
+	background: -moz-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(71,71,71,1) 1%, rgba(102,102,102,1) 15%, rgba(89,89,89,1) 18%, rgba(71,71,71,1) 31%, rgba(0,0,0,1) 51%, rgba(44,44,44,1) 55%, rgba(17,17,17,1) 62%, rgba(43,43,43,1) 75%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(76,76,76,1)), color-stop(1%, rgba(71,71,71,1)), color-stop(15%, rgba(102,102,102,1)), color-stop(18%, rgba(89,89,89,1)), color-stop(31%, rgba(71,71,71,1)), color-stop(51%, rgba(0,0,0,1)), color-stop(55%, rgba(44,44,44,1)), color-stop(62%, rgba(17,17,17,1)), color-stop(75%, rgba(43,43,43,1)), color-stop(91%, rgba(28,28,28,1)), color-stop(100%, rgba(19,19,19,1)));
+	background: -webkit-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(71,71,71,1) 1%, rgba(102,102,102,1) 15%, rgba(89,89,89,1) 18%, rgba(71,71,71,1) 31%, rgba(0,0,0,1) 51%, rgba(44,44,44,1) 55%, rgba(17,17,17,1) 62%, rgba(43,43,43,1) 75%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
+	background: -o-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(71,71,71,1) 1%, rgba(102,102,102,1) 15%, rgba(89,89,89,1) 18%, rgba(71,71,71,1) 31%, rgba(0,0,0,1) 51%, rgba(44,44,44,1) 55%, rgba(17,17,17,1) 62%, rgba(43,43,43,1) 75%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
+	background: -ms-linear-gradient(top, rgba(76,76,76,1) 0%, rgba(71,71,71,1) 1%, rgba(102,102,102,1) 15%, rgba(89,89,89,1) 18%, rgba(71,71,71,1) 31%, rgba(0,0,0,1) 51%, rgba(44,44,44,1) 55%, rgba(17,17,17,1) 62%, rgba(43,43,43,1) 75%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
+	background: linear-gradient(to bottom, rgba(76,76,76,1) 0%, rgba(71,71,71,1) 1%, rgba(102,102,102,1) 15%, rgba(89,89,89,1) 18%, rgba(71,71,71,1) 31%, rgba(0,0,0,1) 51%, rgba(44,44,44,1) 55%, rgba(17,17,17,1) 62%, rgba(43,43,43,1) 75%, rgba(28,28,28,1) 91%, rgba(19,19,19,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313', GradientType=0 );width: 1000px;
+	height: 30px;
+	position: relative;
+	z-index: 9999;
+}
+
+div#headerFoot {
+	
+	background: #2f232f;
+	background: rgba(237,235,250,1);
+	background: -moz-linear-gradient(top, rgba(237,235,250,1) 0%, rgba(58,54,77,1) 31%, rgba(58,54,77,1) 68%, rgba(47,35,47,1) 95%, rgba(47,35,47,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(237,235,250,1)), color-stop(31%, rgba(58,54,77,1)), color-stop(68%, rgba(58,54,77,1)), color-stop(95%, rgba(47,35,47,1)), color-stop(100%, rgba(47,35,47,1)));
+	background: -webkit-linear-gradient(top, rgba(237,235,250,1) 0%, rgba(58,54,77,1) 31%, rgba(58,54,77,1) 68%, rgba(47,35,47,1) 95%, rgba(47,35,47,1) 100%);
+	background: -o-linear-gradient(top, rgba(237,235,250,1) 0%, rgba(58,54,77,1) 31%, rgba(58,54,77,1) 68%, rgba(47,35,47,1) 95%, rgba(47,35,47,1) 100%);
+	background: -ms-linear-gradient(top, rgba(237,235,250,1) 0%, rgba(58,54,77,1) 31%, rgba(58,54,77,1) 68%, rgba(47,35,47,1) 95%, rgba(47,35,47,1) 100%);
+	background: linear-gradient(to bottom, rgba(237,235,250,1) 0%, rgba(58,54,77,1) 31%, rgba(58,54,77,1) 68%, rgba(47,35,47,1) 95%, rgba(47,35,47,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edebfa', endColorstr='#2f232f', GradientType=0 );
+	height: 30px;
+	position: relative;
+	z-index: 9999;
+}
+
+div#logout {
+	position: absolute;
+	right: 7px;
+	font-size: 11px;
+	top: 1px;
+}
+
+div#user-working {
+	position: relative;
+	right: -65px;
+	font-family: courier, 'courier new', monospace;
+	color: #DDE2FF;
+	font-size: 16px;
+	font-weight: bold;
+	top: 8px;
+}
+
+div#headerCentral {
+	background: #93cede;
+	background: rgba(147,206,222,1);
+	background: -moz-linear-gradient(-45deg, rgba(147,206,222,1) 0%, rgba(147,206,222,1) 22%, rgba(73,165,191,1) 49%, rgba(117,189,209,1) 71%, rgba(117,189,209,1) 100%);
+	background: -webkit-gradient(left top, right bottom, color-stop(0%, rgba(147,206,222,1)), color-stop(22%, rgba(147,206,222,1)), color-stop(49%, rgba(73,165,191,1)), color-stop(71%, rgba(117,189,209,1)), color-stop(100%, rgba(117,189,209,1)));
+	background: -webkit-linear-gradient(-45deg, rgba(147,206,222,1) 0%, rgba(147,206,222,1) 22%, rgba(73,165,191,1) 49%, rgba(117,189,209,1) 71%, rgba(117,189,209,1) 100%);
+	background: -o-linear-gradient(-45deg, rgba(147,206,222,1) 0%, rgba(147,206,222,1) 22%, rgba(73,165,191,1) 49%, rgba(117,189,209,1) 71%, rgba(117,189,209,1) 100%);
+	background: -ms-linear-gradient(-45deg, rgba(147,206,222,1) 0%, rgba(147,206,222,1) 22%, rgba(73,165,191,1) 49%, rgba(117,189,209,1) 71%, rgba(117,189,209,1) 100%);
+	background: linear-gradient(135deg, rgba(147,206,222,1) 0%, rgba(147,206,222,1) 22%, rgba(73,165,191,1) 49%, rgba(117,189,209,1) 71%, rgba(117,189,209,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#93cede', endColorstr='#75bdd1', GradientType=1 );
+	height: 90px;
+	position: relative;
+	z-index: 9999;
+
+}
+
+div#headerLogoBanco {
+	position: absolute;
+	right: 0px;
+	font-size: 12px; 
+	font-weight: bold;
+	font-family: arial, sans-serif; 
+	color: #101112; 
+	font-style: italic;
+	top: 15px;
+}
+div#headerLogoProy {
+	position: relative;
+	right: -50px;
+	top: 6px;
+}
+
+div#headerTitle {
+	position: relative;
+	right: -100px;
+	font-family: 'palatino linotype', palatino, serif;
+	color: #192838;
+	font-size: 25px;
+	font-weight: bold;
+	top: 15px;
+}
+
+div#fecha {
+	position: absolute;
+	right: 14px;
+	color: #DDE2FF;
+	font-size: 11px;
+	top: 8px;
+}
+
+div#user {
+	position: absolute;
+	right: 339px;
+	color: #DDE2FF;
+	font-size: 11px;
+	top: 8px;
+}
+
+div#userCuenta {
+	position: absolute;
+	right: 280px;
+	color: white;
+	font-size: 11px;
+	top: 8px;
+	font-weight: bold;
+}
+
+div#sucursal {
+	position: absolute;
+	right: 480px;
+	color: #DDE2FF;
+	font-size: 11px;
+	top: 8px;
+}
+
+div#sucursalNumero {
+	position: absolute;
+	right: 450px;
+	color: white;
+	font-size: 11px;
+	top: 8px;
+	font-weight: bold;
+}
