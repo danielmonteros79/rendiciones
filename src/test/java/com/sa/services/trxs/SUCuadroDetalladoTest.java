@@ -154,7 +154,6 @@ class SUCuadroDetalladoTest {
         final List<String> lista = new ArrayList<>();
         lista.add("123"); // Muy corto para los substrings requeridos
         suCuadroDetallado = new SUCuadroDetallado() {
-            @Override
             protected void mapData(Map<String, Object> parametersExecute) throws Exception {
                 if ("CONS".equals(parametersExecute.get("opcion"))) {
                     for (String fila : lista) {
@@ -191,7 +190,6 @@ class SUCuadroDetalladoTest {
         // pero podemos forzar la excepción llamando a mapData y luego verificar que la lista de retorno no crece
         // Para forzar la excepción, vamos a crear una subclase temporal que llame al método real pero con una lista mal formada
         SUCuadroDetallado suCuadroDetalladoMal = new SUCuadroDetallado() {
-            @Override
             protected void mapData(Map<String, Object> parametersExecute) throws Exception {
                 List<String> list = new ArrayList<>();
                 list.add("1"); // Muy corto para los substrings requeridos
@@ -218,4 +216,47 @@ class SUCuadroDetalladoTest {
         assertDoesNotThrow(() -> suCuadroDetalladoMal.mapData(params));
         assertTrue(suCuadroDetalladoMal.getDataReturnList().isEmpty());
     }
+
+    @Test
+    @DisplayName("Extra: executeTrx lanza TransactionException cuando mapData falla (test agregado)")
+    void extra_executeTrx_should_throw_when_mapData_throws() {
+        SUCuadroDetallado failing = new SUCuadroDetallado() {
+            protected void mapData(Map<String, Object> parametersExecute) throws Exception {
+                throw new Exception("fail-mapData");
+            }
+        };
+        Map<String, Object> params = new HashMap<>();
+        params.put("opcion", "CONS");
+        TransactionException ex = assertThrows(TransactionException.class, () -> failing.executeTrx((IWebClient) null, params));
+        assertNotNull(ex.getCause());
+        assertEquals("fail-mapData", ex.getCause().getMessage());
+    }
+
+    @Test
+    @DisplayName("Extra: mapData con opcion=CONS pobla dataReturnList con 4 elementos (test agregado)")
+    void extra_mapData_populates_list_for_cons() throws Exception {
+        SUCuadroDetallado sut = new SUCuadroDetallado();
+        Map<String, Object> params = new HashMap<>();
+        params.put("opcion", "CONS");
+        sut.getDataReturnList().clear();
+        sut.mapData(params);
+        assertEquals(4, sut.getDataReturnList().size());
+    }
+
+    @Test
+    @DisplayName("Extra: mapData maneja fila malformada sin propagar excepción (test agregado)")
+    void extra_mapData_handles_malformed_row() throws Exception {
+        SUCuadroDetallado sut = new SUCuadroDetallado() {
+            protected java.util.List<String> getRows() {
+                java.util.List<String> l = new java.util.ArrayList<>();
+                l.add("X"); // demasiado corta para los substrings
+                return l;
+            }
+        };
+        Map<String, Object> params = new HashMap<>();
+        params.put("opcion", "CONS");
+        // No debe lanzar excepción porque el catch dentro de mapData maneja los errores
+        assertDoesNotThrow(() -> sut.mapData(params));
+    }
+
 }
