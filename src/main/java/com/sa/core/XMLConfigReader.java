@@ -7,7 +7,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import com.sa.exceptions.ImposibleLeerXMLException;
 
@@ -24,7 +25,7 @@ import com.sa.exceptions.ImposibleLeerXMLException;
 
 public class XMLConfigReader {
 
-	public static final Logger log = Logger.getLogger(XMLConfigReader.class);
+	public static final Logger log = LogManager.getLogger(XMLConfigReader.class);
 	private static final String ARCHIVO_CONF_NOMBRE = "applicationConfig.xml";
 
 	public static String getArchivoConfNombre() {

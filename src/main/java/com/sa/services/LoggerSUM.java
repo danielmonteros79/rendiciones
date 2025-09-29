@@ -8,7 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.sa.core.XMLConfigReader;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Graba mensajes de log en archivos de texto. En desarrollo local los logs se
@@ -16,7 +17,7 @@ import org.apache.log4j.Logger;
  * 
  */
 public class LoggerSUM {
-	private static final Logger log = Logger.getLogger(LoggerSUM.class);
+	private static final Logger log = LogManager.getLogger(LoggerSUM.class);
 	/**
 	 * Archivo de eventos del sistema.
 	 */

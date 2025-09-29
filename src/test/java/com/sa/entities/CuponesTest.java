@@ -7,7 +7,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockitoAnnotations;
+import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class CuponesTest {
 
@@ -355,6 +359,69 @@ class CuponesTest {
                 ()->assertNotNull(resultTest),
                 ()->assertEquals(adelantado,resultTest)
         );
+    }
+
+    @Test
+    @DisplayName("getFechaPresentacionDate handles parse exception (debug enabled)")
+    void getFechaPresentacionDate_parseException_debugEnabled() throws Exception {
+        Cupones c = new Cupones();
+        c.setFechaPresentacion("invalid-date-format");
+
+        // Mock logger y reemplazo por reflexión
+        Logger mockLog = mock(Logger.class);
+        when(mockLog.isDebugEnabled()).thenReturn(true);
+
+        Field logField = Cupones.class.getDeclaredField("log");
+        logField.setAccessible(true);
+        // quitar final
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(logField, logField.getModifiers() & ~Modifier.FINAL);
+
+        Object original = logField.get(null);
+        try {
+            logField.set(null, mockLog);
+
+            Date res = c.getFechaPresentacionDate();
+            assertNull(res, "Al parsear fecha inválida debe retornarse null");
+
+            verify(mockLog).isDebugEnabled();
+            verify(mockLog).debug(contains("Error al parsear fechaPresentacion"), any(Exception.class));
+            verify(mockLog).error(contains("No se pudo parsear fechaPresentacion"), any(Exception.class));
+        } finally {
+            // restaurar logger original
+            logField.set(null, original);
+        }
+    }
+
+    @Test
+    @DisplayName("getFechaPresentacionDate handles parse exception (debug disabled)")
+    void getFechaPresentacionDate_parseException_debugDisabled() throws Exception {
+        Cupones c = new Cupones();
+        c.setFechaPresentacion("also-invalid");
+
+        Logger mockLog = mock(Logger.class);
+        when(mockLog.isDebugEnabled()).thenReturn(false);
+
+        Field logField = Cupones.class.getDeclaredField("log");
+        logField.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(logField, logField.getModifiers() & ~Modifier.FINAL);
+
+        Object original = logField.get(null);
+        try {
+            logField.set(null, mockLog);
+
+            Date res = c.getFechaPresentacionDate();
+            assertNull(res, "Al parsear fecha inválida debe retornarse null");
+
+            verify(mockLog).isDebugEnabled();
+            verify(mockLog, never()).debug(anyString(), any(Throwable.class));
+            verify(mockLog).error(contains("No se pudo parsear fechaPresentacion"), any(Exception.class));
+        } finally {
+            logField.set(null, original);
+        }
     }
 
 }

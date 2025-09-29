@@ -72,6 +72,58 @@ class TransactionTest {
         }
     }
 
+    // Nuevo: clase auxiliar para inyectar comportamiento de performSAM/execute y exponer métodos protegidos
+    static class TestTx extends Transaction {
+        private final java.util.function.BiConsumer<String, Map<String, Object>> executor;
+
+        TestTx(java.util.function.BiConsumer<String, Map<String, Object>> executor) {
+            this.executor = executor;
+        }
+
+        @Override
+        public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
+            // No-op en tests
+        }
+
+        @Override
+        protected void mapData(Map<String, Object> parametersExecute) throws Exception {
+            // No-op
+        }
+
+        @Override
+        protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+            // No-op
+        }
+
+        @Override
+        protected void execute(IWebClient client, String trxExecute, Map<String, Object> parametersExecute, String conectorSoa) throws Exception {
+            if (executor != null) {
+                executor.accept(trxExecute, parametersExecute);
+            }
+            // Simular comportamiento normal: si hay avisos en parametros y status OK, setear aviso
+            Object st = parametersExecute != null ? parametersExecute.get(com.bbva.sam.bbvaPaq.BbvaPaqConstants.NOMBRE_PARAM_STATUS) : null;
+            if (st instanceof ar.com.bbva.soa.conectores.BbvaSoaStatus) {
+                ar.com.bbva.soa.conectores.BbvaSoaStatus status = (ar.com.bbva.soa.conectores.BbvaSoaStatus) st;
+                java.util.List<?> avisos = status.getListaAvisos();
+                if (avisos != null && !avisos.isEmpty()) {
+                    Object first = avisos.get(0);
+                    if (first instanceof ar.com.bbva.soa.conectores.BbvaSoaMensaje) {
+                        this.setAviso(((ar.com.bbva.soa.conectores.BbvaSoaMensaje) first).getDescripcion());
+                    }
+                }
+            }
+        }
+
+        // Helpers para invocar métodos protegidos
+        public void runExecute(IWebClient client, String trxExecute, Map<String, Object> parametersExecute) throws Exception {
+            execute(client, trxExecute, parametersExecute, null);
+        }
+
+        public void runEjecutarTransaccion(IWebClient client, String parameterTrx, Map<String, Object> parametersExecute) throws TransactionException {
+            ejecutarTransaccion(client, parameterTrx, parametersExecute);
+        }
+    }
+
     @Test
     @DisplayName("Cobertura: ejecutarTransaccion lanza TransactionException si mapData falla")
     void testEjecutarTransaccionThrowsTransactionException() {
@@ -423,4 +475,65 @@ class TransactionTest {
         params.put(com.bbva.sam.bbvaPaq.BbvaPaqConstants.NOMBRE_PARAM_STATUS, status);
         assertEquals("Aviso de prueba", invokeCheckSoaAvisos(trx, params));
     }
+
+    @Test
+    void testGetDataReturn_escapesHtml() throws Exception {
+        TransactionForCoverage trx = new TransactionForCoverage();
+        // Asignar directamente el campo protegido dataReturn (mismo paquete permite acceso)
+        trx.dataReturn = "<b>1 & 2</b>";
+        Object out = trx.getDataReturn();
+        assertTrue(out instanceof String);
+        assertEquals("&lt;b&gt;1 &amp; 2&lt;/b&gt;", out);
+    }
+
+    @Test
+    void testGetDataReturn_nonString_returnsSameObject() throws Exception {
+        TransactionForCoverage trx = new TransactionForCoverage();
+        Object obj = new Object();
+        trx.dataReturn = obj;
+        Object out = trx.getDataReturn();
+        assertSame(obj, out);
+    }
+
+    @Test
+    @DisplayName("Cobertura: ejecutarTransaccion invoca execute y luego mapData en flujo exitoso")
+    void testEjecutarTransaccion_invocaMapData_enFlujoExitoso() throws Exception {
+        class TxSuccess extends Transaction {
+            boolean executed = false;
+            boolean mapped = false;
+
+            @Override
+            public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
+                // no-op
+            }
+
+            @Override
+            protected void mapData(Map<String, Object> parametersExecute) throws Exception {
+                mapped = true;
+                // Simular mapeo agregando un elemento a dataReturnList
+                this.getDataReturnList().add("ok");
+            }
+
+            @Override
+            protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+                // no-op
+            }
+
+            @Override
+            protected void execute(IWebClient client, String trxExecute, Map<String, Object> parametersExecute, String conectorSoa) throws Exception {
+                executed = true;
+                // No lanza excepción para simular éxito
+            }
+        }
+
+        TxSuccess tx = new TxSuccess();
+        IWebClient client = null;
+        Map<String, Object> params = new HashMap<>();
+
+        // Ejecutar: debe completar sin excepciones y mapData debe haberse ejecutado
+        tx.ejecutarTransaccion(client, "TRX_OK", params);
+        assertTrue(tx.getDataReturnList().size() == 1);
+        assertEquals("ok", tx.getDataReturnList().get(0));
+    }
+
 }

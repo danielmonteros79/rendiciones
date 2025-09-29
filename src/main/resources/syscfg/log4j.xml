@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- <!DOCTYPE log4j:configuration SYSTEM "jar:file:jakarta-log4j-1.2.8.jar!/org/apache/log4j/xml/log4j.dtd"> -->
+<!DOCTYPE log4j:configuration SYSTEM "jar:file:jakarta-log4j-1.2.8.jar!/org/apache/log4j/xml/log4j.dtd">
 
 <log4j:configuration>
 
