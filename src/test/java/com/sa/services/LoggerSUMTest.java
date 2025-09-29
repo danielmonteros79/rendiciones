@@ -15,6 +15,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.anyString;
@@ -197,6 +199,79 @@ class LoggerSUMTest {
         // No se puede cambiar el modo de log4j en tiempo de ejecución fácilmente, pero el código se ejecuta igual
         assertDoesNotThrow(() -> loggerSUM.logExceptionStackTrace(ex));
         // No se espera excepción, pero se ejecuta el bloque seleccionado y se loguea el error
+    }
+
+    @Test
+    @DisplayName("createPath_withXml_applicationFileReturnsFullPathWithDateAndExtension")
+    void createPath_withXml_applicationFileReturnsFullPathWithDateAndExtension() throws Exception {
+        XMLConfigReader xmlLocal = mock(XMLConfigReader.class);
+        when(xmlLocal.getLogsPath()).thenReturn("/var/logs/");
+        when(xmlLocal.getApplicationLogFileName()).thenReturn("myAppLog");
+        when(xmlLocal.getExceptionsLogFileName()).thenReturn("myExLog");
+
+        TestableLoggerSUM l = new TestableLoggerSUM(xmlLocal);
+
+        String path = l.publicCreatePath(LoggerSUM.APPLICATION_FILE);
+
+        String expectedDate = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        String expected = "/var/logs/" + "myAppLog" + expectedDate + ".txt";
+        assertEquals(expected, path);
+    }
+
+    @Test
+    @DisplayName("createPath_withoutXml_applicationFileReturnsDefaultName")
+    void createPath_withoutXml_applicationFileReturnsDefaultName() throws Exception {
+        TestableLoggerSUM l = new TestableLoggerSUM(null);
+        String path = l.publicCreatePath(LoggerSUM.APPLICATION_FILE);
+        assertEquals("adaApplicationLog", path);
+    }
+
+    @Test
+    @DisplayName("createPath_withXml_exceptionsFileReturnsFullPathWithDateAndExtension")
+    void createPath_withXml_exceptionsFileReturnsFullPathWithDateAndExtension() throws Exception {
+        XMLConfigReader xmlLocal = mock(XMLConfigReader.class);
+        when(xmlLocal.getLogsPath()).thenReturn("/tmp/logs/");
+        when(xmlLocal.getExceptionsLogFileName()).thenReturn("exceptions");
+
+        TestableLoggerSUM l = new TestableLoggerSUM(xmlLocal);
+
+        String path = l.publicCreatePath(LoggerSUM.EXCEPTIONS_FILE);
+
+        String expectedDate = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        String expected = "/tmp/logs/" + "exceptions" + expectedDate + ".txt";
+        assertEquals(expected, path);
+    }
+
+    @Test
+    @DisplayName("createPath_withoutXml_exceptionsFileReturnsDefaultName")
+    void createPath_withoutXml_exceptionsFileReturnsDefaultName() throws Exception {
+        TestableLoggerSUM l = new TestableLoggerSUM(null);
+        String path = l.publicCreatePath(LoggerSUM.EXCEPTIONS_FILE);
+        assertEquals("adaExceptionsLog", path);
+    }
+
+    @Test
+    @DisplayName("getFormattedDate_returnsNonEmptyString")
+    void getFormattedDate_returnsNonEmptyString() {
+        TestableLoggerSUM l = new TestableLoggerSUM(null);
+        String val = l.publicGetFormattedDate();
+        assertNotNull(val);
+        assertTrue(val.length() > 0);
+    }
+
+    // Clase auxiliar para exponer métodos protegidos
+    static class TestableLoggerSUM extends LoggerSUM {
+        TestableLoggerSUM(XMLConfigReader xml) {
+            super(xml);
+        }
+
+        public String publicCreatePath(int key) throws Exception {
+            return createPath(key);
+        }
+
+        public String publicGetFormattedDate() {
+            return getFormattedDate();
+        }
     }
 
 }
