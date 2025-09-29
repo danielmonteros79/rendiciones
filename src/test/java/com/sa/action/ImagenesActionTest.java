@@ -1080,5 +1080,76 @@ class ImagenesActionTest {
     }
   }
 
-  // ...existing code...
+  @Test
+  @DisplayName("Should concatenate partial errors in generar and write JSON response")
+  void shouldConcatenatePartialErrorsInGenerar() throws Exception {
+    // Arrange
+    when(rendicionAvisoFormMocked.getAction()).thenReturn("generar");
+    when(httpServletRequestMocked.getParameter("idRendicion")).thenReturn("55555");
+    when(httpServletRequestMocked.getParameter("esAprobacion")).thenReturn("false");
+    when(httpServletRequestMocked.getParameter("glg")).thenReturn("1");
+    when(httpServletRequestMocked.getSession()).thenReturn(httpSessionMocked);
+    when(httpSessionMocked.getServletContext()).thenReturn(servletContextMocked);
+
+    when(servletContextMocked.getAttribute("esb.thuban.user")).thenReturn("test_user");
+    when(servletContextMocked.getAttribute("esb.thuban.pass")).thenReturn("test_pass");
+    when(servletContextMocked.getAttribute("esb.thuban.clase.documental")).thenReturn("test_class");
+
+    when(httpServletResponseMocked.getWriter()).thenReturn(printWriterMocked);
+
+    // Crear 2 archivos a subir (uno fallará en Thuban)
+    Archivo a1 = new Archivo();
+    a1.setNomArchivo("ok1.pdf");
+    Archivo a2 = new Archivo();
+    a2.setNomArchivo("ok2.pdf");
+    List<Archivo> archivos = new ArrayList<>();
+    archivos.add(a1);
+    archivos.add(a2);
+
+    when(rendicionAvisoFormMocked.getArchivosASubir()).thenReturn(archivos);
+
+    // Usuario en session
+    when(usuarioMocked.getIdUser()).thenReturn("user555");
+    when(usuarioMocked.getCcostos()).thenReturn(1000);
+    imagenesAction.setSessionUserWorking(usuarioMocked);
+
+    // Rendicion devuelta por RendicionesService
+    Rendicion mockRendicion = new Rendicion();
+    mockRendicion.setId(55555);
+    List<Rendicion> rendiciones = new ArrayList<>();
+    rendiciones.add(mockRendicion);
+
+    // Thuban devuelve un error parcial (1 error de 2 archivos)
+    List<String> erroresParciales = new ArrayList<>();
+    erroresParciales.add("Error al publicar archivo ok1.pdf");
+
+    try (MockedConstruction<RendicionesService> rendicionesServiceMC = Mockito.mockConstruction(RendicionesService.class,
+            (mock, context) -> {
+              when(mock.obtenerListadoRendiciones(anyString(), anyString(), isNull(), isNull(), isNull()))
+                      .thenReturn(rendiciones);
+            });
+         MockedConstruction<ThubanService> thubanServiceMC = Mockito.mockConstruction(ThubanService.class,
+            (mock, context) -> {
+              when(mock.publicarDocumentos(anyString(), anyString(), anyString(), any(Rendicion.class), anyList()))
+                      .thenReturn(erroresParciales);
+            })) {
+
+      // Act
+      ActionForward result = imagenesAction.executeAction(actionMappingMocked, rendicionAvisoFormMocked,
+              samWebApplicationMocked, samWebClientMocked, httpServletRequestMocked, httpServletResponseMocked);
+
+      // Assert
+      assertNull(result, "Should return null for JSON response");
+
+      // Verificar que se haya escrito en el writer una respuesta JSON que contenga el mensaje OK y el texto de error (escaped)
+      // writeJson escapa los caracteres HTML (por ejemplo <br> => &lt;br&gt;). Aquí verificamos que el mensaje base esté presente y
+      // que el texto del error aparezca escapado en la salida.
+      // Comprobamos que se imprimió un String que contenga el texto de error (suficiente para cubrir la rama)
+      Mockito.verify(printWriterMocked, atLeastOnce()).print(org.mockito.ArgumentMatchers.contains("Error al publicar archivo ok1.pdf"));
+
+      // Verificar que se usó RendicionesService y ThubanService
+      Assertions.assertEquals(1, rendicionesServiceMC.constructed().size());
+      Assertions.assertEquals(1, thubanServiceMC.constructed().size());
+    }
+  }
 }

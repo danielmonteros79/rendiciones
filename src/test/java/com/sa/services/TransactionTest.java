@@ -72,6 +72,58 @@ class TransactionTest {
         }
     }
 
+    // Nuevo: clase auxiliar para inyectar comportamiento de performSAM/execute y exponer métodos protegidos
+    static class TestTx extends Transaction {
+        private final java.util.function.BiConsumer<String, Map<String, Object>> executor;
+
+        TestTx(java.util.function.BiConsumer<String, Map<String, Object>> executor) {
+            this.executor = executor;
+        }
+
+        @Override
+        public void executeTrx(IWebClient client, Map<String, Object> parametersExecute) throws TransactionException {
+            // No-op en tests
+        }
+
+        @Override
+        protected void mapData(Map<String, Object> parametersExecute) throws Exception {
+            // No-op
+        }
+
+        @Override
+        protected void hardcodear(Map<String, Object> parametersExecute) throws Exception {
+            // No-op
+        }
+
+        @Override
+        protected void execute(IWebClient client, String trxExecute, Map<String, Object> parametersExecute, String conectorSoa) throws Exception {
+            if (executor != null) {
+                executor.accept(trxExecute, parametersExecute);
+            }
+            // Simular comportamiento normal: si hay avisos en parametros y status OK, setear aviso
+            Object st = parametersExecute != null ? parametersExecute.get(com.bbva.sam.bbvaPaq.BbvaPaqConstants.NOMBRE_PARAM_STATUS) : null;
+            if (st instanceof ar.com.bbva.soa.conectores.BbvaSoaStatus) {
+                ar.com.bbva.soa.conectores.BbvaSoaStatus status = (ar.com.bbva.soa.conectores.BbvaSoaStatus) st;
+                java.util.List<?> avisos = status.getListaAvisos();
+                if (avisos != null && !avisos.isEmpty()) {
+                    Object first = avisos.get(0);
+                    if (first instanceof ar.com.bbva.soa.conectores.BbvaSoaMensaje) {
+                        this.setAviso(((ar.com.bbva.soa.conectores.BbvaSoaMensaje) first).getDescripcion());
+                    }
+                }
+            }
+        }
+
+        // Helpers para invocar métodos protegidos
+        public void runExecute(IWebClient client, String trxExecute, Map<String, Object> parametersExecute) throws Exception {
+            execute(client, trxExecute, parametersExecute, null);
+        }
+
+        public void runEjecutarTransaccion(IWebClient client, String parameterTrx, Map<String, Object> parametersExecute) throws TransactionException {
+            ejecutarTransaccion(client, parameterTrx, parametersExecute);
+        }
+    }
+
     @Test
     @DisplayName("Cobertura: ejecutarTransaccion lanza TransactionException si mapData falla")
     void testEjecutarTransaccionThrowsTransactionException() {
