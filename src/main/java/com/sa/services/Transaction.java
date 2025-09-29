@@ -222,10 +222,6 @@ public abstract class Transaction {
 		return contexto;
 	}
 
-	public void setContexto(IContext contexto) {
-		this.contexto = contexto;
-	}
-
 	public IWebClient getClient() {
 		return client;
 	}
