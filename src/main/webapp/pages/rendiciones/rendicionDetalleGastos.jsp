@@ -270,7 +270,8 @@ $(document).ready(function() {
 					<p id="mensajeImgRend" class=" border border-top-0 border-left-0 border-right-0 border-warning p-1">Agreg&aacute; las im&aacute;genes correspondientes a la rendici&oacute;n.</p>
 				</div>
 				<div class="text-center bg-warning" id="containerImgBtn">
-					<a href="#a" class="btn btn-primary px-4 py-2 m-2 d-no-edit" id="imagenesBtn"  onclick="openImagenes()" >
+					<!--<a href="#a" class="btn btn-primary px-4 py-2 m-2 d-no-edit" id="imagenesBtn"  onclick="openImagenes()" > -->
+					<a href="#a" class="btn btn-primary px-4 py-2 m-2" id="imagenesBtn" onclick="openImagenes()">
 					Adjuntar Im&aacute;genes
 					</a>
 				</div>

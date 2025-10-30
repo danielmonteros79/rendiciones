@@ -38,7 +38,7 @@ $(document).ready(function() {
     	"&estadoRend=" + $('#estadoRend').val());
     	
 	callAjax('imagenes.do', { action: 'inicializar', idRend: $('#idRendicion').html()}, 'setImagenes');
-
+	$('#imagenesBtn').removeClass('d-none d-no-edit').css('display', 'inline-block');
 });
 
 
@@ -58,7 +58,8 @@ function modificarRendExc(){
 	cod_estado_doc: $("#exc-check").is(":checked")? "EXEP": ""
 	}
 	
-	callAjax('rendicionDetalleGastos.do', paramsExcRend, 'finalizarModificacionSuccess');
+	//callAjax('rendicionDetalleGastos.do', paramsExcRend, 'finalizarModificacionSuccess');
+	callAjax('rendicionDetalleGastos.do', paramsExcRend, 'modificarRendExcSuccess');
 }
 
 $('#exc-check').click(function(){
@@ -215,9 +216,10 @@ function loadTables() {
 function tableLoadAfterFinished() {
 	showMessage('tableMessage', tableFirstLoad ? $('#tableMessage').html() : getLocalStorageItem('tableMessage'));
 	
-	setTimeout(function() {
+	    setTimeout(function() {
+	    $('#imagenesBtn').removeClass('d-none');	
 		if($('#gastosDtContainer h5').text().includes("lista de gastos/consumo")){
-		$('#imagenesBtn').addClass('d-none')
+		//$('#imagenesBtn').addClass('d-none')
 		$('#mensajeImgRend').addClass('d-none');
 		$('#containerImgBtn').addClass('bg-warning');
 		$('#mensajeImgRend').addClass('d-none');
@@ -401,4 +403,14 @@ function finalizarObservacionConfirmSuccess(data) {
 function openImagenes() {
 	
 	modalImagenesShow($('#idRendicion').html(), false, $('#urlThuban').val() );
+}
+
+function modificarRendExcSuccess(data) {
+	console.log("Respuesta al cambiar excepción:", data.message);
+	// Actualiza solo el estado visual, sin recargar
+	if ($("#exc-check").is(":checked")) {
+		$("#exc-check").prop("checked", true);
+	} else {
+		$("#exc-check").prop("checked", false);
+	}
 }
