@@ -156,5 +156,3 @@
 		</div>
 	</div>
 </div>
-
-<jsp:include page="./global/modalPrimerIngreso.jsp" />
