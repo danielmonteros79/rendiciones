@@ -194,7 +194,7 @@ $(document).ready(function() {
 					<label>Ingres&aacute; una observaci&oacute;n</label>
 					<div class="invalid-feedback mb-3"></div>
 				</div>
-			</div>
+			</div> 
 
 			<div class=" bg-light p-3 mt-4 cursor-pointer" id="checkbox-container">
 				<input class="m-2 cursor-pointer" type="checkbox" value=""
@@ -269,8 +269,7 @@ $(document).ready(function() {
 					<h2 id="listadoImagenesText" >Listado de im&aacute;genes</h2>
 					<p id="mensajeImgRend" class=" border border-top-0 border-left-0 border-right-0 border-warning p-1">Agreg&aacute; las im&aacute;genes correspondientes a la rendici&oacute;n.</p>
 				</div>
-				<div class="text-center bg-warning" id="containerImgBtn">
-					<!--<a href="#a" class="btn btn-primary px-4 py-2 m-2 d-no-edit" id="imagenesBtn"  onclick="openImagenes()" > -->
+				<div class="text-center bg-warning" id="containerImgBtn">					
 					<a href="#a" class="btn btn-primary px-4 py-2 m-2" id="imagenesBtn" onclick="openImagenes()">
 					Adjuntar Im&aacute;genes
 					</a>

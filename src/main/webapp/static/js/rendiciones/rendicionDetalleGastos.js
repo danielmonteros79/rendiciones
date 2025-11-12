@@ -8,7 +8,7 @@ let tableFirstLoad = true;
 $(document).ready(function() {
 	$('.nav-rendiciones').addClass('active');
 			console.log($('#idu').val(), "iduu");
-	//Mensaje de rechazo, aprobación u observacion
+
 	if($('#motivoRechazo').val().trim().length > 0 ){
 		let tagDesc = $('#descripcionRechazo');
 		let divTagDesc = $('#mostrarMensajeRend');
