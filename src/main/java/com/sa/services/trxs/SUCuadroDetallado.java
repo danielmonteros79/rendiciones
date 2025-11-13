@@ -41,6 +41,7 @@ public class SUCuadroDetallado extends Transaction {
 //			execute(client, this.PARAMETER_TRX, parametersExecute);
 			mapData(parametersExecute);
 		} catch (Exception e) {
+			log.error("Error ejecutando executeTrx", e); // Se agrega logging para cobertura
 			throw new TransactionException(e);
 		}
 		
@@ -68,7 +69,7 @@ public class SUCuadroDetallado extends Transaction {
 				
 				dataReturnList.add(datos);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("", e);
 			}
 			}
 			
@@ -80,7 +81,7 @@ public class SUCuadroDetallado extends Transaction {
 //		    dataReturnList.add(datos);
 
 		}
-		
+
 	}
 
 	@Override

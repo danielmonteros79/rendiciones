@@ -2,15 +2,14 @@ package com.sa.services;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.sa.core.XMLConfigReader;
-
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Graba mensajes de log en archivos de texto. En desarrollo local los logs se
@@ -18,7 +17,7 @@ import com.sa.core.XMLConfigReader;
  * 
  */
 public class LoggerSUM {
-
+	private static final Logger log = LogManager.getLogger(LoggerSUM.class);
 	/**
 	 * Archivo de eventos del sistema.
 	 */
@@ -127,9 +126,13 @@ public class LoggerSUM {
 			    PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos, "ISO-8859-1")), true)
 			) {
 			    pw.println(out);
-			} catch (Exception ex) {
-			    ex.printStackTrace();
+		} catch (Exception ex) {
+			// Registrar error sin imprimir stack trace en stdout. Si está en debug, registrar la excepción completa.
+			if (log.isDebugEnabled()) {
+				log.debug("Error al escribir log: " + ex.getMessage(), ex);
 			}
+			log.error("Error al escribir log: " + ex.getMessage());
+		}
 	}
 
 	/**
@@ -147,9 +150,12 @@ public class LoggerSUM {
 	        PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos, "ISO-8859-1")), true)
 	    ) {
 	        pw.println(out);
-	    } catch (Exception ex) {
-	        ex.printStackTrace();
-	    }
+		} catch (Exception ex) {
+			if (log.isDebugEnabled()) {
+				log.debug("Error al escribir exception log: " + ex.getMessage(), ex);
+			}
+			log.error("Error al escribir exception log: " + ex.getMessage());
+		}
 	}
 
 	/**
@@ -162,9 +168,20 @@ public class LoggerSUM {
 			FileOutputStream fos = new FileOutputStream(createPath(EXCEPTIONS_FILE), true);
 			PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fos, "ISO-8859-1")), true)
 		) {
-			e.printStackTrace(pw);
+			if (log.isDebugEnabled()) {
+				// Solo escribir la traza completa en archivo si el logger está en modo debug
+				e.printStackTrace(pw);
+				log.debug("Stack trace completo escrito en archivo para depuración.", e);
+			} else {
+				// En producción, evitar volcar la traza completa; dejar registro mínimo
+				pw.println(getFormattedDate() + " <SIA> Stack trace omitido en entorno de producción. Excepción: " + e);
+				log.error("Stack trace omitido en entorno de producción. Excepción: " + e.getClass() + " - " + e.getMessage());
+			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			if (log.isDebugEnabled()) {
+				log.debug("Error al escribir stack trace en archivo: " + ex.getMessage(), ex);
+			}
+			log.error("Error al escribir stack trace en archivo: " + ex.getMessage());
 		}
 	}
 	

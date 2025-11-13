@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.bbva.sam.bbvaPaq.BbvaPaqConstants;
 
@@ -24,7 +25,7 @@ import org.apache.commons.text.StringEscapeUtils;
 
 @SuppressWarnings("rawtypes")
 public abstract class Transaction {
-	protected static final Logger log = Logger.getLogger(Transaction.class);
+	protected static final Logger log = LogManager.getLogger(Transaction.class);
 
 	protected String PARAMETER_TRX;
 	protected String CURRENT_TRX;
@@ -221,10 +222,6 @@ public abstract class Transaction {
 		return contexto;
 	}
 
-	public void setContexto(IContext contexto) {
-		this.contexto = contexto;
-	}
-
 	public IWebClient getClient() {
 		return client;
 	}
@@ -261,5 +258,15 @@ public abstract class Transaction {
 
 	public String getAviso() {
 		return aviso;
+	}
+
+	protected void ejecutarTransaccion(IWebClient client, String parameterTrx, Map<String, Object> parametersExecute) throws TransactionException {
+	    try {
+	        execute(client, parameterTrx, parametersExecute);
+	        mapData(parametersExecute);
+	    } catch (Exception e) {
+	        log.error(e);
+	        throw new TransactionException(e);
+	    }
 	}
 }

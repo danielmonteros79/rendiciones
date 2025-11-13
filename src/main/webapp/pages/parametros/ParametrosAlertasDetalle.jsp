@@ -214,38 +214,49 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 					
 					<div class="col-sm-12 col-lg-12 pt-2  has-float-label scroll-err">
 						<div class="has-float-label">
-							<html:textarea styleId="txAviso" styleClass="form-control bg-light" property="txAviso" />
+							<!-- Use c:out to escape before inserting into the textarea value attribute
+								 and enforce maxlength to prevent client-side overflows. -->
+							<textarea id="txAviso" name="txAviso" class="form-control bg-light" maxlength="50"><c:out value="${txAviso}"/></textarea>
 							<label for="txAviso">Aviso</label>
 							<div class="invalid-feedback mb-3"></div>
 						</div>
 					</div>
-					
+
 					<script>
-					    const textarea = document.getElementById('txAviso');
-					    const errorDiv = document.getElementById('avisoError');
-					    const counter = document.getElementById('contadorAviso');
-					    const max = 50;
-					
-					    textarea.addEventListener('input', () => {
-					        let value = textarea.value;
-					
-					        if (value.length > max) {
-					            // Recorta el texto automaticamente
-					            textarea.value = value.substring(0, max);
-					            errorDiv.style.display = 'block';
-					            textarea.classList.add('is-invalid');
-					        } else {
-					            errorDiv.style.display = 'none';
-					            textarea.classList.remove('is-invalid');
-					        }
-					
-					        counter.textContent = `${textarea.value.length} / ${max}`;
-					    });
-					
-					    window.addEventListener('DOMContentLoaded', () => {
-					        errorDiv.style.display = 'none';
-					        counter.textContent = `${textarea.value.length} / ${max}`;
-					    });
+						(function(){
+							const textarea = document.getElementById('txAviso');
+							const errorDiv = document.getElementById('avisoError');
+							const counter = document.getElementById('contadorAviso');
+							const max = 50;
+
+							// Ensure elements exist before accessing them
+							if(!textarea) return;
+							if(!errorDiv){
+								// create a hidden error container if missing
+								const d = document.createElement('div'); d.id='avisoError'; d.style.display='none'; textarea.parentNode.appendChild(d);
+							}
+							if(!counter){
+								const c = document.createElement('div'); c.id='contadorAviso'; c.style.marginTop='4px'; textarea.parentNode.appendChild(c);
+							}
+
+							const updateState = function(){
+								// use textContent only (no HTML injection)
+								counter.textContent = textarea.value.length + ' / ' + max;
+								if(textarea.value.length > max){
+									textarea.value = textarea.value.substring(0, max);
+									document.getElementById('avisoError').style.display = 'block';
+									textarea.classList.add('is-invalid');
+								} else {
+									document.getElementById('avisoError').style.display = 'none';
+									textarea.classList.remove('is-invalid');
+								}
+							};
+
+							textarea.addEventListener('input', updateState, false);
+							window.addEventListener('DOMContentLoaded', updateState, false);
+							// run once now
+							updateState();
+						})();
 					</script>
 					
 					<div class="col-sm-12 col-lg-3 pt-2  has-float-label">
@@ -299,7 +310,10 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 				//NO PUEDO INHABILITAR EL SELECT DE MOTIVO PORQUE AFECTA AL FORMULARIO
 				$('#codAlerta').attr('readonly', true);
 				$('#estado').attr('disabled','disabled');
-				$('#codMotivo').append("<option selected>" + motivo + " - " + descMotivo + "</option>");
+				var option = document.createElement('option');
+				option.selected = true;
+				option.textContent = motivo + " - " + descMotivo;
+				document.getElementById('codMotivo').appendChild(option);
 				setCombo('combos.do?action=getTiposGasto', "select[name='codGasto']", {codMotivo: motivo});
 			});
 		</script>
@@ -310,8 +324,14 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 				$('input').attr('readonly', true);
 				$('textarea').attr('readonly', true);
 				$('select').attr('disabled','disabled');
-				$('#codMotivo').append("<option selected>" + motivo + " - " + descMotivo + "</option>");
-				$('#gasto').append("<option selected>" + gasto + "</option>");
+				var option1 = document.createElement('option');
+				option1.selected = true;
+				option1.textContent = motivo + " - " + descMotivo;
+				document.getElementById('codMotivo').appendChild(option1);
+				var option2 = document.createElement('option');
+				option2.selected = true;
+				option2.textContent = gasto;
+				document.getElementById('gasto').appendChild(option2);
 			});
 		</script>
 	</logic:equal>
@@ -321,8 +341,14 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 			$( document ).ready(function() {
 				$('#codAlerta').attr('readOnly',true);
 				$('#estado').attr('disabled','disabled');
-				$('#codMotivo').append("<option selected>" + motivo + " - " + descMotivo + "</option>");
-				$('#gasto').append("<option selected>" + gasto + "</option>");
+				var option1 = document.createElement('option');
+				option1.selected = true;
+				option1.textContent = motivo + " - " + descMotivo;
+				document.getElementById('codMotivo').appendChild(option1);
+				var option2 = document.createElement('option');
+				option2.selected = true;
+				option2.textContent = gasto;
+				document.getElementById('gasto').appendChild(option2);
 			});
 		</script>
 	</logic:equal>

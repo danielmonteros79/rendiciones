@@ -19,5 +19,4 @@
 	</datasource-factory-manager>
  
    <transaction-manager name="TM_WSSOACON" url="${syscfgpath}/../cfg/tm_wssoacon.xml" classnameTMCF="com.bbva.sam.bbvaPaq.factory.TransactionManagerCreationFactory"/>
-   <transaction-manager name="TM_ESB" url="${syscfgpath}/../cfg/tm_esb.xml" classnameTMCF="com.bbva.sam.bbvaPaq.factory.TransactionManagerCreationFactory" />
 </service-access-manager>

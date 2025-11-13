@@ -1,5 +1,8 @@
 package com.sa.entities;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +35,7 @@ public class Cupones {
 	private String cuponCheck;
 	private List<Cupones> cupones;
 	private boolean adelanto;
+	private static final Logger log = LogManager.getLogger(Cupones.class);
 
 	public Cupones() {
 	
@@ -175,7 +179,10 @@ public class Cupones {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			return sdf.parse(fechaPresentacion);
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (log.isDebugEnabled()) {
+				log.debug("Error al parsear fechaPresentacion: " + fechaPresentacion, e);
+			}
+			log.error("No se pudo parsear fechaPresentacion. Valor: " + fechaPresentacion, e);
 			return null;
 		}
 	}
