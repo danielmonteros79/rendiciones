@@ -291,7 +291,10 @@ class ParametrosMotivoDetalleLoadActionTest {
     ParametrosMotivoForm form = new ParametrosMotivoForm();
     form.setAccion("");
     form.setCodigo("TEST123");
-    form.setCentrosCostoList(new ArrayList<>());
+    // Add at least one centro costo to form to avoid IndexOutOfBoundsException
+    List<String> formCentrosCostoList = new ArrayList<>();
+    formCentrosCostoList.add("CENTRO_FORM_001");
+    form.setCentrosCostoList(formCentrosCostoList);
 
     ParametroMotivo motivo = new ParametroMotivo();
     motivo.setCodigo(null);
