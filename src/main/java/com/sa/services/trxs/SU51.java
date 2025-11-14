@@ -303,7 +303,7 @@ public class SU51 extends Transaction {
 			return s.substring(start, end);
 		} catch (Exception e) {
 			// defensive fallback
-			return s.substring(Math.min(start, len), len);
+			return s.substring(start, len);
 		}
 	}
 

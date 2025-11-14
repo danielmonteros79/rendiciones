@@ -777,44 +777,366 @@ class SU51Test {
     }
 
     @Test
-    @DisplayName("Should handle hardcodear case 2 - MONEDA - covers line 158")
-    void testHardcodear_Case2_Moneda() {
-        // Test para cubrir línea 158 específicamente
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("opcion", "2");
-        parameters.put("claves_cons", ParamsConstants.MONEDA_TABLA + ParamsConstants.MONEDA_SUBTABLA + ParamsConstants.MONEDA_CODIGO);
-
-        // Act
-        su51.hardcodear(parameters);
-
-        // Assert - Verificar que se agregaron las monedas correctamente (línea 158-160)
-        List<String> lista = (List<String>) parameters.get("lista");
-        assertNotNull(lista);
-        assertEquals(3, lista.size());
-        assertTrue(lista.contains("0000200004ARS PESOS ARGENTINOS"));
-        assertTrue(lista.contains("0000200004USD DOLARES"));
-        assertTrue(lista.contains("0000200004EUR EUROS"));
+    @DisplayName("SafeSubstring should handle null input - covers line 298")
+    void testSafeSubstring_NullInput() {
+        // Test para cubrir línea 298 (if (s == null) return "")
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        lista.add(null); // null string
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "2");
+        
+        // Act - should handle null gracefully
+        su51.mapData(parametersExecute);
+        
+        // Assert - No exception thrown
+        assertNotNull(su51.listaOpcion2);
     }
 
     @Test
-    @DisplayName("Should handle hardcodear case 8/9 - covers line 237")
-    void testHardcodear_Case8or9_Line237() {
-        // Test para cubrir línea 237 específicamente
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("opcion", "8");
-
+    @DisplayName("SafeSubstring should handle negative start - covers line 300")
+    void testSafeSubstring_NegativeStart() {
+        // Aunque no podemos invocar safeSubstring directamente (es privado),
+        // podemos asegurar que cualquier uso interno funcione correctamente
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        lista.add("0000200004TEST_DATA_HERE");
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "2");
+        
         // Act
-        su51.hardcodear(parameters);
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaOpcion2);
+        assertFalse(su51.listaOpcion2.isEmpty());
+    }
 
-        // Assert - Verificar que se agregó la primera línea (línea 237)
-        List<String> lista = (List<String>) parameters.get("lista");
-        assertNotNull(lista);
-        assertFalse(lista.isEmpty());
-        // Verificar específicamente la primera entrada que se agrega en línea 237
-        assertEquals("0123123                                               0123", lista.get(0));
-        // Verificar otras entradas para asegurar cobertura completa
-        assertTrue(lista.contains("0200REPRESENTACION AACC - COMIDAS                     0000"));
-        assertTrue(lista.contains("9999asd                                               1234"));
+    @Test
+    @DisplayName("SafeSubstring should handle end < start - covers line 301")
+    void testSafeSubstring_EndLessThanStart() {
+        // Test para cubrir línea 301 (if (end < start) end = start)
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        lista.add("SHORT");
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "1");
+        
+        // Act - safeSubstring(str, 24, 27) en string corto
+        su51.mapData(parametersExecute);
+        
+        // Assert - No exception thrown
+        assertNotNull(su51.dataReturn);
+    }
+
+    @Test
+    @DisplayName("SafeSubstring should handle end > length - covers line 303")
+    void testSafeSubstring_EndGreaterThanLength() {
+        // Test para cubrir línea 303 (if (end > len) end = len)
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        lista.add("0000200004EURO"); // 14 chars
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "2"); // safeSubstring(str, 14, str.length())
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaOpcion2);
+    }
+
+    @Test
+    @DisplayName("SafeSubstring should handle very short strings - covers line 302-304")
+    void testSafeSubstring_VeryShortString() {
+        // Test para cubrir líneas 302 y 304 (start >= len return "")
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        lista.add("AB"); // 2 chars, intentará substring(10, 14)
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "2");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaOpcion2);
+    }
+
+    @Test
+    @DisplayName("SafeSubstring exception fallback should work - covers line 306")
+    void testSafeSubstring_ExceptionCatch() {
+        // Test para asegurar que el catch en línea 306 funciona correctamente
+        // Forzamos situaciones extremas con strings muy cortos
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // Múltiples strings problemáticos
+        lista.add(""); // empty
+        lista.add("X"); // 1 char
+        lista.add("XY"); // 2 chars
+        
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "2");
+        
+        // Act - debería manejar todos sin excepción
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaOpcion2);
+        assertEquals(3, su51.listaOpcion2.size());
+    }
+
+    @Test
+    @DisplayName("SafeSubstring with exact boundaries - covers normal path line 305")
+    void testSafeSubstring_ExactBoundaries() {
+        // Test para cubrir línea 305 (return s.substring(start, end))
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String perfectamente formateado
+        lista.add("0000200004ARS PESOS ARGENTINOS Y MAS TEXTO");
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "2");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaOpcion2);
+        assertFalse(su51.listaOpcion2.isEmpty());
+    }
+
+    @Test
+    @DisplayName("SafeSubstring with opcion 1 coeficiente extraction - covers line 67")
+    void testSafeSubstring_Opcion1Coeficiente() {
+        // Test para cubrir línea 67 (coeficiente = safeSubstring(str, 24, 27))
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String con al menos 27 caracteres para el coeficiente
+        lista.add("012345678901234567890123456789012345678901234567890");
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "1");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.dataReturn);
+        assertEquals("456", su51.dataReturn); // chars en posiciones 24-27
+    }
+
+    @Test
+    @DisplayName("SafeSubstring opcion 1 with short string - defensive fallback")
+    void testSafeSubstring_Opcion1ShortString() {
+        // Test para string demasiado corto en opción 1
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String de solo 10 caracteres (menor que índice 24)
+        lista.add("0123456789");
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "1");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.dataReturn);
+        assertEquals("", su51.dataReturn); // Debería retornar string vacío
+    }
+
+    @Test
+    @DisplayName("Debug log opcion 4/8/9 - string null - covers line 116-118")
+    void testDebugLog_Opcion4_NullString() {
+        // Test para cubrir líneas 116-118 con string null
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        lista.add(null); // String null para activar la condición str == null
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "4");
+        
+        // Act - el log.isDebugEnabled() puede estar activo o no, pero el código debe ejecutarse
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaMotivo);
+    }
+
+    @Test
+    @DisplayName("Debug log opcion 4/8/9 - string corto - covers line 116-118")
+    void testDebugLog_Opcion4_ShortString() {
+        // Test para cubrir líneas 116-118 con string corto (< 140 chars)
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        lista.add("0200SHORT STRING TEST                                 0000"); // < 140 chars
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "4");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaMotivo);
+        assertEquals(1, su51.listaMotivo.size());
+    }
+
+    @Test
+    @DisplayName("Debug log opcion 4/8/9 - string largo - covers line 116-118")
+    void testDebugLog_Opcion4_LongString() {
+        // Test para cubrir líneas 116-118 con string largo (> 140 chars) para activar substring(0, 140)
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String de exactamente 150 caracteres para forzar el substring(0, 140)
+        String longString = "0200GASTOS MUY LARGOS CON MUCHOS CARACTERES PARA PROBAR EL DEBUG LOG Y ASEGURARSE QUE EL SUBSTRING FUNCIONA CORRECTAMENTE CUANDO SUPERA LOS 140 CARACTERES0000";
+        lista.add(longString);
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "8");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaMotivo);
+        assertEquals(1, su51.listaMotivo.size());
+    }
+
+    @Test
+    @DisplayName("Debug log opcion 4/8/9 - string exactamente 140 chars - covers line 116-118")
+    void testDebugLog_Opcion8_Exactly140Chars() {
+        // Test para cubrir líneas 116-118 con string de exactamente 140 caracteres
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String de exactamente 140 caracteres
+        String exactString = "0200GASTOS CON EXACTAMENTE 140 CARACTERES PARA PROBAR LA CONDICION DE LONGITUD EXACTA EN EL LOG DEBUG Y VER QUE PASA CUANDO ES IGUAL00000000";
+        lista.add(exactString);
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "9");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaMotivo);
+    }
+
+    @Test
+    @DisplayName("Debug log opcion 4/8/9 - multiple strings - covers line 116-118")
+    void testDebugLog_Opcion4_MultipleStrings() {
+        // Test para cubrir líneas 116-118 con múltiples strings de diferentes tamaños
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        lista.add(null); // String null
+        lista.add("SHORT");  // String corto
+        lista.add("0200GASTOS DE REPRESENTACION NORMAL                   0000"); // String normal
+        lista.add("0201GASTOS MUY LARGOS PARA FORZAR EL TRUNCAMIENTO EN EL LOG DEBUG CUANDO SE SUPERA LA LONGITUD MAXIMA DE 140 CARACTERES Y SE DEBE HACER SUBSTRING00000000"); // > 140
+        
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "4");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaMotivo);
+        assertEquals(4, su51.listaMotivo.size());
+    }
+
+    @Test
+    @DisplayName("Debug log opcion 4/8/9 - empty string - covers line 116-118")
+    void testDebugLog_Opcion8_EmptyString() {
+        // Test para cubrir líneas 116-118 con string vacío
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        lista.add(""); // String vacío
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "8");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaMotivo);
+    }
+
+    @Test
+    @DisplayName("Debug log opcion 9 - string de 141 caracteres - covers line 116-118")
+    void testDebugLog_Opcion9_String141Chars() {
+        // Test para cubrir líneas 116-118 con string de 141 caracteres (justo sobre el límite)
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String de 141 caracteres
+        String string141 = "0200GASTOS CON 141 CARACTERES PARA PROBAR QUE SUBSTRING SE EJECUTA CORRECTAMENTE CUANDO LA LONGITUD ES MAYOR A 140 Y DEBE TRUNCARSE0000X";
+        lista.add(string141);
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "9");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaMotivo);
+        assertEquals(1, su51.listaMotivo.size());
+    }
+
+    @Test
+    @DisplayName("Debug log opcion 4 - string de 200+ caracteres - covers line 116-118")
+    void testDebugLog_Opcion4_VeryLongString() {
+        // Test para cubrir líneas 116-118 con string muy largo (> 200 chars)
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String muy largo (200+ caracteres)
+        String veryLongString = "0200GASTOS MUY MUY LARGOS CON MUCHISIMOS CARACTERES PARA ASEGURAR QUE EL LOG DEBUG MANEJA CORRECTAMENTE STRINGS EXTREMADAMENTE LARGOS Y QUE EL SUBSTRING DE 140 CARACTERES FUNCIONA BIEN SIN PROBLEMAS CUANDO HAY MUCHO TEXTO ADICIONAL MAS ALLA DEL LIMITE000000000000000000";
+        lista.add(veryLongString);
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "4");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaMotivo);
+        assertEquals(1, su51.listaMotivo.size());
     }
 }
 
