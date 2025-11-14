@@ -775,6 +775,49 @@ class SU51Test {
         assertEquals(1, su51.listaTipoGasto.size());
         assertTrue(su51.listaTipoGasto.get(0).getId().endsWith("N"));
     }
+
+    @Test
+    @DisplayName("Should handle hardcodear case 2 - MONEDA - covers line 158")
+    void testHardcodear_Case2_Moneda() {
+        // Test para cubrir línea 158 específicamente
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("opcion", "2");
+        parameters.put("claves_cons", ParamsConstants.MONEDA_TABLA + ParamsConstants.MONEDA_SUBTABLA + ParamsConstants.MONEDA_CODIGO);
+
+        // Act
+        su51.hardcodear(parameters);
+
+        // Assert - Verificar que se agregaron las monedas correctamente (línea 158-160)
+        List<String> lista = (List<String>) parameters.get("lista");
+        assertNotNull(lista);
+        assertEquals(3, lista.size());
+        assertTrue(lista.contains("0000200004ARS PESOS ARGENTINOS"));
+        assertTrue(lista.contains("0000200004USD DOLARES"));
+        assertTrue(lista.contains("0000200004EUR EUROS"));
+    }
+
+    @Test
+    @DisplayName("Should handle hardcodear case 8/9 - covers line 237")
+    void testHardcodear_Case8or9_Line237() {
+        // Test para cubrir línea 237 específicamente
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("opcion", "8");
+
+        // Act
+        su51.hardcodear(parameters);
+
+        // Assert - Verificar que se agregó la primera línea (línea 237)
+        List<String> lista = (List<String>) parameters.get("lista");
+        assertNotNull(lista);
+        assertFalse(lista.isEmpty());
+        // Verificar específicamente la primera entrada que se agrega en línea 237
+        assertEquals("0123123                                               0123", lista.get(0));
+        // Verificar otras entradas para asegurar cobertura completa
+        assertTrue(lista.contains("0200REPRESENTACION AACC - COMIDAS                     0000"));
+        assertTrue(lista.contains("9999asd                                               1234"));
+    }
 }
+
+
 
 
