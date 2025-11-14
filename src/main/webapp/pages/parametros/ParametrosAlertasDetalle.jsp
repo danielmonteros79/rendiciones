@@ -310,7 +310,10 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 				//NO PUEDO INHABILITAR EL SELECT DE MOTIVO PORQUE AFECTA AL FORMULARIO
 				$('#codAlerta').attr('readonly', true);
 				$('#estado').attr('disabled','disabled');
-				$('#codMotivo').append("<option selected>" + motivo + " - " + descMotivo + "</option>");
+				var option = document.createElement('option');
+				option.selected = true;
+				option.textContent = motivo + " - " + descMotivo;
+				document.getElementById('codMotivo').appendChild(option);
 				setCombo('combos.do?action=getTiposGasto', "select[name='codGasto']", {codMotivo: motivo});
 			});
 		</script>
@@ -321,8 +324,14 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 				$('input').attr('readonly', true);
 				$('textarea').attr('readonly', true);
 				$('select').attr('disabled','disabled');
-				$('#codMotivo').append("<option selected>" + motivo + " - " + descMotivo + "</option>");
-				$('#gasto').append("<option selected>" + gasto + "</option>");
+				var option1 = document.createElement('option');
+				option1.selected = true;
+				option1.textContent = motivo + " - " + descMotivo;
+				document.getElementById('codMotivo').appendChild(option1);
+				var option2 = document.createElement('option');
+				option2.selected = true;
+				option2.textContent = gasto;
+				document.getElementById('gasto').appendChild(option2);
 			});
 		</script>
 	</logic:equal>
@@ -332,8 +341,14 @@ var gasto = "<%=org.apache.commons.text.StringEscapeUtils.escapeEcmaScript(reque
 			$( document ).ready(function() {
 				$('#codAlerta').attr('readOnly',true);
 				$('#estado').attr('disabled','disabled');
-				$('#codMotivo').append("<option selected>" + motivo + " - " + descMotivo + "</option>");
-				$('#gasto').append("<option selected>" + gasto + "</option>");
+				var option1 = document.createElement('option');
+				option1.selected = true;
+				option1.textContent = motivo + " - " + descMotivo;
+				document.getElementById('codMotivo').appendChild(option1);
+				var option2 = document.createElement('option');
+				option2.selected = true;
+				option2.textContent = gasto;
+				document.getElementById('gasto').appendChild(option2);
 			});
 		</script>
 	</logic:equal>

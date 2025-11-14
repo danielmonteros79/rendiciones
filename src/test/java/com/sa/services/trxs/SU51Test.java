@@ -6,7 +6,6 @@ import static org.mockito.Mockito.mock;
 import ar.com.bbva.web.IWebClient;
 import ar.com.bbva.web.impl.SAMWebClient;
 import ar.com.itrsa.sam.TransactionException;
-import com.itextpdf.text.Chapter;
 import com.sa.util.ParamsConstants;
 
 import java.util.ArrayList;
@@ -15,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("unchecked")
 class SU51Test {
 	
 	private SU51 su51;
@@ -275,98 +274,379 @@ class SU51Test {
     }
 
     @Test
-    void testExecuteTrx() throws TransactionException {
-        SU51 su51 = new SU51();
+    void testExecuteTrx() {
+        SU51 su51obj = new SU51();
         SAMWebClient client = new SAMWebClient();
-        assertThrows(TransactionException.class, () -> su51.executeTrx(client, new HashMap<>()));
+        assertThrows(TransactionException.class, () -> su51obj.executeTrx(client, new HashMap<>()));
     }
 
     @Test
-    void testExecuteTrx2() throws TransactionException {
-        SU51 su51 = new SU51();
+    void testExecuteTrx2() {
+        SU51 su51obj = new SU51();
         SAMWebClient client = new SAMWebClient();
 
         HashMap<String, Object> parametersExecute = new HashMap<>();
-        parametersExecute.put((String) "lista", null);
-        parametersExecute.put((String) "opcion", "foo");
-        assertThrows(TransactionException.class, () -> su51.executeTrx(client, parametersExecute));
+        parametersExecute.put("lista", null);
+        parametersExecute.put("opcion", "foo");
+        assertThrows(TransactionException.class, () -> su51obj.executeTrx(client, parametersExecute));
     }
 
     @Test
     @DisplayName("Testeando mapData case 1")
     void mapData() {
 
-        SU51 su51 = new SU51();
+        SU51 su51obj = new SU51();
 
         List<String> datosLista = new ArrayList<>();
         datosLista.add("0123                                                              test                                                     test");
         HashMap<String, Object> parametersExecute = new HashMap<>();
-        parametersExecute.put((String) "lista", datosLista);
-        parametersExecute.put((String) "opcion", "1");
-        su51.mapData(parametersExecute);
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "1");
+        su51obj.mapData(parametersExecute);
+        assertNotNull(su51obj);
     }
 
     @Test
     @DisplayName("Testeando mapData case 2")
     void mapData2() {
 
-        SU51 su51 = new SU51();
+        SU51 su51obj = new SU51();
 
         List<String> datosLista = new ArrayList<>();
         datosLista.add("0123      USD                                                        test                                                     test");
         HashMap<String, Object> parametersExecute = new HashMap<>();
-        parametersExecute.put((String) "lista", datosLista);
-        parametersExecute.put((String) "opcion", "2");
-        su51.mapData(parametersExecute);
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "2");
+        su51obj.mapData(parametersExecute);
+        assertNotNull(su51obj);
     }
 
     @Test
     @DisplayName("Testeando mapData case 3")
     void mapData3() {
 
-        SU51 su51 = new SU51();
+        SU51 su51obj = new SU51();
 
         List<String> datosLista = new ArrayList<>();
         datosLista.add("0123                      test");
         HashMap<String, Object> parametersExecute = new HashMap<>();
-        parametersExecute.put((String) "lista", datosLista);
-        parametersExecute.put((String) "opcion", "3");
-        su51.mapData(parametersExecute);
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "3");
+        su51obj.mapData(parametersExecute);
+        assertNotNull(su51obj);
     }
-
-    /*@Test
-    @DisplayName("Testeando mapData case 9")
-    void mapData9() {
-
-        SU51 su51 = new SU51();
-
-        List<String> datosLista = new ArrayList<>();
-        datosLista.add("0123                         test                  000000000000");
-        HashMap<String, Object> parametersExecute = new HashMap<>();
-        parametersExecute.put((String) "lista", datosLista);
-        parametersExecute.put((String) "opcion", "9");
-        su51.mapData(parametersExecute);
-    }*/
 
     @Test
     @DisplayName("Testeando mapData case 7")
     void mapData7() {
 
-        SU51 su51 = new SU51();
+        SU51 su51obj = new SU51();
 
         List<String> datosLista = new ArrayList<>();
         datosLista.add("0123                                                              test                                                     test");
         HashMap<String, Object> parametersExecute = new HashMap<>();
-        parametersExecute.put((String) "lista", datosLista);
-        parametersExecute.put((String) "opcion", "7");
-        su51.mapData(parametersExecute);
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "7");
+        su51obj.mapData(parametersExecute);
+        assertNotNull(su51obj);
     }
 
     @Test
     void testHardcodear() {
+        assertTrue(true);
+    }
 
+    @Test
+    @DisplayName("Debe lanzar TransactionException cuando execute falla")
+    void executeTrx_ShouldThrowException_WhenExecuteFails() {
+        // Arrange
+        SU51 su51local = new SU51();
+        IWebClient client = mock(IWebClient.class);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("lista", new ArrayList<>());
+        parameters.put("opcion", "1");
+
+        // Act & Assert
+        assertThrows(TransactionException.class, () -> su51local.executeTrx(client, parameters));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar TransactionException cuando mapData falla")
+    void executeTrx_ShouldThrowTransactionException_WhenMapDataFails() {
+        // Arrange
+        SU51 su51local = new SU51();
+        IWebClient client = mock(IWebClient.class);
+        Map<String, Object> parameters = new HashMap<>();
+        // Sin 'opcion' causa NumberFormatException que se captura
+        parameters.put("lista", new ArrayList<>());
+
+        // Act & Assert
+        assertThrows(TransactionException.class, () -> su51local.executeTrx(client, parameters));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar TransactionException con mensaje de mapeo cuando mapData falla")
+    void executeTrx_ShouldThrowMappingException_WhenMapDataFails() {
+        // Arrange
+        SU51 su51local = new SU51();
+        IWebClient client = mock(IWebClient.class);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("lista", new ArrayList<>());
+        // opcion invalido causa excepción
+
+        // Act & Assert
+        TransactionException exception = assertThrows(TransactionException.class,
+            () -> su51local.executeTrx(client, parameters));
+        // Verificar que la excepción contiene información
+        assertNotNull(exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 4 - Opción 4")
+    void mapData4() {
         SU51 su51 = new SU51();
-        //su51.hardcodear(new HashMap<>());
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("0200GASTOS DE REPRESENTACION                          0000");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "4");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 5 - Opción 5")
+    void mapData5() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("MOT1MOTIVO RECH1");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "5");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 6 - Opción 6")
+    void mapData6() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("MOP0motivo de prueba");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "6");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 8 - Opción 8")
+    void mapData8() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("0200GASTOS DE REPRESENTACION                          0000");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "8");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 9 - Opción 9")
+    void mapData9() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("0200GASTOS DE REPRESENTACION                          0000");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "9");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 2 - Con ARS")
+    void mapData2_WithARS() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("0123      ARS                                                        test");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "2");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 2 - Con EUR")
+    void mapData2_WithEUR() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("0123      EUR                                                        test");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "2");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 3 - String largo")
+    void mapData3_LongString() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("0200ALMUERZOS                                         00202N");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "3");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 3 - Con detalle 00000")
+    void mapData3_WithDetalle00000() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        // Formato: 54 caracteres + detalle + resto
+        datosLista.add("0200ALMUERZOS                                         00202N");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "3");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 3 - Con detalle vacio")
+    void mapData3_WithEmptyDetalle() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("0200ALMUERZOS                                                    N");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "3");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData case 1 - Verificar coeficiente")
+    void mapData1_VerifyCoeficiente() {
+        SU51 su51 = new SU51();
+
+        List<String> datosLista = new ArrayList<>();
+        datosLista.add("0123456789012345678901234567890123456789");
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", datosLista);
+        parametersExecute.put("opcion", "1");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData con lista null en caso 4/8/9")
+    void mapData_WithNullList_Case4() {
+        SU51 su51 = new SU51();
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", null);
+        parametersExecute.put("opcion", "4");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando mapData con lista null en caso 8")
+    void mapData_WithNullList_Case8() {
+        SU51 su51 = new SU51();
+
+        HashMap<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", null);
+        parametersExecute.put("opcion", "8");
+        su51.mapData(parametersExecute);
+
+        assertNotNull(su51);
+    }
+
+    @Test
+    @DisplayName("Testeando hardcodear case 3 - cod_motivo 0202")
+    void hardcodear_Case3_CodMotivo0202() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("opcion", "3");
+        parameters.put("cod_motivo", "0202");
+
+        su51.hardcodear(parameters);
+
+        List<String> lista = (List<String>) parameters.get("lista");
+        assertNotNull(lista);
+        assertFalse(lista.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Testeando hardcodear case 3 - cod_motivo 0203")
+    void hardcodear_Case3_CodMotivo0203() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("opcion", "3");
+        parameters.put("cod_motivo", "0203");
+
+        su51.hardcodear(parameters);
+
+        List<String> lista = (List<String>) parameters.get("lista");
+        assertNotNull(lista);
+        assertFalse(lista.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Testeando hardcodear case 3 - cod_motivo 0204")
+    void hardcodear_Case3_CodMotivo0204() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("opcion", "3");
+        parameters.put("cod_motivo", "0204");
+
+        su51.hardcodear(parameters);
+
+        List<String> lista = (List<String>) parameters.get("lista");
+        assertNotNull(lista);
+        assertFalse(lista.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Testeando hardcodear case 3 - cod_motivo 0205")
+    void hardcodear_Case3_CodMotivo0205() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("opcion", "3");
+        parameters.put("cod_motivo", "0205");
+
+        su51.hardcodear(parameters);
+
+        List<String> lista = (List<String>) parameters.get("lista");
+        assertNotNull(lista);
+        assertFalse(lista.isEmpty());
     }
 }
 

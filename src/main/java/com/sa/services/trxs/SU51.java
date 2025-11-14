@@ -59,19 +59,23 @@ public class SU51 extends Transaction {
 		case 1:
 			for (Object obj : lista) {
 				String str = getStrLista(obj);
-				coeficiente = str.substring(24, 27);				
+				coeficiente = safeSubstring(str, 24, 27);                
 			}
 			this.dataReturn = coeficiente;
 			break;
 		case 2:
 			for (Object obj : lista) {
 				String str = getStrLista(obj);
+				// lightweight debug: log length and a short preview so we can diagnose malformed/short payloads in prod
+				if (log.isDebugEnabled()) {
+					log.debug("SU51 parsing opcion=2 payload length=" + (str == null ? 0 : str.length()) + " preview='" + (str == null ? "" : (str.length() > 100 ? str.substring(0, 100) : str)) + "'");
+				}
 				ComboOpcion2 comboOpcion2 = new ComboOpcion2();
-				comboOpcion2.setId(str.substring(10, 14));
-				comboOpcion2.setDescripcion(str.substring(14, str.length()));
-				if (str.substring(10, 14).trim().equals("ARS") || str.substring(10, 14).trim().equals("EUR")
-						|| str.substring(10, 14).trim().equals("USD")) {
-					comboOpcion2.setDescripcion(str.substring(10, 14));
+				String id = safeSubstring(str, 10, 14);
+				comboOpcion2.setId(id);
+				comboOpcion2.setDescripcion(safeSubstring(str, 14, str.length()));
+				if ("ARS".equals(id.trim()) || "EUR".equals(id.trim()) || "USD".equals(id.trim())) {
+					comboOpcion2.setDescripcion(id);
 				}
 				listaOpcion2.add(comboOpcion2);
 			}
@@ -80,20 +84,22 @@ public class SU51 extends Transaction {
 		case 3:
 			for (Object obj : lista) {
 				String str = getStrLista(obj);
+				if (log.isDebugEnabled()) {
+					log.debug("SU51 parsing opcion=3 payload length=" + (str == null ? 0 : str.length()) + " preview='" + (str == null ? "" : (str.length() > 120 ? str.substring(0, 120) : str)) + "'");
+				}
 				ComboGasto comboTipoGasto = new ComboGasto();
 				if (str.length() <= 54) {
-					comboTipoGasto.setId(str.substring(0, str.length()));
-					comboTipoGasto.setDescripcion(str.substring(4, str.length()));
+					comboTipoGasto.setId(safeSubstring(str, 0, str.length()));
+					comboTipoGasto.setDescripcion(safeSubstring(str, 4, str.length()));
 				} else {
-					if (str.substring(54, 59).equalsIgnoreCase("") || str.substring(54, 59).equalsIgnoreCase("00000")) {
-						comboTipoGasto.setId(str.substring(0, str.length()) + "N");
-						//comboTipoGasto.setId(str.substring(0, 4));
+					String detalle = safeSubstring(str, 54, 59);
+					if ("".equals(detalle) || "00000".equals(detalle)) {
+						comboTipoGasto.setId(safeSubstring(str, 0, str.length()) + "N");
 					} else {
-						comboTipoGasto.setId(str.substring(0, str.length()) + "S");
-						//comboTipoGasto.setId(str.substring(0, 4));
+						comboTipoGasto.setId(safeSubstring(str, 0, str.length()) + "S");
 					}
-					comboTipoGasto.setDescripcion(str.substring(4, 54));
-					comboTipoGasto.setDetalle(str.substring(54, 59));
+					comboTipoGasto.setDescripcion(safeSubstring(str, 4, 54));
+					comboTipoGasto.setDetalle(detalle);
 					comboTipoGasto.setDescOblig("S");
 				}
 				listaTipoGasto.add(comboTipoGasto);
@@ -107,12 +113,16 @@ public class SU51 extends Transaction {
 			if (lista != null) {
 				for (Object obj : lista) {
 					String str = getStrLista(obj);
+					if (log.isDebugEnabled()) {
+						log.debug("SU51 parsing opcion=4/8/9 payload length=" + (str == null ? 0 : str.length()) + " preview='" + (str == null ? "" : (str.length() > 140 ? str.substring(0, 140) : str)) + "'");
+					}
 					ComboMotivo comboMotivo = new ComboMotivo();
-					comboMotivo.setId(str.substring(0, 4));
-					comboMotivo.setDescripcion(comboMotivo.getId() + "-" + (str.substring(4, 54)));
-					comboMotivo.setCostosDestino(str.substring(54, 58));
-					comboMotivo.setPreFormato(str.substring(58,63));
-					comboMotivo.setCantDias((str.substring(63, 74).trim()));
+					String id = safeSubstring(str, 0, 4);
+					comboMotivo.setId(id);
+					comboMotivo.setDescripcion(comboMotivo.getId() + "-" + safeSubstring(str, 4, 54));
+					comboMotivo.setCostosDestino(safeSubstring(str, 54, 58));
+					comboMotivo.setPreFormato(safeSubstring(str, 58, 63));
+					comboMotivo.setCantDias((safeSubstring(str, 63, 74).trim()));
 					listaMotivo.add(comboMotivo);
 					
 				}
@@ -278,4 +288,23 @@ public class SU51 extends Transaction {
 		
 		parametersExecute.put("lista", retList);
 	}
+
+	/**
+	 * Safe substring helper: returns empty string or truncated substring when indexes exceed length.
+	 */
+	private static String safeSubstring(String s, int start, int end) {
+		if (s == null) return "";
+		int len = s.length();
+		if (start < 0) start = 0;
+		if (end < start) end = start;
+		if (start >= len) return "";
+		if (end > len) end = len;
+		try {
+			return s.substring(start, end);
+		} catch (Exception e) {
+			// defensive fallback
+			return s.substring(Math.min(start, len), len);
+		}
+	}
+
 }
