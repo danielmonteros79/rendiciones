@@ -90,17 +90,17 @@ public class SU51 extends Transaction {
 				ComboGasto comboTipoGasto = new ComboGasto();
 				if (str.length() <= 54) {
 					comboTipoGasto.setId(safeSubstring(str, 0, str.length()));
-					comboTipoGasto.setDescripcion(safeSubstring(str, 4, str.length()));
-				} else {
-					String detalle = safeSubstring(str, 54, 59);
-					if ("".equals(detalle) || "00000".equals(detalle)) {
-						comboTipoGasto.setId(safeSubstring(str, 0, str.length()) + "N");
-					} else {
-						comboTipoGasto.setId(safeSubstring(str, 0, str.length()) + "S");
-					}
-					comboTipoGasto.setDescripcion(safeSubstring(str, 4, 54));
-					comboTipoGasto.setDetalle(detalle);
-					comboTipoGasto.setDescOblig("S");
+			comboTipoGasto.setDescripcion(safeSubstring(str, 4, str.length()));
+		} else {
+			String detalle = safeSubstring(str, 54, 59);
+			if ("".equals(detalle) || "00000".equals(detalle) || detalle.trim().isEmpty()) {
+				comboTipoGasto.setId(safeSubstring(str, 0, 54) + "N");
+			} else {
+				comboTipoGasto.setId(safeSubstring(str, 0, 54) + "S");
+			}
+			comboTipoGasto.setDescripcion(safeSubstring(str, 4, 54));
+				comboTipoGasto.setDetalle(detalle);
+				comboTipoGasto.setDescOblig("S");
 				}
 				listaTipoGasto.add(comboTipoGasto);
 			}

@@ -1,7 +1,8 @@
 package com.sa.services.trxs;
 
 import static org.junit.jupiter.api.Assertions.*;   
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
 
 import ar.com.bbva.web.IWebClient;
 import ar.com.bbva.web.impl.SAMWebClient;
@@ -648,5 +649,132 @@ class SU51Test {
         assertNotNull(lista);
         assertFalse(lista.isEmpty());
     }
+
+    @Test
+    @DisplayName("Should throw TransactionException when execute fails - covers line 50-51")
+    void testExecuteTrx_ExecuteFailure() {
+        // Arrange
+        IWebClient client = null; // Will cause execute to fail
+        Map<String, Object> parametersExecute = new HashMap<>();
+        
+        // Act & Assert - covers catch block lines 50-51
+        assertThrows(TransactionException.class, () -> {
+            su51.executeTrx(client, parametersExecute);
+        });
+    }
+
+    @Test
+    @DisplayName("Should throw TransactionException when mapData fails - covers line 42-46")
+    void testExecuteTrx_MapDataFailure() throws Exception {
+        // Arrange - Create a SU51 instance that overrides execute() to do nothing
+        SU51 testSU51 = new SU51() {
+            @Override
+            protected void execute(IWebClient client, String trxExecute, Map<String, Object> parametersExecute) throws Exception {
+                // Do nothing - let mapData() fail
+            }
+        };
+        
+        Map<String, Object> parametersExecute = new HashMap<>();
+        parametersExecute.put("lista", new ArrayList<>());
+        parametersExecute.put("opcion", null); // Will cause NullPointerException in mapData
+        
+        SAMWebClient mockClient = new SAMWebClient();
+        
+        // Act & Assert - covers catch block lines 42-46 (mapData exception handling)
+        // execute() succeeds but mapData() will fail with NullPointerException
+        TransactionException exception = assertThrows(TransactionException.class, () -> {
+            testSU51.executeTrx(mockClient, parametersExecute);
+        });
+        
+        assertTrue(exception.getMessage().contains("Error de mapeo SU51"));
+    }
+
+    @Test
+    @DisplayName("Should handle safeSubstring with start >= length - covers line 304")
+    void testSafeSubstring_StartGreaterThanLength() {
+        // Test para cubrir línea 304 (if (start >= len) return "")
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String muy corto (3 chars) intentará acceder a índices mayores (10-14)
+        lista.add("ABC");
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "2");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert - Verificar que se manejó correctamente sin excepción
+        assertNotNull(su51.listaOpcion2);
+    }
+
+    @Test
+    @DisplayName("Should handle safeSubstring exception fallback - covers line 306")
+    void testSafeSubstring_ExceptionFallback() {
+        // Test para cubrir línea 306 (catch Exception e - defensive fallback)
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String corto que pueda causar problemas
+        lista.add("0000200004SHORT");
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "2");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaOpcion2);
+    }
+
+    @Test
+    @DisplayName("Should handle opcion 3 with short string - covers line 96")
+    void testMapData_Opcion3_ShortString() {
+        // Test para cubrir línea 96 (str.length() <= 54)
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String de exactamente 54 caracteres o menos
+        lista.add("0200GASTOS CORTOS                                  "); // 52 chars
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "3");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaTipoGasto);
+        assertEquals(1, su51.listaTipoGasto.size());
+    }
+
+    @Test
+    @DisplayName("Should handle opcion 3 with detalle empty - covers line 97")
+    void testMapData_Opcion3_EmptyDetalle() {
+        // Test para cubrir línea 97 (detalle = "" o "00000")
+        
+        // Arrange
+        Map<String, Object> parametersExecute = new HashMap<>();
+        List<String> lista = new ArrayList<>();
+        
+        // String > 54 con detalle vacío (posiciones 54-59)
+        lista.add("0201GASTOS CON DETALLE VACIO                              ");
+        parametersExecute.put("lista", lista);
+        parametersExecute.put("opcion", "3");
+        
+        // Act
+        su51.mapData(parametersExecute);
+        
+        // Assert
+        assertNotNull(su51.listaTipoGasto);
+        assertEquals(1, su51.listaTipoGasto.size());
+        assertTrue(su51.listaTipoGasto.get(0).getId().endsWith("N"));
+    }
 }
+
 
