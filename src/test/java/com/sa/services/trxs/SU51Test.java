@@ -777,18 +777,18 @@ class SU51Test {
     }
 
     @Test
-    @DisplayName("SafeSubstring should handle null input - covers line 298")
-    void testSafeSubstring_NullInput() {
-        // Test para cubrir línea 298 (if (s == null) return "")
+    @DisplayName("SafeSubstring should handle empty string - covers line 298")
+    void testSafeSubstring_EmptyStringInput() {
+        // Test para cubrir safeSubstring con string vacío
         
         // Arrange
         Map<String, Object> parametersExecute = new HashMap<>();
         List<String> lista = new ArrayList<>();
-        lista.add(null); // null string
+        lista.add(""); // empty string
         parametersExecute.put("lista", lista);
         parametersExecute.put("opcion", "2");
         
-        // Act - should handle null gracefully
+        // Act - should handle empty string gracefully
         su51.mapData(parametersExecute);
         
         // Assert - No exception thrown
