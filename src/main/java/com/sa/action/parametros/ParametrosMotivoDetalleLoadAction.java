@@ -43,16 +43,17 @@ public class ParametrosMotivoDetalleLoadAction extends RestriccionTransaccionAct
 		if ("alta".equals(frm.getAccion())) {
 			frm.clear();
 			frm.setEstado("A");
-		} else
+		} else {
 			this.motivoToForm(frm, service.getMotivos(frm.getCodigo(), user.getIdUser(), "").get(0));
-		
-		ParametroMotivo motivo = service.getMotivos(frm.getCodigo(), user.getIdUser(), "").get(0);
-		String codigoMotivo = StringEscapeUtils.escapeHtml4(motivo.getCodigo() != null ? motivo.getCodigo() : "");
-		String descripcionMotivo = StringEscapeUtils.escapeHtml4(motivo.getDescripcion() != null ? motivo.getDescripcion() : "");
 
-		request.getSession().setAttribute("cod_motivo", codigoMotivo);
-		request.getSession().setAttribute("descripcion_motivo", descripcionMotivo);
-		request.getSession().setAttribute("desc_motivo", descripcionMotivo);
+			ParametroMotivo motivo = service.getMotivos(frm.getCodigo(), user.getIdUser(), "").get(0);
+			String codigoMotivo = StringEscapeUtils.escapeHtml4(motivo.getCodigo() != null ? motivo.getCodigo() : "");
+			String descripcionMotivo = StringEscapeUtils.escapeHtml4(motivo.getDescripcion() != null ? motivo.getDescripcion() : "");
+
+			request.getSession().setAttribute("cod_motivo", codigoMotivo);
+			request.getSession().setAttribute("descripcion_motivo", descripcionMotivo);
+			request.getSession().setAttribute("desc_motivo", descripcionMotivo);
+		}
 
 		return mapping.findForward(frm.getAccion());
 	}

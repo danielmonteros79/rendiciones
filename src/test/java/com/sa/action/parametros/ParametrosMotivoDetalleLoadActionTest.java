@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 class ParametrosMotivoDetalleLoadActionTest {
@@ -179,39 +180,7 @@ class ParametrosMotivoDetalleLoadActionTest {
     assertEquals(15, form.getCentrosCosto().size());
   }
 
-  @Test
-  @DisplayName("Should handle executeAction with accion alta - clears form and sets estado")
-  void testExecuteActionAltaAccion() throws Exception {
-    ActionMapping actionMapping = new ActionMapping();
-    ActionForward actionForward = new ActionForward();
-    actionForward.setName("alta");
-    actionForward.setPath("path1");
-    actionMapping.addForwardConfig(actionForward);
 
-    SAMWebApplication samApplication = new SAMWebApplication();
-    SAMWebClient samClient = new SAMWebClient();
-    HttpSession httpSession = new MockHttpSession();
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    ParametrosMotivoForm form = new ParametrosMotivoForm();
-    form.setAccion("alta");
-    List<String> centroCostoList = new ArrayList<>();
-    centroCostoList.add("one");
-    form.setCentrosCostoList(centroCostoList);
-
-    Usuario usuario = new Usuario("55", "2", "Luis Machado", 77, "2c", new ArrayList<>());
-    httpSession.setAttribute("usuario", usuario);
-    request.setHttpSession(httpSession);
-    request.addParameter("accionJson", "");
-
-    samClient.setSession(httpSession);
-    samClient.setLoginOk(true);
-
-    // This test requires SAM properties to be initialized, which won't happen in unit tests
-    // The action internally uses SAM which throws GeneralException: Properties not initialized
-    assertThrows(Exception.class, () -> {
-      parametrosMotivoDetalleLoadAction.executeAction(actionMapping, form, samApplication, samClient, request, httpServletResponse);
-    }, "Expected exception due to SAM properties not being initialized in test environment");
-  }
 
   @Test
   @DisplayName("Should handle executeAction normal flow with session attributes set")
@@ -276,27 +245,12 @@ class ParametrosMotivoDetalleLoadActionTest {
   }
 
   @Test
-  @DisplayName("Should handle executeAction with null motivo fields - verifies HTML escaping")
-  void testExecuteActionWithNullMotivoFields() throws Exception {
-    ActionMapping actionMapping = new ActionMapping();
-    ActionForward actionForward = new ActionForward();
-    actionForward.setName("");
-    actionForward.setPath("path2");
-    actionMapping.addForwardConfig(actionForward);
-
-    SAMWebApplication samApplication = new SAMWebApplication();
-    SAMWebClient samClient = new SAMWebClient();
-    HttpSession httpSession = new MockHttpSession();
-    MockHttpServletRequest request = new MockHttpServletRequest();
+  @DisplayName("Should handle motivoToForm with null values in ParametroMotivo")
+  void testMotivoToFormWithNullValues() throws Exception {
     ParametrosMotivoForm form = new ParametrosMotivoForm();
-    form.setAccion("");
-    form.setCodigo("TEST123");
-    // Add at least one centro costo to form to avoid IndexOutOfBoundsException
-    List<String> formCentrosCostoList = new ArrayList<>();
-    formCentrosCostoList.add("CENTRO_FORM_001");
-    form.setCentrosCostoList(formCentrosCostoList);
-
     ParametroMotivo motivo = new ParametroMotivo();
+
+    // Set all fields to null to test null handling
     motivo.setCodigo(null);
     motivo.setDescripcion(null);
     motivo.setIdGlg(null);
@@ -312,12 +266,104 @@ class ParametrosMotivoDetalleLoadActionTest {
     motivo.setIdOperEspe(null);
     motivo.setMeDiasInterv(null);
     motivo.setTxAviso(null);
-    // Add at least one centro costo to avoid IndexOutOfBoundsException
     List<String> centrosCostoList = new ArrayList<>();
     centrosCostoList.add("CENTRO_001");
     motivo.setCentrosCosto(centrosCostoList);
     motivo.setFechaDesde(null);
     motivo.setFechaHasta(null);
+
+    // Use reflection to call private method motivoToForm
+    Method motivoToFormMethod = ParametrosMotivoDetalleLoadAction.class.getDeclaredMethod("motivoToForm", ParametrosMotivoForm.class, ParametroMotivo.class);
+    motivoToFormMethod.setAccessible(true);
+    motivoToFormMethod.invoke(parametrosMotivoDetalleLoadAction, form, motivo);
+
+    // Verify that null values are handled correctly
+    assertNull(form.getCodigo());
+    assertNull(form.getDescripcion());
+    assertNull(form.getFechaDesde());
+    assertNull(form.getFechaHasta());
+    assertNotNull(form.getCentrosCosto());
+    assertEquals(1, form.getCentrosCosto().size());
+  }
+
+  @Test
+  @DisplayName("Should handle executeAction with alta action without querying service")
+  void testExecuteActionAltaWithoutServiceCall() throws Exception {
+    ActionMapping actionMapping = new ActionMapping();
+    ActionForward actionForward = new ActionForward();
+    actionForward.setName("alta");
+    actionForward.setPath("path_alta");
+    actionMapping.addForwardConfig(actionForward);
+
+    SAMWebApplication samApplication = new SAMWebApplication();
+    SAMWebClient samClient = new SAMWebClient();
+    HttpSession httpSession = new MockHttpSession();
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    ParametrosMotivoForm form = new ParametrosMotivoForm();
+    form.setAccion("alta");
+    form.setCodigo("TEST123");
+    form.setDescripcion("Old Description");
+    List<String> centroCostoList = new ArrayList<>();
+    centroCostoList.add("OLD_CC");
+    form.setCentrosCostoList(centroCostoList);
+
+    Usuario usuario = new Usuario("55", "2", "Luis Machado", 77, "2c", new ArrayList<>());
+    httpSession.setAttribute("usuario", usuario);
+    request.setHttpSession(httpSession);
+    request.addParameter("accionJson", "");
+
+    samClient.setSession(httpSession);
+    samClient.setLoginOk(true);
+
+    ActionForward result = parametrosMotivoDetalleLoadAction.executeAction(actionMapping, form, samApplication, samClient, request, httpServletResponse);
+
+    assertNotNull(result);
+    assertEquals("alta", result.getName());
+    assertEquals("A", form.getEstado());
+    // Verify that session attributes are NOT set for "alta" action
+    assertNull(httpSession.getAttribute("cod_motivo"));
+    assertNull(httpSession.getAttribute("descripcion_motivo"));
+    assertNull(httpSession.getAttribute("desc_motivo"));
+  }
+
+  @Test
+  @DisplayName("Should handle HTML special characters escaping in lines 50-51")
+  void testExecuteActionWithHtmlSpecialCharacters() throws Exception {
+    ActionMapping actionMapping = new ActionMapping();
+    ActionForward actionForward = new ActionForward();
+    actionForward.setName("");
+    actionForward.setPath("path2");
+    actionMapping.addForwardConfig(actionForward);
+
+    SAMWebApplication samApplication = new SAMWebApplication();
+    SAMWebClient samClient = new SAMWebClient();
+    HttpSession httpSession = new MockHttpSession();
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    ParametrosMotivoForm form = new ParametrosMotivoForm();
+    form.setAccion("");
+    form.setCodigo("TEST<>&\"'");
+    List<String> centroCostoList = new ArrayList<>();
+    form.setCentrosCostoList(centroCostoList);
+
+    ParametroMotivo motivo = new ParametroMotivo();
+    motivo.setCodigo("TEST<>&\"'");
+    motivo.setDescripcion("Description with <html> & \"quotes\"");
+    motivo.setIdGlg("GLG001");
+    motivo.setIdCentroCostos("CC001");
+    motivo.setEstado("A");
+    motivo.setCodSup("SUP001");
+    motivo.setCodFirma("FIR001");
+    motivo.setCodAprobacionGlg("APGLG001");
+    motivo.setOscar(new OSCAR("OSCAR"));
+    motivo.setIdNivCarga("NIV001");
+    motivo.setIdNivAutoriz("AUTH001");
+    motivo.setMaInclExcl("INCL");
+    motivo.setIdOperEspe("OPER001");
+    motivo.setMeDiasInterv("30");
+    motivo.setTxAviso("Aviso Test");
+    motivo.setCentrosCosto(centroCostoList);
+    motivo.setFechaDesde(new Date());
+    motivo.setFechaHasta(new Date());
 
     List<ParametroMotivo> motivoList = new ArrayList<>();
     motivoList.add(motivo);
@@ -331,13 +377,19 @@ class ParametrosMotivoDetalleLoadActionTest {
     samClient.setLoginOk(true);
 
     try (MockedConstruction<ParametrosService> parametrosServiceMC = Mockito.mockConstruction(ParametrosService.class, (mockParametrosService, context) -> {
-      when(mockParametrosService.getMotivos("TEST123", "55", "")).thenReturn(motivoList);
+      when(mockParametrosService.getMotivos("TEST<>&\"'", "55", "")).thenReturn(motivoList);
     })) {
-      // The action calls getMotivos which may return empty list if mock doesn't work properly
-      // This can cause IndexOutOfBoundsException when accessing .get(0)
-      assertThrows(IndexOutOfBoundsException.class, () -> {
-        parametrosMotivoDetalleLoadAction.executeAction(actionMapping, form, samApplication, samClient, request, httpServletResponse);
-      }, "Expected IndexOutOfBoundsException when motivo list is empty");
+      ActionForward result = parametrosMotivoDetalleLoadAction.executeAction(actionMapping, form, samApplication, samClient, request, httpServletResponse);
+
+      assertNotNull(result);
+      // Verify HTML escaping - covers lines 50-51 with StringEscapeUtils.escapeHtml4
+      // Apache Commons Text escapeHtml4 uses &#39; for single quote in some versions and &apos; in others
+      String codMotivo = (String) httpSession.getAttribute("cod_motivo");
+      assertTrue(codMotivo.equals("TEST&lt;&gt;&amp;&quot;&#39;") || codMotivo.equals("TEST&lt;&gt;&amp;&quot;'"));
+      
+      String descMotivo = (String) httpSession.getAttribute("descripcion_motivo");
+      assertEquals("Description with &lt;html&gt; &amp; &quot;quotes&quot;", descMotivo);
+      assertEquals(descMotivo, httpSession.getAttribute("desc_motivo"));
     }
   }
 
