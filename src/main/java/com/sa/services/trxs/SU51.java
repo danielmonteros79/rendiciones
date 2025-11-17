@@ -53,97 +53,141 @@ public class SU51 extends Transaction {
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) {
 		List lista = (List) parametersExecute.get("lista");
-
 		Integer opcion = Integer.valueOf((String) parametersExecute.get("opcion"));
+		
 		switch (opcion) {
 		case 1:
-			for (Object obj : lista) {
-				String str = getStrLista(obj);
-				coeficiente = safeSubstring(str, 24, 27);                
-			}
-			this.dataReturn = coeficiente;
+			processOpcion1(lista);
 			break;
 		case 2:
-			for (Object obj : lista) {
-				String str = getStrLista(obj);
-				// lightweight debug: log length and a short preview so we can diagnose malformed/short payloads in prod
-				if (log.isDebugEnabled()) {
-					log.debug("SU51 parsing opcion=2 payload length=" + (str == null ? 0 : str.length()) + " preview='" + (str == null ? "" : (str.length() > 100 ? str.substring(0, 100) : str)) + "'");
-				}
-				ComboOpcion2 comboOpcion2 = new ComboOpcion2();
-				String id = safeSubstring(str, 10, 14);
-				comboOpcion2.setId(id);
-				comboOpcion2.setDescripcion(safeSubstring(str, 14, str.length()));
-				if ("ARS".equals(id.trim()) || "EUR".equals(id.trim()) || "USD".equals(id.trim())) {
-					comboOpcion2.setDescripcion(id);
-				}
-				listaOpcion2.add(comboOpcion2);
-			}
-			this.dataReturnList = listaOpcion2;
+			processOpcion2(lista);
 			break;
 		case 3:
-			for (Object obj : lista) {
-				String str = getStrLista(obj);
-				if (log.isDebugEnabled()) {
-					log.debug("SU51 parsing opcion=3 payload length=" + (str == null ? 0 : str.length()) + " preview='" + (str == null ? "" : (str.length() > 120 ? str.substring(0, 120) : str)) + "'");
-				}
-				ComboGasto comboTipoGasto = new ComboGasto();
-				if (str.length() <= 54) {
-					comboTipoGasto.setId(safeSubstring(str, 0, str.length()));
-			comboTipoGasto.setDescripcion(safeSubstring(str, 4, str.length()));
-		} else {
-			String detalle = safeSubstring(str, 54, 59);
-			if ("".equals(detalle) || "00000".equals(detalle) || detalle.trim().isEmpty()) {
-				comboTipoGasto.setId(safeSubstring(str, 0, 54) + "N");
-			} else {
-				comboTipoGasto.setId(safeSubstring(str, 0, 54) + "S");
-			}
-			comboTipoGasto.setDescripcion(safeSubstring(str, 4, 54));
-				comboTipoGasto.setDetalle(detalle);
-				comboTipoGasto.setDescOblig("S");
-				}
-				listaTipoGasto.add(comboTipoGasto);
-			}
-			this.dataReturnList = listaTipoGasto;
-
+			processOpcion3(lista);
 			break;
 		case 4:
-		case 8:			
+		case 8:
 		case 9:
-			if (lista != null) {
-				for (Object obj : lista) {
-					String str = getStrLista(obj);
-					if (log.isDebugEnabled()) {
-						log.debug("SU51 parsing opcion=4/8/9 payload length=" + (str == null ? 0 : str.length()) + " preview='" + (str == null ? "" : (str.length() > 140 ? str.substring(0, 140) : str)) + "'");
-					}
-					ComboMotivo comboMotivo = new ComboMotivo();
-					String id = safeSubstring(str, 0, 4);
-					comboMotivo.setId(id);
-					comboMotivo.setDescripcion(comboMotivo.getId() + "-" + safeSubstring(str, 4, 54));
-					comboMotivo.setCostosDestino(safeSubstring(str, 54, 58));
-					comboMotivo.setPreFormato(safeSubstring(str, 58, 63));
-					comboMotivo.setCantDias((safeSubstring(str, 63, 74).trim()));
-					listaMotivo.add(comboMotivo);
-					
-				}
-			}
-			this.dataReturnList = listaMotivo;
-
+			processOpcion489(lista);
 			break;
 		case 5:
 		case 6:
 		case 7:
-			for (Object obj : lista) {
-				String str = getStrLista(obj);
-				ComboMotivo comboMotivo = new ComboMotivo();
-				comboMotivo.setId(str.substring(0, 4));
-				comboMotivo.setDescripcion(comboMotivo.getId() + "-" + (str.substring(4, str.length())));
-				listaMotivo.add(comboMotivo);
-			}
-			this.dataReturnList = listaMotivo;
-			
+			processOpcion567(lista);
 			break;
 		}
+	}
+
+	private void processOpcion1(List lista) {
+		for (Object obj : lista) {
+			String str = getStrLista(obj);
+			coeficiente = safeSubstring(str, 24, 27);
+		}
+		this.dataReturn = coeficiente;
+	}
+
+	private void processOpcion2(List lista) {
+		for (Object obj : lista) {
+			String str = getStrLista(obj);
+			logDebugIfEnabled("opcion=2", str, 100);
+			
+			ComboOpcion2 comboOpcion2 = new ComboOpcion2();
+			String id = safeSubstring(str, 10, 14);
+			comboOpcion2.setId(id);
+			comboOpcion2.setDescripcion(safeSubstring(str, 14, str.length()));
+			
+			if (isCurrencyCode(id)) {
+				comboOpcion2.setDescripcion(id);
+			}
+			listaOpcion2.add(comboOpcion2);
+		}
+		this.dataReturnList = listaOpcion2;
+	}
+
+	private void processOpcion3(List lista) {
+		for (Object obj : lista) {
+			String str = getStrLista(obj);
+			logDebugIfEnabled("opcion=3", str, 120);
+			
+			ComboGasto comboTipoGasto = createComboGasto(str);
+			listaTipoGasto.add(comboTipoGasto);
+		}
+		this.dataReturnList = listaTipoGasto;
+	}
+
+	private void processOpcion489(List lista) {
+		if (lista != null) {
+			for (Object obj : lista) {
+				String str = getStrLista(obj);
+				logDebugIfEnabled("opcion=4/8/9", str, 140);
+				
+				ComboMotivo comboMotivo = createComboMotivoExtended(str);
+				listaMotivo.add(comboMotivo);
+			}
+		}
+		this.dataReturnList = listaMotivo;
+	}
+
+	private void processOpcion567(List lista) {
+		for (Object obj : lista) {
+			String str = getStrLista(obj);
+			ComboMotivo comboMotivo = createComboMotivoSimple(str);
+			listaMotivo.add(comboMotivo);
+		}
+		this.dataReturnList = listaMotivo;
+	}
+
+	private void logDebugIfEnabled(String opcion, String str, int previewLength) {
+		if (log.isDebugEnabled()) {
+			int length = (str == null) ? 0 : str.length();
+			String preview = (str == null) ? "" : (str.length() > previewLength ? str.substring(0, previewLength) : str);
+			log.debug("SU51 parsing " + opcion + " payload length=" + length + " preview='" + preview + "'");
+		}
+	}
+
+	private boolean isCurrencyCode(String id) {
+		String trimmedId = id.trim();
+		return "ARS".equals(trimmedId) || "EUR".equals(trimmedId) || "USD".equals(trimmedId);
+	}
+
+	private ComboGasto createComboGasto(String str) {
+		ComboGasto comboTipoGasto = new ComboGasto();
+		
+		if (str.length() <= 54) {
+			comboTipoGasto.setId(safeSubstring(str, 0, str.length()));
+			comboTipoGasto.setDescripcion(safeSubstring(str, 4, str.length()));
+		} else {
+			String detalle = safeSubstring(str, 54, 59);
+			String suffix = isDetalleEmpty(detalle) ? "N" : "S";
+			comboTipoGasto.setId(safeSubstring(str, 0, 54) + suffix);
+			comboTipoGasto.setDescripcion(safeSubstring(str, 4, 54));
+			comboTipoGasto.setDetalle(detalle);
+			comboTipoGasto.setDescOblig("S");
+		}
+		
+		return comboTipoGasto;
+	}
+
+	private boolean isDetalleEmpty(String detalle) {
+		return "".equals(detalle) || "00000".equals(detalle) || detalle.trim().isEmpty();
+	}
+
+	private ComboMotivo createComboMotivoExtended(String str) {
+		ComboMotivo comboMotivo = new ComboMotivo();
+		String id = safeSubstring(str, 0, 4);
+		comboMotivo.setId(id);
+		comboMotivo.setDescripcion(id + "-" + safeSubstring(str, 4, 54));
+		comboMotivo.setCostosDestino(safeSubstring(str, 54, 58));
+		comboMotivo.setPreFormato(safeSubstring(str, 58, 63));
+		comboMotivo.setCantDias(safeSubstring(str, 63, 74).trim());
+		return comboMotivo;
+	}
+
+	private ComboMotivo createComboMotivoSimple(String str) {
+		ComboMotivo comboMotivo = new ComboMotivo();
+		comboMotivo.setId(str.substring(0, 4));
+		comboMotivo.setDescripcion(comboMotivo.getId() + "-" + str.substring(4, str.length()));
+		return comboMotivo;
 	}
 	
 	protected void hardcodear(Map<String, Object> parametersExecute) {
