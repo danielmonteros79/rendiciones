@@ -832,7 +832,7 @@ class SU51Test {
         su51.mapData(parametersExecute);
         
         // Assert - No exception thrown
-        assertNotNull(su51.dataReturn);
+        assertNotNull(su51.getDataReturn());
     }
 
     @Test
@@ -939,8 +939,8 @@ class SU51Test {
         su51.mapData(parametersExecute);
         
         // Assert
-        assertNotNull(su51.dataReturn);
-        assertEquals("456", su51.dataReturn); // chars en posiciones 24-27
+        assertNotNull(su51.getDataReturn());
+        assertEquals("456", su51.getDataReturn()); // chars en posiciones 24-27
     }
 
     @Test
@@ -961,8 +961,8 @@ class SU51Test {
         su51.mapData(parametersExecute);
         
         // Assert
-        assertNotNull(su51.dataReturn);
-        assertEquals("", su51.dataReturn); // Debería retornar string vacío
+        assertNotNull(su51.getDataReturn());
+        assertEquals("", su51.getDataReturn()); // Debería retornar string vacío
     }
 
     @Test
