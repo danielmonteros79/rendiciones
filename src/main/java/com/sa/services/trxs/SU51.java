@@ -53,87 +53,141 @@ public class SU51 extends Transaction {
 	@Override
 	protected void mapData(Map<String, Object> parametersExecute) {
 		List lista = (List) parametersExecute.get("lista");
-
 		Integer opcion = Integer.valueOf((String) parametersExecute.get("opcion"));
+		
 		switch (opcion) {
 		case 1:
-			for (Object obj : lista) {
-				String str = getStrLista(obj);
-				coeficiente = str.substring(24, 27);				
-			}
-			this.dataReturn = coeficiente;
+			processOpcion1(lista);
 			break;
 		case 2:
-			for (Object obj : lista) {
-				String str = getStrLista(obj);
-				ComboOpcion2 comboOpcion2 = new ComboOpcion2();
-				comboOpcion2.setId(str.substring(10, 14));
-				comboOpcion2.setDescripcion(str.substring(14, str.length()));
-				if (str.substring(10, 14).trim().equals("ARS") || str.substring(10, 14).trim().equals("EUR")
-						|| str.substring(10, 14).trim().equals("USD")) {
-					comboOpcion2.setDescripcion(str.substring(10, 14));
-				}
-				listaOpcion2.add(comboOpcion2);
-			}
-			this.dataReturnList = listaOpcion2;
+			processOpcion2(lista);
 			break;
 		case 3:
-			for (Object obj : lista) {
-				String str = getStrLista(obj);
-				ComboGasto comboTipoGasto = new ComboGasto();
-				if (str.length() <= 54) {
-					comboTipoGasto.setId(str.substring(0, str.length()));
-					comboTipoGasto.setDescripcion(str.substring(4, str.length()));
-				} else {
-					if (str.substring(54, 59).equalsIgnoreCase("") || str.substring(54, 59).equalsIgnoreCase("00000")) {
-						comboTipoGasto.setId(str.substring(0, str.length()) + "N");
-						//comboTipoGasto.setId(str.substring(0, 4));
-					} else {
-						comboTipoGasto.setId(str.substring(0, str.length()) + "S");
-						//comboTipoGasto.setId(str.substring(0, 4));
-					}
-					comboTipoGasto.setDescripcion(str.substring(4, 54));
-					comboTipoGasto.setDetalle(str.substring(54, 59));
-					comboTipoGasto.setDescOblig("S");
-				}
-				listaTipoGasto.add(comboTipoGasto);
-			}
-			this.dataReturnList = listaTipoGasto;
-
+			processOpcion3(lista);
 			break;
 		case 4:
-		case 8:			
+		case 8:
 		case 9:
-			if (lista != null) {
-				for (Object obj : lista) {
-					String str = getStrLista(obj);
-					ComboMotivo comboMotivo = new ComboMotivo();
-					comboMotivo.setId(str.substring(0, 4));
-					comboMotivo.setDescripcion(comboMotivo.getId() + "-" + (str.substring(4, 54)));
-					comboMotivo.setCostosDestino(str.substring(54, 58));
-					comboMotivo.setPreFormato(str.substring(58,63));
-					comboMotivo.setCantDias((str.substring(63, 74).trim()));
-					listaMotivo.add(comboMotivo);
-					
-				}
-			}
-			this.dataReturnList = listaMotivo;
-
+			processOpcion489(lista);
 			break;
 		case 5:
 		case 6:
 		case 7:
-			for (Object obj : lista) {
-				String str = getStrLista(obj);
-				ComboMotivo comboMotivo = new ComboMotivo();
-				comboMotivo.setId(str.substring(0, 4));
-				comboMotivo.setDescripcion(comboMotivo.getId() + "-" + (str.substring(4, str.length())));
-				listaMotivo.add(comboMotivo);
-			}
-			this.dataReturnList = listaMotivo;
-			
+			processOpcion567(lista);
 			break;
 		}
+	}
+
+	private void processOpcion1(List lista) {
+		for (Object obj : lista) {
+			String str = getStrLista(obj);
+			coeficiente = safeSubstring(str, 24, 27);
+		}
+		this.dataReturn = coeficiente;
+	}
+
+	private void processOpcion2(List lista) {
+		for (Object obj : lista) {
+			String str = getStrLista(obj);
+			logDebugIfEnabled("opcion=2", str, 100);
+			
+			ComboOpcion2 comboOpcion2 = new ComboOpcion2();
+			String id = safeSubstring(str, 10, 14);
+			comboOpcion2.setId(id);
+			comboOpcion2.setDescripcion(safeSubstring(str, 14, str.length()));
+			
+			if (isCurrencyCode(id)) {
+				comboOpcion2.setDescripcion(id);
+			}
+			listaOpcion2.add(comboOpcion2);
+		}
+		this.dataReturnList = listaOpcion2;
+	}
+
+	private void processOpcion3(List lista) {
+		for (Object obj : lista) {
+			String str = getStrLista(obj);
+			logDebugIfEnabled("opcion=3", str, 120);
+			
+			ComboGasto comboTipoGasto = createComboGasto(str);
+			listaTipoGasto.add(comboTipoGasto);
+		}
+		this.dataReturnList = listaTipoGasto;
+	}
+
+	private void processOpcion489(List lista) {
+		if (lista != null) {
+			for (Object obj : lista) {
+				String str = getStrLista(obj);
+				logDebugIfEnabled("opcion=4/8/9", str, 140);
+				
+				ComboMotivo comboMotivo = createComboMotivoExtended(str);
+				listaMotivo.add(comboMotivo);
+			}
+		}
+		this.dataReturnList = listaMotivo;
+	}
+
+	private void processOpcion567(List lista) {
+		for (Object obj : lista) {
+			String str = getStrLista(obj);
+			ComboMotivo comboMotivo = createComboMotivoSimple(str);
+			listaMotivo.add(comboMotivo);
+		}
+		this.dataReturnList = listaMotivo;
+	}
+
+	private void logDebugIfEnabled(String opcion, String str, int previewLength) {
+		if (log.isDebugEnabled()) {
+			int length = (str == null) ? 0 : str.length();
+			String preview = (str == null) ? "" : (str.length() > previewLength ? str.substring(0, previewLength) : str);
+			log.debug("SU51 parsing " + opcion + " payload length=" + length + " preview='" + preview + "'");
+		}
+	}
+
+	private boolean isCurrencyCode(String id) {
+		String trimmedId = id.trim();
+		return "ARS".equals(trimmedId) || "EUR".equals(trimmedId) || "USD".equals(trimmedId);
+	}
+
+	private ComboGasto createComboGasto(String str) {
+		ComboGasto comboTipoGasto = new ComboGasto();
+		
+		if (str.length() <= 54) {
+			comboTipoGasto.setId(safeSubstring(str, 0, str.length()));
+			comboTipoGasto.setDescripcion(safeSubstring(str, 4, str.length()));
+		} else {
+			String detalle = safeSubstring(str, 54, 59);
+			String suffix = isDetalleEmpty(detalle) ? "N" : "S";
+			comboTipoGasto.setId(safeSubstring(str, 0, 54) + suffix);
+			comboTipoGasto.setDescripcion(safeSubstring(str, 4, 54));
+			comboTipoGasto.setDetalle(detalle);
+			comboTipoGasto.setDescOblig("S");
+		}
+		
+		return comboTipoGasto;
+	}
+
+	private boolean isDetalleEmpty(String detalle) {
+		return "".equals(detalle) || "00000".equals(detalle) || detalle.trim().isEmpty();
+	}
+
+	private ComboMotivo createComboMotivoExtended(String str) {
+		ComboMotivo comboMotivo = new ComboMotivo();
+		String id = safeSubstring(str, 0, 4);
+		comboMotivo.setId(id);
+		comboMotivo.setDescripcion(id + "-" + safeSubstring(str, 4, 54));
+		comboMotivo.setCostosDestino(safeSubstring(str, 54, 58));
+		comboMotivo.setPreFormato(safeSubstring(str, 58, 63));
+		comboMotivo.setCantDias(safeSubstring(str, 63, 74).trim());
+		return comboMotivo;
+	}
+
+	private ComboMotivo createComboMotivoSimple(String str) {
+		ComboMotivo comboMotivo = new ComboMotivo();
+		comboMotivo.setId(str.substring(0, 4));
+		comboMotivo.setDescripcion(comboMotivo.getId() + "-" + str.substring(4, str.length()));
+		return comboMotivo;
 	}
 	
 	protected void hardcodear(Map<String, Object> parametersExecute) {
@@ -278,4 +332,23 @@ public class SU51 extends Transaction {
 		
 		parametersExecute.put("lista", retList);
 	}
+
+	/**
+	 * Safe substring helper: returns empty string or truncated substring when indexes exceed length.
+	 */
+	private static String safeSubstring(String s, int start, int end) {
+		if (s == null) return "";
+		int len = s.length();
+		if (start < 0) start = 0;
+		if (end < start) end = start;
+		if (start >= len) return "";
+		if (end > len) end = len;
+		try {
+			return s.substring(start, end);
+		} catch (Exception e) {
+			// defensive fallback
+			return s.substring(start, len);
+		}
+	}
+
 }

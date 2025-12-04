@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -42,13 +43,18 @@ public class ParametrosMotivoDetalleLoadAction extends RestriccionTransaccionAct
 		if ("alta".equals(frm.getAccion())) {
 			frm.clear();
 			frm.setEstado("A");
-		} else
+		} else {
 			this.motivoToForm(frm, service.getMotivos(frm.getCodigo(), user.getIdUser(), "").get(0));
-		
-		request.getSession().setAttribute("cod_motivo",service.getMotivos(frm.getCodigo(), user.getIdUser(), "").get(0).getCodigo());
-		request.getSession().setAttribute("descripcion_motivo",service.getMotivos(frm.getCodigo(), user.getIdUser(), "").get(0).getDescripcion());
-		request.getSession().setAttribute("desc_motivo",service.getMotivos(frm.getCodigo(), user.getIdUser(), "").get(0).getDescripcion());
-		
+
+			ParametroMotivo motivo = service.getMotivos(frm.getCodigo(), user.getIdUser(), "").get(0);
+			String codigoMotivo = StringEscapeUtils.escapeHtml4(motivo.getCodigo() != null ? motivo.getCodigo() : "");
+			String descripcionMotivo = StringEscapeUtils.escapeHtml4(motivo.getDescripcion() != null ? motivo.getDescripcion() : "");
+
+			request.getSession().setAttribute("cod_motivo", codigoMotivo);
+			request.getSession().setAttribute("descripcion_motivo", descripcionMotivo);
+			request.getSession().setAttribute("desc_motivo", descripcionMotivo);
+		}
+
 		return mapping.findForward(frm.getAccion());
 	}
 	

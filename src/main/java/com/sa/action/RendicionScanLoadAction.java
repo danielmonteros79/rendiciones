@@ -1,8 +1,5 @@
 package com.sa.action;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,14 +8,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import sun.print.resources.serviceui;
 
-import com.sa.entities.ComboMotivo;
-import com.sa.entities.Rendicion;
 import com.sa.entities.Usuario;
 import com.sa.form.RendicionForm;
 import com.sa.services.AprobacionesService;
-import com.sa.services.RendicionesService;
 
 import ar.com.bbva.web.impl.SAMWebApplication;
 import ar.com.bbva.web.impl.SAMWebClient;
